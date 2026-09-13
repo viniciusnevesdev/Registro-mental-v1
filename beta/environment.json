@@ -1,6 +1,6 @@
 {
   "environment": "beta",
-  "release": "1.2.0-beta.40",
+  "release": "1.2.0-beta.41",
   "baseline_official": "1.2.0",
   "database": "registro-mental-beta-v1",
   "settings": "registro-beta-settings-v1",
