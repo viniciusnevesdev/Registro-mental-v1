@@ -42,15 +42,15 @@
     <div class="row"><strong>Registros</strong><span id="eventsCount">—</span></div>
     <div class="row"><strong>Medicamentos cadastrados</strong><span id="medicationsCount">—</span></div>
     <div class="row"><strong>Banco local</strong><span id="dbVersion">—</span></div>
-    <div class="row"><strong>Versão da interface</strong><span>1.2.0-beta.40</span></div>
+    <div class="row"><strong>Versão da interface</strong><span>1.2.0-beta.41</span></div>
   </section>
 
   <section class="card">
     <strong>O que fazer</strong>
     <div class="actions">
-      <a class="button" href="./launch.html?v=1.2.0-beta.40&safe=1">Tentar abrir o app novamente</a>
+      <a class="button" href="./launch.html?v=1.2.0-beta.41&safe=1">Tentar abrir o app novamente</a>
       <button class="secondary" id="backupBtn" type="button">Criar backup de emergência</button>
-      <a class="button secondary" href="./recover.html?v=1.2.0-beta.40&from=safe">Limpar somente cache da interface</a>
+      <a class="button secondary" href="./recover.html?v=1.2.0-beta.41&from=safe">Limpar somente cache da interface</a>
     </div>
     <small>O backup lê IndexedDB e as configurações locais. Ele não apaga nem altera os registros.</small>
   </section>
@@ -128,7 +128,7 @@
       const payload={
         exportedAt:new Date().toISOString(),
         source:'Registro Mental — modo seguro',
-        release:'1.2.0-beta.40',
+        release:'1.2.0-beta.41',
         database:{name:DB_NAME,version:db.version,events:await readStore('events'),medications:await readStore('medications'),audio:await readStore('audio')},
         localStorage:{}
       };
