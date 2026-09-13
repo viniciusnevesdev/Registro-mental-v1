@@ -1,8 +1,8 @@
-/* Registro Mental Oficial 1.2.0-beta.42 — aparência segura, paleta fixa e últimos registros. */
+/* Registro Mental Oficial 1.2.0-beta.43 — aparência segura, paleta fixa e últimos registros. */
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.0-beta.42';
+  const RELEASE = '1.2.0-beta.43';
   const SETTINGS_KEY = 'registro-beta-settings-v1';
   const COLORS = {
     accent: '#7259D6',
@@ -302,7 +302,7 @@
     if (document.querySelector('script[data-rm-mood-v2]')) return;
     const script = document.createElement('script');
     script.dataset.rmMoodV2 = '1';
-    script.src = `./mood-bar-v2.js?v=1.2.0-beta.42&load=${Date.now()}`;
+    script.src = `./mood-bar-v2.js?v=1.2.0-beta.43&load=${Date.now()}`;
     script.async = true;
     script.onerror = () => console.warn('Registro Oficial: barra emocional 0–10 não carregou; interface estável mantida.');
     document.head.appendChild(script);
@@ -613,6 +613,24 @@
     .continuity-alert .continuity-alert-head>h2{
       margin:0!important;color:var(--text)!important;
       text-align:left!important;font-size:19px!important;line-height:1.18!important;
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+
+/* Beta 43: título do lembrete de continuidade mais legível. */
+(() => {
+  if (window.__RM_CONTINUITY_TITLE_SIZE__) return;
+  window.__RM_CONTINUITY_TITLE_SIZE__ = true;
+  const style=document.createElement('style');
+  style.id='rm-continuity-title-size';
+  style.textContent=`
+    .continuity-alert .continuity-alert-titleline .section-kicker{
+      font-size:13px!important;
+      line-height:1.2!important;
+      letter-spacing:.10em!important;
+      white-space:nowrap!important;
     }
   `;
   document.head.appendChild(style);
