@@ -143,3 +143,14 @@
   ensureStyle();
   setTimeout(refresh, 120);
 })();
+
+
+/* Carrega o estoque manual de medicamentos da Beta. */
+(function(){
+  if(window.__RM_MED_STOCK_LOADER__) return;
+  window.__RM_MED_STOCK_LOADER__=true;
+  var s=document.createElement('script');
+  s.src='./medication-inventory.js?v=20260913-1';
+  s.async=true;
+  document.head.appendChild(s);
+})();
