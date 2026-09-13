@@ -1,8 +1,8 @@
-/* Registro Mental Oficial 1.2.0-beta.41 — aparência segura, paleta fixa e últimos registros. */
+/* Registro Mental Oficial 1.2.0-beta.42 — aparência segura, paleta fixa e últimos registros. */
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.0-beta.41';
+  const RELEASE = '1.2.0-beta.42';
   const SETTINGS_KEY = 'registro-beta-settings-v1';
   const COLORS = {
     accent: '#7259D6',
@@ -302,7 +302,7 @@
     if (document.querySelector('script[data-rm-mood-v2]')) return;
     const script = document.createElement('script');
     script.dataset.rmMoodV2 = '1';
-    script.src = `./mood-bar-v2.js?v=1.2.0-beta.41&load=${Date.now()}`;
+    script.src = `./mood-bar-v2.js?v=1.2.0-beta.42&load=${Date.now()}`;
     script.async = true;
     script.onerror = () => console.warn('Registro Oficial: barra emocional 0–10 não carregou; interface estável mantida.');
     document.head.appendChild(script);
@@ -580,6 +580,39 @@
     .rm-continuity-row-icon .svg-icon,.rm-continuity-row-icon svg{
       width:21px!important;height:21px!important;
       filter:none!important;
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+
+/* Beta 42: cabeçalho do lembrete com título e relógio em uma única linha. */
+(() => {
+  if (window.__RM_CONTINUITY_HEADER_LAYOUT__) return;
+  window.__RM_CONTINUITY_HEADER_LAYOUT__ = true;
+  const style=document.createElement('style');
+  style.id='rm-continuity-header-layout';
+  style.textContent=`
+    .continuity-alert{--rm-continuity-alert-red:#FF453A}
+    .continuity-alert-head{display:block!important}
+    .continuity-alert-titleline{
+      display:flex;align-items:center;gap:8px;
+      min-width:0;margin:0 0 7px;
+    }
+    .continuity-alert .continuity-alert-titleline .notice-icon,
+    .continuity-alert .continuity-alert-titleline .section-kicker{
+      color:var(--rm-continuity-alert-red)!important;
+    }
+    .continuity-alert .continuity-alert-titleline .notice-icon{
+      flex:0 0 auto;margin:0!important;padding:0!important;
+    }
+    .continuity-alert .continuity-alert-titleline .section-kicker{
+      margin:0!important;font-size:11px!important;line-height:1.2!important;
+      letter-spacing:.115em;font-weight:800;
+    }
+    .continuity-alert .continuity-alert-head>h2{
+      margin:0!important;color:var(--text)!important;
+      text-align:left!important;font-size:19px!important;line-height:1.18!important;
     }
   `;
   document.head.appendChild(style);
