@@ -1,8 +1,8 @@
-/* Registro Mental Oficial 1.2.0-beta.43 — aparência segura, paleta fixa e últimos registros. */
+/* Registro Mental Oficial 1.2.0-beta.44 — aparência segura, paleta fixa e últimos registros. */
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.0-beta.43';
+  const RELEASE = '1.2.0-beta.44';
   const SETTINGS_KEY = 'registro-beta-settings-v1';
   const COLORS = {
     accent: '#7259D6',
@@ -302,7 +302,7 @@
     if (document.querySelector('script[data-rm-mood-v2]')) return;
     const script = document.createElement('script');
     script.dataset.rmMoodV2 = '1';
-    script.src = `./mood-bar-v2.js?v=1.2.0-beta.43&load=${Date.now()}`;
+    script.src = `./mood-bar-v2.js?v=1.2.0-beta.44&load=${Date.now()}`;
     script.async = true;
     script.onerror = () => console.warn('Registro Oficial: barra emocional 0–10 não carregou; interface estável mantida.');
     document.head.appendChild(script);
@@ -631,6 +631,22 @@
       line-height:1.2!important;
       letter-spacing:.10em!important;
       white-space:nowrap!important;
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+
+/* Beta 44: centraliza o conjunto de título e relógio. */
+(() => {
+  if (window.__RM_CONTINUITY_TITLE_CENTER__) return;
+  window.__RM_CONTINUITY_TITLE_CENTER__ = true;
+  const style=document.createElement('style');
+  style.id='rm-continuity-title-center';
+  style.textContent=`
+    .continuity-alert .continuity-alert-titleline{
+      width:100%!important;
+      justify-content:center!important;
     }
   `;
   document.head.appendChild(style);
