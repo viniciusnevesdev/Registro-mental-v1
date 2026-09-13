@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = String(window.REGISTRO_SHELL_RELEASE || '1.2.0-beta.41');
+  const RELEASE = String(window.REGISTRO_SHELL_RELEASE || '1.2.0-beta.42');
   const SPARK_ICON = `<svg class="svg-icon rm-spark-custom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.7734 24.9609" width="24" height="24" aria-hidden="true" focusable="false" stroke="none">
     <g stroke="none">
       <rect height="24.9609" opacity="0" width="21.7734" x="0" y="0"/>
@@ -176,7 +176,7 @@
     if (!parsed || typeof parsed !== 'object') throw new Error('O conteúdo do arquivo não é um backup válido.');
     const format = Number(parsed.backupFormat || 1);
     if (!Number.isFinite(format) || format < 1) throw new Error('A versão do formato de backup é inválida.');
-    if (format > MAX_BACKUP_FORMAT) throw new Error(`Este backup usa o formato ${format}. A Oficial 1.2.0-beta.41 entende até o formato ${MAX_BACKUP_FORMAT}. Use um “Backup para Oficial estável” criado pela Beta.`);
+    if (format > MAX_BACKUP_FORMAT) throw new Error(`Este backup usa o formato ${format}. A Oficial 1.2.0-beta.42 entende até o formato ${MAX_BACKUP_FORMAT}. Use um “Backup para Oficial estável” criado pela Beta.`);
     if (!Array.isArray(parsed.events)) throw new Error('O arquivo não contém uma lista de registros.');
     return {
       format,
