@@ -651,3 +651,124 @@
   `;
   document.head.appendChild(style);
 })();
+
+
+/* Beta 45: lembrete de continuidade expansível; Ultra anima, Otimizado responde sem transição. */
+(() => {
+  if (window.__RM_CONTINUITY_COLLAPSE_V45__) return;
+  window.__RM_CONTINUITY_COLLAPSE_V45__ = true;
+
+  const expanded = card => card?.dataset.rmContinuityExpanded === '1';
+
+  function updateState(card, next) {
+    if (!card) return;
+    card.dataset.rmContinuityExpanded = next ? '1' : '0';
+    card.classList.toggle('rm-continuity-expanded', next);
+    card.setAttribute('aria-expanded', String(next));
+    const head = card.querySelector('.continuity-alert-head');
+    const button = card.querySelector('.rm-continuity-toggle');
+    head?.setAttribute('aria-expanded', String(next));
+    if (button) {
+      button.setAttribute('aria-expanded', String(next));
+      button.setAttribute('aria-label', next ? 'Recolher lembrete de continuidade' : 'Expandir lembrete de continuidade');
+    }
+  }
+
+  function toggle(card) {
+    updateState(card, !expanded(card));
+  }
+
+  function enhance(card) {
+    if (!card || card.classList.contains('hidden')) return;
+    const head = card.querySelector('.continuity-alert-head');
+    if (!head) return;
+
+    if (!card.querySelector(':scope > .rm-continuity-body')) {
+      const disclaimer = card.querySelector(':scope > .continuity-disclaimer');
+      const list = card.querySelector(':scope > .continuity-alert-list');
+      if (disclaimer || list) {
+        const body = document.createElement('div');
+        body.className = 'rm-continuity-body';
+        const clip = document.createElement('div');
+        clip.className = 'rm-continuity-body-clip';
+        if (disclaimer) clip.appendChild(disclaimer);
+        if (list) clip.appendChild(list);
+        body.appendChild(clip);
+        head.after(body);
+      }
+    }
+
+    let button = head.querySelector('.rm-continuity-toggle');
+    if (!button) {
+      button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'rm-continuity-toggle';
+      button.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 17.4688 10.2891" width="24" height="24" aria-hidden="true" focusable="false"><path d="M1.05 8.93L8.7344 1.22L16.4188 8.93" fill="none" stroke="currentColor" stroke-width="1.62" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      button.addEventListener('click', event => {
+        event.preventDefault();
+        event.stopPropagation();
+        toggle(card);
+      });
+      head.appendChild(button);
+    }
+
+    if (head.dataset.rmContinuityToggleWired !== '1') {
+      head.dataset.rmContinuityToggleWired = '1';
+      head.tabIndex = 0;
+      head.addEventListener('click', event => {
+        if (event.target.closest('.rm-continuity-toggle')) return;
+        toggle(card);
+      });
+      head.addEventListener('keydown', event => {
+        if (event.key !== 'Enter' && event.key !== ' ') return;
+        event.preventDefault();
+        toggle(card);
+      });
+    }
+
+    if (!card.dataset.rmContinuityExpanded) card.dataset.rmContinuityExpanded = '0';
+    updateState(card, expanded(card));
+  }
+
+  function enhanceCurrent() {
+    enhance(document.getElementById('continuityAlertCard'));
+  }
+
+  const style = document.createElement('style');
+  style.id = 'rm-continuity-collapse-v45-style';
+  style.textContent = [
+    '.continuity-alert .continuity-alert-head{position:relative!important;cursor:pointer;touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}',
+    '.continuity-alert .continuity-alert-head:focus-visible{outline:2px solid color-mix(in srgb,var(--accent) 65%,transparent);outline-offset:5px;border-radius:12px}',
+    '.continuity-alert .continuity-alert-titleline{padding-inline:36px!important;box-sizing:border-box}',
+    '.rm-continuity-toggle{position:absolute;right:-4px;top:-7px;width:36px;height:36px;padding:0;border:0;background:transparent;color:var(--rm-continuity-alert-red,#FF453A);display:grid;place-items:center;border-radius:999px;z-index:2;touch-action:manipulation;-webkit-tap-highlight-color:transparent}',
+    '.rm-continuity-toggle svg{display:block;width:24px;height:24px;overflow:visible;transform:rotate(180deg);transform-origin:50% 50%}',
+    '.continuity-alert.rm-continuity-expanded .rm-continuity-toggle svg{transform:rotate(0deg)}',
+    '.rm-continuity-body{display:grid;grid-template-rows:0fr;opacity:0;pointer-events:none}',
+    '.rm-continuity-body-clip{min-height:0;overflow:hidden;transform:translateY(-8px)}',
+    '.continuity-alert.rm-continuity-expanded .rm-continuity-body{grid-template-rows:1fr;opacity:1;pointer-events:auto}',
+    '.continuity-alert.rm-continuity-expanded .rm-continuity-body-clip{transform:translateY(0)}',
+    'html[data-visual-mode="ultra"] .rm-continuity-body{transition:grid-template-rows .26s cubic-bezier(.22,.75,.18,1),opacity .18s ease}',
+    'html[data-visual-mode="ultra"] .rm-continuity-body-clip{transition:transform .26s cubic-bezier(.22,.75,.18,1)}',
+    'html[data-visual-mode="ultra"] .rm-continuity-toggle svg{transition:transform .21s cubic-bezier(.22,.75,.18,1)}',
+    'html[data-visual-mode="optimized"] .rm-continuity-body,html[data-visual-mode="optimized"] .rm-continuity-body-clip,html[data-visual-mode="optimized"] .rm-continuity-toggle svg{transition:none!important}',
+    '@media (prefers-reduced-motion:reduce){.rm-continuity-body,.rm-continuity-body-clip,.rm-continuity-toggle svg{transition:none!important}}'
+  ].join('\n');
+  document.head.appendChild(style);
+
+  let queued = false;
+  const schedule = () => {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => { queued = false; enhanceCurrent(); });
+  };
+
+  const observer = new MutationObserver(mutations => {
+    if (mutations.some(m => m.addedNodes.length || m.removedNodes.length)) schedule();
+  });
+  if (document.body) observer.observe(document.body,{childList:true,subtree:true});
+  else document.addEventListener('DOMContentLoaded',()=>observer.observe(document.body,{childList:true,subtree:true}),{once:true});
+
+  schedule();
+  window.addEventListener('registro:release-ready', schedule);
+  [150,500,1200].forEach(ms => setTimeout(schedule, ms));
+})();
