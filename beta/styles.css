@@ -43,3 +43,17 @@ body{font-weight:var(--base-font-weight)}
 .sheet-close,.sheet-header .sheet-close{width:48px!important;height:48px!important;min-width:48px!important;min-height:48px!important}
 .sheet-close .rm-close-icon{width:36px!important;height:36px!important}
 .rm-mood-v2-caption{display:none!important}
+
+/* Beta 1.2.0-beta.46 — modelo de embalagem simplificado */
+.field:has(#regBlister),
+.field:has(#pBlister){display:none!important}
+.field-grid:has(#regBlister),
+.field-grid:has(#pBlister){grid-template-columns:1fr!important}
+.field-grid:has(#regBlister)>.field:not(:has(#regBlister)),
+.field-grid:has(#pBlister)>.field:not(:has(#pBlister)){grid-column:1/-1!important}
+.field:has(#regUnits)>label,
+.field:has(#pUnits)>label,
+.field:has(#purchasePackages)>label{font-size:0!important}
+.field:has(#regUnits)>label::after,
+.field:has(#pUnits)>label::after{content:"Unidades por embalagem";font-size:14px!important}
+.field:has(#purchasePackages)>label::after{content:"Embalagens";font-size:14px!important}
