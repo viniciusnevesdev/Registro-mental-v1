@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.0-beta.44';
+  const RELEASE = '1.2.0-beta.45';
   const STARTED = performance.now();
   const scopeToken = '/Registro-mental-v1/beta/';
   const DIAG_KEY = 'registro-beta-last-diagnostic-v1';
@@ -553,6 +553,8 @@
       await loadScript('./official-approved-ui.js', 8000);
       currentStage = 'official-appearance.js';
       await loadScript('./official-appearance.js', 8000);
+      currentStage = 'sleep-wake.js';
+      await loadScript('./sleep-wake.js', 8000);
       setStep('patches', 'ok', 'aplicadas');
       log('ok', 'Correções finais, refinamentos aprovados e aparência consolidada carregados');
     } catch (error) {
