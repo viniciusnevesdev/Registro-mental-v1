@@ -1,8 +1,8 @@
-/* Registro Mental Oficial 1.2.0-beta.40 — aparência segura, paleta fixa e últimos registros. */
+/* Registro Mental Oficial 1.2.0-beta.41 — aparência segura, paleta fixa e últimos registros. */
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.0-beta.40';
+  const RELEASE = '1.2.0-beta.41';
   const SETTINGS_KEY = 'registro-beta-settings-v1';
   const COLORS = {
     accent: '#7259D6',
@@ -302,7 +302,7 @@
     if (document.querySelector('script[data-rm-mood-v2]')) return;
     const script = document.createElement('script');
     script.dataset.rmMoodV2 = '1';
-    script.src = `./mood-bar-v2.js?v=1.2.0-beta.40&load=${Date.now()}`;
+    script.src = `./mood-bar-v2.js?v=1.2.0-beta.41&load=${Date.now()}`;
     script.async = true;
     script.onerror = () => console.warn('Registro Oficial: barra emocional 0–10 não carregou; interface estável mantida.');
     document.head.appendChild(script);
@@ -552,6 +552,34 @@
       white-space:nowrap!important;overflow:visible!important;
       font-size:10.5px!important;line-height:1.2!important;
       letter-spacing:-.01em;
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+
+/* Beta 41: ícones de continuidade sem caixa de fundo. */
+(() => {
+  if (window.__RM_CONTINUITY_BARE_ICONS__) return;
+  window.__RM_CONTINUITY_BARE_ICONS__ = true;
+  const style=document.createElement('style');
+  style.id='rm-continuity-bare-icons';
+  style.textContent=`
+    .continuity-alert-row{
+      grid-template-columns:28px minmax(0,1fr) auto!important;
+      column-gap:8px!important;
+    }
+    .rm-continuity-row-icon{
+      width:28px!important;height:28px!important;padding:0!important;
+      display:grid!important;place-items:center!important;
+      align-self:center!important;justify-self:center!important;
+      color:var(--rm-reference-tone)!important;
+      background:transparent!important;border:0!important;border-radius:0!important;
+      box-shadow:none!important;filter:none!important;
+    }
+    .rm-continuity-row-icon .svg-icon,.rm-continuity-row-icon svg{
+      width:21px!important;height:21px!important;
+      filter:none!important;
     }
   `;
   document.head.appendChild(style);
