@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.0-beta.40';
+  const RELEASE = '1.2.0-beta.41';
   const STARTED = performance.now();
   const scopeToken = '/Registro-mental-v1/beta/';
   const DIAG_KEY = 'registro-beta-last-diagnostic-v1';
