@@ -150,7 +150,7 @@
   if(window.__RM_MED_STOCK_LOADER__) return;
   window.__RM_MED_STOCK_LOADER__=true;
   var s=document.createElement('script');
-  s.src='./medication-inventory.js?v=20260913-1';
+  s.src='./medication-inventory.js?v=20260913-2';
   s.async=true;
   document.head.appendChild(s);
 })();
