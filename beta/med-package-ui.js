@@ -1,0 +1,1 @@
+(()=>{const h=()=>{for(const id of ['regBlister','pBlister']){const e=document.getElementById(id);if(e)e.closest('.field').style.display='none';}for(const id of ['regUnits','pUnits']){const e=document.getElementById(id);if(e){const l=e.closest('.field').querySelector('label');if(l)l.textContent='Unidades por embalagem';}}};setInterval(h,250);})();
