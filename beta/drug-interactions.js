@@ -669,6 +669,59 @@
     window.putEvent = wrapped;
   }
 
+  function installExposureIsolation() {
+    try{
+      if(typeof window.renderAnalysis==='function'&&!window.renderAnalysis.__rmExposureIsolated){
+        const previous=window.renderAnalysis;
+        const wrapped=async function(events,...rest){
+          return previous.call(this,(events||[]).filter(e=>!isExposure(e)),...rest);
+        };
+        wrapped.__rmExposureIsolated=true;wrapped.__rmExposurePrevious=previous;
+        window.renderAnalysis=wrapped;
+      }
+      if(typeof window.learningCollectObservations==='function'&&!window.learningCollectObservations.__rmExposureIsolated){
+        const previous=window.learningCollectObservations;
+        const wrapped=async function(events,...rest){
+          return previous.call(this,(events||[]).filter(e=>!isExposure(e)),...rest);
+        };
+        wrapped.__rmExposureIsolated=true;wrapped.__rmExposurePrevious=previous;
+        window.learningCollectObservations=wrapped;
+      }
+      if(typeof window.medicationNoteSuggestions==='function'&&!window.medicationNoteSuggestions.__rmExposureIsolated){
+        const previous=window.medicationNoteSuggestions;
+        const wrapped=function(m,events,...rest){
+          return previous.call(this,m,(events||[]).filter(e=>!isExposure(e)),...rest);
+        };
+        wrapped.__rmExposureIsolated=true;wrapped.__rmExposurePrevious=previous;
+        window.medicationNoteSuggestions=wrapped;
+      }
+      if(typeof window.renderHome==='function'&&!window.renderHome.__rmExposureSummary){
+        const previous=window.renderHome;
+        const wrapped=async function(events,...rest){
+          const result=await previous.call(this,events,...rest);
+          try{
+            const day=(events||[]).filter(e=>eventDay(e)===localDate(new Date()));
+            const notes=day.filter(e=>e.type==='note'&&!isExposure(e));
+            const exposures=day.filter(e=>isExposure(e));
+            const rows=[...document.querySelectorAll('#summaryList .summary-row')];
+            const noteRow=rows.find(row=>row.querySelector('.summary-row-label')?.textContent.trim()==='Anotações');
+            if(noteRow)noteRow.querySelector('.summary-row-value').textContent=String(notes.length);
+            document.getElementById('rmExposureSummaryRow')?.remove();
+            if(exposures.length&&typeof summaryRow==='function'){
+              const holder=document.createElement('div');
+              holder.innerHTML=summaryRow('spark','Substâncias',String(exposures.length));
+              const row=holder.firstElementChild;
+              if(row){row.id='rmExposureSummaryRow';document.getElementById('summaryList')?.appendChild(row)}
+            }
+          }catch(_){}
+          return result;
+        };
+        wrapped.__rmExposureSummary=true;wrapped.__rmExposurePrevious=previous;
+        window.renderHome=wrapped;
+      }
+    }catch(_){}
+  }
+
   function installExposurePresentation() {
     try{
       if(typeof window.kindInfo==='function'&&!window.kindInfo.__rmExposureWrapped){
@@ -689,6 +742,7 @@
   function install() {
     installStyles();
     installExposureAction();
+    installExposureIsolation();
     installExposurePresentation();
     installRegistryButton();
     installDetailButton();
