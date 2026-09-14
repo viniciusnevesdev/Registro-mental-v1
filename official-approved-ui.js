@@ -347,3 +347,98 @@
 
   window.REGISTRO_OFFICIAL_APPROVED_UI_READY = true;
 })();
+
+
+/* RM_SLEEP_DURATION_SCORE_V1 */
+(() => {
+  if (window.__RM_SLEEP_DURATION_SCORE_V1) return;
+  window.__RM_SLEEP_DURATION_SCORE_V1 = true;
+
+  const kindOf = e => (e?.sleepKind === 'nap' || e?.sleepType === 'nap' || e?.isNap === true) ? 'nap' : 'main';
+  const score = h => {
+    h=Number(h); if(!Number.isFinite(h)||h<=0)return null;
+    if(h<2)return{n:1,t:'Extremamente curto',l:'alert'};
+    if(h<3)return{n:2,t:'Muito curto',l:'alert'};
+    if(h<4)return{n:3,t:'Muito curto',l:'alert'};
+    if(h<5)return{n:4,t:'Insuficiente',l:'caution'};
+    if(h<6)return{n:5,t:'Abaixo do ideal',l:'caution'};
+    if(h<7)return{n:7,t:'Quase adequado',l:'near'};
+    if(h<=9)return{n:10,t:'Ideal',l:'ideal'};
+    if(h<=10)return{n:9,t:'Duração longa',l:'near'};
+    if(h<=11)return{n:8,t:'Sono prolongado',l:'near'};
+    if(h<=12)return{n:7,t:'Muito prolongado',l:'caution'};
+    if(h<=13)return{n:6,t:'Duração incomum',l:'caution'};
+    return{n:5,t:'Duração muito longa',l:'alert'};
+  };
+  const scoreEvent = e => e?.type==='sleep' && kindOf(e)!=='nap' && typeof durationHours==='function'
+    ? score(durationHours(e.startTime,e.endTime)) : null;
+  window.rmSleepDurationScore=score;
+  window.rmSleepDurationScoreForEvent=scoreEvent;
+
+  if(!document.getElementById('rm-sleep-score-style')){
+    const st=document.createElement('style'); st.id='rm-sleep-score-style'; st.textContent=`
+      .rm-sleep-title-score{display:flex!important;align-items:center;gap:8px;flex-wrap:wrap}
+      .rm-sleep-score,.rm-sleep-nap{display:inline-flex;align-items:center;min-height:24px;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.15;white-space:nowrap;border:1px solid transparent}
+      .rm-sleep-score[data-level="ideal"]{color:#18772f;background:rgba(52,199,89,.13);border-color:rgba(52,199,89,.24)}
+      .rm-sleep-score[data-level="near"]{color:#8a6100;background:rgba(255,204,0,.15);border-color:rgba(255,204,0,.28)}
+      .rm-sleep-score[data-level="caution"]{color:#a94d00;background:rgba(255,159,10,.14);border-color:rgba(255,159,10,.28)}
+      .rm-sleep-score[data-level="alert"]{color:#c5221f;background:rgba(255,69,58,.12);border-color:rgba(255,69,58,.24)}
+      .rm-sleep-nap{color:var(--sleep,var(--accent));background:rgba(120,100,255,.10);border-color:rgba(120,100,255,.20)}
+      .rm-sleep-kind-control{display:grid!important;grid-template-columns:1fr 1fr}
+      .rm-sleep-score-detail{display:flex;flex-direction:column;gap:4px}
+      .rm-sleep-score-note{font-size:11px;line-height:1.3;opacity:.62;font-weight:500}
+    `; document.head.appendChild(st);
+  }
+
+  function setKind(k){
+    k=k==='nap'?'nap':'main';
+    const v=document.getElementById('rmSleepKindValue'); if(v)v.value=k;
+    document.querySelectorAll('#rmSleepKindControl [data-sleep-kind]').forEach(b=>{
+      const on=b.dataset.sleepKind===k; b.classList.toggle('selected',on); b.setAttribute('aria-pressed',String(on));
+    });
+  }
+  function addKind(k='main'){
+    const form=document.getElementById('form'); if(!form||!document.getElementById('sleepStart'))return;
+    if(document.getElementById('rmSleepKindControl'))return setKind(k);
+    const box=document.createElement('div'); box.className='field rm-sleep-kind-field';
+    box.innerHTML='<label>Tipo de sono</label><div class="segmented animated-segmented rm-sleep-kind-control" id="rmSleepKindControl"><button type="button" data-sleep-kind="main">Sono principal</button><button type="button" data-sleep-kind="nap">Soneca</button></div><input type="hidden" id="rmSleepKindValue" value="main"><p class="helper">A nota automática de duração é aplicada apenas ao sono principal.</p>';
+    const q=document.getElementById('sleepQuality')?.closest('.field'); q?q.before(box):form.prepend(box);
+    box.querySelectorAll('[data-sleep-kind]').forEach(b=>b.onclick=()=>setKind(b.dataset.sleepKind)); setKind(k);
+  }
+
+  if(typeof window.openSleepSheet==='function'){
+    const prev=window.openSleepSheet;
+    window.openSleepSheet=function(payload=null){const r=prev.apply(this,arguments);addKind(payload?.sleepKind==='nap'?'nap':'main');return r};
+  }
+  if(typeof window.openEventEditor==='function'&&typeof window.allEvents==='function'){
+    const prev=window.openEventEditor;
+    window.openEventEditor=async function(id){const e=(await window.allEvents()).find(x=>x.id===id);const r=await prev.apply(this,arguments);if(e?.type==='sleep')addKind(kindOf(e));return r};
+  }
+  if(typeof window.putEvent==='function'){
+    const prev=window.putEvent;
+    window.putEvent=async function(e){let n=e;if(e?.type==='sleep'){const v=document.getElementById('rmSleepKindValue')?.value;n={...e,sleepKind:v==='nap'?'nap':v==='main'?'main':kindOf(e)}}return prev.call(this,n)};
+  }
+
+  const badge=e=>{
+    if(kindOf(e)==='nap')return'<span class="rm-sleep-nap">Soneca</span>';
+    const s=scoreEvent(e); if(!s)return'';
+    return'<span class="rm-sleep-score" data-level="'+s.l+'" title="Nota automática baseada apenas no tempo dormido">'+s.n+'/10 · '+s.t+'</span>';
+  };
+  if(typeof window.eventCard==='function'){
+    const prev=window.eventCard;
+    window.eventCard=function(e){let h=prev.apply(this,arguments);if(e?.type!=='sleep'||typeof h!=='string')return h;const b=badge(e);if(!b)return h;return h.replace(/<div class="timeline-title rm-record-name">([\s\S]*?)<\/div>/,'<div class="timeline-title rm-record-name rm-sleep-title-score"><span>$1</span>'+b+'</div>')};
+  }
+  if(typeof window.openEventViewer==='function'&&typeof window.allEvents==='function'){
+    const prev=window.openEventViewer;
+    window.openEventViewer=async function(id){
+      const e=(await window.allEvents()).find(x=>x.id===id);const r=await prev.apply(this,arguments);if(e?.type!=='sleep')return r;
+      const grid=document.querySelector('#form .rm-v28-detail-grid,.rm-v28-detail-grid');if(!grid)return r;
+      const d=[...grid.children].find(x=>x.querySelector('small')?.textContent.trim()==='Duração');
+      let html='';
+      if(kindOf(e)==='nap')html='<div class="rm-v28-detail-card rm-sleep-score-card"><small>Tipo</small><div class="rm-sleep-score-detail"><strong>Soneca</strong><span class="rm-sleep-score-note">Sem nota automática de duração.</span></div></div>';
+      else{const s=scoreEvent(e);if(s)html='<div class="rm-v28-detail-card rm-sleep-score-card"><small>Nota da duração</small><div class="rm-sleep-score-detail"><strong>'+s.n+'/10 · '+s.t+'</strong><span class="rm-sleep-score-note">Baseada apenas no tempo dormido.</span></div></div>'}
+      if(html)d?d.insertAdjacentHTML('afterend',html):grid.insertAdjacentHTML('beforeend',html);return r;
+    };
+  }
+  setTimeout(()=>{try{const r=window.renderAll?.();r?.catch?.(()=>{})}catch(_){}},250);
+})();
