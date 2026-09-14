@@ -38,6 +38,55 @@
   /* Prioridade brasileira: listas A3, B1 e B2 + entorpecentes de uso medicamentoso frequente
      constantes das listas A1/A2. Isto serve para destacar combinações; não substitui a
      classificação regulatória completa da apresentação comercial. */
+  const ALCOHOL_INTERACTION_RULES = [
+    {
+      id:'alcohol-benzodiazepine',
+      names:['clonazepam','alprazolam','diazepam','lorazepam','bromazepam','midazolam','clobazam','clordiazepoxido','clordiazepóxido','flunitrazepam','oxazepam','temazepam','triazolam'],
+      severity:'critical',
+      defaultWindowHours:24,
+      windows:{clonazepam:48},
+      title:'Álcool + benzodiazepínico',
+      message:'A combinação pode intensificar a depressão do sistema nervoso central e da respiração, aumentando o risco de sedação profunda, overdose, respiração lenta ou difícil, coma e morte.',
+      source:'NIAAA · bula de clonazepam/DailyMed'
+    },
+    {
+      id:'alcohol-opioid',
+      names:['codeina','codeína','tramadol','morfina','oxicodona','hidrocodona','hidromorfona','fentanila','metadona','buprenorfina','tapentadol','petidina','meperidina'],
+      severity:'critical',
+      defaultWindowHours:24,
+      title:'Álcool + opioide',
+      message:'Álcool e opioides podem deprimir a respiração de forma aditiva ou sinérgica, aumentando o risco de overdose, coma e morte.',
+      source:'NIAAA'
+    },
+    {
+      id:'alcohol-sedative',
+      names:['zolpidem','zopiclona','eszopiclona','fenobarbital','carisoprodol'],
+      severity:'critical',
+      defaultWindowHours:24,
+      title:'Álcool + sedativo',
+      message:'A combinação pode aumentar muito a sonolência, a perda de coordenação e a depressão do sistema nervoso central, com risco de overdose e dificuldade para respirar.',
+      source:'NIAAA'
+    },
+    {
+      id:'alcohol-paracetamol',
+      names:['paracetamol','acetaminofeno','acetaminophen'],
+      severity:'high',
+      defaultWindowHours:24,
+      title:'Álcool + paracetamol',
+      message:'Pode aumentar o risco de lesão no fígado, especialmente com consumo frequente ou elevado de álcool, doença hepática ou doses altas/repetidas de paracetamol.',
+      source:'NIAAA/FDA'
+    },
+    {
+      id:'alcohol-liver',
+      names:['acido valproico','ácido valproico','valproato','valproato de sodio','valproato de sódio','duloxetina'],
+      severity:'high',
+      defaultWindowHours:24,
+      title:'Álcool + medicamento com risco hepático',
+      message:'O álcool pode aumentar efeitos adversos e o risco de lesão hepática associado a este medicamento.',
+      source:'NIAAA'
+    }
+  ];
+
   const BR_PRIORITY_CONTROLLED = new Set([
     'anfetamina','catina','clorfentermina','dexanfetamina','dronabinol','femetrazina','fenciclidina',
     'fenetilina','fenfluramina','levanfetamina','lisdexanfetamina','metilfenidato','metilsinefrina','tanfetamina',
@@ -78,6 +127,32 @@
   function stripClass(value='') {
     return norm(String(value).replace(/\[[^\]]+\]/g,'').replace(/\([^\)]+\)/g,''));
   }
+  function alcoholRuleFor(name) {
+    const n=norm(name);
+    for(const rule of ALCOHOL_INTERACTION_RULES){
+      const hit=rule.names.find(x=>norm(x)===n);
+      if(hit){
+        const windowHours=rule.windows?.[n] ?? rule.windows?.[norm(hit)] ?? rule.defaultWindowHours;
+        return {...rule,windowHours};
+      }
+    }
+    return null;
+  }
+  function formatElapsed(ms) {
+    const mins=Math.max(0,Math.round(ms/60000));
+    if(mins<60)return mins+' min';
+    const hours=mins/60;
+    if(hours<24)return (Math.round(hours*10)/10).toLocaleString('pt-BR')+' h';
+    return (Math.round(hours/24*10)/10).toLocaleString('pt-BR')+' dias';
+  }
+  function isExposure(event,key=null) {
+    if(event?.type!=='note'||event?.exposure?.kind!=='substance')return false;
+    return key ? event.exposure.substanceKey===key : true;
+  }
+  function exposureLabel(event) {
+    return event?.exposure?.substance || event?.text || 'Substância';
+  }
+
   function cacheKey(name) { return CACHE_PREFIX + norm(translated(name)); }
 
   function readCache(name) {
@@ -321,6 +396,129 @@
     };
   }
 
+  function installExposureAction() {
+    const grid=document.querySelector('[data-view="home"] .action-grid');
+    if(!grid||document.getElementById('rmSubstanceAction'))return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.id='rmSubstanceAction';
+    button.className='action-card compact-action rm-substance-action';
+    button.innerHTML='<span class="action-icon" data-icon="spark"></span><strong>Substância</strong>';
+    const buy=grid.querySelector('[data-type="purchase"]');
+    if(buy)grid.insertBefore(button,buy);else grid.appendChild(button);
+    button.onclick=openExposureSheet;
+    if(typeof hydrateIcons==='function')hydrateIcons(button);
+  }
+
+  function exposureFormHtml(now) {
+    return '<div class="field"><label for="rmExposureSubstance">Substância</label><select id="rmExposureSubstance"><option value="alcohol">Álcool</option><option value="caffeine">Cafeína</option><option value="nicotine">Nicotina</option><option value="cannabis">Cannabis</option><option value="other">Outra</option></select></div>' +
+      '<div class="field hidden" id="rmExposureOtherField"><label for="rmExposureOther">Qual substância?</label><input id="rmExposureOther" placeholder="Nome da substância"></div>' +
+      '<div class="field"><label for="rmExposureAmount">Quantidade opcional</label><input id="rmExposureAmount" placeholder="Ex.: 1 lata, 2 taças, 200 mg"></div>' +
+      '<div class="field"><label for="rmExposureNote">Observação opcional</label><textarea id="rmExposureNote" rows="2" placeholder="Ex.: bebi rápido, junto com comida…"></textarea></div>' +
+      dateField('recordTime','Data e horário',now,{showNow:true,reserveNow:true}) +
+      '<p class="helper">Esses registros também são usados pelos alertas de interação. A janela de alerta é preventiva e não representa um horário a partir do qual a combinação se torna segura.</p>' +
+      formButtons('Registrar');
+  }
+
+  function openExposureSheet() {
+    const now=toLocalInput();
+    openBackdrop('Registrar substância',exposureFormHtml(now),saveExposure);
+    const select=document.getElementById('rmExposureSubstance');
+    const other=document.getElementById('rmExposureOtherField');
+    select?.addEventListener('change',()=>other?.classList.toggle('hidden',select.value!=='other'));
+  }
+
+  async function saveExposure(event) {
+    event.preventDefault();
+    const select=document.getElementById('rmExposureSubstance');
+    const key=select?.value||'alcohol';
+    const labels={alcohol:'Álcool',caffeine:'Cafeína',nicotine:'Nicotina',cannabis:'Cannabis'};
+    const custom=document.getElementById('rmExposureOther')?.value.trim();
+    const substance=key==='other'?(custom||'Outra substância'):(labels[key]||key);
+    const amount=document.getElementById('rmExposureAmount')?.value.trim()||'';
+    const note=document.getElementById('rmExposureNote')?.value.trim()||'';
+    const when=new Date(document.getElementById('recordTime')?.value);
+    if(Number.isNaN(when.getTime()))return toast('Informe uma data e horário válidos.');
+    if(key==='other'&&!custom)return toast('Informe qual substância foi usada.');
+    const record={
+      id:uid('exposure'),type:'note',timestamp:when.toISOString(),
+      text:'Uso de '+substance+(amount?' · '+amount:''),
+      tag:'substância',demo:false,
+      exposure:{kind:'substance',substanceKey:key,substance,amount,note}
+    };
+    await putEvent(record);
+    closeSheet();
+    await renderAll();
+    toast('Substância registrada.');
+  }
+
+  function localAlcoholInteraction(medName,alcoholEvent,medEvent) {
+    const rule=alcoholRuleFor(medName);
+    if(!rule)return null;
+    const a=new Date(alcoholEvent.timestamp).getTime();
+    const b=new Date(medEvent.timestamp).getTime();
+    if(!Number.isFinite(a)||!Number.isFinite(b))return null;
+    const delta=Math.abs(a-b);
+    const windowMs=rule.windowHours*60*60*1000;
+    if(delta>windowMs)return null;
+    return {
+      a:'Álcool',b:medName,severity:rule.severity,controlled:isBrazilPriorityControlled(medName),
+      evidence:{section:'alcohol-local-rule',sectionLabel:rule.source,text:rule.message,matched:'substância'},
+      source:rule.source,elapsedMs:delta,windowHours:rule.windowHours,ruleTitle:rule.title
+    };
+  }
+
+  function alcoholWarningCard(r) {
+    const critical=r.severity==='critical';
+    return '<article class="rm-ddi-card '+(critical?'rm-ddi-critical':'rm-ddi-high')+'">' +
+      '<div class="rm-ddi-head"><div><strong>'+html(r.ruleTitle||('Álcool + '+r.b))+'</strong>' +
+      '<div class="rm-ddi-badges"><span>'+(critical?'ALTO RISCO':'ATENÇÃO IMPORTANTE')+'</span>' +
+      (r.controlled?'<span class="rm-ddi-control">controle especial</span>':'')+'</div></div></div>' +
+      '<p class="rm-ddi-summary">'+html(r.evidence?.text||'Interação relevante.')+'</p>' +
+      '<p class="rm-ddi-time">Registros separados por '+html(formatElapsed(r.elapsedMs||0))+'. Janela preventiva usada pelo app: '+html(String(r.windowHours))+' h.</p>' +
+      '<small>'+html(r.source||'Fonte clínica pública')+' · a janela do app não define um horário seguro.</small></article>';
+  }
+
+  async function recentAlcoholMedicationInteractions(triggerRecord) {
+    const [events,meds]=await Promise.all([allEvents(),allMedications()]);
+    const triggerTime=new Date(triggerRecord.timestamp).getTime();
+    if(!Number.isFinite(triggerTime))return[];
+    const maxWindow=48*60*60*1000;
+    const candidates=events.filter(e=>e.id!==triggerRecord.id&&!e.demo&&Math.abs(new Date(e.timestamp).getTime()-triggerTime)<=maxWindow);
+    const out=[];
+    if(isExposure(triggerRecord,'alcohol')){
+      for(const e of candidates.filter(e=>e.type==='medication')){
+        const medName=eventMedicationName(e,meds);
+        const match=localAlcoholInteraction(medName,triggerRecord,e);
+        if(match)out.push(match);
+      }
+    }else if(triggerRecord.type==='medication'){
+      const medName=eventMedicationName(triggerRecord,meds);
+      for(const e of candidates.filter(e=>isExposure(e,'alcohol'))){
+        const match=localAlcoholInteraction(medName,e,triggerRecord);
+        if(match)out.push(match);
+      }
+    }
+    return out.sort((x,y)=>severityRank(y.severity)-severityRank(x.severity)||x.elapsedMs-y.elapsedMs);
+  }
+
+  async function warnExposureCombination(record) {
+    const matches=await recentAlcoholMedicationInteractions(record);
+    if(!matches.length)return false;
+    const top=matches[0];
+    const critical=top.severity==='critical';
+    openBackdrop(critical?'Combinação de alto risco':'Possível interação com álcool',
+      '<div class="rm-ddi-warning-intro"><strong>Há sobreposição temporal entre substâncias que podem interagir.</strong><p>Este aviso é preventivo. Não use a janela mostrada como um “tempo seguro” para misturar substâncias.</p></div>' +
+      matches.slice(0,4).map(alcoholWarningCard).join('') +
+      (critical?'<div class="rm-ddi-emergency"><strong>Sinais de emergência</strong><p>Se houver dificuldade para acordar, respiração lenta, irregular ou difícil, desmaio ou lábios arroxeados, procure atendimento de emergência imediatamente (SAMU 192 no Brasil).</p></div>':'') +
+      '<div class="form-actions"><button type="button" class="primary-button" id="rmDdiDismiss">Entendi</button><button type="button" class="secondary-button" id="rmDdiOpenCenter">Ver interações</button></div>',
+      ev=>ev.preventDefault()
+    );
+    document.getElementById('rmDdiDismiss')?.addEventListener('click',closeSheet);
+    document.getElementById('rmDdiOpenCenter')?.addEventListener('click',openInteractionCenter);
+    return true;
+  }
+
   async function warnAfterUse(record) {
     if (!record || record.type !== 'medication' || record.demo) return;
     const meds = await allMedications();
@@ -369,6 +567,8 @@
       .rm-ddi-control{color:#ff9f0a!important;background:rgba(255,159,10,.10)!important}.rm-ddi-summary{font-size:12px;line-height:1.4;margin:9px 0 0;color:var(--text)}
       .rm-ddi-card details{margin-top:8px}.rm-ddi-card summary{font-size:11px;color:var(--secondary);cursor:pointer}.rm-ddi-evidence{font-size:11px;line-height:1.45;color:var(--secondary)}
       .rm-ddi-warning-intro{padding:12px;border-radius:16px;background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.22);margin-bottom:10px}.rm-ddi-warning-intro p{font-size:12px;line-height:1.4;margin:6px 0 0;color:var(--secondary)}
+      .rm-ddi-time{font-size:11px;line-height:1.35;color:var(--secondary);margin:7px 0}.rm-ddi-emergency{padding:12px;border-radius:16px;background:rgba(255,69,58,.10);border:1px solid rgba(255,69,58,.35);margin:10px 0}.rm-ddi-emergency p{font-size:12px;line-height:1.4;margin:5px 0 0}
+      .rm-substance-action .action-icon{color:#ff9f0a!important}
       html[data-visual-mode="ultra"] .rm-ddi-card.rm-ddi-critical{box-shadow:0 0 18px rgba(255,69,58,.18),0 8px 22px rgba(255,69,58,.08)}
       html[data-visual-mode="ultra"] .rm-ddi-card.rm-ddi-high{box-shadow:0 0 16px rgba(255,149,0,.15),0 8px 20px rgba(255,149,0,.07)}
     `;
@@ -453,7 +653,15 @@
     const wrapped = async function(event) {
       const result = await previous.apply(this,arguments);
       const manualMedicationForm = event?.type === 'medication' && !event.demo && document.querySelector('#form #medName');
-      if (manualMedicationForm) setTimeout(() => warnAfterUse(event).catch(()=>{}), 500);
+      const manualExposureForm = isExposure(event) && !event.demo && document.querySelector('#form #rmExposureSubstance');
+      if (manualMedicationForm || manualExposureForm) {
+        setTimeout(async()=>{
+          try{
+            const shown=await warnExposureCombination(event);
+            if(!shown && manualMedicationForm) await warnAfterUse(event);
+          }catch(_){}
+        },500);
+      }
       return result;
     };
     wrapped.__rmDdiWrapped = true;
@@ -461,8 +669,27 @@
     window.putEvent = wrapped;
   }
 
+  function installExposurePresentation() {
+    try{
+      if(typeof window.kindInfo==='function'&&!window.kindInfo.__rmExposureWrapped){
+        const previous=window.kindInfo;
+        const wrapped=function(event){
+          if(isExposure(event)){
+            const amount=event.exposure?.amount;
+            return {kind:'SUBSTÂNCIA',className:'note',title:exposureLabel(event),meta:[amount,event.exposure?.note].filter(Boolean)};
+          }
+          return previous(event);
+        };
+        wrapped.__rmExposureWrapped=true;wrapped.__rmExposurePrevious=previous;
+        window.kindInfo=wrapped;
+      }
+    }catch(_){}
+  }
+
   function install() {
     installStyles();
+    installExposureAction();
+    installExposurePresentation();
     installRegistryButton();
     installDetailButton();
     installUseHook();
