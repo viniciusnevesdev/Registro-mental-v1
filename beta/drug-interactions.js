@@ -375,6 +375,56 @@
     document.head.appendChild(s);
   }
 
+  async function openInteractionsForMedication(name) {
+    const meds = await allMedications();
+    const others = uniq(meds.map(m=>m.activeIngredient).filter(n=>n && norm(n)!==norm(name))).slice(0,15);
+    openBackdrop('Interações · ' + name,
+      '<p class="helper">Verifica este princípio ativo contra os outros medicamentos cadastrados no app.</p>' +
+      '<div id="rmDdiStatus" class="rm-ddi-status">' + (others.length ? html(others.length + ' medicamento(s) para comparar.') : 'Nenhum outro medicamento cadastrado.') + '</div>' +
+      '<div id="rmDdiResults"></div><p class="group-footnote">' + html(sourceNote()) + '</p>' +
+      '<div class="form-actions"><button type="button" class="secondary-button" data-cancel>Fechar</button><button type="button" class="primary-button" id="rmDdiSingleScan">Verificar</button></div>',
+      ev=>ev.preventDefault()
+    );
+    const button=document.getElementById('rmDdiSingleScan');
+    if(!button)return;
+    button.disabled=!others.length;
+    button.onclick=async()=>{
+      button.disabled=true;button.textContent='Verificando…';
+      const status=document.getElementById('rmDdiStatus'),box=document.getElementById('rmDdiResults');
+      const results=[];
+      for(const other of others){
+        try{results.push(await checkPair(name,other))}
+        catch(_){results.push({a:name,b:other,severity:'unknown',controlled:false,evidence:null,source:'openFDA'})}
+      }
+      results.sort((a,b)=>severityRank(b.severity)-severityRank(a.severity));
+      const relevant=results.filter(r=>r.severity!=='none');
+      if(status)status.textContent=relevant.length?relevant.length+' combinação(ões) com alerta ou verificação incompleta.':'Nenhuma interação explícita foi encontrada nas bulas consultadas.';
+      if(box)box.innerHTML=(relevant.length?relevant:results.slice(0,8)).map(resultCard).join('');
+      button.disabled=false;button.textContent='Verificar novamente';
+    };
+  }
+
+  function installDetailButton() {
+    if (typeof window.openMedicationDetail !== 'function' || window.openMedicationDetail.__rmDdiWrapped) return;
+    const previous=window.openMedicationDetail;
+    const wrapped=async function(id){
+      const result=await previous.apply(this,arguments);
+      try{
+        const meds=await allMedications(),m=meds.find(x=>x.id===id);
+        const toolbar=[...document.querySelectorAll('.registry-toolbar')][0];
+        if(m&&toolbar&&!document.getElementById('rmMedicationDetailInteractionsBtn')){
+          const button=document.createElement('button');
+          button.type='button';button.id='rmMedicationDetailInteractionsBtn';button.className='secondary-button';button.textContent='Interações';
+          button.onclick=()=>openInteractionsForMedication(m.activeIngredient);
+          toolbar.appendChild(button);
+        }
+      }catch(_){}
+      return result;
+    };
+    wrapped.__rmDdiWrapped=true;wrapped.__rmDdiPrevious=previous;
+    window.openMedicationDetail=wrapped;
+  }
+
   function installRegistryButton() {
     if (typeof window.openMedicationRegistry !== 'function' || window.openMedicationRegistry.__rmDdiWrapped) return;
     const previous = window.openMedicationRegistry;
@@ -414,8 +464,10 @@
   function install() {
     installStyles();
     installRegistryButton();
+    installDetailButton();
     installUseHook();
     window.openMedicationInteractions = openInteractionCenter;
+    window.openMedicationInteractionsFor = openInteractionsForMedication;
     window.checkMedicationInteractionPair = checkPair;
     window.REGISTRO_DRUG_INTERACTION_SOURCE = {
       label:'openFDA/FDA Drug Labeling',
