@@ -749,6 +749,7 @@
     '.rm-continuity-body-clip{min-height:0;overflow:hidden;transform:translateY(-8px)}',
     '.continuity-alert.rm-continuity-expanded .rm-continuity-body{grid-template-rows:1fr;opacity:1;pointer-events:auto}',
     '.continuity-alert.rm-continuity-expanded .rm-continuity-body-clip{transform:translateY(0)}',
+    'html[data-visual-mode="ultra"] .continuity-alert{border-color:color-mix(in srgb,#FF5A3D 48%,var(--separator))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 0 0 1px rgba(255,90,61,.10),0 0 18px rgba(255,69,58,.20),0 12px 34px rgba(255,132,44,.14)!important}',
     'html[data-visual-mode="ultra"] .rm-continuity-body{transition:grid-template-rows .26s cubic-bezier(.22,.75,.18,1),opacity .18s ease}',
     'html[data-visual-mode="ultra"] .rm-continuity-body-clip{transition:transform .26s cubic-bezier(.22,.75,.18,1)}',
     'html[data-visual-mode="ultra"] .rm-continuity-toggle svg{transition:transform .21s cubic-bezier(.22,.75,.18,1)}',
