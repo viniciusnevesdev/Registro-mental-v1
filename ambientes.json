@@ -1,13 +1,13 @@
 {
   "official": {
     "path": "./",
-    "release": "1.2.1",
+    "release": "1.2.2",
     "branch": "main",
     "database": "registro-mental-v1"
   },
   "beta": {
     "path": "./beta/",
-    "release": "1.2.0-beta.48",
+    "release": "1.2.0-beta.49",
     "branch": "main",
     "database": "registro-mental-beta-v1"
   },
