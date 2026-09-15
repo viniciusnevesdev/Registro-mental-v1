@@ -43,17 +43,28 @@ jobs:
           official_manifest = json.loads(Path('manifest.webmanifest').read_text(encoding='utf-8'))
           beta_manifest = json.loads(Path('beta/manifest.webmanifest').read_text(encoding='utf-8'))
 
-          assert environments['official']['release'] == '1.2.0'
-          assert environments['beta']['release'] == '1.2.0-beta.14'
-          assert official['release'] == '1.2.0'
-          assert beta['release'] == '1.2.0-beta.14'
-          assert beta['baseline_official'] == '1.2.0'
+          import re
+
+          official_release = official['release']
+          beta_release = beta['release']
+          assert environments['official']['release'] == official_release
+          assert environments['beta']['release'] == beta_release
+          assert beta['baseline_official'] == official_release
           assert environments['official']['database'] == 'registro-mental-v1'
           assert environments['beta']['database'] == 'registro-mental-beta-v1'
           assert official_manifest['id'] == official_manifest['scope'] == './'
           assert beta_manifest['id'] == beta_manifest['scope'] == './'
-          assert '1.2.0' in official_manifest['start_url']
-          assert '1.2.0-beta.14' in beta_manifest['start_url']
+          assert official_release in official_manifest['start_url']
+          assert beta_release in beta_manifest['start_url']
+
+          official_boot = Path('boot.js').read_text(encoding='utf-8')
+          beta_boot = Path('beta/boot.js').read_text(encoding='utf-8')
+          official_index = Path('index.html').read_text(encoding='utf-8')
+          beta_index = Path('beta/index.html').read_text(encoding='utf-8')
+          assert re.search(r"const RELEASE = ['\"]" + re.escape(official_release) + r"['\"]", official_boot)
+          assert re.search(r"const RELEASE = ['\"]" + re.escape(beta_release) + r"['\"]", beta_boot)
+          assert official_release in official_index
+          assert beta_release in beta_index
           PY
 
       - name: Validar JavaScript, módulos incorporados e boot
@@ -63,15 +74,15 @@ jobs:
           const fs = require('node:fs');
           const vm = require('node:vm');
 
-          for (const [file, release, database] of [
-            ['app.js', '1.2.0', 'registro-mental-v1'],
-            ['beta/app.js', '1.2.0-beta.14', 'registro-mental-beta-v1']
+          for (const [file, database] of [
+            ['app.js', 'registro-mental-v1'],
+            ['beta/app.js', 'registro-mental-beta-v1']
           ]) {
             const source = fs.readFileSync(file, 'utf8');
             const modules = [...source.matchAll(/s\.text=("(?:[^"\\]|\\.)*");document\.head\.appendChild/g)];
             if (modules.length !== 34) throw new Error(`${file}: esperava 34 módulos; encontrou ${modules.length}.`);
             modules.forEach((match, index) => new vm.Script(JSON.parse(match[1]), { filename: `${file}#${index + 1}` }));
-            if (!source.includes(`const VERSION = '${release}';`)) throw new Error(`${file}: release principal divergente.`);
+            if (!/const VERSION = ['"][^'"]+['"];/.test(source)) throw new Error(`${file}: versão-base ausente.`);
             if (!source.includes(`const DB_NAME='${database}'`)) throw new Error(`${file}: banco local divergente.`);
             if (/\.src=['"]\.\/v04c(?:28|29|30|31|32|33|34|35)\.js/.test(source)) {
               throw new Error(`${file}: ainda tenta baixar módulos que já estão incorporados.`);
