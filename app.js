@@ -1,7 +1,7 @@
 /* Registro Mental V1 — carregador consolidado */
 (() => {
   'use strict';
-  const VERSION = '1.2.0';
+  const VERSION = '1.2.5';
   window.REGISTRO_V1_RELEASE = VERSION;
   window.REGISTRO_EXPECTED_RELEASE = VERSION;
 
@@ -13,9 +13,8 @@
   };
   window.__rmV1PaintVersion = paintVersion;
   paintVersion();
-  for (const el of [document.getElementById('topVersion'), document.getElementById('versionLabel')]) {
-    if (el) new MutationObserver(paintVersion).observe(el, {childList:true, subtree:true, characterData:true});
-  }
+  // A versão é pintada uma vez; não mantenha observadores concorrentes nestes nós.
+  // Outros módulos da interface podem atualizar a identificação da release sem criar loops.
 
   // Os módulos antigos às vezes tentam carregar o próximo arquivo pela rede.
   // Na V1 todos já estão dentro deste bundle; bloqueamos apenas essas duplicatas.
