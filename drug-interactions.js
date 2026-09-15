@@ -150,8 +150,50 @@
     return key ? event.exposure.substanceKey===key : true;
   }
   function exposureLabel(event) {
-    return event?.exposure?.substance || event?.text || 'Substância';
+    return event?.exposure?.substance || event?.text || 'Uso registrado';
   }
+
+  const AUTO_RECREATIONAL_EXPOSURES = [
+    {key:'alcohol',label:'Álcool',aliases:['alcool','álcool','cerveja','vinho','vodka','whisky','uisque','cachaca','cachaça','gin','tequila']},
+    {key:'cannabis',label:'Cannabis',aliases:['cannabis','maconha','marijuana','haxixe','hash','thc']},
+    {key:'cocaine',label:'Cocaína',aliases:['cocaina','cocaína','crack']},
+    {key:'mdma',label:'MDMA',aliases:['mdma','ecstasy','êxtase','extase']},
+    {key:'lsd',label:'LSD',aliases:['lsd']},
+    {key:'psilocybin',label:'Psilocibina',aliases:['psilocibina','cogumelo magico','cogumelo mágico','magic mushroom','magic mushrooms']},
+    {key:'methamphetamine',label:'Metanfetamina',aliases:['metanfetamina','methamphetamine','crystal meth']}
+  ];
+  function classifyRecreationalSubstance(name){
+    const n=norm(name);
+    if(!n)return null;
+    for(const item of AUTO_RECREATIONAL_EXPOSURES){
+      if(item.aliases.some(alias=>norm(alias)===n))return {key:item.key,label:item.label,original:name};
+    }
+    return null;
+  }
+  function autoExposureFromMedication(event){
+    if(!event||event.type!=='medication'||event.demo||event.medicationId)return null;
+    const hit=classifyRecreationalSubstance(event.medication||'');
+    if(!hit)return null;
+    const amount=event.dose||event.quantity||'';
+    return {
+      id:event.id,
+      type:'note',
+      timestamp:event.timestamp,
+      text:'Uso de '+hit.label+(amount?' · '+amount:''),
+      tag:'uso',
+      demo:false,
+      exposure:{
+        kind:'substance',
+        substanceKey:hit.key,
+        substance:hit.label,
+        amount,
+        note:event.note||'',
+        detectedAutomatically:true,
+        originalInput:event.medication||''
+      }
+    };
+  }
+  window.rmClassifyRecreationalSubstance=classifyRecreationalSubstance;
 
   function cacheKey(name) { return CACHE_PREFIX + norm(translated(name)); }
 
@@ -397,17 +439,7 @@
   }
 
   function installExposureAction() {
-    const grid=document.querySelector('[data-view="home"] .action-grid');
-    if(!grid||document.getElementById('rmSubstanceAction'))return;
-    const button=document.createElement('button');
-    button.type='button';
-    button.id='rmSubstanceAction';
-    button.className='action-card compact-action rm-substance-action';
-    button.innerHTML='<span class="action-icon" data-icon="spark"></span><strong>Substância</strong>';
-    const buy=grid.querySelector('[data-type="purchase"]');
-    if(buy)grid.insertBefore(button,buy);else grid.appendChild(button);
-    button.onclick=openExposureSheet;
-    if(typeof hydrateIcons==='function')hydrateIcons(button);
+    document.getElementById('rmSubstanceAction')?.remove();
   }
 
   function exposureFormHtml(now) {
@@ -651,14 +683,16 @@
     if (typeof window.putEvent !== 'function' || window.putEvent.__rmDdiWrapped) return;
     const previous = window.putEvent;
     const wrapped = async function(event) {
-      const result = await previous.apply(this,arguments);
-      const manualMedicationForm = event?.type === 'medication' && !event.demo && document.querySelector('#form #medName');
-      const manualExposureForm = isExposure(event) && !event.demo && document.querySelector('#form #rmExposureSubstance');
-      if (manualMedicationForm || manualExposureForm) {
+      const automaticExposure = autoExposureFromMedication(event);
+      const savedEvent = automaticExposure || event;
+      const result = await previous.call(this,savedEvent);
+      const manualMedicationForm = savedEvent?.type === 'medication' && !savedEvent.demo && document.querySelector('#form #medName');
+      const exposureRecord = isExposure(savedEvent) && !savedEvent.demo;
+      if (manualMedicationForm || exposureRecord) {
         setTimeout(async()=>{
           try{
-            const shown=await warnExposureCombination(event);
-            if(!shown && manualMedicationForm) await warnAfterUse(event);
+            const shown=await warnExposureCombination(savedEvent);
+            if(!shown && manualMedicationForm) await warnAfterUse(savedEvent);
           }catch(_){}
         },500);
       }
@@ -707,12 +741,6 @@
             const noteRow=rows.find(row=>row.querySelector('.summary-row-label')?.textContent.trim()==='Anotações');
             if(noteRow)noteRow.querySelector('.summary-row-value').textContent=String(notes.length);
             document.getElementById('rmExposureSummaryRow')?.remove();
-            if(exposures.length&&typeof summaryRow==='function'){
-              const holder=document.createElement('div');
-              holder.innerHTML=summaryRow('spark','Substâncias',String(exposures.length));
-              const row=holder.firstElementChild;
-              if(row){row.id='rmExposureSummaryRow';document.getElementById('summaryList')?.appendChild(row)}
-            }
           }catch(_){}
           return result;
         };
@@ -729,7 +757,7 @@
         const wrapped=function(event){
           if(isExposure(event)){
             const amount=event.exposure?.amount;
-            return {kind:'SUBSTÂNCIA',className:'note',title:exposureLabel(event),meta:[amount,event.exposure?.note].filter(Boolean)};
+            return {kind:'USO',className:'note',title:exposureLabel(event),meta:[amount,event.exposure?.note].filter(Boolean)};
           }
           return previous(event);
         };
