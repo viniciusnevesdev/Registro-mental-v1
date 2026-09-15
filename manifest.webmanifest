@@ -1,7 +1,7 @@
 {
   "name": "Registro Mental — Diário, Medicação e Sono",
   "short_name": "Registro",
-  "start_url": "./launch.html?v=1.2.2",
+  "start_url": "./launch.html?v=1.2.3",
   "display": "standalone",
   "background_color": "#f5f5f7",
   "theme_color": "#f5f5f7",
