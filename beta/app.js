@@ -1,4186 +1,141 @@
-Y™Áäx-ÆÈ‹j◊ù¢Îi∫⁄+äßj[hëÈ‹¢ÈÌ◊nwÔdËµ©h∫⁄n∂XßzÕK àôY⁄\›õ»Y[ù[åH8†%ÿ\úôYÿY‹à€€ú€€YY»
-ã¬ä
+/* Registro Mental V1 ‚Äî carregador consolidado */
+(() => {
+  'use strict';
+  const VERSION = '1.2.0-beta.51';
+  window.REGISTRO_V1_RELEASE = VERSION;
+  window.REGISTRO_EXPECTED_RELEASE = VERSION;
 
-HOà¬à	›\ŸH›öX›	Œ¬à€€ú›ëTî“S”àH	ÃKåãåXô]KçLIŒ¬à⁄[ô›ÀîëQ“T’ì◊’åW‘ëSPT—HHëTî“S”é¬à⁄[ô›ÀîëQ“T’ì◊—VP’Q‘ëSPT—HHëTî“S”é¬Çà€€ú›Z[ùô\ú⁄[€àH
+  const paintVersion = () => {
+    const top = document.getElementById('topVersion');
+    const about = document.getElementById('versionLabel');
+    if (top && top.textContent !== `v${VERSION}`) top.textContent = `v${VERSION}`;
+    if (about && about.textContent !== VERSION) about.textContent = VERSION;
+  };
+  window.__rmV1PaintVersion = paintVersion;
+  paintVersion();
+  // Pinta a vers√£o uma vez; observadores concorrentes nestes n√≥s criam ciclos infinitos.
+  // Os m√≥dulos finais podem consolidar a identifica√ß√£o sem disputar o mesmo texto.
 
-HOà¬à€€ú›‹Hÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â N¬à€€ú›Xõ›]Hÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N¬àYà
-‹	âà‹ù^€€ù[ùOOHâ’ëTî“S”üX
-H‹ù^€€ù[ùHâ’ëTî“S”üX¬àYà
-Xõ›]	âàXõ›]ù^€€ù[ùOOHëTî“S”äHXõ›]ù^€€ù[ùHëTî“S”é¬àN¬à⁄[ô›Àó◊‹õUåTZ[ùô\ú⁄[€àHZ[ùô\ú⁄[€é¬àZ[ùô\ú⁄[€ä
-N¬àÀ»[ùHHô\úË€»[XHô^é»ÿúŸ\ùòY‹ô\»€€ò€‹úô[ù\»ô\›\»∞Ï‹»‹öX[H⁄X€‹»[ôö[ö]‹ÀÇàÀ»‹»pÏŸ[‹»ö[òZ\»Ÿ[H€€ú€€Y\àHY[ùYöXÿpÈË€»Ÿ[H\‹]\à»Y\€[»^ÀÇÇàÀ»‹»pÏŸ[‹»[ùY€‹»0Ë»ô^ô\»[ù[Hÿ\úôYÿ\à»∞Ïﬁ[[»\ú]Z]õ»[HôYKÇàÀ»òHåHŸ‹»∞ËH\›0Ë€»[ùõ»\›Hù[ôN»õ‹]YX[[‹»\[ò\»\‹ÿ\»\Xÿ]\ÀÇà€€ú›XYHÿ›[Y[ùöXY¬à€€ú›ò]]ôP\[ô⁄[HXYò\[ô⁄[¬àXYò\[ô⁄[Hù[ò›[€äõŸJH¬à€€ú›‹ò»HõŸH	âàõŸKùY”ò[YHOOH	‘–‘íT	»»›ö[ô õŸKú‹ò»	… Hà	…Œ¬àYà
-◊›å◊
-◊öú Œñœ»◊_	
-K⁄Kù\›
-‹ò JH¬à]Y]YSZX‹õ›\⁄ 
+  // Os m√≥dulos antigos √†s vezes tentam carregar o pr√≥ximo arquivo pela rede.
+  // Na V1 todos j√° est√£o dentro deste bundle; bloqueamos apenas essas duplicatas.
+  const head = document.head;
+  const nativeAppendChild = head.appendChild;
+  head.appendChild = function(node) {
+    const src = node && node.tagName === 'SCRIPT' ? String(node.src || '') : '';
+    if (/\/v04c\d+\.js(?:[?#]|$)/i.test(src)) {
+      queueMicrotask(() => { try { node.onload && node.onload(new Event('load')); } catch (_) {} });
+      return node;
+    }
+    return nativeAppendChild.call(this, node);
+  };
+})();
 
-HOà»ûH»õŸKõ€õÿY	âàõŸKõ€õÿY
-ô]»]ô[ù
-	€ÿY	 JN»Hÿ]⁄
- HﬂHJN¬àô]\õàõŸN¬àBàô]\õàò]]ôP\[ô⁄[òÿ[
-\ÀõŸJN¬àN¬üJJ
-N¬Çã àKKKHåÃKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
+/* ---- v04c1.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="const APP_VERSION='1.2.0-beta.44';\nconst DB_NAME='registro-mental-beta-v1';\nconst EVENTS='events';\nconst AUDIO='audio';\nconst MEDICATIONS='medications';\nconst SETTINGS_KEY='registro-beta-settings-v1';\nconst LAST_BACKUP_KEY='registro-beta-last-backup';\nconst LAST_HEALTH_IMPORT_KEY='registro-beta-last-health-import';\nconst BACKUP_WARN_DAYS=7;\n\nlet db=null,currentType=null,mediaRecorder=null,audioChunks=[],pendingAudio=null,pendingSleepSource='manual',historyFilter='all',selectedMedicationId=null,selectedPresentationId=null,iconEditorTarget=null;\n\nconst baseIcons={\n home:'<path d=\"M3 11.5 12 4l9 7.5\"></path><path d=\"M5.5 10.5V20h13v-9.5\"></path><path d=\"M9.5 20v-6h5v6\"></path>',\n history:'<path d=\"M3.5 12a8.5 8.5 0 1 0 2.5-6\"></path><path d=\"M3.5 5v5h5\"></path><path d=\"M12 7.5V12l3 2\"></path>',\n chart:'<path d=\"M4 19V10\"></path><path d=\"M10 19V5\"></path><path d=\"M16 19v-7\"></path><path d=\"M22 19V8\"></path>',\n settings:'<circle cx=\"12\" cy=\"12\" r=\"3\"></circle><path d=\"M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.86 2.86-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.1a1.7 1.7 0 0 0-.4-1.1 1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.06.06-2.86-2.86.06-.06A1.7 1.7 0 0 0 3.8 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2V9.6h.1A1.7 1.7 0 0 0 3.2 9a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06L6.26 3.2l.06.06A1.7 1.7 0 0 0 8.2 3.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V2h4v.1a1.7 1.7 0 0 0 .4 1.1 1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.86 2.86-.06.06A1.7 1.7 0 0 0 19.4 8c.1.4.3.75.6 1 .3.25.7.4 1.1.4h.1v4h-.1c-.4 0-.8.15-1.1.4-.3.25-.5.6-.6 1.2Z\"></path>',\n note:'<path d=\"M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z\"></path><path d=\"m13.5 6.5 4 4\"></path>',\n pill:'<path d=\"M8 18.5 18.5 8a4.24 4.24 0 0 0-6-6L2 12.5a4.24 4.24 0 1 0 6 6Z\"></path><path d=\"m8.5 6.5 9 9\"></path>',\n moon:'<path d=\"M20 15.3A8 8 0 0 1 8.7 4 8.5 8.5 0 1 0 20 15.3Z\"></path>',\n bag:'<path d=\"M5.5 8h13l-1 12h-11l-1-12Z\"></path><path d=\"M9 8V6a3 3 0 0 1 6 0v2\"></path>',\n spark:'<path d=\"m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4L12 3Z\"></path><path d=\"m19 14 .8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14Z\"></path>',\n link:'<path d=\"M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1\"></path><path d=\"M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1\"></path>',\n heart:'<path d=\"M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z\"></path>',\n export:'<path d=\"M12 3v12\"></path><path d=\"m7 8 5-5 5 5\"></path><path d=\"M5 13v7h14v-7\"></path>',\n import:'<path d=\"M12 15V3\"></path><path d=\"m7 10 5 5 5-5\"></path><path d=\"M5 13v7h14v-7\"></path>',\n plus:'<path d=\"M12 5v14M5 12h14\"></path>',\n edit:'<path d=\"M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z\"></path>',\n clock:'<circle cx=\"12\" cy=\"12\" r=\"9\"></circle><path d=\"M12 7v5l3 2\"></path>'\n};\n\nconst defaultSettings={theme:'system',accent:'violet',iconSize:'medium',iconWeight:'regular',showVersion:true,healthImportMode:'review',fontFamily:'system',fontWeight:'400',hideTabLabels:false,iconOverrides:{}};\n\nfunction esc(v=''){return String(v).replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#039;'}[c]))}\nfunction uid(p){return `${p}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`}\nfunction localDate(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}\nfunction toLocalInput(iso=new Date().toISOString()){const d=new Date(iso),off=d.getTimezoneOffset()*60000;return new Date(d.getTime()-off).toISOString().slice(0,16)}\nfunction timeLabel(i){return new Date(i).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}\nfunction dayLabel(s){const d=new Date(`${s}T12:00:00`),t=localDate(new Date()),y=new Date();y.setDate(y.getDate()-1);if(s===t)return'Hoje';if(s===localDate(y))return'Ontem';return d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'short'})}\nfunction eventDay(e){return localDate(new Date(e.timestamp))}\nfunction durationHours(a,b){return Math.max(0,(new Date(b)-new Date(a))/3600000)}\nfunction durationLabel(x){if(!Number.isFinite(x))return'‚Äî';const h=Math.floor(x),m=Math.round((x-h)*60);return`${h}h${m?` ${m}min`:''}`}\nfunction humanAgo(i){const min=Math.max(0,Math.floor((Date.now()-new Date(i))/60000));if(min<1)return'agora';if(min<60)return`h√° ${min} min`;const h=Math.floor(min/60);if(h<24)return`h√° ${h}h`;return`h√° ${Math.floor(h/24)}d`}\nfunction parseMoney(v=''){const n=Number(String(v).replace(/[^0-9,.-]/g,'').replace(/\\./g,'').replace(',','.'));return Number.isFinite(n)?n:null}\nfunction money(n){return n==null||!Number.isFinite(n)?'‚Äî':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}\nfunction normalizeText(v=''){return String(v).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}\nfunction levenshtein(a,b){a=normalizeText(a);b=normalizeText(b);const m=a.length,n=b.length,dp=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return dp[m][n]}\nfunction parseStrength(text=''){const m=String(text).match(/([0-9]+(?:[.,][0-9]+)?)\\s*(mg|mcg|¬µg|g|ml|mL)/i);return m?{value:Number(m[1].replace(',','.')),unit:m[2].replace('¬µ','m').toLowerCase()==='ml'?'mL':m[2].replace('¬µ','m')}:null}\nfunction currentMinutes(){const d=new Date();return d.getHours()*60+d.getMinutes()}\nfunction minuteDistance(a,b){const d=Math.abs(a-b)%1440;return Math.min(d,1440-d)}\nfunction qualityColorClass(q){return `q${Math.max(1,Math.min(5,Number(q)||3))}`}\n\nfunction getSettings(){try{return{...defaultSettings,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')}}catch{return{...defaultSettings}}}\nfunction saveSettings(s){localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));applySettings()}\nfunction setSetting(k,v){const s=getSettings();s[k]=v;saveSettings(s)}\nfunction sanitizeSvgMarkup(markup=''){let s=String(markup).trim();s=s.replace(/<script[\\s\\S]*?<\\/script>/gi,'').replace(/<foreignObject[\\s\\S]*?<\\/foreignObject>/gi,'').replace(/\\son\\w+\\s*=\\s*(['\"]).*?\\1/gi,'').replace(/\\s(?:href|xlink:href)\\s*=\\s*(['\"])(?:https?:|data:|javascript:).*?\\1/gi,'');const svgMatch=s.match(/<svg[^>]*>([\\s\\S]*?)<\\/svg>/i);return svgMatch?svgMatch[1]:s}\nfunction svg(name){const s=getSettings(),override=s.iconOverrides?.[name];let body=baseIcons[name]||baseIcons.note;if(override?.type==='svg'&&override.value)body=sanitizeSvgMarkup(override.value);else if(override?.type==='bank'&&baseIcons[override.value])body=baseIcons[override.value];return `<svg class=\"svg-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\">${body}</svg>`}\nfunction hydrateIcons(root=document){root.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=svg(el.dataset.icon)})}\nfunction updateSegmentIndicator(group,selector,value){if(!group)return;const buttons=[...group.querySelectorAll('button')],idx=Math.max(0,buttons.findIndex(b=>b.dataset[selector]===String(value)));group.style.setProperty('--segment-count',String(buttons.length));group.style.setProperty('--segment-index',String(idx));buttons.forEach((b,i)=>b.classList.toggle('selected',i===idx))}\nfunction updateTabBubble(){const tabs=[...document.querySelectorAll('.tab-item')],idx=Math.max(0,tabs.findIndex(t=>t.classList.contains('selected')));document.querySelector('.tab-bar')?.style.setProperty('--tab-index',String(idx))}";document.head.appendChild(s);s.remove();})();
 
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hò€€ú›T’ëTî“S”èIÃKåãåXô]Kç	Œ◊ò€€ú›ó”êSQOI‹ôY⁄\›õÀ[Y[ù[Xô]K]åIŒ◊ò€€ú›UëSïœIŸ]ô[ù…Œ◊ò€€ú›UQSœIÿ]Y[…Œ◊ò€€ú›QQP–US”îœI€YYXÿ][€ú…Œ◊ò€€ú›—USë‘◊“—VOI‹ôY⁄\›õÀXô]K\Ÿ][ô‹À]åIŒ◊ò€€ú›T’–êP“’T“—VOI‹ôY⁄\›õÀXô]K[\›XòX⁄›\	Œ◊ò€€ú›T’“PS“ST‘ï“—VOI‹ôY⁄\›õÀXô]K[\›ZX[Z[\‹ù	Œ◊ò€€ú›êP“’T’–Tìó—VTœMŒ◊óõ]è[ù[›\úô[ù\O[ù[YYXTôX€‹ô\è[ù[]Y[–⁄[ö‹œV◊K[ô[ô–]Y[œ[ù[[ô[ô‘€Y\€›\òŸOI€X[ùX[	À\›‹ûQö[\èIÿ[	ÀŸ[X›YYYXÿ][€íY[ù[Ÿ[X›Yô\Ÿ[ù][€íY[ù[X€€ëY]‹ï\ôŸ][ù[◊óò€€ú›ò\ŸRX€€úœ^◊à€YNâœ]WìL»LKçHLàHÀçWèè‹]è]WìMKçHLçUååL›ãNKçWèè‹]è]WìNKçHåãMö]çóèè‹]âÀà\›‹ûNâœ]WìLÀçHLòNçHçHHãçKMóèè‹]è]WìLÀçH]çZWèè‹]è]WìLLàÀçUåLõ»óèè‹]âÀà⁄\ùâœ]WìMNUåLèè‹]è]WìLLNUçWèè‹]è]WìLMàN]ãM◊èè‹]è]WìLåàNUéèè‹]âÀàŸ][ô‹Œâœ⁄\ò€HﬁWåLóàﬁOWåLóàèWå◊èèÿ⁄\ò€Oè]WìLNKçMXLKç»Kç»åÕKéåãåãLãéàãéãKåãKåêLKç»Kç»MHNKçLKç»Kç»LHçàKç»Kç»KçKåUååRKçùãKåXLKç»Kç»KçLKåHKç»Kç»LKKçàKç»Kç»LKéåÕKåãåãLãéãLãéãåãKåêLKç»Kç»ÀéMXLKç»Kç»KçãLHKç»Kç»LKåKKçïéKçöåPLKç»Kç»ÀåàXLKç»Kç»çãLHKç»Kç»KåÕLKéKåãKåìãåçàÀåõåãåêLKç»Kç»åàÀçòLKç»Kç»KKçàKç»Kç»çLKåUåöãåXLKç»Kç»çKåHKç»Kç»HçàKç»Kç»KéKåÕåãKåàãéàãéãKåãåêLKç»Kç»NKçÀåKçåÀçÕKçàHåÀåçKçÀçKåKçå]çKåXÀKçKéåMKLKåKçKåÀåçKKçKçãKçàKåñóèè‹]âÀàõ›Nâœ]WìMåLKLLXLãéãéMMMùçóèè‹]è]WõLLÀçHãçHèè‹]âÀà[âœ]WìNNçHNçHMåçåçMãMìàLãçXMåçåçHàñóèè‹]è]WõNçHãçHHWèè‹]âÀà[€€éâœ]WìLåMKå–NHç»çHçHHåMKå÷óèè‹]âÀàòYŒâœ]WìMKçHL€LHLöLL[LKLLñóèè‹]è]WìNHçòL»»Hàåóèè‹]âÀà‹\öŒâœ]WõLLà»KçåSMÀçHç[MåHKçLàMLKçMåKMåKLKçåKLKçLà÷óèè‹]è]WõLNHMéãåìåàM€LãåãéNHåKéLãåìMàM€ãåãKéNHMóèè‹]âÀà[öŒâœ]WìLLLÿMHHÀåKå[ãLòMHHMÀåKMÀå[LKåHKåWèè‹]è]WìLMLXMHHMÀåKKå[LàêMHHLàåKåKLKåWèè‹]âÀàX\ùâœ]WìLåéçòMKçHKçHMÀéLàKç€LKåKLKåXMKçHKçHMÀéÀéLàå[éNçòMKçHKçHMÀéóèè‹]âÀà^‹ùâœ]WìLLà›åLóèè‹]è]WõM»KMHHWèè‹]è]WìMHL›ç⁄MãM◊èè‹]âÀà[\‹ùâœ]WìLLàMUå◊èè‹]è]WõM»LHHKMWèè‹]è]WìMHL›ç⁄MãM◊èè‹]âÀà\Œâœ]WìLLà]åMMHLöMèè‹]âÀàY]âœ]WìMåLKLLXLãéãéMMMùçóèè‹]âÀà€ÿ⁄Œâœ⁄\ò€HﬁWåLóàﬁOWåLóàèWéWèèÿ⁄\ò€Oè]WìLLà›ç[»óèè‹]â◊üN◊óò€€ú›Yò][Ÿ][ô‹œ^›[YNâ‹ﬁ\›[IÀXÿŸ[ùâ›ö[€]	ÀX€€î⁄^ôNâ€YY][IÀX€€ïŸZY⁄â‹ôY›[\âÀ⁄›’ô\ú⁄[€éùùYKX[[\‹ù[ŸNâ‹ô]öY]…Àõ€ùò[Z[Nâ‹ﬁ\›[IÀõ€ùŸZY⁄âÕ	ÀYUXìXô[Œôò[ŸKX€€ì›ô\úöY\Œûﬂ_N◊óôù[ò›[€à\ÿ èI… ^‹ô]\õà›ö[ô äKúô\XŸJ÷…èóâ◊KŸÀœOä……âŒâ…ò[\…À	œ	Œâ…õ…À	œâŒâ…ô›…À	◊âŒâ…ú][›…Àâ◊éâ…àÃŒN…ﬂVÿ◊JJ_Wôù[ò›[€àZY
-
-^‹ô]\õà	‹KI—]Kõõ› 
-_KI”X]úò[ô€J
-Kù‘›ö[ô ÕäKú€XŸJã
-_XWôù[ò›[€àÿÿ[]J]J^ÿ€€ú›OY]KôŸ]ù[YX\ä
-KOT›ö[ô ]KôŸ][€ù
+/* ---- v04c2.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="function applySettings(){const s=getSettings();const html=document.documentElement;html.dataset.theme=s.theme;html.dataset.accent=s.accent;html.dataset.iconSize=s.iconSize;html.dataset.iconWeight=s.iconWeight;html.dataset.fontFamily=s.fontFamily;html.dataset.hideTabLabels=String(Boolean(s.hideTabLabels));html.style.setProperty('--base-font-weight',s.fontWeight);document.getElementById('topVersion')?.classList.toggle('hidden',!s.showVersion);document.getElementById('showVersionToggle')?.setAttribute('aria-checked',String(Boolean(s.showVersion)));document.getElementById('hideTabLabelsToggle')?.setAttribute('aria-checked',String(Boolean(s.hideTabLabels)));updateSegmentIndicator(document.getElementById('themeControl'),'themeValue',s.theme);updateSegmentIndicator(document.getElementById('iconSizeControl'),'iconSize',s.iconSize);updateSegmentIndicator(document.getElementById('iconWeightControl'),'iconWeight',s.iconWeight);updateSegmentIndicator(document.getElementById('fontFamilyControl'),'fontFamily',s.fontFamily);updateSegmentIndicator(document.getElementById('fontWeightControl'),'fontWeight',s.fontWeight);updateSegmentIndicator(document.getElementById('healthImportModeControl'),'healthMode',s.healthImportMode);document.querySelectorAll('[data-accent]').forEach(b=>b.classList.toggle('selected',b.dataset.accent===s.accent));hydrateIcons();updateTabBubble()}\n\nfunction openDB(){return new Promise((resolve,reject)=>{const r=indexedDB.open(DB_NAME,2);r.onupgradeneeded=()=>{const d=r.result;if(!d.objectStoreNames.contains(EVENTS)){const s=d.createObjectStore(EVENTS,{keyPath:'id'});s.createIndex('timestamp','timestamp');s.createIndex('type','type')}if(!d.objectStoreNames.contains(AUDIO))d.createObjectStore(AUDIO,{keyPath:'id'});if(!d.objectStoreNames.contains(MEDICATIONS))d.createObjectStore(MEDICATIONS,{keyPath:'id'})};r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}\nfunction store(name=EVENTS,mode='readonly'){return db.transaction(name,mode).objectStore(name)}\nfunction req(r){return new Promise((resolve,reject)=>{r.onsuccess=()=>resolve(r.result);r.onerror=()=>reject(r.error)})}\nasync function allEvents(){return req(store(EVENTS).getAll())}\nasync function putEvent(e){return req(store(EVENTS,'readwrite').put(e))}\nasync function deleteEvent(id){await req(store(EVENTS,'readwrite').delete(id));await req(store(AUDIO,'readwrite').delete(id))}\nasync function saveAudio(id,blob){return req(store(AUDIO,'readwrite').put({id,blob}))}\nasync function getAudio(id){return req(store(AUDIO).get(id))}\nasync function allMedications(){return req(store(MEDICATIONS).getAll())}\nasync function putMedication(m){m.updatedAt=new Date().toISOString();return req(store(MEDICATIONS,'readwrite').put(m))}\nasync function deleteMedication(id){return req(store(MEDICATIONS,'readwrite').delete(id))}\n\nconst demoEvents=()=>{const now=new Date(),today=(h,m)=>{const d=new Date(now);d.setHours(h,m,0,0);return d.toISOString()},yday=(h,m)=>{const d=new Date(now);d.setDate(d.getDate()-1);d.setHours(h,m,0,0);return d.toISOString()};return[{id:'demo-note-1',type:'note',timestamp:today(21,14),text:'Estou mais tranquilo agora.',tag:'calma',demo:true},{id:'demo-med-1',type:'medication',timestamp:today(18,32),medication:'Paroxetina',dose:'20 mg',totalDoseValue:20,doseUnit:'mg',unitsTaken:1,demo:true},{id:'demo-note-2',type:'note',timestamp:today(15,10),text:'Estava bastante ansioso durante a tarde e com dor de cabe√ßa.',tag:'ansiedade',demo:true},{id:'demo-med-2',type:'medication',timestamp:today(9,3),medication:'Bupropiona',dose:'150 mg',totalDoseValue:150,doseUnit:'mg',unitsTaken:1,demo:true},{id:'demo-sleep-1',type:'sleep',timestamp:today(7,20),startTime:yday(23,50),endTime:today(7,20),quality:4,note:'Acordei uma vez durante a madrugada.',source:'manual',demo:true},{id:'demo-buy-1',type:'purchase',timestamp:yday(17,20),medication:'Paroxetina 20 mg',packages:1,totalUnits:30,price:'R$ 41,90',place:'Farm√°cia de exemplo',demo:true}]}\nasync function seedDemo(){const e=await allEvents();if(!e.length&&localStorage.getItem('registro-beta-demo-seeded')!=='yes'){for(const item of demoEvents())await putEvent(item);localStorage.setItem('registro-beta-demo-seeded','yes')}}\nasync function ensureProfiles(){const meds=await allMedications();if(meds.length)return;const events=await allEvents(),names=[...new Set(events.filter(e=>e.type==='medication'&&e.medication).map(e=>e.medication.trim()))];for(const name of names){const doses=[...new Set(events.filter(e=>e.type==='medication'&&normalizeText(e.medication)===normalizeText(name)&&e.dose).map(e=>e.dose))];const presentations=doses.map(d=>{const p=parseStrength(d);return{id:uid('presentation'),strengthValue:p?.value||'',strengthUnit:p?.unit||'mg',form:'comprimido/c√°psula',unitsPerPackage:'',unitsPerBlister:'',brand:'',lab:''}});await putMedication({id:uid('med'),activeIngredient:name,referenceName:'',lab:'',presentations,notes:[],createdAt:new Date().toISOString()})}}\n\nfunction medicationDisplay(m){return m.referenceName?`${m.activeIngredient} ¬∑ ${m.referenceName}`:m.activeIngredient}\nfunction presentationDisplay(p){const strength=p.strengthValue?`${p.strengthValue} ${p.strengthUnit||''}`.trim():'Sem dosagem';const extra=[p.brand,p.lab].filter(Boolean).join(' ¬∑ ');return extra?`${strength} ¬∑ ${extra}`:strength}\nfunction findProfileByEvent(e,meds){if(e.medicationId)return meds.find(m=>m.id===e.medicationId)||null;const key=normalizeText(e.medication||'');return meds.find(m=>[m.activeIngredient,m.referenceName,...(m.aliases||[])].some(v=>v&&normalizeText(v)===key))||null}\nfunction findPresentation(m,id){return m?.presentations?.find(p=>p.id===id)||null}\nfunction medSearchScore(m,q){q=normalizeText(q);if(!q)return 999;const candidates=[m.activeIngredient,m.referenceName,m.lab,...(m.aliases||[])].filter(Boolean).map(normalizeText);let best=999;for(const c of candidates){if(c.startsWith(q))best=Math.min(best,0);else if(c.includes(q))best=Math.min(best,1);else{const d=levenshtein(c,q);if(d<=2)best=Math.min(best,2+d/10);const first=c.split(' ')[0];const qfirst=q.split(' ')[0];const fd=levenshtein(first,qfirst);if(fd<=2)best=Math.min(best,3+fd/10)}}return best}\nfunction medMatchesEvent(m,e){if(e.medicationId===m.id)return true;const q=normalizeText(e.medication||'');return [m.activeIngredient,m.referenceName,...(m.aliases||[])].filter(Boolean).some(v=>normalizeText(v)===q)}\n\nfunction kindInfo(e){if(e.type==='note')return{kind:e.audioOnly?'ANOTA√á√ÉO DE VOZ':'ANOTA√á√ÉO',className:'note',title:e.text||'Grava√ß√£o de voz',meta:[e.tag].filter(Boolean)};if(e.type==='medication')return{kind:'MEDICAMENTO',className:'medication',title:`${e.medication||'Medicamento'}${e.dose?` ¬∑ ${e.dose}`:''}`,meta:[e.unitsTaken?`${e.unitsTaken} un.`:e.quantity,e.note].filter(Boolean)};if(e.type==='sleep')return{kind:'SONO',className:'sleep',title:durationLabel(durationHours(e.startTime,e.endTime)),meta:[e.quality?`Qualidade ${e.quality}`:null,e.source==='health-shortcut'?'Importado do Sa√∫de':'Manual',e.note].filter(Boolean)};return{kind:'COMPRA',className:'purchase',title:`${e.medication||'Medicamento'}${e.price?` ¬∑ ${e.price}`:''}`,meta:[e.packages?`${e.packages} caixa(s)`:e.quantity,e.place].filter(Boolean)}}\nfunction eventCard(e){const k=kindInfo(e);return`<article class=\"timeline-item\"><div class=\"timeline-time\">${timeLabel(e.timestamp)}</div><div><div class=\"timeline-kind kind-${k.className}\">${k.kind}</div><div class=\"timeline-title\">${esc(k.title)}</div>${k.meta.length?`<div class=\"timeline-meta\">${k.meta.map(esc).join(' ¬∑ ')}</div>`:''}${e.hasAudio?`<div data-audio=\"${e.id}\"></div>`:''}</div><button class=\"item-menu\" data-menu=\"${e.id}\" aria-label=\"Op√ß√µes\">‚Ä¢‚Ä¢‚Ä¢</button></article>`}\nasync function hydrateAudio(root){for(const el of root.querySelectorAll('[data-audio]')){const rec=await getAudio(el.dataset.audio);if(rec?.blob){const url=URL.createObjectURL(rec.blob);el.innerHTML=`<audio controls preload=\"metadata\" src=\"${url}\"></audio>`}}}\nfunction summaryRow(icon,label,valueHtml){return`<div class=\"summary-row\"><span class=\"summary-row-icon\">${svg(icon)}</span><span class=\"summary-row-label\">${label}</span><span class=\"summary-row-value\">${valueHtml}</span></div>`}\n";document.head.appendChild(s);s.remove();})();
 
-JÃJKúY›\ù
-ã	Ã	 KT›ö[ô ]KôŸ]]J
-JKúY›\ù
-ã	Ã	 N‹ô]\õà	ﬁ_KI€_KIŸXWôù[ò›[€à”ÿÿ[[ú]
-\€œ[ô]»]J
-Kù“T”‘›ö[ô 
-J^ÿ€€ú›[ô]»]J\€ KŸôèYôŸ][Y^õ€ôSŸôúŸ]
+/* ---- v04c3.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="async function renderHome(events){const today=localDate(new Date()),day=events.filter(e=>eventDay(e)===today).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)),notes=day.filter(e=>e.type==='note'),meds=day.filter(e=>e.type==='medication'),sleeps=day.filter(e=>e.type==='sleep'),buys=day.filter(e=>e.type==='purchase');document.getElementById('dateLabel').textContent=`Hoje ¬∑ ${new Date().toLocaleDateString('pt-BR',{day:'2-digit',month:'short'})}`;let sleep='Nenhum';if(sleeps[0])sleep=`${durationLabel(durationHours(sleeps[0].startTime,sleeps[0].endTime))}${sleeps[0].quality?` ¬∑ <span class=\"quality-inline\"><span class=\"quality-dot ${qualityColorClass(sleeps[0].quality)}\"></span>${sleeps[0].quality}</span>`:''}`;document.getElementById('summaryList').innerHTML=[summaryRow('note','Anota√ß√µes',String(notes.length)),summaryRow('pill','Medicamentos',String(meds.length)),summaryRow('moon','Sono',sleep),summaryRow('bag','Compras',String(buys.length))].join('');const recent=day.slice(0,5),box=document.getElementById('homeTimeline');box.innerHTML=recent.map(eventCard).join('');document.getElementById('homeEmpty').classList.toggle('hidden',recent.length>0);await hydrateAudio(box)}\nasync function renderHistory(events){const filtered=events.filter(e=>historyFilter==='all'||e.type===historyFilter).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)),container=document.getElementById('historyList');container.innerHTML='';let current='';for(const e of filtered){const d=eventDay(e);if(d!==current){current=d;container.insertAdjacentHTML('beforeend',`<div class=\"history-day\">${dayLabel(d)}</div>`)}container.insertAdjacentHTML('beforeend',eventCard(e))}document.getElementById('historyEmpty').classList.toggle('hidden',filtered.length>0);await hydrateAudio(container)}\nfunction analysisRow(title,text){return`<div class=\"analysis-row\"><strong>${esc(title)}</strong><span>${esc(text)}</span></div>`}\nfunction metric(value,label){return`<div class=\"metric\"><strong>${esc(value)}</strong><span>${esc(label)}</span></div>`}\nfunction moodTerms(text=''){const t=normalizeText(text),terms=['calmo','tranquilo','bem','feliz','ansioso','ansiedade','irritado','triste','agitado','cansado','sonolento','insonia','foco','concentrado','dor de cabeca','nausea','tontura'];return terms.filter(term=>t.includes(normalizeText(term)))}\n\nfunction currentCycle(events){const sleeps=events.filter(e=>e.type==='sleep'&&e.endTime&&new Date(e.endTime)<=new Date()).sort((a,b)=>new Date(b.endTime)-new Date(a.endTime)),lastSleep=sleeps[0];if(lastSleep){const wake=new Date(lastSleep.endTime).getTime();return{start:wake,label:`Desde o √∫ltimo despertar (${timeLabel(lastSleep.endTime)})`,lastSleep}}return{start:Date.now()-24*3600000,label:'√öltimas 24h',lastSleep:null}}\nfunction medicationEventLabel(e){return`${e.medication||'Medicamento'}${e.dose?` ${e.dose}`:''} ¬∑ ${timeLabel(e.timestamp)}`}\n\nfunction buildPackageLots(m,events){const purchases=events.filter(e=>e.type==='purchase'&&medMatchesEvent(m,e)).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp)),admins=events.filter(e=>e.type==='medication'&&medMatchesEvent(m,e)).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp));const lots=[];for(const p of purchases){const pres=findPresentation(m,p.presentationId);const packages=Math.max(1,Math.round(Number(p.packages)||1));const unitsPerPackage=Number(p.unitsPerPackage)||Number(pres?.unitsPerPackage)||0;const totalPrice=parseMoney(p.price);if(!unitsPerPackage)continue;for(let i=0;i<packages;i++)lots.push({purchaseId:p.id,presentationId:p.presentationId,start:new Date(p.timestamp).getTime(),units:unitsPerPackage,remaining:unitsPerPackage,price:totalPrice==null?null:totalPrice/packages,finishedAt:null,label:pres?presentationDisplay(pres):eSafe(p.medication)})}for(const a of admins){let need=Number(a.unitsTaken)||1;let t=new Date(a.timestamp).getTime();for(const lot of lots){if(need<=0)break;if(t<lot.start||lot.remaining<=0)continue;const used=Math.min(need,lot.remaining);lot.remaining-=used;need-=used;if(lot.remaining<=0&&!lot.finishedAt)lot.finishedAt=t}}return lots}\nfunction eSafe(v){return String(v||'')}\nfunction medicationCostSummary(m,events){const lots=buildPackageLots(m,events),latest=[...lots].sort((a,b)=>b.start-a.start)[0];if(!latest)return null;const pres=findPresentation(m,latest.presentationId),unit=latest.price==null?null:latest.price/latest.units,blister=unit!=null&&Number(pres?.unitsPerBlister)?unit*Number(pres.unitsPerBlister):null;const since=Date.now()-30*86400000,used30=events.filter(e=>e.type==='medication'&&medMatchesEvent(m,e)&&new Date(e.timestamp).getTime()>=since).reduce((s,e)=>s+(Number(e.unitsTaken)||1),0),monthly=unit==null?null:unit*used30;return{latest,unit,blister,monthly,lots}}\n";document.head.appendChild(s);s.remove();})();
 
-Jçå‹ô]\õàô]»]JôŸ][YJ
-K[ŸôäKù“T”‘›ö[ô 
-Kú€XŸJMä_Wôù[ò›[€à[YSXô[
-J^‹ô]\õàô]»]JJKù”ÿÿ[U[YT›ö[ô 	‹PîâÀ⁄›\éâÃãYY⁄]	ÀZ[ù]NâÃãYY⁄]	ﬂJ_Wôù[ò›[€à^SXô[
- ^ÿ€€ú›[ô]»]J	‹ﬂULéåå
-K[ÿÿ[]Jô]»]J
-JKO[ô]»]J
-NﬁKúŸ]]JKôŸ]]J
-KLJN⁄YäœOO]
-\ô]\õâ“⁄ôIŒ⁄YäœOO[ÿÿ[]JJJ\ô]\õâ”€ù[IŒ‹ô]\õàù”ÿÿ[Q]T›ö[ô 	‹PîâÀ›ŸYZŸ^Nâ€€ô…À^NâÃãYY⁄]	À[€ùâ‹⁄‹ù	ﬂJ_Wôù[ò›[€à]ô[ù^JJ^‹ô]\õàÿÿ[]Jô]»]JKù[Y\›[\
-J_Wôù[ò›[€à\ò][€í›\ú Kä^‹ô]\õàX]õX^
-
-ô]»]JäK[ô]»]JJJKÃÕå
-_Wôù[ò›[€à\ò][€ìXô[
-
-^⁄YäSù[Xô\ãö\—ö[ö]J
-J\ô]\õâ¯†%	Œÿ€€ú›SX]ôõ€‹ä
-KOSX]úõ›[ô
+/* ---- v04c4.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="async function renderAnalysis(events){const sorted=[...events].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)),cycle=currentCycle(sorted),latestNote=sorted.find(e=>e.type==='note'),cycleMeds=sorted.filter(e=>e.type==='medication'&&new Date(e.timestamp).getTime()>=cycle.start),contextStart=cycle.start-24*3600000,contextMeds=cycle.lastSleep?sorted.filter(e=>e.type==='medication'&&new Date(e.timestamp).getTime()<cycle.start&&new Date(e.timestamp).getTime()>=contextStart):[],lastSleep=cycle.lastSleep||sorted.find(e=>e.type==='sleep');document.getElementById('currentAnalysis').innerHTML=[analysisRow('Per√≠odo considerado',cycle.label),analysisRow('√öltimo relato',latestNote?`‚Äú${latestNote.text||'Anota√ß√£o de voz'}‚Äù ¬∑ ${humanAgo(latestNote.timestamp)}`:'Ainda n√£o h√° anota√ß√µes.'),analysisRow(cycle.lastSleep?'Medicamentos desde que acordou':'Medicamentos recentes',cycleMeds.length?cycleMeds.map(medicationEventLabel).join(' ¬∑ '):'Nenhum registro nesse per√≠odo.'),...(contextMeds.length?[analysisRow('Contexto antes do √∫ltimo sono',contextMeds.map(medicationEventLabel).join(' ¬∑ '))]:[]),analysisRow('Sono mais recente',lastSleep?`${durationLabel(durationHours(lastSleep.startTime,lastSleep.endTime))}${lastSleep.quality?` ¬∑ qualidade ${lastSleep.quality}`:''}`:'Ainda n√£o h√° registros de sono.')].join('');const admins=sorted.filter(e=>e.type==='medication'),notes=sorted.filter(e=>e.type==='note'&&e.text),grouped={};for(const a of admins){const key=a.medication||'Medicamento';if(!grouped[key])grouped[key]={count:0,terms:[]};const st=new Date(a.timestamp).getTime(),en=st+8*3600000,nearby=notes.filter(n=>{const t=new Date(n.timestamp).getTime();return t>=st&&t<=en});grouped[key].count+=nearby.length;grouped[key].terms.push(...nearby.flatMap(n=>moodTerms(n.text)))}const assoc=Object.entries(grouped).sort((a,b)=>b[1].count-a[1].count).slice(0,4);document.getElementById('associationAnalysis').innerHTML=assoc.length?assoc.map(([name,data])=>{const c={};data.terms.forEach(t=>c[t]=(c[t]||0)+1);const common=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([t,n])=>`${t} (${n})`).join(', ');return analysisRow(name,`${data.count} anota√ß√£o(√µes) at√© 8h depois de administra√ß√µes${common?`. Termos recorrentes: ${common}`:''}.`) }).join(''):analysisRow('Ainda sem padr√£o','Registre administra√ß√µes e anota√ß√µes ao longo do tempo.');const sleeps=sorted.filter(e=>e.type==='sleep'),avg=sleeps.length?sleeps.reduce((s,e)=>s+durationHours(e.startTime,e.endTime),0)/sleeps.length:null,qs=sleeps.filter(e=>Number(e.quality)),avgQ=qs.length?qs.reduce((s,e)=>s+Number(e.quality),0)/qs.length:null;document.getElementById('sleepAnalysis').innerHTML=[metric(avg==null?'‚Äî':durationLabel(avg),'M√©dia de dura√ß√£o'),metric(avgQ==null?'‚Äî':avgQ.toFixed(1),'Qualidade m√©dia'),metric(String(sleeps.length),'Noites registradas'),metric(sleeps[0]?durationLabel(durationHours(sleeps[0].startTime,sleeps[0].endTime)):'‚Äî','√öltimo sono')].join('');const meds=await allMedications();const medRows=[];for(const m of meds){const c=medicationCostSummary(m,sorted);if(c)medRows.push(analysisRow(m.activeIngredient,`√öltimo custo: ${c.unit!=null?`${money(c.unit)}/unidade`: 'sem unidades definidas'}${c.monthly!=null?` ¬∑ gasto registrado nos √∫ltimos 30 dias ‚âà ${money(c.monthly)}`:''}`))}document.getElementById('medicationAnalysis').innerHTML=medRows.length?medRows.slice(0,6).join(''):analysisRow('Cadastre apresenta√ß√µes','Com unidades por caixa, compras e administra√ß√µes o app calcula custo e dura√ß√£o.');const buys=sorted.filter(e=>e.type==='purchase'),groups={};for(const p of buys){const n=parseMoney(p.price);if(n==null)continue;(groups[p.medication||'Medicamento']??=[]).push(n)}const priceRows=Object.entries(groups).slice(0,5);document.getElementById('purchaseAnalysis').innerHTML=priceRows.length?priceRows.map(([name,vals])=>analysisRow(name,`${vals.length} compra(s) ¬∑ m√©dia ${money(vals.reduce((a,b)=>a+b,0)/vals.length)} ¬∑ menor ${money(Math.min(...vals))} ¬∑ maior ${money(Math.max(...vals))}`)).join(''):analysisRow('Ainda sem hist√≥rico de pre√ßo','Registre compras com valor para comparar pre√ßos.')}\n\nasync function renderAll(){const events=(await allEvents()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));await renderHome(events);await renderHistory(events);await renderAnalysis(events);renderBackupState();renderHealthState();applySettings()}\n\nfunction dateField(id,label,value,{showNow=false,reserveNow=true}={}){const rowClass=reserveNow?'date-row':'date-row no-now-column';const slot=reserveNow?`<span class=\"now-slot ${showNow?'':'empty'}\">${showNow?'<span class=\"now-tag\">agora</span>':''}</span>`:'';return`<div class=\"field\"><label for=\"${id}\">${label}</label><div class=\"${rowClass}\"><input class=\"date-input\" type=\"datetime-local\" id=\"${id}\" value=\"${value}\" ${showNow?`data-now-base=\"${value}\"`:''}>${slot}</div></div>`}\nfunction activateNowTags(root=document){root.querySelectorAll('.date-input[data-now-base]').forEach(input=>{const row=input.closest('.date-row'),slot=row?.querySelector('.now-slot'),update=()=>{if(slot)slot.classList.toggle('empty',input.value!==input.dataset.nowBase)};input.addEventListener('input',update);input.addEventListener('change',update);update()})}\nfunction qualitySelector(value=4){return`<div class=\"sleep-quality\" id=\"sleepQuality\">${[1,2,3,4,5].map(q=>`<button type=\"button\" data-quality=\"${q}\" class=\"${Number(value)===q?'selected':''}\" aria-pressed=\"${Number(value)===q}\"><span class=\"q-dot\"></span><strong>${q}</strong></button>`).join('')}</div><input type=\"hidden\" id=\"sleepQualityValue\" value=\"${Number(value)||4}\">`}\nfunction wireQualitySelector(){document.querySelectorAll('#sleepQuality [data-quality]').forEach(b=>b.onclick=()=>{document.querySelectorAll('#sleepQuality [data-quality]').forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b))});document.getElementById('sleepQualityValue').value=b.dataset.quality})}\nfunction formButtons(label='Salvar'){return`<div class=\"form-actions\"><button type=\"button\" class=\"secondary-button\" data-cancel>Cancelar</button><button type=\"submit\" class=\"primary-button\">${label}</button></div>`}\nfunction openBackdrop(title,html,onSubmit){currentType=null;document.getElementById('sheetTitle').textContent=title;const form=document.getElementById('form');form.innerHTML=html;form.onsubmit=onSubmit||((e)=>e.preventDefault());form.querySelector('[data-cancel]')?.addEventListener('click',closeSheet);document.getElementById('backdrop').classList.add('open');document.getElementById('backdrop').setAttribute('aria-hidden','false');hydrateIcons(form);activateNowTags(form)}\nfunction closeSheet(){if(mediaRecorder?.state==='recording')mediaRecorder.stop();document.getElementById('backdrop').classList.remove('open');document.getElementById('backdrop').setAttribute('aria-hidden','true');pendingAudio=null;selectedMedicationId=null;selectedPresentationId=null;currentType=null}\n\nasync function typicalMedicationSuggestion(){const meds=await allMedications(),events=await allEvents(),now=currentMinutes(),candidates=[];for(const m of meds){const times=events.filter(e=>e.type==='medication'&&medMatchesEvent(m,e)).map(e=>{const d=new Date(e.timestamp);return d.getHours()*60+d.getMinutes()});if(times.length<2)continue;const x=times.reduce((s,t)=>s+Math.cos(t/1440*2*Math.PI),0),y=times.reduce((s,t)=>s+Math.sin(t/1440*2*Math.PI),0);let ang=Math.atan2(y,x);if(ang<0)ang+=2*Math.PI;const avg=ang/(2*Math.PI)*1440,dist=minuteDistance(avg,now);if(dist<=150)candidates.push({m,dist,avg,count:times.length})}return candidates.sort((a,b)=>a.dist-b.dist||b.count-a.count)[0]||null}\nasync function medicationSuggestions(query){const meds=await allMedications();return meds.map(m=>({m,score:medSearchScore(m,query)})).filter(x=>x.score<4).sort((a,b)=>a.score-b.score).slice(0,5).map(x=>x.m)}\nfunction autocompleteHTML(){return'<div class=\"autocomplete-results hidden\" id=\"medAutocomplete\"></div>'}\n";document.head.appendChild(s);s.remove();})();
 
-Z
-Jçå
-N‹ô]\õò	⁄Z	€Oÿ	€_[Z[òâ…ﬂXWôù[ò›[€à[X[êY€ J^ÿ€€ú›Z[èSX]õX^
-X]ôõ€‹ä
-]Kõõ› 
-K[ô]»]JJJKÕå
-JN⁄YäZ[èJ\ô]\õâÿY€‹òIŒ⁄YäZ[èå
-\ô]\õò0ËH	€Z[üHZ[òÿ€€ú›SX]ôõ€‹äZ[ãÕå
-N⁄Yäç
-\ô]\õò0ËH	⁄Z‹ô]\õò0ËH	”X]ôõ€‹äÃç
-_YWôù[ò›[€à\úŸS[€ô^JèI… ^ÿ€€ú›èSù[Xô\ä›ö[ô äKúô\XŸJ÷◊åNKãWKŸÀ	… Kúô\XŸJ◊ãŸÀ	… Kúô\XŸJ	À	À	Àâ JN‹ô]\õàù[Xô\ãö\—ö[ö]JäO€éõù[Wôù[ò›[€à[€ô^Jä^‹ô]\õàèO[ù[Sù[Xô\ãö\—ö[ö]JäO…¯†%	Œõãù”ÿÿ[T›ö[ô 	‹PîâÀ‹›[Nâÿ›\úô[òﬁIÀ›\úô[òﬁNâ–îì	ﬂJ_Wôù[ò›[€àõ‹õX[^ôU^
-èI… ^‹ô]\õà›ö[ô äKõõ‹õX[^ôJ	”ëë	 Kúô\XŸJ÷◊LÃWLÕôóKŸÀ	… Kù”›Ÿ\êÿ\ŸJ
-Kúô\XŸJ÷◊òK^åNWJÀŸÀ	»	 Kùö[J
-_Wôù[ò›[€à]ô[ú⁄Z[äKä^ÿO[õ‹õX[^ôU^
-JNÿè[õ‹õX[^ôU^
-äNÿ€€ú›OXKõ[ô›èXãõ[ô›P\úò^Kôúõ€J€[ô›õJÃ_K
+/* ---- v04c5.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="async function wireMedicationAutocomplete(inputId,onSelect){const input=document.getElementById(inputId),box=document.getElementById('medAutocomplete');if(!input||!box)return;const render=async()=>{const q=input.value.trim();if(!q){box.classList.add('hidden');return}const list=await medicationSuggestions(q);box.innerHTML=list.map(m=>`<button type=\"button\" data-med-choice=\"${m.id}\"><strong>${esc(medicationDisplay(m))}</strong><small>${esc((m.presentations||[]).map(p=>presentationDisplay(p)).slice(0,3).join(' ¬∑ ')||'Sem apresenta√ß√£o cadastrada')}</small></button>`).join('');box.classList.toggle('hidden',!list.length);box.querySelectorAll('[data-med-choice]').forEach(b=>b.onclick=async()=>{const meds=await allMedications(),m=meds.find(x=>x.id===b.dataset.medChoice);if(!m)return;input.value=medicationDisplay(m);box.classList.add('hidden');onSelect?.(m)})};input.addEventListener('input',render);input.addEventListener('focus',render)}\n\nasync function openNoteSheet(){currentType='note';pendingAudio=null;const now=toLocalInput();openBackdrop('Nova anota√ß√£o',`<div class=\"field\"><label for=\"noteText\">Anota√ß√£o</label><textarea id=\"noteText\" rows=\"5\" style=\"overflow:hidden;resize:none\" onfocus=\"this.style.height='auto';this.style.height=this.scrollHeight+'px'\" oninput=\"this.style.height='auto';this.style.height=this.scrollHeight+'px'\" placeholder=\"O que voc√™ percebeu, sentiu ou pensou?\"></textarea></div><div class=\"voice-row\"><button type=\"button\" class=\"voice-button\" id=\"voiceBtn\">üéô Gravar voz</button><span class=\"voice-status\" id=\"voiceStatus\">Opcional. O √°udio fica neste aparelho.</span></div><div class=\"field\"><label for=\"noteTag\">Tag opcional</label><input id=\"noteTag\" placeholder=\"Ex.: ansiedade, calma, sono\"></div>${dateField('recordTime','Data e hor√°rio',now,{showNow:true,reserveNow:true})}<p class=\"helper\">‚Äúagora‚Äù desaparece se voc√™ alterar a data ou o hor√°rio.</p>${formButtons()}`,saveForm);currentType='note';setupVoice()}\n\nfunction presentationOptions(m){return`<option value=\"\">Sem apresenta√ß√£o espec√≠fica</option>${(m?.presentations||[]).map(p=>`<option value=\"${p.id}\">${esc(presentationDisplay(p))}</option>`).join('')}`}\nasync function openMedicationSheet(){currentType='medication';pendingAudio=null;selectedMedicationId=null;selectedPresentationId=null;const now=toLocalInput(),suggest=await typicalMedicationSuggestion();openBackdrop('Registrar medicamento',`${suggest?`<button type=\"button\" class=\"med-suggestion-card\" id=\"timeMedSuggestion\" data-med-id=\"${suggest.m.id}\"><span class=\"mini-icon\">${svg('clock')}</span><span><strong>Talvez agora: ${esc(suggest.m.activeIngredient)}</strong><small>Baseado nos hor√°rios das suas administra√ß√µes registradas</small></span><span class=\"chev\">‚Ä∫</span></button>`:''}<div class=\"field autocomplete\"><label for=\"medName\">Medicamento</label><input id=\"medName\" placeholder=\"Comece a digitar‚Ä¶\" autocomplete=\"off\">${autocompleteHTML()}</div><div class=\"field hidden\" id=\"presentationField\"><label for=\"presentationSelect\">Apresenta√ß√£o</label><select id=\"presentationSelect\"></select></div><div class=\"field\"><label>Como quer informar a dose?</label><div class=\"segmented animated-segmented\" id=\"doseMode\"><button type=\"button\" data-dose-mode=\"total\">Dose total</button><button type=\"button\" data-dose-mode=\"perUnit\">Por comprimido/c√°psula</button></div></div><div id=\"doseFields\"></div><div class=\"field\"><label for=\"medNote\">Observa√ß√£o opcional</label><textarea id=\"medNote\" rows=\"4\" style=\"overflow:hidden;resize:none\" onfocus=\"this.style.height='auto';this.style.height=this.scrollHeight+'px'\" oninput=\"this.style.height='auto';this.style.height=this.scrollHeight+'px'\" placeholder=\"Ex.: ap√≥s comer, efeitos percebidos, como voc√™ estava se sentindo‚Ä¶\"></textarea></div>${dateField('recordTime','Data e hor√°rio',now,{showNow:true,reserveNow:true})}${formButtons()}`,saveForm);currentType='medication';let mode='perUnit';const setMode=async m=>{mode=m;updateSegmentIndicator(document.getElementById('doseMode'),'doseMode',mode);await renderDoseFields(mode)};document.querySelectorAll('[data-dose-mode]').forEach(b=>b.onclick=()=>setMode(b.dataset.doseMode));await setMode('perUnit');const selectMed=async m=>{selectedMedicationId=m.id;document.getElementById('presentationField').classList.remove('hidden');const sel=document.getElementById('presentationSelect');sel.innerHTML=presentationOptions(m);if((m.presentations||[]).length===1){sel.value=m.presentations[0].id;selectedPresentationId=sel.value}sel.onchange=async()=>{selectedPresentationId=sel.value||null;await renderDoseFields(mode)};await renderDoseFields(mode)};await wireMedicationAutocomplete('medName',selectMed);document.getElementById('timeMedSuggestion')?.addEventListener('click',async e=>{const meds=await allMedications(),m=meds.find(x=>x.id===e.currentTarget.dataset.medId);if(m){document.getElementById('medName').value=medicationDisplay(m);await selectMed(m)}})}\nasync function renderDoseFields(mode){\n  const box=document.getElementById('doseFields');\n  if(!box)return;\n  const meds=await allMedications();\n  const m=meds.find(x=>x.id===selectedMedicationId);\n  const p=findPresentation(m,selectedPresentationId);\n  if(mode==='total'){\n    box.innerHTML=`<div class=\"field\"><label>Dose total tomada</label><div class=\"inline-unit\"><input id=\"totalDoseValue\" inputmode=\"decimal\" placeholder=\"Ex.: 70\"><select id=\"doseUnit\"><option>mg</option><option>mcg</option><option>g</option><option>mL</option></select></div></div>`;\n  }else{\n    box.innerHTML=`<div class=\"field-grid\"><div class=\"field\"><label>Dose de cada unidade</label><input id=\"unitDoseValue\" inputmode=\"decimal\" value=\"${esc(p?.strengthValue||'')}\" placeholder=\"70\"></div><div class=\"field\"><label>Quantidade</label><input id=\"unitsTaken\" inputmode=\"decimal\" value=\"1\"></div></div><div class=\"field\"><label>Unidade</label><select id=\"doseUnit\"><option ${p?.strengthUnit==='mg'?'selected':''}>mg</option><option ${p?.strengthUnit==='mcg'?'selected':''}>mcg</option><option ${p?.strengthUnit==='g'?'selected':''}>g</option><option ${p?.strengthUnit==='mL'?'selected':''}>mL</option></select></div><div class=\"dose-result\"><span>Dose total calculada</span><strong id=\"doseTotalPreview\">‚Äî</strong></div>`;\n    const update=()=>{\n      const v=Number(String(document.getElementById('unitDoseValue').value).replace(',','.'));\n      const q=Number(String(document.getElementById('unitsTaken').value).replace(',','.'))||1;\n      const u=document.getElementById('doseUnit').value;\n      document.getElementById('doseTotalPreview').textContent=Number.isFinite(v)?`${(v*q).toLocaleString('pt-BR')} ${u}`:'‚Äî';\n      document.getElementById('unitsTaken').value=document.getElementById('unitsTaken').value||'1';\n    };\n    ['unitDoseValue','unitsTaken','doseUnit'].forEach(id=>document.getElementById(id)?.addEventListener('input',update));\n    update();\n  }\n  hydrateIcons(box);\n}\n\nasync function openPurchaseSheet(){currentType='purchase';selectedMedicationId=null;selectedPresentationId=null;const now=toLocalInput();openBackdrop('Registrar compra',`<div class=\"field autocomplete\"><label for=\"purchaseMed\">Medicamento</label><input id=\"purchaseMed\" placeholder=\"Comece a digitar‚Ä¶\" autocomplete=\"off\">${autocompleteHTML()}</div><div class=\"field hidden\" id=\"purchasePresentationField\"><label for=\"purchasePresentation\">Apresenta√ß√£o</label><select id=\"purchasePresentation\"></select></div><div class=\"field-grid\"><div class=\"field\"><label for=\"purchasePackages\">Caixas</label><input id=\"purchasePackages\" inputmode=\"numeric\" value=\"1\"></div><div class=\"field\"><label for=\"purchasePrice\">Valor total pago</label><input id=\"purchasePrice\" inputmode=\"decimal\" placeholder=\"R$ 42,90\"></div></div><div class=\"field\"><label for=\"purchasePlace\">Onde comprou</label><input id=\"purchasePlace\" placeholder=\"Farm√°cia ou loja\"></div><div class=\"analysis-row hidden\" id=\"purchaseCostPreview\"><strong>Custos calculados</strong><span id=\"purchaseCostText\"></span></div>${dateField('recordTime','Data e hor√°rio',now,{showNow:true,reserveNow:true})}${formButtons()}`,saveForm);currentType='purchase';const onSelect=async m=>{selectedMedicationId=m.id;const field=document.getElementById('purchasePresentationField'),sel=document.getElementById('purchasePresentation');field.classList.remove('hidden');sel.innerHTML=presentationOptions(m);if((m.presentations||[]).length===1){sel.value=m.presentations[0].id;selectedPresentationId=sel.value}sel.onchange=()=>{selectedPresentationId=sel.value||null;updatePurchasePreview()};updatePurchasePreview()};await wireMedicationAutocomplete('purchaseMed',onSelect);['purchasePackages','purchasePrice'].forEach(id=>document.getElementById(id)?.addEventListener('input',updatePurchasePreview))}\n";document.head.appendChild(s);s.remove();})();
 
-OOê\úò^JäÃJKôö[
-
-JNŸõ‹ä]OL⁄O[N⁄J  Y⁄WVÃOZNŸõ‹ä]èL⁄è[é⁄ä  YÃV⁄óOZéŸõ‹ä]OLN⁄O[N⁄J  Yõ‹ä]èLN⁄è[é⁄ä  Y⁄WV⁄óOSX]õZ[ä⁄KLWV⁄óJÃK⁄WV⁄ãLWJÃK⁄KLWV⁄ãLWJ V⁄KLWOOOXñ⁄ãLWOÃåJJN‹ô]\õà€WV€ó_Wôù[ò›[€à\úŸT›ô[ô›
-^I… ^ÿ€€ú›OT›ö[ô ^
-KõX]⁄
- ÃNWJ ŒñÀãVÃNWJ O W äYﬂXŸﬂ0≠Yﬂﬂ[S
-K⁄JN‹ô]\õàOﬁ›ò[YNìù[Xô\äVÃWKúô\XŸJ	À	À	Àâ JK[ö]õVÃóKúô\XŸJ	≠IÀ	€I Kù”›Ÿ\êÿ\ŸJ
-OOOI€[	œ…€S	ŒõVÃóKúô\XŸJ	≠IÀ	€I _Nõù[Wôù[ò›[€à›\úô[ùZ[ù]\ 
-^ÿ€€ú›[ô]»]J
-N‹ô]\õàôŸ]›\ú 
-Jçå
-ŸôŸ]Z[ù]\ 
-_Wôù[ò›[€àZ[ù]Q\›[òŸJKä^ÿ€€ú›SX]òXú KXäILM‹ô]\õàX]õZ[äMY
-_Wôù[ò›[€à]X[]P€€‹ê€\‹ J^‹ô]\õàI”X]õX^
-KX]õZ[äKù[Xô\äJ_ J_XWóôù[ò›[€àŸ]Ÿ][ô‹ 
-^›û^‹ô]\õûÀããôYò][Ÿ][ô‹Àããíî””ãú\úŸJÿÿ[›‹òYŸKôŸ]][J—USë‘◊“—VJ_	ﬁﬂI __Xÿ]⁄‹ô]\õûÀããôYò][Ÿ][ô‹ﬂ__Wôù[ò›[€àÿ]ôTŸ][ô‹  ^€ÿÿ[›‹òYŸKúŸ]][J—USë‘◊“—VKî””ãú›ö[ô⁄YûJ JNÿ\TŸ][ô‹ 
-_Wôù[ò›[€àŸ]Ÿ][ô Àä^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹÷⁄◊O]é‹ÿ]ôTŸ][ô‹  _Wôù[ò›[€àÿ[ö]^ôT›ô”X\ö›\
-X\ö›\I… ^€]œT›ö[ô X\ö›\
-Kùö[J
-N‹œ\Àúô\XŸJœÿ‹ö\◊◊◊Jèœ‹ÿ‹ö\ãŸ⁄K	… Kúô\XŸJœõ‹ôZY€ìÿöôX›◊◊◊JèœŸõ‹ôZY€ìÿöôX›ãŸ⁄K	… Kúô\XŸJ◊€€ó ◊ èW ä…◊óJKäè◊KŸ⁄K	… Kúô\XŸJ◊ ŒöôYü[öŒöôYäW èW ä…◊óJJŒöœŒü]Nüò]ò\ÿ‹ö\äKäè◊KŸ⁄K	… Nÿ€€ú››ô”X]⁄\ÀõX]⁄
-œ›ô÷◊èóJèä◊◊◊Jè O‹›ôœã⁄JN‹ô]\õà›ô”X]⁄‹›ô”X]⁄ÃWNúﬂWôù[ò›[€à›ô ò[YJ^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-K›ô\úöYO\ÀöX€€ì›ô\úöY\œÀñ€ò[YWN€]õŸOXò\ŸRX€€ú÷€ò[YW_ò\ŸRX€€úÀõõ›N⁄Yä›ô\úöYOÀù\OOOI‹›ô……âõ›ô\úöYKùò[YJXõŸO\ÿ[ö]^ôT›ô”X\ö›\
-›ô\úöYKùò[YJNŸ[ŸHYä›ô\úöYOÀù\OOOIÿò[ö……âòò\ŸRX€€ú÷€›ô\úöYKùò[YWJXõŸOXò\ŸRX€€ú÷€›ô\úöYKùò[YWN‹ô]\õà›ô»€\‹œWú›ôÀZX€€óàöY]–õﬁWåççà\öXKZY[èWùùYWèâÿõŸ_O‹›ôœòWôù[ò›[€àYò]RX€€ú õ€›Yÿ›[Y[ù
-^‹õ€›ú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KZX€€óI Kôõ‹ëXX⁄
-[OûŸ[ö[õô\íS\›ô [ô]\Ÿ]öX€€ä_J_Wôù[ò›[€à\]TŸY€Y[ù[ôXÿ]‹ä‹õ›\Ÿ[X›‹ãò[YJ^⁄YäY‹õ›\
-\ô]\õéÿ€€ú›ù]€úœVÀããô‹õ›\ú]Y\ûTŸ[X›‹ê[
-	ÿù]€â WKYSX]õX^
-ù]€úÀôö[ô[ô^
-èOòãô]\Ÿ]‹Ÿ[X›‹óOOOT›ö[ô ò[YJJJNŸ‹õ›\ú›[KúŸ]õ‹\ùJ	ÀK\ŸY€Y[ùX€›[ù	À›ö[ô ù]€úÀõ[ô›
-JNŸ‹õ›\ú›[KúŸ]õ‹\ùJ	ÀK\ŸY€Y[ùZ[ô^	À›ö[ô Y
-JNÿù]€úÀôõ‹ëXX⁄
+/* ---- v04c6.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="async function updatePurchasePreview(){const meds=await allMedications(),m=meds.find(x=>x.id===selectedMedicationId),p=findPresentation(m,selectedPresentationId),price=parseMoney(document.getElementById('purchasePrice')?.value),packages=Number(document.getElementById('purchasePackages')?.value)||1,units=Number(p?.unitsPerPackage)||0,blister=Number(p?.unitsPerBlister)||0,box=document.getElementById('purchaseCostPreview'),text=document.getElementById('purchaseCostText');if(!box||!text)return;if(price!=null&&units){const perUnit=price/(packages*units),perBlister=blister?perUnit*blister:null;text.textContent=`${money(perUnit)} por unidade${perBlister!=null?` ¬∑ ${money(perBlister)} por cartela`:''}`;box.classList.remove('hidden')}else box.classList.add('hidden')}\n\nfunction openSleepSheet(payload=null){currentType='sleep';pendingSleepSource=payload?'health-shortcut':'manual';const now=toLocalInput(),start=payload?.start?toLocalInput(payload.start):toLocalInput(new Date(Date.now()-8*3600000).toISOString()),end=payload?.end?toLocalInput(payload.end):now,reserve=!payload;openBackdrop(payload?'Revisar sono importado':'Registrar sono',`${dateField('sleepStart','Dormiu √†s',start,{showNow:false,reserveNow:reserve})}${dateField('sleepEnd','Acordou √†s',end,{showNow:!payload,reserveNow:reserve})}<div class=\"field\"><label>Qualidade percebida</label>${qualitySelector(payload?.quality||4)}</div><div class=\"field\"><label for=\"sleepNote\">Observa√ß√µes opcionais</label><textarea id=\"sleepNote\" rows=\"4\" style=\"overflow:hidden;resize:none\" onfocus=\"this.style.height='auto';this.style.height=this.scrollHeight+'px'\" oninput=\"this.style.height='auto';this.style.height=this.scrollHeight+'px'\" placeholder=\"Ex.: acordei duas vezes, tive pesadelos‚Ä¶\">${esc(payload?.note||'')}</textarea></div><p class=\"helper\">O hor√°rio de dormir come√ßa em 8h atr√°s apenas como sugest√£o e nunca recebe a tag ‚Äúagora‚Äù.</p>${formButtons(payload?'Salvar importa√ß√£o':'Salvar')}`,saveForm);currentType='sleep';wireQualitySelector()}\n\nfunction setupVoice(){const button=document.getElementById('voiceBtn'),status=document.getElementById('voiceStatus');if(!navigator.mediaDevices?.getUserMedia||typeof MediaRecorder==='undefined'){button.disabled=true;status.textContent='Use o ditado do teclado para transformar voz em texto.';return}button.onclick=async()=>{try{if(mediaRecorder?.state==='recording'){mediaRecorder.stop();return}const stream=await navigator.mediaDevices.getUserMedia({audio:true});audioChunks=[];mediaRecorder=new MediaRecorder(stream);mediaRecorder.ondataavailable=e=>{if(e.data.size)audioChunks.push(e.data)};mediaRecorder.onstop=()=>{pendingAudio=new Blob(audioChunks,{type:mediaRecorder.mimeType||'audio/webm'});stream.getTracks().forEach(t=>t.stop());button.classList.remove('recording');button.textContent='‚úì Voz gravada';status.textContent='√Åudio pronto para salvar.'};mediaRecorder.start();button.classList.add('recording');button.textContent='‚ñ† Parar';status.textContent='Gravando‚Ä¶'}catch{status.textContent='N√£o foi poss√≠vel acessar o microfone. Use o ditado do teclado.'}}}\n\nasync function saveForm(ev){ev.preventDefault();const id=uid(currentType);let record;if(currentType==='note'){const text=document.getElementById('noteText').value.trim();if(!text&&!pendingAudio)return toast('Escreva ou grave uma anota√ß√£o.');record={id,type:'note',timestamp:new Date(document.getElementById('recordTime').value).toISOString(),text,tag:document.getElementById('noteTag').value.trim(),hasAudio:Boolean(pendingAudio),audioOnly:Boolean(pendingAudio&&!text),demo:false}}else if(currentType==='medication'){const name=document.getElementById('medName').value.trim();if(!name)return toast('Informe o medicamento.');const mode=document.querySelector('[data-dose-mode].selected')?.dataset.doseMode||'perUnit',unit=document.getElementById('doseUnit')?.value||'mg';let totalDoseValue,unitsTaken=1,unitDoseValue=null;if(mode==='total'){totalDoseValue=Number(String(document.getElementById('totalDoseValue').value).replace(',','.'));if(!Number.isFinite(totalDoseValue))return toast('Informe a dose total.')}else{unitDoseValue=Number(String(document.getElementById('unitDoseValue').value).replace(',','.'));unitsTaken=Number(String(document.getElementById('unitsTaken').value||1).replace(',','.'))||1;if(!Number.isFinite(unitDoseValue))return toast('Informe a dose de cada unidade.');totalDoseValue=unitDoseValue*unitsTaken}record={id,type:'medication',timestamp:new Date(document.getElementById('recordTime').value).toISOString(),medication:name,medicationId:selectedMedicationId,presentationId:selectedPresentationId,doseMode:mode,unitDoseValue,totalDoseValue,doseUnit:unit,unitsTaken,dose:`${totalDoseValue.toLocaleString('pt-BR')} ${unit}`,quantity:unitsTaken===1?'1 unidade':`${unitsTaken} unidades`,note:document.getElementById('medNote').value.trim(),demo:false}}else if(currentType==='purchase'){const name=document.getElementById('purchaseMed').value.trim();if(!name)return toast('Informe o medicamento.');const packages=Math.max(1,Number(document.getElementById('purchasePackages').value)||1),meds=await allMedications(),m=meds.find(x=>x.id===selectedMedicationId),p=findPresentation(m,selectedPresentationId),upp=Number(p?.unitsPerPackage)||0;record={id,type:'purchase',timestamp:new Date(document.getElementById('recordTime').value).toISOString(),medication:name,medicationId:selectedMedicationId,presentationId:selectedPresentationId,packages,totalUnits:upp?packages*upp:null,unitsPerPackage:upp||null,price:document.getElementById('purchasePrice').value.trim(),place:document.getElementById('purchasePlace').value.trim(),demo:false}}else if(currentType==='sleep'){const start=new Date(document.getElementById('sleepStart').value),end=new Date(document.getElementById('sleepEnd').value);if(!(start<end))return toast('O hor√°rio de acordar precisa ser posterior ao hor√°rio de dormir.');record={id,type:'sleep',timestamp:end.toISOString(),startTime:start.toISOString(),endTime:end.toISOString(),quality:Number(document.getElementById('sleepQualityValue').value)||4,note:document.getElementById('sleepNote').value.trim(),source:pendingSleepSource,demo:false}}else return;await putEvent(record);if(pendingAudio)await saveAudio(id,pendingAudio);if(record.type==='sleep'&&record.source==='health-shortcut')localStorage.setItem(LAST_HEALTH_IMPORT_KEY,new Date().toISOString());closeSheet();await renderAll();toast('Registro salvo.')}\n\nasync function openEventMenu(id){const e=(await allEvents()).find(x=>x.id===id);if(!e)return;openBackdrop('Op√ß√µes do registro',`<div class=\"sheet-options\"><button type=\"button\" class=\"sheet-option\" id=\"detailBtn\">Ver detalhes</button><button type=\"button\" class=\"sheet-option danger\" id=\"deleteBtn\">Excluir registro</button></div>${formButtons('Fechar')}`,(ev)=>{ev.preventDefault();closeSheet()});document.getElementById('detailBtn').onclick=()=>toast(kindInfo(e).title);document.getElementById('deleteBtn').onclick=async()=>{if(confirm('Excluir este registro?')){await deleteEvent(id);closeSheet();await renderAll();toast('Registro exclu√≠do.')}}}\n\nasync function openMedicationRegistry(){const meds=(await allMedications()).sort((a,b)=>a.activeIngredient.localeCompare(b.activeIngredient,'pt-BR'));openBackdrop('Medicamentos',`<div class=\"registry-toolbar\"><button type=\"button\" class=\"primary-button\" id=\"addMedicationBtn\">+ Novo</button><button type=\"button\" class=\"secondary-button\" data-cancel>Fechar</button></div><div class=\"registry-list\">${meds.length?meds.map(m=>`<button type=\"button\" class=\"registry-card\" data-open-med=\"${m.id}\"><span><strong>${esc(medicationDisplay(m))}</strong><small>${esc((m.presentations||[]).map(p=>presentationDisplay(p)).join(' ¬∑ ')||'Sem apresenta√ß√µes')}</small></span><span class=\"registry-meta\">${(m.notes||[]).length} nota(s)</span></button>`).join(''):'<div class=\"registry-empty\">Nenhum medicamento cadastrado ainda.</div>'}</div>`);document.getElementById('addMedicationBtn').onclick=()=>openMedicationEditor();document.querySelectorAll('[data-open-med]').forEach(b=>b.onclick=()=>openMedicationDetail(b.dataset.openMed))}\n";document.head.appendChild(s);s.remove();})();
 
-ãJOOòãò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	ÀOOOZY
-J_Wôù[ò›[€à\]UXêùXòõJ
-^ÿ€€ú›XúœVÀããôÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	ÀùXãZ][I WKYSX]õX^
-XúÀôö[ô[ô^
-Oùò€\‹”\›ò€€ùZ[ú 	‹Ÿ[X›Y	 JJNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ä	ÀùXãXò\â OÀú›[KúŸ]õ‹\ùJ	ÀK]XãZ[ô^	À›ö[ô Y
-J_HéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃãöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
+/* ---- v04c7.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="function medicationEditorHTML(m={}){const p=(m.presentations||[])[0]||{};return`<div class=\"field\"><label>Princ√≠pio ativo</label><input id=\"regActive\" value=\"${esc(m.activeIngredient||'')}\" placeholder=\"Ex.: Lisdexanfetamina\"></div><div class=\"field\"><label>Marca/refer√™ncia opcional</label><input id=\"regReference\" value=\"${esc(m.referenceName||'')}\" placeholder=\"Ex.: Venvanse\"></div><div class=\"field\"><label>Laborat√≥rio opcional</label><input id=\"regLab\" value=\"${esc(m.lab||'')}\"></div><p class=\"section-mini-title\">Primeira apresenta√ß√£o</p><div class=\"field-grid\"><div class=\"field\"><label>Dosagem</label><input id=\"regStrength\" inputmode=\"decimal\" value=\"${esc(p.strengthValue||'')}\"></div><div class=\"field\"><label>Unidade</label><select id=\"regStrengthUnit\"><option>mg</option><option>mcg</option><option>g</option><option>mL</option></select></div></div><div class=\"field\"><label>Forma</label><input id=\"regForm\" value=\"${esc(p.form||'')}\" placeholder=\"c√°psula, comprimido‚Ä¶\"></div><div class=\"field-grid\"><div class=\"field\"><label>Unidades por caixa</label><input id=\"regUnits\" inputmode=\"numeric\" value=\"${esc(p.unitsPerPackage||'')}\"></div><div class=\"field\"><label>Unidades por cartela</label><input id=\"regBlister\" inputmode=\"numeric\" value=\"${esc(p.unitsPerBlister||'')}\"></div></div>${formButtons(m.id?'Salvar':'Cadastrar')}`}\nfunction openMedicationEditor(m=null){openBackdrop(m?'Editar medicamento':'Novo medicamento',medicationEditorHTML(m||{}),async ev=>{ev.preventDefault();const active=document.getElementById('regActive').value.trim();if(!active)return toast('Informe o princ√≠pio ativo.');const strength=document.getElementById('regStrength').value.trim(),existing={...(m||{})};existing.id=existing.id||uid('med');existing.activeIngredient=active;existing.referenceName=document.getElementById('regReference').value.trim();existing.lab=document.getElementById('regLab').value.trim();existing.notes=existing.notes||[];existing.presentations=existing.presentations||[];if(strength){const old=existing.presentations[0]||{id:uid('presentation')};existing.presentations[0]={...old,strengthValue:Number(String(strength).replace(',','.'))||strength,strengthUnit:document.getElementById('regStrengthUnit').value,form:document.getElementById('regForm').value.trim(),unitsPerPackage:Number(document.getElementById('regUnits').value)||'',unitsPerBlister:Number(document.getElementById('regBlister').value)||'',brand:existing.referenceName,lab:existing.lab}}await putMedication(existing);toast('Medicamento salvo.');openMedicationDetail(existing.id)})}\nasync function openMedicationDetail(id){const meds=await allMedications(),m=meds.find(x=>x.id===id);if(!m)return;const events=await allEvents(),cost=medicationCostSummary(m,events),suggestions=medicationNoteSuggestions(m,events);openBackdrop(m.activeIngredient,`<div class=\"analysis-row\"><strong>${esc(medicationDisplay(m))}</strong><span>${esc([m.lab,(m.presentations||[]).length?`${m.presentations.length} apresenta√ß√£o(√µes)`:null].filter(Boolean).join(' ¬∑ ')||'Cadastro b√°sico')}</span></div><div class=\"registry-toolbar\"><button type=\"button\" class=\"secondary-button\" id=\"editMedBtn\">Editar</button><button type=\"button\" class=\"secondary-button\" id=\"addPresentationBtn\">+ Apresenta√ß√£o</button></div><p class=\"section-mini-title\">Apresenta√ß√µes</p><div class=\"presentation-list\">${(m.presentations||[]).length?(m.presentations||[]).map(p=>`<div class=\"presentation-row\"><strong>${esc(presentationDisplay(p))}</strong><span>${esc([p.form,p.unitsPerPackage?`${p.unitsPerPackage} un./caixa`:null,p.unitsPerBlister?`${p.unitsPerBlister} un./cartela`:null].filter(Boolean).join(' ¬∑ '))}</span></div>`).join(''):'<div class=\"registry-empty\">Nenhuma apresenta√ß√£o.</div>'}</div><p class=\"section-mini-title\">Custo e dura√ß√£o</p><div class=\"package-usage-list\">${cost?packageUsageHTML(cost,m):'<div class=\"registry-empty\">Adicione unidades por caixa e registre compras/administra√ß√µes para calcular.</div>'}</div><p class=\"section-mini-title\">Anota√ß√µes sobre o medicamento</p><div class=\"med-note-list\">${(m.notes||[]).length?(m.notes||[]).slice().sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)).map(n=>`<div class=\"med-note-row\"><strong>${new Date(n.timestamp).toLocaleDateString('pt-BR')}</strong><span>${esc(n.text)}</span></div>`).join(''):'<div class=\"registry-empty\">Nenhuma anota√ß√£o espec√≠fica ainda.</div>'}</div><div class=\"field\"><label>Nova anota√ß√£o</label><textarea id=\"medProfileNote\" placeholder=\"Efeito positivo, inc√¥modo, informa√ß√£o para pr√≥xima consulta‚Ä¶\"></textarea></div><button type=\"button\" class=\"primary-button full-button\" id=\"addMedNoteBtn\">Adicionar anota√ß√£o</button>${suggestions.length?`<p class=\"section-mini-title\">Talvez voc√™ queira registrar</p><div class=\"suggested-note-list\">${suggestions.map(s=>`<div class=\"suggested-note\"><p>‚Äú${esc(s.note.text)}‚Äù</p><small>${esc(`${Math.round(s.diff/60000)} min ap√≥s ${s.admin.medication}${s.admin.dose?` ${s.admin.dose}`:''}`)}</small><button type=\"button\" data-accept-suggestion=\"${s.note.id}\" data-admin-id=\"${s.admin.id}\">Adicionar √†s anota√ß√µes</button></div>`).join('')}</div>`:''}<div class=\"registry-toolbar\"><button type=\"button\" class=\"secondary-button\" data-cancel>Fechar</button><button type=\"button\" class=\"danger-row secondary-button\" id=\"deleteMedBtn\">Excluir cadastro</button></div>`);document.getElementById('editMedBtn').onclick=()=>openMedicationEditor(m);document.getElementById('addPresentationBtn').onclick=()=>openPresentationEditor(m);document.getElementById('addMedNoteBtn').onclick=async()=>{const text=document.getElementById('medProfileNote').value.trim();if(!text)return;m.notes=[...(m.notes||[]),{id:uid('mednote'),timestamp:new Date().toISOString(),text,source:'manual'}];await putMedication(m);toast('Anota√ß√£o adicionada.');openMedicationDetail(m.id)};document.querySelectorAll('[data-accept-suggestion]').forEach(b=>b.onclick=async()=>{const note=events.find(e=>e.id===b.dataset.acceptSuggestion),admin=events.find(e=>e.id===b.dataset.adminId);if(!note)return;m.notes=[...(m.notes||[]),{id:uid('mednote'),timestamp:note.timestamp,text:note.text,source:'suggested',sourceEventId:note.id,sourceAdministrationId:admin?.id}];await putMedication(m);toast('Relato adicionado sem atribuir causalidade.');openMedicationDetail(m.id)});document.getElementById('deleteMedBtn').onclick=async()=>{if(confirm('Excluir apenas o cadastro? Os registros hist√≥ricos continuam existindo.')){await deleteMedication(m.id);toast('Cadastro exclu√≠do.');openMedicationRegistry()}}}\nfunction packageUsageHTML(cost,m){const rows=cost.lots.slice().sort((a,b)=>b.start-a.start).slice(0,8);return rows.map((lot,i)=>{const pres=findPresentation(m,lot.presentationId),days=((lot.finishedAt||Date.now())-lot.start)/86400000,status=lot.remaining<=0?'Finalizada':`${Math.round(lot.remaining)} de ${lot.units} un. restantes`,unit=lot.price==null?null:lot.price/lot.units,blister=unit!=null&&Number(pres?.unitsPerBlister)?unit*Number(pres.unitsPerBlister):null;return`<div class=\"package-row\"><strong>Caixa ${rows.length-i} ¬∑ ${esc(pres?presentationDisplay(pres):'apresenta√ß√£o n√£o vinculada')}</strong><span>${status} ¬∑ dura√ß√£o ${days.toFixed(1).replace('.',',')} ${Math.abs(days-1)<.000001?'dia':'dias'}${unit!=null?` ¬∑ ${money(unit)}/un.`:''}${blister!=null?` ¬∑ ${money(blister)}/cartela`:''}</span></div>`}).join('')+`${cost.monthly!=null?`<div class=\"analysis-row\"><strong>Custo dos √∫ltimos 30 dias</strong><span>${money(cost.monthly)} com base nas unidades administradas registradas e no √∫ltimo custo por unidade conhecido.</span></div>`:''}`}\nfunction medicationNoteSuggestions(m,events){const admins=events.filter(e=>e.type==='medication'&&medMatchesEvent(m,e)),notes=events.filter(e=>e.type==='note'&&e.text),linked=new Set((m.notes||[]).map(n=>n.sourceEventId).filter(Boolean)),out=[];for(const a of admins){const st=new Date(a.timestamp).getTime();for(const n of notes){const t=new Date(n.timestamp).getTime(),diff=t-st;if(diff>=0&&diff<=6*3600000&&!linked.has(n.id))out.push({admin:a,note:n,diff})}}const seen=new Set();return out.sort((a,b)=>a.diff-b.diff).filter(x=>!seen.has(x.note.id)&&seen.add(x.note.id)).slice(0,6)}\n";document.head.appendChild(s);s.remove();})();
 
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hôù[ò›[€à\TŸ][ô‹ 
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-Nÿ€€ú›[Yÿ›[Y[ùôÿ›[Y[ù[[Y[ù⁄[ô]\Ÿ]ù[YO\Àù[YN⁄[ô]\Ÿ]òXÿŸ[ù\ÀòXÿŸ[ù⁄[ô]\Ÿ]öX€€î⁄^ôO\ÀöX€€î⁄^ôN⁄[ô]\Ÿ]öX€€ïŸZY⁄\ÀöX€€ïŸZY⁄⁄[ô]\Ÿ]ôõ€ùò[Z[O\Àôõ€ùò[Z[N⁄[ô]\Ÿ]öYUXìXô[œT›ö[ô õ€€X[äÀöYUXìXô[ JN⁄[ú›[KúŸ]õ‹\ùJ	ÀKXò\ŸKYõ€ù]ŸZY⁄	ÀÀôõ€ùŸZY⁄
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â OÀò€\‹”\›ùŸŸ€J	⁄Y[âÀ\Àú⁄›’ô\ú⁄[€äNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹⁄›’ô\ú⁄[€ïŸŸ€I OÀúŸ]]öXù]J	ÿ\öXKX⁄X⁄ŸY	À›ö[ô õ€€X[äÀú⁄›’ô\ú⁄[€äJJNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄YUXìXô[’ŸŸ€I OÀúŸ]]öXù]J	ÿ\öXKX⁄X⁄ŸY	À›ö[ô õ€€X[äÀöYUXìXô[ JJN›\]TŸY€Y[ù[ôXÿ]‹äÿ›[Y[ùôŸ][[Y[ùûRY
-	›[YP€€ùõ€	 K	›[YUò[YIÀÀù[YJN›\]TŸY€Y[ù[ôXÿ]‹äÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X€€î⁄^ôP€€ùõ€	 K	⁄X€€î⁄^ôIÀÀöX€€î⁄^ôJN›\]TŸY€Y[ù[ôXÿ]‹äÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X€€ïŸZY⁄€€ùõ€	 K	⁄X€€ïŸZY⁄	ÀÀöX€€ïŸZY⁄
-N›\]TŸY€Y[ù[ôXÿ]‹äÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ€ùò[Z[P€€ùõ€	 K	Ÿõ€ùò[Z[IÀÀôõ€ùò[Z[JN›\]TŸY€Y[ù[ôXÿ]‹äÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ€ùŸZY⁄€€ùõ€	 K	Ÿõ€ùŸZY⁄	ÀÀôõ€ùŸZY⁄
-N›\]TŸY€Y[ù[ôXÿ]‹äÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[[\‹ù[ŸP€€ùõ€	 K	⁄X[[ŸIÀÀöX[[\‹ù[ŸJNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KXXÿŸ[ùI Kôõ‹ëXX⁄
-èOòãò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	Àãô]\Ÿ]òXÿŸ[ùOO\ÀòXÿŸ[ù
-JN⁄Yò]RX€€ú 
-N›\]UXêùXòõJ
-_Wóôù[ò›[€à‹[ëä
-^‹ô]\õàô]»õ€Z\ŸJ
-ô\€€ôKôZôX›
-OOûÿ€€ú›èZ[ô^Yãõ‹[äó”êSQKäN‹ãõ€ù\‹òY[ôYYYJ
-OOûÿ€€ú›\ãúô\›[⁄YäYõÿöôX››‹ôSò[Y\Àò€€ùZ[ú UëSï J^ÿ€€ú›œYò‹ôX]SÿöôX››‹ôJUëSïÀ⁄Ÿ^T]â⁄Y	ﬂJN‹Àò‹ôX]R[ô^
-	›[Y\›[\	À	›[Y\›[\	 N‹Àò‹ôX]R[ô^
-	›\IÀ	›\I _ZYäYõÿöôX››‹ôSò[Y\Àò€€ùZ[ú UQS JYò‹ôX]SÿöôX››‹ôJUQSÀ⁄Ÿ^T]â⁄Y	ﬂJN⁄YäYõÿöôX››‹ôSò[Y\Àò€€ùZ[ú QQP–US”î JYò‹ôX]SÿöôX››‹ôJQQP–US”îÀ⁄Ÿ^T]â⁄Y	ﬂJ_N‹ãõ€ú›XÿŸ\‹œJ
-OOúô\€€ôJãúô\›[
-N‹ãõ€ô\úõ‹èJ
-OOúôZôX›
-ãô\úõ‹ä_J_Wôù[ò›[€à›‹ôJò[YOQUëSïÀ[ŸOI‹ôXY€õI ^‹ô]\õàãùò[úÿX›[€äò[YK[ŸJKõÿöôX››‹ôJò[YJ_Wôù[ò›[€àô\Jä^‹ô]\õàô]»õ€Z\ŸJ
-ô\€€ôKôZôX›
-OOû‹ãõ€ú›XÿŸ\‹œJ
-OOúô\€€ôJãúô\›[
-N‹ãõ€ô\úõ‹èJ
-OOúôZôX›
-ãô\úõ‹ä_J_Wò\ﬁ[ò»ù[ò›[€à[]ô[ù 
-^‹ô]\õàô\J›‹ôJUëSï KôŸ][
+/* ---- v04c8.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="function openPresentationEditor(m){openBackdrop('Nova apresenta√ß√£o',`<div class=\"field-grid\"><div class=\"field\"><label>Dosagem</label><input id=\"pStrength\" inputmode=\"decimal\"></div><div class=\"field\"><label>Unidade</label><select id=\"pUnit\"><option>mg</option><option>mcg</option><option>g</option><option>mL</option></select></div></div><div class=\"field\"><label>Forma</label><input id=\"pForm\" placeholder=\"c√°psula, comprimido‚Ä¶\"></div><div class=\"field\"><label>Marca opcional</label><input id=\"pBrand\" value=\"${esc(m.referenceName||'')}\"></div><div class=\"field\"><label>Laborat√≥rio opcional</label><input id=\"pLab\" value=\"${esc(m.lab||'')}\"></div><div class=\"field-grid\"><div class=\"field\"><label>Unidades por caixa</label><input id=\"pUnits\" inputmode=\"numeric\"></div><div class=\"field\"><label>Unidades por cartela</label><input id=\"pBlister\" inputmode=\"numeric\"></div></div>${formButtons('Adicionar')}`,async ev=>{ev.preventDefault();const strength=document.getElementById('pStrength').value.trim();if(!strength)return toast('Informe a dosagem.');m.presentations=[...(m.presentations||[]),{id:uid('presentation'),strengthValue:Number(String(strength).replace(',','.'))||strength,strengthUnit:document.getElementById('pUnit').value,form:document.getElementById('pForm').value.trim(),brand:document.getElementById('pBrand').value.trim(),lab:document.getElementById('pLab').value.trim(),unitsPerPackage:Number(document.getElementById('pUnits').value)||'',unitsPerBlister:Number(document.getElementById('pBlister').value)||''}];await putMedication(m);toast('Apresenta√ß√£o adicionada.');openMedicationDetail(m.id)})}\n\nfunction openCustomIcons(){const keys=Object.keys(baseIcons);openBackdrop('Substituir √≠cones',`<p class=\"helper\">Escolha um √≠cone do app. Voc√™ pode apont√°-lo para outro c√≥digo do banco interno ou importar um SVG. SVG √© texto XML e entra no backup JSON.</p><div class=\"icon-editor-grid\">${keys.map(k=>`<button type=\"button\" class=\"icon-choice\" data-icon-edit=\"${k}\"><span class=\"preview\">${svg(k)}</span><span>${k}</span></button>`).join('')}</div>${formButtons('Fechar')}`);document.querySelectorAll('[data-icon-edit]').forEach(b=>b.onclick=()=>openIconEditor(b.dataset.iconEdit))}\nfunction openIconEditor(key){iconEditorTarget=key;const current=getSettings().iconOverrides?.[key];openBackdrop(`√çcone: ${key}`,`<div class=\"svg-editor-preview\" id=\"iconPreview\">${svg(key)}</div><div class=\"field\"><label>C√≥digo do banco interno</label><input id=\"bankIconCode\" placeholder=\"Ex.: moon, pill, home\" value=\"${esc(current?.type==='bank'?current.value:'')}\"></div><p class=\"helper\">C√≥digos dispon√≠veis: ${Object.keys(baseIcons).join(', ')}.</p><div class=\"field\"><label>Ou conte√∫do SVG</label><textarea id=\"svgIconText\" placeholder=\"Cole o &lt;svg&gt;‚Ä¶&lt;/svg&gt; ou apenas os paths\">${esc(current?.type==='svg'?current.value:'')}</textarea></div><div class=\"registry-toolbar\"><button type=\"button\" class=\"secondary-button\" id=\"chooseSvgFile\">Escolher arquivo SVG</button><button type=\"button\" class=\"secondary-button\" id=\"resetIconBtn\">Restaurar</button></div>${formButtons('Salvar √≠cone')}`,ev=>{ev.preventDefault();const bank=document.getElementById('bankIconCode').value.trim(),raw=document.getElementById('svgIconText').value.trim(),s=getSettings();s.iconOverrides={...(s.iconOverrides||{})};if(raw)s.iconOverrides[key]={type:'svg',value:raw};else if(bank&&baseIcons[bank])s.iconOverrides[key]={type:'bank',value:bank};else if(bank)return toast('C√≥digo de √≠cone desconhecido.');else delete s.iconOverrides[key];saveSettings(s);toast('√çcone atualizado.');openCustomIcons()});document.getElementById('chooseSvgFile').onclick=()=>document.getElementById('svgImportFile').click();document.getElementById('resetIconBtn').onclick=()=>{const s=getSettings();s.iconOverrides={...(s.iconOverrides||{})};delete s.iconOverrides[key];saveSettings(s);toast('√çcone restaurado.');openCustomIcons()}}\n\nfunction renderBackupState(){const last=localStorage.getItem(LAST_BACKUP_KEY),status=document.getElementById('backupStatusText'),warning=document.getElementById('backupWarning'),text=document.getElementById('backupWarningText');if(!status||!warning)return;if(!last){status.textContent='Nenhum backup externo criado';warning.classList.remove('hidden');text.textContent='Voc√™ ainda n√£o criou um backup externo.';return}const days=(Date.now()-new Date(last))/86400000;status.textContent=`√öltimo backup ${humanAgo(last)}`;warning.classList.toggle('hidden',days<BACKUP_WARN_DAYS);if(days>=BACKUP_WARN_DAYS)text.textContent=`O √∫ltimo backup foi criado h√° ${Math.floor(days)} dias.`}\nfunction renderHealthState(){const last=localStorage.getItem(LAST_HEALTH_IMPORT_KEY),el=document.getElementById('healthStatusText');if(el)el.textContent=last?`√öltima importa√ß√£o ${humanAgo(last)}`:'N√£o configurado neste aparelho'}\nasync function exportData(){const payload={app:'Registro',version:APP_VERSION,exportedAt:new Date().toISOString(),events:await allEvents(),medications:await allMedications(),settings:getSettings()},blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'}),a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`registro-backup-${localDate(new Date())}.json`;document.body.appendChild(a);a.click();a.remove();localStorage.setItem(LAST_BACKUP_KEY,new Date().toISOString());setTimeout(()=>URL.revokeObjectURL(a.href),1000);renderBackupState();toast('Backup criado.')}\nasync function importData(file){try{const data=JSON.parse(await file.text()),events=Array.isArray(data)?data:data.events;if(Array.isArray(events))for(const e of events){if(e?.id&&['note','medication','sleep','purchase'].includes(e.type)&&e.timestamp)await putEvent(e)}if(Array.isArray(data.medications))for(const m of data.medications)if(m?.id&&m.activeIngredient)await putMedication(m);if(data.settings&&typeof data.settings==='object')saveSettings({...getSettings(),...data.settings});await renderAll();toast('Backup importado.')}catch{toast('Arquivo de backup inv√°lido.')}}\nasync function restoreDemo(){if(!confirm('Substituir todos os registros pelos dados fict√≠cios?'))return;for(const e of await allEvents())await deleteEvent(e.id);for(const e of demoEvents())await putEvent(e);localStorage.setItem('registro-beta-demo-seeded','yes');await renderAll();toast('Dados fict√≠cios restaurados.')}\nasync function clearData(){if(!confirm('Apagar todos os registros e cadastros deste aparelho?'))return;await req(store(EVENTS,'readwrite').clear());await req(store(AUDIO,'readwrite').clear());await req(store(MEDICATIONS,'readwrite').clear());localStorage.setItem('registro-beta-demo-seeded','yes');await renderAll();toast('Dados locais apagados.')}\n\nfunction healthImportInfo(){openBackdrop('Sono do app Sa√∫de',`<div class=\"analysis-row\"><strong>Atalho como ponte</strong><span>O Atalho l√™ o sono no app Sa√∫de e abre este PWA com os hor√°rios. ‚ÄúRevisar‚Äù continua sendo o modo recomendado.</span></div><p class=\"helper\">O bot√£o + Sono permanece dispon√≠vel e os dados importados podem ser corrigidos.</p>${formButtons('Fechar')}`)}\n\n/* Edi√ß√£o de registros e prote√ß√£o contra salvamento acidental pelo Enter */\nfunction editSetValue(id,value,events=true){const el=document.getElementById(id);if(!el)return;el.value=value??'';if(events){el.dispatchEvent(new Event('input',{bubbles:true}));el.dispatchEvent(new Event('change',{bubbles:true}))}}\nfunction editIsoFromField(id){const value=document.getElementById(id)?.value;if(!value)return null;const d=new Date(value);return Number.isNaN(d.getTime())?null:d.toISOString()}\nfunction editNumber(id){const raw=String(document.getElementById(id)?.value??'').trim();if(!raw)return null;const n=Number(raw.replace(',','.'));return Number.isFinite(n)?n:null}\nfunction editTitle(type){return type==='note'?'Editar anota√ß√£o':type==='medication'?'Editar medicamento':type==='sleep'?'Editar sono':'Editar compra'}\nfunction finishEventEditor(existing){const form=document.getElementById('form');document.getElementById('sheetTitle').textContent=editTitle(existing.type);const submit=form.querySelector('button[type=\"submit\"]');if(submit)submit.textContent='Salvar altera√ß√µes';form.onsubmit=ev=>saveEditedEvent(ev,existing)}\n\nasync function openEventEditor(id){const existing=(await allEvents()).find(x=>x.id===id);if(!existing)return;\n  if(existing.type==='note'){\n    await openNoteSheet();\n    editSetValue('noteText',existing.text||'',false);editSetValue('noteTag',existing.tag||'',false);editSetValue('recordTime',toLocalInput(existing.timestamp));\n  }else if(existing.type==='medication'){\n    await openMedicationSheet();\n    editSetValue('medName',existing.medication||'',false);editSetValue('medNote',existing.note||'',false);editSetValue('recordTime',toLocalInput(existing.timestamp));\n    const meds=await allMedications(),m=meds.find(x=>x.id===existing.medicationId)||findProfileByEvent(existing,meds);\n    if(m){selectedMedicationId=m.id;const field=document.getElementById('presentationField'),sel=document.getElementById('presentationSelect');field?.classList.remove('hidden');if(sel){sel.innerHTML=presentationOptions(m);sel.value=existing.presentationId||'';selectedPresentationId=sel.value||null;sel.onchange=async()=>{selectedPresentationId=sel.value||null;const activeMode=document.querySelector('[data-dose-mode].selected')?.dataset.doseMode||'perUnit';await renderDoseFields(activeMode)}}}\n    const mode=existing.doseMode||(existing.unitDoseValue!=null?'perUnit':'total'),modeBtn=document.querySelector(`[data-dose-mode=\"${mode}\"]`);if(modeBtn){modeBtn.click();await new Promise(r=>requestAnimationFrame(()=>r()))}else await renderDoseFields(mode);\n    editSetValue('doseUnit',existing.doseUnit||'mg');\n    if(mode==='total')editSetValue('totalDoseValue',existing.totalDoseValue??(parseFloat(existing.dose)||''));else{const units=Number(existing.unitsTaken)||1;const unitDose=existing.unitDoseValue!=null?existing.unitDoseValue:(existing.totalDoseValue!=null?Number(existing.totalDoseValue)/units:'');editSetValue('unitDoseValue',unitDose);editSetValue('unitsTaken',units)}\n  }else if(existing.type==='purchase'){\n    await openPurchaseSheet();\n    editSetValue('purchaseMed',existing.medication||'',false);editSetValue('purchasePackages',existing.packages||1);editSetValue('purchasePrice',existing.price||'');editSetValue('purchasePlace',existing.place||'',false);editSetValue('recordTime',toLocalInput(existing.timestamp));\n    const meds=await allMedications(),m=meds.find(x=>x.id===existing.medicationId)||findProfileByEvent(existing,meds);\n    if(m){selectedMedicationId=m.id;const field=document.getElementById('purchasePresentationField'),sel=document.getElementById('purchasePresentation');field?.classList.remove('hidden');if(sel){sel.innerHTML=presentationOptions(m);sel.value=existing.presentationId||'';selectedPresentationId=sel.value||null;sel.onchange=()=>{selectedPresentationId=sel.value||null;updatePurchasePreview()}}}\n    await updatePurchasePreview();\n  }else if(existing.type==='sleep'){\n    openSleepSheet();editSetValue('sleepStart',toLocalInput(existing.startTime));editSetValue('sleepEnd',toLocalInput(existing.endTime));editSetValue('sleepNote',existing.note||'',false);const q=Number(existing.quality)||4;document.querySelector(`#sleepQuality [data-quality=\"${q}\"]`)?.click();\n  }else return;\n  finishEventEditor(existing)\n}\n\nasync function saveEditedEvent(ev,existing){ev.preventDefault();let record={...existing};\n  if(existing.type==='note'){\n    const text=document.getElementById('noteText').value.trim(),timestamp=editIsoFromField('recordTime');if(!text&&!pendingAudio&&!existing.hasAudio)return toast('Escreva ou grave uma anota√ß√£o.');if(!timestamp)return toast('Informe uma data e hor√°rio v√°lidos.');const hasAudio=Boolean(existing.hasAudio||pendingAudio);record={...existing,timestamp,text,tag:document.getElementById('noteTag').value.trim(),hasAudio,audioOnly:Boolean(hasAudio&&!text)};\n  }else if(existing.type==='medication'){\n    const name=document.getElementById('medName').value.trim(),timestamp=editIsoFromField('recordTime');if(!name)return toast('Informe o medicamento.');if(!timestamp)return toast('Informe uma data e hor√°rio v√°lidos.');const mode=document.querySelector('[data-dose-mode].selected')?.dataset.doseMode||'perUnit',unit=document.getElementById('doseUnit')?.value||'mg';let totalDoseValue,unitsTaken=1,unitDoseValue=null;if(mode==='total'){totalDoseValue=editNumber('totalDoseValue');if(totalDoseValue==null)return toast('Informe a dose total.')}else{unitDoseValue=editNumber('unitDoseValue');unitsTaken=editNumber('unitsTaken')??1;if(unitDoseValue==null)return toast('Informe a dose de cada unidade.');totalDoseValue=unitDoseValue*unitsTaken}record={...existing,timestamp,medication:name,medicationId:selectedMedicationId||null,presentationId:selectedPresentationId||null,doseMode:mode,unitDoseValue,totalDoseValue,doseUnit:unit,unitsTaken,dose:`${totalDoseValue.toLocaleString('pt-BR')} ${unit}`,quantity:unitsTaken===1?'1 unidade':`${unitsTaken} unidades`,note:document.getElementById('medNote').value.trim()};\n  }else if(existing.type==='purchase'){\n    const name=document.getElementById('purchaseMed').value.trim(),timestamp=editIsoFromField('recordTime');if(!name)return toast('Informe o medicamento.');if(!timestamp)return toast('Informe uma data e hor√°rio v√°lidos.');const packages=Math.max(1,editNumber('purchasePackages')??1),meds=await allMedications(),m=meds.find(x=>x.id===selectedMedicationId),p=findPresentation(m,selectedPresentationId),samePresentation=selectedPresentationId===existing.presentationId,upp=Number(p?.unitsPerPackage)||(samePresentation?Number(existing.unitsPerPackage):0);record={...existing,timestamp,medication:name,medicationId:selectedMedicationId||null,presentationId:selectedPresentationId||null,packages,totalUnits:upp?packages*upp:null,unitsPerPackage:upp||null,price:document.getElementById('purchasePrice').value.trim(),place:document.getElementById('purchasePlace').value.trim()};\n  }else if(existing.type==='sleep'){\n    const start=new Date(document.getElementById('sleepStart').value),end=new Date(document.getElementById('sleepEnd').value);if(!(start<end))return toast('O hor√°rio de acordar precisa ser posterior ao hor√°rio de dormir.');record={...existing,timestamp:end.toISOString(),startTime:start.toISOString(),endTime:end.toISOString(),quality:Number(document.getElementById('sleepQualityValue').value)||4,note:document.getElementById('sleepNote').value.trim()};\n  }\n  await putEvent(record);if(existing.type==='note'&&pendingAudio)await saveAudio(existing.id,pendingAudio);closeSheet();await renderAll();toast('Altera√ß√µes salvas.')\n}\n\nopenEventMenu=async function(id){const existing=(await allEvents()).find(x=>x.id===id);if(!existing)return;openBackdrop('Op√ß√µes do registro',`<div class=\"sheet-options\"><button type=\"button\" class=\"sheet-option\" id=\"editEventBtn\">Editar registro</button><button type=\"button\" class=\"sheet-option danger\" id=\"deleteBtn\">Excluir registro</button></div>${formButtons('Fechar')}`,(ev)=>{ev.preventDefault();closeSheet()});document.getElementById('editEventBtn').onclick=()=>openEventEditor(id);document.getElementById('deleteBtn').onclick=async()=>{if(confirm('Excluir este registro?')){await deleteEvent(id);closeSheet();await renderAll();toast('Registro exclu√≠do.')}}}\n\nconst registroForm=document.getElementById('form');registroForm?.addEventListener('keydown',e=>{if(e.key!=='Enter'||e.isComposing)return;const target=e.target;if(target instanceof HTMLTextAreaElement)return;if(target instanceof HTMLInputElement||target instanceof HTMLSelectElement){e.preventDefault();e.stopPropagation();target.blur();document.getElementById('medAutocomplete')?.classList.add('hidden')}},true);\n\ndocument.addEventListener('click',e=>{if(e.target.closest('[data-menu],button,audio,input,textarea,select,a'))return;const card=e.target.closest('.timeline-item');if(!card)return;const id=card.querySelector('[data-menu]')?.dataset.menu;if(id)openEventEditor(id)});\n";document.head.appendChild(s);s.remove();})();
 
-J_Wò\ﬁ[ò»ù[ò›[€à]]ô[ù
-J^‹ô]\õàô\J›‹ôJUëSïÀ	‹ôXY‹ö]I Kú]
-JJ_Wò\ﬁ[ò»ù[ò›[€à[]Q]ô[ù
-Y
-^ÿ]ÿZ]ô\J›‹ôJUëSïÀ	‹ôXY‹ö]I Kô[]JY
-JNÿ]ÿZ]ô\J›‹ôJUQSÀ	‹ôXY‹ö]I Kô[]JY
-J_Wò\ﬁ[ò»ù[ò›[€àÿ]ôP]Y[ Yõÿä^‹ô]\õàô\J›‹ôJUQSÀ	‹ôXY‹ö]I Kú]
-⁄YõÿüJJ_Wò\ﬁ[ò»ù[ò›[€àŸ]]Y[ Y
-^‹ô]\õàô\J›‹ôJUQS KôŸ]
-Y
-J_Wò\ﬁ[ò»ù[ò›[€à[YYXÿ][€ú 
-^‹ô]\õàô\J›‹ôJQQP–US”î KôŸ][
+/* ---- v04c9.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="// SF Symbols adaptados para a interface do app.\n// Mant√©m o desenho original, usa currentColor e centraliza cada viewBox dentro do canvas 24x24.\nbaseIcons.note='<g transform=\"translate(1.3998 0) scale(.773999)\" fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><path d=\"M21.875 7.78125L21.875 15.1334L17.7987 19.9822C17.7135 19.9287 17.6115 19.8984 17.5 19.8984L9.49221 19.8984C9.16408 19.8984 8.92189 20.1484 8.92189 20.4688C8.92189 20.7812 9.16408 21.0234 9.49221 21.0234L16.9234 21.0234L12.5098 26.2734L8.11721 26.2734C6.11721 26.2734 5.10158 25.25 5.10158 23.2344L5.10158 7.78125C5.10158 5.76562 6.11721 4.74219 8.11721 4.74219L18.8672 4.74219C20.8672 4.74219 21.875 5.76562 21.875 7.78125ZM9.49221 16.2812C9.16408 16.2812 8.92189 16.5234 8.92189 16.8359C8.92189 17.1562 9.16408 17.4062 9.49221 17.4062L17.5 17.4062C17.8203 17.4062 18.0625 17.1562 18.0625 16.8359C18.0625 16.5234 17.8203 16.2812 17.5 16.2812ZM9.49221 12.6797C9.16408 12.6797 8.92189 12.9219 8.92189 13.2344C8.92189 13.5469 9.16408 13.7969 9.49221 13.7969L17.5 13.7969C17.8203 13.7969 18.0625 13.5469 18.0625 13.2344C18.0625 12.9219 17.8203 12.6797 17.5 12.6797ZM9.49221 9.0625C9.16408 9.0625 8.92189 9.30469 8.92189 9.61719C8.92189 9.92969 9.16408 10.1797 9.49221 10.1797L17.5 10.1797C17.8203 10.1797 18.0625 9.92969 18.0625 9.61719C18.0625 9.30469 17.8203 9.0625 17.5 9.0625Z\"/><path d=\"M14.8828 28.8359L24.6953 17.1484L23.0078 15.7266L13.1875 27.4062L12.4375 29.5625C12.3672 29.7812 12.6094 30.0078 12.8203 29.8984ZM25.4297 16.2969L26.2735 15.3125C26.7031 14.8047 26.6797 14.3125 26.2266 13.9219L25.9297 13.6719C25.4766 13.2969 24.9844 13.3828 24.5625 13.875L23.7188 14.8594Z\"/></g>';\nbaseIcons.pill='<g transform=\"translate(0 .22549) scale(1.203901)\" fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><path d=\"M5.78793 6.7061L1.7723 10.7295C-0.532385 13.0342-0.555823 15.9483 1.50668 18.0342C3.57699 20.0967 6.49105 20.0733 8.80355 17.7608L12.8192 13.7373Z\"/><path d=\"M18.0223 1.50297C15.952-0.55953 13.0301-0.52828 10.7254 1.77641L6.7098 5.79203L13.7411 12.8233L17.7567 8.80766C20.0692 6.49516 20.0926 3.5811 18.0223 1.50297Z\"/></g>';\nbaseIcons.moon='<g transform=\"translate(0 .12539) scale(1.172969)\" fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><path d=\"M10.4688 20.1821C14.8203 20.1821 18.3906 17.5571 19.9531 14.1352C20.2422 13.5337 19.8672 13.104 19.2734 13.2993C18.5469 13.5571 17.2891 13.8462 16.0391 13.8462C9.95312 13.8462 6.49219 10.3852 6.49219 4.29931C6.49219 3.08056 6.75 1.84619 7.14844 0.853999C7.40625 0.205561 6.96094-0.185064 6.33594 0.0883737C2.95312 1.52587 0 5.11181 0 9.70556C0 15.4868 4.69531 20.1821 10.4688 20.1821Z\"/></g>';\nbaseIcons.bag='<g fill=\"currentColor\" fill-opacity=\".85\"><path d=\"M4.6 5.25H19.4C21.55 5.25 23 6.72 23 8.85V18.85C23 21.55 21.45 23.1 18.75 23.1H5.25C2.55 23.1 1 21.55 1 18.85V8.85C1 6.72 2.45 5.25 4.6 5.25Z\" stroke=\"none\"/><path d=\"M7.45 5.25C7.45 2.45 9.18 .9 12 .9C14.82 .9 16.55 2.45 16.55 5.25\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\".85\" stroke-width=\"2.35\" stroke-linecap=\"butt\"/></g>';\nbaseIcons.home='<g transform=\"translate(0 1.501464) scale(1.000976)\" fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><path d=\"M9.04688 19.5781L9.04688 13.5391C9.04688 13.1016 9.33594 12.8203 9.77344 12.8203L13.8047 12.8203C14.2422 12.8203 14.5234 13.1016 14.5234 13.5391L14.5234 19.5781ZM2.98438 18.8516C2.98438 20.1797 3.78125 20.9609 5.125 20.9609L18.4453 20.9609C19.7891 20.9609 20.5859 20.1797 20.5859 18.8516L20.5859 10.4453L12.3984 3.57812C12 3.23438 11.5469 3.25 11.1641 3.57812L2.98438 10.4297ZM0.742188 10.4141C0.976562 10.4141 1.17188 10.2891 1.34375 10.1406L11.4062 1.69531C11.5234 1.59375 11.6562 1.54688 11.7812 1.54688C11.9141 1.54688 12.0469 1.59375 12.1641 1.69531L22.2266 10.1406C22.3984 10.2891 22.5859 10.4141 22.8281 10.4141C23.2891 10.4141 23.5703 10.0781 23.5703 9.73438C23.5703 9.52344 23.4844 9.32031 23.2891 9.15625L12.9141 0.453125C12.5547 0.148438 12.1719 0 11.7812 0C11.3984 0 11.0156 0.148438 10.6562 0.453125L0.28125 9.15625C0.0859375 9.32031 0 9.52344 0 9.73438C0 10.0781 0.273438 10.4141 0.742188 10.4141ZM18.4453 5.52344L20.7422 7.46094L20.7422 3.01562C20.7422 2.625 20.4844 2.375 20.0938 2.375L19.1016 2.375C18.7109 2.375 18.4453 2.625 18.4453 3.01562Z\"/></g>';\nbaseIcons.history='<g fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><path d=\"M23.797 13.364 L23.617 12.930 L21.359 9.464 L20.977 9.218 L20.555 9.328 L18.164 12.913 L17.977 13.347 L18.023 13.729 L18.344 13.975 L20.039 14.026 L19.586 15.496 L18.914 16.838 L18.039 18.045 L16.688 19.319 L15.211 20.211 L13.648 20.746 L12.461 20.916 L11.203 20.891 L9.992 20.670 L8.781 20.236 L7.781 19.693 L6.867 19.013 L6.023 18.181 L5.141 17.042 L4.773 16.821 L4.422 16.804 L4.047 16.991 L3.828 17.314 L3.789 17.824 L4.414 18.843 L5.609 20.143 L6.883 21.145 L8.242 21.902 L9.625 22.403 L11.078 22.675 L12.484 22.709 L14.039 22.488 L15.258 22.114 L16.172 21.706 L17.438 20.933 L18.469 20.084 L19.680 18.733 L20.602 17.288 L21.281 15.742 L21.734 14.026 L23.422 13.975 L23.727 13.763 Z\"/><path d=\"M11.781 5.862 L11.367 6.151 L11.195 6.584 L11.219 12.896 L11.422 13.330 L13.852 16.787 L14.219 17.076 L14.703 17.110 L15.211 16.728 L15.281 16.082 L15.125 15.725 L12.789 12.310 L12.781 6.542 L12.641 6.185 L12.422 5.964 L12.133 5.845 Z\"/><path d=\"M20.148 5.972 L19.250 4.732 L18.125 3.602 L16.898 2.693 L15.516 1.971 L14.133 1.512 L12.719 1.283 L11.266 1.283 L9.844 1.512 L8.578 1.920 L7.391 2.498 L6.375 3.169 L5.508 3.899 L4.281 5.276 L3.414 6.635 L2.727 8.181 L2.258 9.948 L0.562 9.999 L0.250 10.229 L0.195 10.636 L0.398 11.095 L2.633 14.510 L3.016 14.757 L3.438 14.646 L5.828 11.061 L6.008 10.645 L5.969 10.254L5.672 10.008L3.953 9.948L4.383 8.530L5.008 7.247L5.969 5.904L7.320 4.639L8.703 3.798L10.305 3.237L11.539 3.058L12.781 3.084L13.898 3.279L15.172 3.721L16.156 4.248L17.094 4.936L17.953 5.777L18.875 6.958L19.188 7.145L19.617 7.153L20.031 6.881L20.211 6.474Z\"/></g>';\nbaseIcons.settings='<g fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\"/><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\" transform=\"rotate(45 12 12)\"/><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\" transform=\"rotate(90 12 12)\"/><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\" transform=\"rotate(135 12 12)\"/><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\" transform=\"rotate(180 12 12)\"/><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\" transform=\"rotate(225 12 12)\"/><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\" transform=\"rotate(270 12 12)\"/><rect x=\"10.15\" y=\".3\" width=\"3.7\" height=\"6.3\" rx=\"1.45\" transform=\"rotate(315 12 12)\"/><circle cx=\"12\" cy=\"12\" r=\"6.25\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\".85\" stroke-width=\"4.2\"/><circle cx=\"12\" cy=\"12\" r=\"2.65\" fill=\"none\" stroke=\"currentColor\" stroke-opacity=\".85\" stroke-width=\"1.9\"/></g>';\n\nasync function handleShortcutImport(){const p=new URLSearchParams(location.search);if(!p.has('sleepStart')||!p.has('sleepEnd'))return;const start=new Date(p.get('sleepStart')),end=new Date(p.get('sleepEnd'));if(!(start<end))return;const payload={start:start.toISOString(),end:end.toISOString(),quality:Number(p.get('sleepQuality')||4),note:p.get('sleepNote')||''},existing=(await allEvents()).some(e=>e.type==='sleep'&&e.startTime===payload.start&&e.endTime===payload.end);history.replaceState({},'',location.pathname);if(existing)return toast('Esse per√≠odo de sono j√° est√° registrado.');const mode=getSettings().healthImportMode;if(mode==='auto'){await putEvent({id:uid('sleep-health'),type:'sleep',timestamp:payload.end,startTime:payload.start,endTime:payload.end,quality:payload.quality,note:payload.note,source:'health-shortcut',demo:false});localStorage.setItem(LAST_HEALTH_IMPORT_KEY,new Date().toISOString());toast('Sono importado.')}else if(mode==='ask'){if(confirm('Salvar o sono recebido automaticamente? Toque em Cancelar para revisar.')){await putEvent({id:uid('sleep-health'),type:'sleep',timestamp:payload.end,startTime:payload.start,endTime:payload.end,quality:payload.quality,note:payload.note,source:'health-shortcut',demo:false});localStorage.setItem(LAST_HEALTH_IMPORT_KEY,new Date().toISOString());toast('Sono importado.')}else openSleepSheet(payload)}else openSleepSheet(payload)}\n\nfunction switchTab(name){document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.dataset.view===name));document.querySelectorAll('.tab-item').forEach(b=>b.classList.toggle('selected',b.dataset.tab===name));updateTabBubble();window.scrollTo({top:0,behavior:'instant'})}\nfunction toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),2300)}\nfunction openType(type){if(type==='note')openNoteSheet();else if(type==='medication')openMedicationSheet();else if(type==='purchase')openPurchaseSheet();else if(type==='sleep')openSleepSheet()}\nfunction loadRichDemoScript(){if(typeof ensureRichDemoData==='function')return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=`./v04demo.js?v=${APP_VERSION}`;s.onload=resolve;s.onerror=reject;document.head.appendChild(s)})}\nfunction loadTabBarRuntimeScript(){if(typeof applyRegistroTabBar==='function')return Promise.resolve();return new Promise((resolve,reject)=>{const s=document.createElement('script');s.src=`./v04tabbar.js?v=${APP_VERSION}`;s.onload=resolve;s.onerror=reject;document.head.appendChild(s)})}\n\ndocument.addEventListener('click',e=>{const action=e.target.closest('[data-type]');if(action)openType(action.dataset.type);const menu=e.target.closest('[data-menu]');if(menu)openEventMenu(menu.dataset.menu);const tab=e.target.closest('[data-tab]');if(tab)switchTab(tab.dataset.tab);const go=e.target.closest('[data-go]');if(go)switchTab(go.dataset.go);const filter=e.target.closest('[data-filter]');if(filter){historyFilter=filter.dataset.filter;document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('selected',b===filter));renderAll()}const theme=e.target.closest('[data-theme-value]');if(theme)setSetting('theme',theme.dataset.themeValue);const accent=e.target.closest('[data-accent]');if(accent)setSetting('accent',accent.dataset.accent);const size=e.target.closest('[data-icon-size]');if(size)setSetting('iconSize',size.dataset.iconSize);const iw=e.target.closest('[data-icon-weight]');if(iw)setSetting('iconWeight',iw.dataset.iconWeight);const ff=e.target.closest('[data-font-family]');if(ff)setSetting('fontFamily',ff.dataset.fontFamily);const fw=e.target.closest('[data-font-weight]');if(fw)setSetting('fontWeight',fw.dataset.fontWeight);const hm=e.target.closest('[data-health-mode]');if(hm)setSetting('healthImportMode',hm.dataset.healthMode)});\n\ndocument.getElementById('closeBtn').onclick=closeSheet;document.getElementById('backdrop').onclick=e=>{if(e.target.id==='backdrop')closeSheet()};document.getElementById('homeOptionsBtn').onclick=()=>switchTab('settings');document.getElementById('exportBtn').onclick=exportData;document.getElementById('importBtn').onclick=()=>document.getElementById('importFile').click();document.getElementById('importFile').onchange=e=>{const f=e.target.files?.[0];if(f)importData(f);e.target.value=''};document.getElementById('svgImportFile').onchange=async e=>{const f=e.target.files?.[0];if(f&&iconEditorTarget){const text=await f.text();openIconEditor(iconEditorTarget);document.getElementById('svgIconText').value=text;document.getElementById('bankIconCode').value='';document.getElementById('iconPreview').innerHTML=`<svg class=\"svg-icon\" viewBox=\"0 0 24 24\">${sanitizeSvgMarkup(text)}</svg>`}e.target.value=''};document.getElementById('healthImportInfoBtn').onclick=healthImportInfo;document.getElementById('medicationRegistryBtn').onclick=openMedicationRegistry;document.getElementById('customIconsBtn').onclick=openCustomIcons;document.getElementById('tabbarLabBtn').onclick=()=>location.href='./tabbar-editor.html';document.getElementById('restoreDemoBtn').onclick=()=>restoreDemo();document.getElementById('clearBtn').onclick=clearData;document.getElementById('showVersionToggle').onclick=()=>setSetting('showVersion',!getSettings().showVersion);document.getElementById('hideTabLabelsToggle').onclick=()=>{const s=getSettings(),theme=typeof effectiveRegistroTheme==='function'?effectiveRegistroTheme(s):(s.theme==='dark'?'dark':'light'),styles=s.tabBarStyles||{},current=styles[theme]||{},next=!Boolean(current.hideLabels??s.hideTabLabels);s.hideTabLabels=next;s.tabBarStyles={...styles,[theme]:{...current,hideLabels:next}};saveSettings(s)};document.getElementById('topVersion').textContent=`v${APP_VERSION}`;document.getElementById('versionLabel').textContent=APP_VERSION;\n\n(async()=>{try{await loadTabBarRuntimeScript()}catch(err){console.error('Falha ao carregar personaliza√ß√£o da barra inferior',err)}applySettings();db=await openDB();try{await loadRichDemoScript();await ensureRichDemoData()}catch(err){console.error('Falha ao carregar dados de desenvolvimento',err);await seedDemo()}await seedDemo();await ensureProfiles();await handleShortcutImport();await renderAll();if('serviceWorker'in navigator)window.__RM_DISABLED_SW_REGISTER(`./sw.js?v=${APP_VERSION}`).catch(console.error)})();";document.head.appendChild(s);s.remove();})();
 
-J_Wò\ﬁ[ò»ù[ò›[€à]YYXÿ][€äJ^€Kù\]Y][ô]»]J
-Kù“T”‘›ö[ô 
-N‹ô]\õàô\J›‹ôJQQP–US”îÀ	‹ôXY‹ö]I Kú]
-JJ_Wò\ﬁ[ò»ù[ò›[€à[]SYYXÿ][€äY
-^‹ô]\õàô\J›‹ôJQQP–US”îÀ	‹ôXY‹ö]I Kô[]JY
-J_Wóò€€ú›[[—]ô[ùœJ
-OOûÿ€€ú›õ›œ[ô]»]J
-KŸ^OJJOOûÿ€€ú›[ô]»]Jõ› NŸúŸ]›\ú K
-N‹ô]\õàù“T”‘›ö[ô 
-_KY^OJJOOûÿ€€ú›[ô]»]Jõ› NŸúŸ]]JôŸ]]J
-KLJNŸúŸ]›\ú K
-N‹ô]\õàù“T”‘›ö[ô 
-_N‹ô]\õñﬁ⁄YâŸ[[À[õ›KLIÀ\Nâ€õ›IÀ[Y\›[\ùŸ^JåKM
-K^â—\››HXZ\»ò[ú]Z[»Y€‹òKâÀYŒâÿÿ[XIÀ[[ŒùùY_K⁄YâŸ[[À[YYLIÀ\Nâ€YYXÿ][€âÀ[Y\›[\ùŸ^JNÃäKYYXÿ][€éâ‘\õﬁ][òIÀ‹ŸNâÃåY…À›[‹ŸUò[YNåå‹ŸU[ö]â€Y…À[ö]’ZŸ[éåK[[ŒùùY_K⁄YâŸ[[À[õ›KLâÀ\Nâ€õ›IÀ[Y\›[\ùŸ^JMKL
-K^â—\›]òHò\›[ùH[ú⁄[‹€»\ò[ùHH\ôHH€€H‹àHÿXôpÈÿKâÀYŒâÿ[ú⁄YYYIÀ[[ŒùùY_K⁄YâŸ[[À[YYLâÀ\Nâ€YYXÿ][€âÀ[Y\›[\ùŸ^JK KYYXÿ][€éâ–ù\õ‹[€òIÀ‹ŸNâÃMLY…À›[‹ŸUò[YNåML‹ŸU[ö]â€Y…À[ö]’ZŸ[éåK[[ŒùùY_K⁄YâŸ[[À\€Y\LIÀ\Nâ‹€Y\	À[Y\›[\ùŸ^JÀå
-K›\ù[YNûY^JåÀL
-K[ô[YNùŸ^JÀå
-K]X[]Nçõ›Nâ–X€‹ôZH[XHô^à\ò[ùHHXYùYÿYKâÀ€›\òŸNâ€X[ùX[	À[[ŒùùY_K⁄YâŸ[[ÀXù^KLIÀ\Nâ‹\ò⁄\ŸIÀ[Y\›[\ûY^JMÀå
-KYYXÿ][€éâ‘\õﬁ][òHåY…ÀX⁄ÿYŸ\ŒåK›[[ö]ŒåÃöXŸNâ‘âKL	ÀXŸNâ—ò\õpËX⁄XHH^[\…À[[ŒùùY_W_Wò\ﬁ[ò»ù[ò›[€àŸYY[[ 
-^ÿ€€ú›OX]ÿZ][]ô[ù 
-N⁄YäYKõ[ô›	âõÿÿ[›‹òYŸKôŸ]][J	‹ôY⁄\›õÀXô]KY[[À\ŸYYY	 HOOIﬁY\… ^Ÿõ‹ä€€ú›][HŸà[[—]ô[ù 
-JX]ÿZ]]]ô[ù
-][JN€ÿÿ[›‹òYŸKúŸ]][J	‹ôY⁄\›õÀXô]KY[[À\ŸYYY	À	ﬁY\… __Wò\ﬁ[ò»ù[ò›[€à[ú›\ôTõŸö[\ 
-^ÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-N⁄YäYYÀõ[ô›
-\ô]\õéÿ€€ú›]ô[ùœX]ÿZ][]ô[ù 
-Kò[Y\œVÀããõô]»Ÿ]
-]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â…âôKõYYXÿ][€äKõX\
-OOôKõYYXÿ][€ãùö[J
-JJWNŸõ‹ä€€ú›ò[YHŸàò[Y\ ^ÿ€€ú›‹Ÿ\œVÀããõô]»Ÿ]
-]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â…âõõ‹õX[^ôU^
-KõYYXÿ][€äOOO[õ‹õX[^ôU^
-ò[YJIâôKô‹ŸJKõX\
-OOôKô‹ŸJJWNÿ€€ú›ô\Ÿ[ù][€úœY‹Ÿ\ÀõX\
-Oûÿ€€ú›\\úŸT›ô[ô›
-
-N‹ô]\õû⁄YùZY
-	‹ô\Ÿ[ù][€â K›ô[ô›ò[YNúÀùò[Y_	…À›ô[ô›[ö]úÀù[ö]	€Y…Àõ‹õNâÿ€€\ö[ZYÀÿË\›[IÀ[ö]‘\îX⁄ÿYŸNâ…À[ö]‘\êõ\›\éâ…Àúò[ôâ…ÀXéâ…ﬂ_JNÿ]ÿZ]]YYXÿ][€ä⁄YùZY
-	€YY	 KX›]ôR[ô‹ôYY[ùõò[YKôYô\ô[òŸSò[YNâ…ÀXéâ…Àô\Ÿ[ù][€úÀõ›\Œñ◊K‹ôX]Y]õô]»]J
-Kù“T”‘›ö[ô 
-_J__Wóôù[ò›[€àYYXÿ][€ë\‹^JJ^‹ô]\õàKúôYô\ô[òŸSò[YOÿ	€KòX›]ôR[ô‹ôYY[ùH0≠»	€KúôYô\ô[òŸSò[Y_XõKòX›]ôR[ô‹ôYY[ùWôù[ò›[€àô\Ÿ[ù][€ë\‹^J
-^ÿ€€ú››ô[ô›\ú›ô[ô›ò[YOÿ	‹ú›ô[ô›ò[Y_H	‹ú›ô[ô›[ö]	…ﬂXùö[J
-Nâ‘Ÿ[H‹ÿYŸ[IŒÿ€€ú›^òOV‹òúò[ôõXóKôö[\äõ€€X[äKöõ⁄[ä	»0≠»	 N‹ô]\õà^òOÿ	‹›ô[ô›H0≠»	Ÿ^ò_Xú›ô[ô›Wôù[ò›[€àö[ôõŸö[PûQ]ô[ù
-KYY ^⁄YäKõYYXÿ][€íY
-\ô]\õàYYÀôö[ô
-OOõKöYOOYKõYYXÿ][€íY
-_ù[ÿ€€ú›Ÿ^O[õ‹õX[^ôU^
-KõYYXÿ][€ü	… N‹ô]\õàYYÀôö[ô
-OOñ€KòX›]ôR[ô‹ôYY[ùKúôYô\ô[òŸSò[YKããäKò[X\Ÿ\ﬂ◊JWKú€€YJèOùââõõ‹õX[^ôU^
-äOOOZŸ^JJ_ù[Wôù[ò›[€àö[ôô\Ÿ[ù][€äKY
-^‹ô]\õàOÀúô\Ÿ[ù][€úœÀôö[ô
-OúöYOOZY
-_ù[Wôù[ò›[€àYYŸX\ò⁄ÿ€‹ôJKJ^‹O[õ‹õX[^ôU^
-JN⁄Yä\J\ô]\õàNNNÿ€€ú›ÿ[ôY]\œV€KòX›]ôR[ô‹ôYY[ùKúôYô\ô[òŸSò[YKKõXãããäKò[X\Ÿ\ﬂ◊JWKôö[\äõ€€X[äKõX\
-õ‹õX[^ôU^
-N€]ô\›NNNNŸõ‹ä€€ú›»Ÿàÿ[ôY]\ ^⁄YäÀú›\ù’⁄]
-JJXô\›SX]õZ[äô\›
-NŸ[ŸHYäÀö[ò€Y\ JJXô\›SX]õZ[äô\›JNŸ[Ÿ^ÿ€€ú›[]ô[ú⁄Z[äÀJN⁄YäLäXô\›SX]õZ[äô\›äŸÃL
-Nÿ€€ú›ö\ú›XÀú‹]
-	»	 VÃNÿ€€ú›Yö\ú›\Kú‹]
-	»	 VÃNÿ€€ú›ô[]ô[ú⁄Z[äö\ú›Yö\ú›
-N⁄YäôLäXô\›SX]õZ[äô\› ŸôÃL
-__\ô]\õàô\›Wôù[ò›[€àYYX]⁄\—]ô[ù
-KJ^⁄YäKõYYXÿ][€íYOO[KöY
-\ô]\õàùYNÿ€€ú›O[õ‹õX[^ôU^
-KõYYXÿ][€ü	… N‹ô]\õà€KòX›]ôR[ô‹ôYY[ùKúôYô\ô[òŸSò[YKããäKò[X\Ÿ\ﬂ◊JWKôö[\äõ€€X[äKú€€YJèOõõ‹õX[^ôU^
-äOOO\J_Wóôù[ò›[€à⁄[ô[ôõ J^⁄YäKù\OOOI€õ›I \ô]\õû⁄⁄[ôôKò]Y[”€õO…–Sì’p·‡”»Hì÷âŒâ–Sì’p·‡”…À€\‹”ò[YNâ€õ›IÀ]NôKù^	—‹ò]òpÈË€»HõﬁâÀY]NñŸKùY◊Kôö[\äõ€€X[ä_N⁄YäKù\OOOI€YYXÿ][€â \ô]\õû⁄⁄[ôâ”QQP–SQSï…À€\‹”ò[YNâ€YYXÿ][€âÀ]Nò	ŸKõYYXÿ][€ü	”YYXÿ[Y[ù…ﬂIŸKô‹ŸOÿ0≠»	ŸKô‹Ÿ_Xâ…ﬂXY]NñŸKù[ö]’ZŸ[èÿ	ŸKù[ö]’ZŸ[üH[ãòôKú]X[ù]KKõõ›WKôö[\äõ€€X[ä_N⁄YäKù\OOOI‹€Y\	 \ô]\õû⁄⁄[ôâ‘””ì…À€\‹”ò[YNâ‹€Y\	À]Nô\ò][€ìXô[
-\ò][€í›\ú Kú›\ù[YKKô[ô[YJJKY]NñŸKú]X[]Oÿ]X[YYH	ŸKú]X[]_Xõù[Kú€›\òŸOOOI⁄X[\⁄‹ù›]	œ…“[\‹ùY»»ÿpÓôIŒâ”X[ùX[	ÀKõõ›WKôö[\äõ€€X[ä_N‹ô]\õû⁄⁄[ôâ–””TêIÀ€\‹”ò[YNâ‹\ò⁄\ŸIÀ]Nò	ŸKõYYXÿ][€ü	”YYXÿ[Y[ù…ﬂIŸKúöXŸOÿ0≠»	ŸKúöXŸ_Xâ…ﬂXY]NñŸKúX⁄ÿYŸ\œÿ	ŸKúX⁄ÿYŸ\ﬂHÿZ^J XôKú]X[ù]KKúXŸWKôö[\äõ€€X[ä__Wôù[ò›[€à]ô[ùÿ\ô
-J^ÿ€€ú›œZ⁄[ô[ôõ JN‹ô]\õò\ùX€H€\‹œWù[Y[[ôKZ][Wèè]à€\‹œWù[Y[[ôK][YWèâ›[YSXô[
-Kù[Y\›[\
-_OŸ]èè]èè]à€\‹œWù[Y[[ôKZ⁄[ô⁄[ôI⁄Àò€\‹”ò[Y_Wèâ⁄Àö⁄[ôOŸ]èè]à€\‹œWù[Y[[ôK]]WèâŸ\ÿ Àù]J_OŸ]èâ⁄ÀõY]Kõ[ô›ÿ]à€\‹œWù[Y[[ôK[Y]Wèâ⁄ÀõY]KõX\
-\ÿ Köõ⁄[ä	»0≠»	 _OŸ]èòâ…ﬂIŸKö\–]Y[œÿ]à]KX]Y[œWâŸKöYWèèŸ]èòâ…ﬂOŸ]èèù]€à€\‹œWö][K[Y[ùWà]K[Y[ùOWâŸKöYWà\öXK[Xô[Wì‹0ÈÌY\◊è∏†(∏†(∏†(èÿù]€èèÿ\ùX€OòWò\ﬁ[ò»ù[ò›[€àYò]P]Y[ õ€›
-^Ÿõ‹ä€€ú›[Ÿàõ€›ú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KX]Y[◊I J^ÿ€€ú›ôXœX]ÿZ]Ÿ]]Y[ [ô]\Ÿ]ò]Y[ N⁄YäôXœÀòõÿä^ÿ€€ú›\õUTìò‹ôX]SÿöôX›Tì
-ôXÀòõÿäNŸ[ö[õô\íSX]Y[»€€ùõ€»ô[ÿYWõY]Y]Wà‹òœWâ›\õWèèÿ]Y[œò__Wôù[ò›[€à›[[X\ûTõ› X€€ãXô[ò[YR[
-^‹ô]\õò]à€\‹œWú›[[X\ûK\õ›◊èè‹[à€\‹œWú›[[X\ûK\õ›ÀZX€€óèâ‹›ô X€€ä_O‹‹[èè‹[à€\‹œWú›[[X\ûK\õ›À[Xô[èâ€Xô[O‹‹[èè‹[à€\‹œWú›[[X\ûK\õ›À]ò[YWèâ›ò[YR[O‹‹[èèŸ]èòWàéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃÀöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
+/* ---- v04c10.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Visualiza√ß√£o segura dos registros: tocar abre detalhes; editar exige uma segunda a√ß√£o expl√≠cita. */\nfunction registroDetailDate(value){if(!value)return '‚Äî';const d=new Date(value);if(Number.isNaN(d.getTime()))return '‚Äî';return d.toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})}\nfunction registroDetailRow(label,value){if(value===null||value===undefined||String(value).trim()==='')return'';return`<div class=\"analysis-row\"><strong>${esc(label)}</strong><span>${esc(String(value))}</span></div>`}\nasync function openEventViewer(id){const e=(await allEvents()).find(x=>x.id===id);if(!e)return;let title='Detalhes do registro',rows=[];const meds=await allMedications(),m=meds.find(x=>x.id===e.medicationId)||findProfileByEvent(e,meds),p=findPresentation(m,e.presentationId),presentation=p?presentationDisplay(p):'';\nif(e.type==='note'){title='Anota√ß√£o';rows=[registroDetailRow('Anota√ß√£o',e.text||'Anota√ß√£o de voz'),registroDetailRow('Tag',e.tag),registroDetailRow('Data e hor√°rio',registroDetailDate(e.timestamp))]}\nelse if(e.type==='medication'){title='Medicamento';rows=[registroDetailRow('Medicamento',e.medication||'Medicamento'),registroDetailRow('Apresenta√ß√£o',presentation),registroDetailRow('Dose',e.dose||(e.totalDoseValue!=null?`${e.totalDoseValue} ${e.doseUnit||''}`.trim():'')),registroDetailRow('Quantidade',e.unitsTaken?`${e.unitsTaken} unidade(s)`:e.quantity),registroDetailRow('Observa√ß√£o',e.note),registroDetailRow('Data e hor√°rio',registroDetailDate(e.timestamp))]}\nelse if(e.type==='sleep'){title='Sono';rows=[registroDetailRow('Dormiu √†s',registroDetailDate(e.startTime)),registroDetailRow('Acordou √†s',registroDetailDate(e.endTime)),registroDetailRow('Dura√ß√£o',durationLabel(durationHours(e.startTime,e.endTime))),registroDetailRow('Qualidade percebida',e.quality?`${e.quality} de 5`:''),registroDetailRow('Observa√ß√µes',e.note),registroDetailRow('Origem',e.source==='health-shortcut'?'Importado do app Sa√∫de':'Manual')]}\nelse if(e.type==='purchase'){title='Compra';rows=[registroDetailRow('Medicamento',e.medication||'Medicamento'),registroDetailRow('Apresenta√ß√£o',presentation),registroDetailRow('Caixas',e.packages),registroDetailRow('Total de unidades',e.totalUnits),registroDetailRow('Valor pago',e.price),registroDetailRow('Onde comprou',e.place),registroDetailRow('Data e hor√°rio',registroDetailDate(e.timestamp))]}\nelse return;\nconst audio=e.hasAudio?`<div class=\"analysis-row\"><strong>√Åudio</strong><span data-audio=\"${e.id}\"></span></div>`:'';\nopenBackdrop(title,`<div class=\"analysis-stack\">${rows.join('')}${audio}</div><div class=\"form-actions\"><button type=\"button\" class=\"secondary-button\" id=\"viewerCloseBtn\">Fechar</button><button type=\"button\" class=\"primary-button\" id=\"viewerEditBtn\">Editar</button></div>`,ev=>ev.preventDefault());\ndocument.getElementById('viewerCloseBtn').onclick=closeSheet;document.getElementById('viewerEditBtn').onclick=()=>openEventEditor(id);if(e.hasAudio)await hydrateAudio(document.getElementById('form'))}\n\ndocument.addEventListener('click',e=>{if(e.target.closest('[data-menu],button,audio,input,textarea,select,a'))return;const card=e.target.closest('.timeline-item');if(!card)return;const id=card.querySelector('[data-menu]')?.dataset.menu;if(!id)return;e.preventDefault();e.stopImmediatePropagation();openEventViewer(id)},true);\n\n/* Cores sem√¢nticas: o mesmo tipo de registro mant√©m a mesma identidade em todas as telas. */\n(function ensureSemanticIconColors(){if(document.getElementById('semantic-icon-colors'))return;const st=document.createElement('style');st.id='semantic-icon-colors';st.textContent=`\n[data-icon=\"note\"]{color:var(--accent)!important}\n[data-icon=\"pill\"]{color:var(--med)!important}\n[data-icon=\"moon\"]{color:var(--sleep)!important}\n[data-icon=\"bag\"]{color:var(--buy)!important}\n`;document.head.appendChild(st)})();\n\n/* Prote√ß√£o de inicializa√ß√£o: antes mesmo dos motores extras chegarem, s√≥ a aba vis√≠vel √© renderizada. */\n(function installEarlyPerformanceGuard(){\n  if(typeof renderAll==='function')renderAll=async function(){\n    if(!db)return;const events=(await allEvents()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));const view=document.querySelector('.view.active')?.dataset.view||'home';\n    if(view==='history')await renderHistory(events);else if(view==='analysis')await renderAnalysis(events);else if(view==='home')await renderHome(events);\n    renderBackupState();renderHealthState();\n  };\n  if(typeof switchTab==='function'&&!switchTab.__rmEarlyPerformance&&!switchTab.__rmPerformance){const previous=switchTab;const wrapped=function(name){previous(name);requestAnimationFrame(()=>{if(typeof renderAll==='function')renderAll().catch?.(console.error)})};wrapped.__rmEarlyPerformance=true;wrapped.__rmPrevious=previous;switchTab=wrapped}\n\n  /* Dados fict√≠cios s√≥ s√£o baixados quando o banco realmente est√° vazio. */\n  if(typeof loadRichDemoScript==='function'&&!loadRichDemoScript.__rmOptimized){const previousDemoLoader=loadRichDemoScript;const optimized=async function(){try{if(db&&(await allEvents()).length){globalThis.ensureRichDemoData=globalThis.ensureRichDemoData||(async()=>{});return}}catch{}return previousDemoLoader()};optimized.__rmOptimized=true;loadRichDemoScript=optimized}\n})();\n\n/* Carregamento otimizado: define primeiro o perfil visual leve e s√≥ depois monta os motores gr√°ficos. */\n(function loadOptimizedEngines(){\n  const load=(src,key)=>new Promise((resolve,reject)=>{if(document.querySelector(`script[data-engine-key=\"${key}\"]`))return resolve();const s=document.createElement('script');s.dataset.engineKey=key;s.src=src;s.onload=()=>{try{if(typeof rmInstallPerformanceRuntime==='function')rmInstallPerformanceRuntime()}catch{}resolve()};s.onerror=()=>{console.error(`Falha ao carregar ${key}`);reject(new Error(key))};document.head.appendChild(s)});\n  const idle=()=>new Promise(resolve=>{if('requestIdleCallback'in window)requestIdleCallback(()=>resolve(),{timeout:1200});else setTimeout(resolve,350)});\n  const start=async()=>{\n    /* O padr√£o visual √© decidido antes de blur, glow e gr√°ficos entrarem no DOM. */\n    try{await load('./v04c25.js?v=0.4.25','optimized-default')}catch{}\n    try{await load('./v04c19.js?v=0.4.25','performance')}catch{}\n    const emotion=load('./v04c12.js?v=0.4.25','emotion');\n    const palette=load('./v04c15.js?v=0.4.25','semantic-palette');\n    const icons=load('./v04c16.js?v=0.4.25','record-icons');\n    await Promise.allSettled([emotion,palette,icons]);\n    try{if(typeof rmInstallPerformanceRuntime==='function')rmInstallPerformanceRuntime()}catch{}\n    await Promise.resolve(emotion).then(()=>load('./v04c18.js?v=0.4.25','visual')).catch(()=>{});\n    try{if(typeof rmInstallPerformanceRuntime==='function')rmInstallPerformanceRuntime()}catch{}\n    try{await load('./v04c20.js?v=0.4.25','visual-mode')}catch{}\n    try{await load('./v04c21.js?v=0.4.25','settings-layout')}catch{}\n    try{if(typeof rmV25FinalizeVisualMode==='function')rmV25FinalizeVisualMode()}catch{}\n    try{if(typeof rmInstallPerformanceRuntime==='function')rmInstallPerformanceRuntime()}catch{}\n\n    await idle();\n    const learning=load('./v04c11.js?v=0.4.25','learning');\n    await Promise.allSettled([learning]);\n    try{if(typeof rmInstallPerformanceRuntime==='function')rmInstallPerformanceRuntime()}catch{}\n    const continuity=Promise.resolve(learning).then(()=>load('./v04c13.js?v=0.4.25','continuity'));\n    await Promise.allSettled([continuity]);\n    try{await load('./v04c22.js?v=0.4.25','health-hub')}catch{}\n    try{if(typeof rmInstallPerformanceRuntime==='function')rmInstallPerformanceRuntime()}catch{}\n    await Promise.resolve(continuity).then(()=>load('./v04c14.js?v=0.4.25','interview')).catch(()=>{});\n    try{await load('./v04c23.js?v=0.4.25','analysis-review')}catch{}\n    try{await load('./v04c24.js?v=0.4.25','v24-fixes')}catch{}\n    try{await load('./v04c26.js?v=0.4.26','tabbar-lab-fix')}catch{}\n    try{if(typeof rmV25FinalizeVisualMode==='function')rmV25FinalizeVisualMode()}catch{}\n    try{if(typeof rmInstallPerformanceRuntime==='function')rmInstallPerformanceRuntime()}catch{}\n    try{await load('./v04c27.js?v=0.4.27','batch-revision')}catch{}\n    try{if(typeof rmV27Finalize==='function')rmV27Finalize()}catch{}\n  };\n  start();\n})();\n";document.head.appendChild(s);s.remove();})();
 
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hò\ﬁ[ò»ù[ò›[€àô[ô\í€YJ]ô[ù ^ÿ€€ú›Ÿ^O[ÿÿ[]Jô]»]J
-JK^OY]ô[ùÀôö[\äOOô]ô[ù^JJOOO]Ÿ^JKú€‹ù
+/* ---- v04c25.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.25 ‚Äî Otimizado passa a ser o visual padr√£o. Ultra continua opcional. */\nconst RM_V25_RELEASE='1.2.0-beta.44';\nconst RM_V25_SETTINGS_KEY='registro-beta-settings-v1';\n\nfunction rmV25StoredMode(){\n  try{\n    const raw=JSON.parse(localStorage.getItem(RM_V25_SETTINGS_KEY)||'{}');\n    if(raw.visualMode==='ultra'||raw.visualMode==='optimized')return raw.visualMode;\n    raw.visualMode='optimized';\n    localStorage.setItem(RM_V25_SETTINGS_KEY,JSON.stringify(raw));\n    return 'optimized';\n  }catch{return 'optimized'}\n}\n\n/* Executa antes do motor visual pesado: instala√ß√µes sem escolha expl√≠cita j√° come√ßam leves. */\ndocument.documentElement.dataset.visualMode=rmV25StoredMode();\n\nfunction rmV25EnsureStyles(){\n  let st=document.getElementById('rm-v25-optimized-style');\n  if(!st){st=document.createElement('style');st.id='rm-v25-optimized-style'}\n  st.textContent=`\n/* OTIMIZADO: identidade, cor e hierarquia permanecem; efeitos caros deixam de ser padr√£o. */\nhtml[data-visual-mode=\"optimized\"] body{background:var(--bg,#f7f8fc)!important;background-image:none!important}\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] body{background:#08090d!important;background-image:none!important}\n@media(prefers-color-scheme:dark){html[data-theme=\"system\"][data-visual-mode=\"optimized\"] body{background:#08090d!important;background-image:none!important}}\n\nhtml[data-visual-mode=\"optimized\"] .summary-card,\nhtml[data-visual-mode=\"optimized\"] .analysis-card,\nhtml[data-visual-mode=\"optimized\"] .settings-card,\nhtml[data-visual-mode=\"optimized\"] .notice-card,\nhtml[data-visual-mode=\"optimized\"] .timeline-item,\nhtml[data-visual-mode=\"optimized\"] .empty-state,\nhtml[data-visual-mode=\"optimized\"] .registry-card,\nhtml[data-visual-mode=\"optimized\"] .learning-question,\nhtml[data-visual-mode=\"optimized\"] .presentation-row,\nhtml[data-visual-mode=\"optimized\"] .med-note-row,\nhtml[data-visual-mode=\"optimized\"] .package-row,\nhtml[data-visual-mode=\"optimized\"] .autocomplete-results{\n  background:var(--surface,#fff)!important;background-image:none!important;\n  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;\n  box-shadow:0 2px 9px rgba(38,43,70,.055)!important;\n}\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .summary-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .analysis-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .settings-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .notice-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .timeline-item{\n  box-shadow:0 2px 9px rgba(0,0,0,.20)!important;\n}\n\n/* A√ß√µes continuam identific√°veis por cor, sem halo cont√≠nuo nem degrad√™. */\nhtml[data-visual-mode=\"optimized\"] .action-card{\n  background:color-mix(in srgb,var(--rm-card-accent,var(--accent)) 5%,var(--surface,#fff))!important;\n  background-image:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;\n  box-shadow:0 2px 8px rgba(38,43,70,.055)!important;\n}\nhtml[data-visual-mode=\"optimized\"] .action-icon,\nhtml[data-visual-mode=\"optimized\"] .analysis-title>span,\nhtml[data-visual-mode=\"optimized\"] .notice-icon,\nhtml[data-visual-mode=\"optimized\"] .settings-row-icon,\nhtml[data-visual-mode=\"optimized\"] .rm-insight-icon,\nhtml[data-visual-mode=\"optimized\"] .rm-chart-title-icon{filter:none!important;text-shadow:none!important}\n\nhtml[data-visual-mode=\"optimized\"] .sheet,\nhtml[data-visual-mode=\"optimized\"] .sheet-header,\nhtml[data-visual-mode=\"optimized\"] .tab-bar,\nhtml[data-visual-mode=\"optimized\"] .capsule-tabbar{\n  backdrop-filter:none!important;-webkit-backdrop-filter:none!important;\n}\nhtml[data-visual-mode=\"optimized\"] .sheet{background:var(--surface,#fff)!important;background-image:none!important;box-shadow:0 -8px 24px rgba(0,0,0,.13)!important}\nhtml[data-visual-mode=\"optimized\"] .tab-bar,\nhtml[data-visual-mode=\"optimized\"] .capsule-tabbar{box-shadow:0 4px 14px rgba(0,0,0,.09)!important}\nhtml[data-visual-mode=\"optimized\"] .tab-bubble{box-shadow:0 2px 7px rgba(0,0,0,.08)!important}\n\n/* Controles comuns quase planos. */\nhtml[data-visual-mode=\"optimized\"] .round-button,\nhtml[data-visual-mode=\"optimized\"] .sheet-close,\nhtml[data-visual-mode=\"optimized\"] .filter-chip,\nhtml[data-visual-mode=\"optimized\"] .secondary-button,\nhtml[data-visual-mode=\"optimized\"] .tiny-clear,\nhtml[data-visual-mode=\"optimized\"] .chart-review-btn,\nhtml[data-visual-mode=\"optimized\"] .segmented{box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}\nhtml[data-visual-mode=\"optimized\"] .primary-button,\nhtml[data-visual-mode=\"optimized\"] .full-button,\nhtml[data-visual-mode=\"optimized\"] .filter-chip.selected{box-shadow:0 2px 8px color-mix(in srgb,var(--accent) 10%,transparent)!important}\nhtml[data-visual-mode=\"optimized\"] .field input,\nhtml[data-visual-mode=\"optimized\"] .field textarea,\nhtml[data-visual-mode=\"optimized\"] .field select{box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}\nhtml[data-visual-mode=\"optimized\"] .field input:focus,\nhtml[data-visual-mode=\"optimized\"] .field textarea:focus,\nhtml[data-visual-mode=\"optimized\"] .field select:focus{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 14%,transparent)!important}\n\n/* An√°lises: cor continua informativa, mas por borda, √≠cone e tipografia ‚Äî n√£o por camadas luminosas. */\nhtml[data-visual-mode=\"optimized\"] [data-view=\"analysis\"] .rm-analysis-colored{\n  background:var(--surface,#fff)!important;background-image:none!important;\n  border-color:color-mix(in srgb,var(--rm-analysis-tone,var(--accent)) 22%,var(--separator))!important;\n  box-shadow:0 2px 9px rgba(38,43,70,.05)!important;\n}\nhtml[data-visual-mode=\"optimized\"] [data-view=\"analysis\"] .rm-insight-row{\n  background:color-mix(in srgb,var(--rm-row-tone,var(--accent)) 5%,var(--surface-2,var(--surface,#fff)))!important;\n  background-image:none!important;border-color:color-mix(in srgb,var(--rm-row-tone,var(--accent)) 17%,var(--separator))!important;\n  box-shadow:none!important;\n}\nhtml[data-visual-mode=\"optimized\"] [data-view=\"analysis\"] .rm-insight-icon,\nhtml[data-visual-mode=\"optimized\"] [data-view=\"analysis\"] .rm-chart-title-icon{box-shadow:none!important}\nhtml[data-visual-mode=\"optimized\"] #sleepAnalysis .metric{\n  background:color-mix(in srgb,var(--record-sleep,var(--sleep)) 7%,var(--surface,#fff))!important;\n  background-image:none!important;box-shadow:none!important;\n}\nhtml[data-visual-mode=\"optimized\"] #sleepAnalysis .metric strong{text-shadow:none!important}\n\n/* Gr√°ficos mant√™m as cores dos dados. Apenas filtros/halos caros saem. */\nhtml[data-visual-mode=\"optimized\"] .rm-emotion-chart [filter],\nhtml[data-visual-mode=\"optimized\"] .rm-mood-bars [filter],\nhtml[data-visual-mode=\"optimized\"] .rm-mood-scatter [filter]{filter:none!important}\nhtml[data-visual-mode=\"optimized\"] .rm-emotion-chart path[mask]{opacity:.10!important}\nhtml[data-visual-mode=\"optimized\"] .dashboard-chart{will-change:auto!important}\n\n/* Glow fica apenas onde comunica sele√ß√£o/estado importante. */\nhtml[data-visual-mode=\"optimized\"] .mood-score{box-shadow:none!important}\nhtml[data-visual-mode=\"optimized\"] .mood-score.selected{\n  box-shadow:0 0 0 2px color-mix(in srgb,var(--mood-border) 62%,white 38%),0 0 8px var(--mood-glow)!important;\n  transform:scale(1.09) translateY(-1px)!important\n}\nhtml[data-visual-mode=\"optimized\"] .emotion-scale button{box-shadow:none!important}\nhtml[data-visual-mode=\"optimized\"] .emotion-scale button.selected{box-shadow:0 0 6px color-mix(in srgb,var(--dimension-color) 18%,transparent)!important}\nhtml[data-visual-mode=\"optimized\"] .rm-positive-text{text-shadow:none!important}\n\nhtml[data-visual-mode=\"optimized\"] button,\nhtml[data-visual-mode=\"optimized\"] .action-icon,\nhtml[data-visual-mode=\"optimized\"] .mood-score,\nhtml[data-visual-mode=\"optimized\"] .tab-bubble{transition-duration:.14s!important}\nhtml[data-visual-mode=\"optimized\"] .view.active .summary-card,\nhtml[data-visual-mode=\"optimized\"] .view.active .analysis-card,\nhtml[data-visual-mode=\"optimized\"] .view.active .settings-card,\nhtml[data-visual-mode=\"optimized\"] .view.active .action-card{animation-duration:.14s!important}\n`;\n  document.head.appendChild(st); /* recoloca no fim para vencer estilos Ultra carregados depois */\n}\n\nfunction rmV25FinalizeVisualMode(){\n  const mode=rmV25StoredMode();document.documentElement.dataset.visualMode=mode;\n  const control=document.getElementById('visualModeControl');\n  if(control){\n    const optimized=control.querySelector('[data-visual-mode=\"optimized\"]'),ultra=control.querySelector('[data-visual-mode=\"ultra\"]');\n    if(optimized&&ultra){optimized.textContent='Otimizado';ultra.textContent='Ultra';control.insertBefore(optimized,ultra)}\n    if(typeof updateSegmentIndicator==='function')updateSegmentIndicator(control,'visualMode',mode);\n  }\n  const help=document.getElementById('visualModeHelp');\n  if(help)help.textContent=mode==='optimized'?'Padr√£o. Mant√©m cores e identidade com poucos efeitos para m√°xima fluidez.':'Efeitos completos: degrad√™s, glow, blur e maior profundidade visual.';\n  rmV25EnsureStyles();\n  const top=document.getElementById('topVersion'),about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V25_RELEASE}`;if(about)about.textContent=RM_V25_RELEASE;\n}\n\n/* Se o usu√°rio trocar a op√ß√£o, mant√©m a prefer√™ncia expl√≠cita e reaplica a vers√£o leve/Ultra sem reconstruir a tela. */\ndocument.addEventListener('click',e=>{\n  const b=e.target.closest('[data-visual-mode]');if(!b)return;\n  setTimeout(()=>{rmV25FinalizeVisualMode()},0)\n},true);\n\nrmV25EnsureStyles();\nsetTimeout(rmV25FinalizeVisualMode,0);\n";document.head.appendChild(s);s.remove();})();
 
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JKõ›\œY^Kôö[\äOOôKù\OOOI€õ›I KYYœY^Kôö[\äOOôKù\OOOI€YYXÿ][€â K€Y\œY^Kôö[\äOOôKù\OOOI‹€Y\	 Kù^\œY^Kôö[\äOOôKù\OOOI‹\ò⁄\ŸI NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ]SXô[	 Kù^€€ù[ùX⁄ôH0≠»	€ô]»]J
-Kù”ÿÿ[Q]T›ö[ô 	‹PîâÀŸ^NâÃãYY⁄]	À[€ùâ‹⁄‹ù	ﬂJ_X€]€Y\I”ô[ö[IŒ⁄Yä€Y\÷ÃJ\€Y\X	Ÿ\ò][€ìXô[
-\ò][€í›\ú €Y\÷ÃKú›\ù[YK€Y\÷ÃKô[ô[YJJ_I‹€Y\÷ÃKú]X[]Oÿ0≠»‹[à€\‹œWú]X[]KZ[õ[ôWèè‹[à€\‹œWú]X[]KY›	‹]X[]P€€‹ê€\‹ €Y\÷ÃKú]X[]J_Wèè‹‹[èâ‹€Y\÷ÃKú]X[]_O‹‹[èòâ…ﬂXŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹›[[X\ûS\›	 Kö[õô\íSV‹›[[X\ûTõ› 	€õ›IÀ	–[õ›pÈÌY\…À›ö[ô õ›\Àõ[ô›
-JK›[[X\ûTõ› 	‹[	À	”YYXÿ[Y[ù‹…À›ö[ô YYÀõ[ô›
-JK›[[X\ûTõ› 	€[€€âÀ	‘€€õ…À€Y\
-K›[[X\ûTõ› 	ÿòY…À	–€€\ò\…À›ö[ô ù^\Àõ[ô›
-JWKöõ⁄[ä	… Nÿ€€ú›ôXŸ[ùY^Kú€XŸJJKõﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄€YU[Y[[ôI Nÿõﬁö[õô\íS\ôXŸ[ùõX\
-]ô[ùÿ\ô
-Köõ⁄[ä	… NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄€YQ[\I Kò€\‹”\›ùŸŸ€J	⁄Y[âÀôXŸ[ùõ[ô›å
-Nÿ]ÿZ]Yò]P]Y[ õﬁ
-_Wò\ﬁ[ò»ù[ò›[€àô[ô\í\›‹ûJ]ô[ù ^ÿ€€ú›ö[\ôYY]ô[ùÀôö[\äOOö\›‹ûQö[\èOOIÿ[	ﬂKù\OOOZ\›‹ûQö[\äKú€‹ù
+/* ---- v04c19.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Runtime de desempenho: renderiza apenas a aba vis√≠vel, memoriza telas prontas e evita reconstru√ß√µes desnecess√°rias. */\nconst RM_PERFORMANCE_VERSION='1.2.0-beta.44';\nconst RM_APP_RELEASE='0.4.24';\nlet rmRenderQueued=false,rmQueuedView=null,rmRenderSerial=0,rmDataRevision=0,rmHistoryLimit=80,rmHistoryFilterSeen=null,rmLastModuleSignature='';\nconst rmViewCache=new Map();\nconst RM_VIEW_TTL={home:30000,history:300000,analysis:300000,learning:300000,settings:60000};\n\nfunction rmActiveViewName(explicit=null){if(explicit)return explicit;return document.querySelector('.view.active')?.dataset.view||document.querySelector('.tab-item.selected')?.dataset.tab||'home'}\nfunction rmSortedEvents(events){return [...events].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp))}\nfunction rmInvalidate(...views){if(!views.length){rmViewCache.clear();return}views.forEach(v=>rmViewCache.delete(v))}\nfunction rmIsFresh(view){const c=rmViewCache.get(view),ttl=RM_VIEW_TTL[view]??60000;return Boolean(c&&c.revision===rmDataRevision&&Date.now()-c.at<ttl)}\nfunction rmMarkFresh(view){rmViewCache.set(view,{revision:rmDataRevision,at:Date.now()})}\n\nasync function rmRenderHistoryFast(events){\n  if(rmHistoryFilterSeen!==historyFilter){rmHistoryFilterSeen=historyFilter;rmHistoryLimit=80}\n  const filtered=events.filter(e=>historyFilter==='all'||e.type===historyFilter);\n  const shown=filtered.slice(0,rmHistoryLimit),container=document.getElementById('historyList');\n  if(!container)return;\n  let current='',html='';\n  for(const e of shown){const d=eventDay(e);if(d!==current){current=d;html+=`<div class=\"history-day\">${dayLabel(d)}</div>`}html+=eventCard(e)}\n  if(filtered.length>shown.length)html+=`<button type=\"button\" class=\"secondary-button full-button rm-history-more\" data-rm-history-more>Mostrar mais ${Math.min(80,filtered.length-shown.length)} registros</button>`;\n  container.innerHTML=html;\n  document.getElementById('historyEmpty')?.classList.toggle('hidden',filtered.length>0);\n  await hydrateAudio(container);\n}\n\nasync function rmRenderActive(view=null,{force=false}={}){\n  if(!db)return;\n  view=rmActiveViewName(view);\n  if(!force&&rmIsFresh(view))return;\n  const serial=++rmRenderSerial;\n  const events=rmSortedEvents(await allEvents());\n  if(serial!==rmRenderSerial)return;\n  let meds=null;\n  const needMeds=view==='home'||view==='analysis'||view==='learning';\n  if(needMeds)meds=await allMedications();\n  if(serial!==rmRenderSerial)return;\n\n  if(view==='home'){\n    await renderHome(events);\n    if(typeof renderContinuityHome==='function')await renderContinuityHome(events,meds||[]);\n  }else if(view==='history'){\n    await rmRenderHistoryFast(events);\n  }else if(view==='analysis'){\n    await renderAnalysis(events);\n    if(typeof renderQuantitativeDashboard==='function')await renderQuantitativeDashboard(events);\n    if(typeof renderContinuityAnalysis==='function')await renderContinuityAnalysis(events,meds||[]);\n    if(typeof renderPersonalInterviewAnalysisContext==='function')renderPersonalInterviewAnalysisContext();\n    if(typeof rmFixAnalysisCopy==='function')rmFixAnalysisCopy();\n    if(typeof rmV24ColorizeAnalysis==='function')rmV24ColorizeAnalysis();\n  }else if(view==='learning'){\n    if(typeof renderLearning==='function')await renderLearning();\n    if(typeof renderContinuityLearning==='function')await renderContinuityLearning(events,meds||[]);\n    if(typeof renderPersonalInterview==='function')await renderPersonalInterview(events,meds||[]);\n  }else if(view==='settings'){\n    if(typeof ensureContinuitySettingsUI==='function')ensureContinuitySettingsUI();\n    if(typeof rmV24ConsolidateHealthSettings==='function')rmV24ConsolidateHealthSettings();\n    renderBackupState();renderHealthState();\n  }\n  if(typeof rmApplyDimensionColors==='function')rmApplyDimensionColors(document.querySelector(`.view[data-view=\"${view}\"]`)||document);\n  if(serial===rmRenderSerial)rmMarkFresh(view);\n}\nfunction rmScheduleRender(view=null,force=false){\n  rmQueuedView=view||rmQueuedView;\n  if(force&&rmQueuedView)rmInvalidate(rmQueuedView);\n  if(rmRenderQueued)return;\n  rmRenderQueued=true;\n  requestAnimationFrame(()=>{rmRenderQueued=false;const next=rmQueuedView;rmQueuedView=null;rmRenderActive(next,{force}).catch(err=>console.error('Falha ao renderizar aba',err))});\n}\nfunction rmWrapDataMutation(name){\n  try{const fn=globalThis[name];if(typeof fn!=='function'||fn.__rmPerformanceWrapped)return;const wrapped=async function(...args){const result=await fn(...args);rmDataRevision++;rmInvalidate();return result};wrapped.__rmPerformanceWrapped=true;globalThis[name]=wrapped}catch{}\n}\nfunction rmWrapSettingsMutation(){\n  try{if(typeof saveSettings!=='function'||saveSettings.__rmPerformanceWrapped)return;const fn=saveSettings,wrapped=function(...args){const result=fn(...args);rmDataRevision++;rmInvalidate();return result};wrapped.__rmPerformanceWrapped=true;saveSettings=wrapped}catch{}\n}\nfunction rmInstallPerformanceRuntime(){\n  if(typeof renderAll==='function')renderAll=async function(){return rmRenderActive(null,{force:true})};\n  if(typeof switchTab==='function'&&!switchTab.__rmPerformance){\n    const previous=switchTab.__rmEarlyPerformance&&switchTab.__rmPrevious?switchTab.__rmPrevious:switchTab;\n    const wrapped=function(name){previous(name);rmScheduleRender(name)};\n    wrapped.__rmPerformance=true;wrapped.__rmPrevious=previous;switchTab=wrapped;\n  }\n  ['putEvent','deleteEvent','putMedication','deleteMedication'].forEach(rmWrapDataMutation);rmWrapSettingsMutation();\n  try{if(typeof rmObserver!=='undefined')rmObserver.disconnect()}catch{}\n  const signature=[typeof renderQuantitativeDashboard,typeof renderLearning,typeof renderContinuityHome,typeof renderPersonalInterview,typeof rmV24ColorizeAnalysis].join('|');\n  if(signature!==rmLastModuleSignature){rmLastModuleSignature=signature;rmInvalidate()}\n  const top=document.getElementById('topVersion'),about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_APP_RELEASE}`;if(about)about.textContent=RM_APP_RELEASE;\n  document.documentElement.dataset.rmPerformance='1';\n}\nrmInstallPerformanceRuntime();\n\ndocument.addEventListener('click',e=>{const more=e.target.closest('[data-rm-history-more]');if(!more)return;e.preventDefault();rmHistoryLimit+=80;rmInvalidate('history');rmScheduleRender('history',true)});\n\n/* Elementos fora da tela deixam de consumir pintura; blur √© mantido com custo menor no iPhone. */\n(function rmPerformanceStyles(){if(document.getElementById('rm-performance-style'))return;const st=document.createElement('style');st.id='rm-performance-style';st.textContent=`\n.view:not(.active){display:none!important}\n[data-view=\"history\"] .timeline-item,[data-view=\"learning\"] .learning-question,[data-view=\"analysis\"] .analysis-card{content-visibility:auto;contain-intrinsic-size:110px}\n[data-view=\"analysis\"] .dashboard-chart{content-visibility:auto;contain-intrinsic-size:360px}\n.rm-history-more{margin:14px 0 28px;width:100%}\n@media (max-width:600px){.summary-card,.analysis-card,.settings-card,.notice-card,.action-card{backdrop-filter:blur(10px) saturate(132%);-webkit-backdrop-filter:blur(10px) saturate(132%)}.sheet{backdrop-filter:blur(16px) saturate(138%);-webkit-backdrop-filter:blur(16px) saturate(138%)}}\n`;document.head.appendChild(st)})();\n";document.head.appendChild(s);s.remove();})();
 
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JK€€ùZ[ô\èYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄\›‹ûS\›	 Nÿ€€ùZ[ô\ãö[õô\íSI…Œ€]›\úô[ùI…ŒŸõ‹ä€€ú›HŸàö[\ôY
-^ÿ€€ú›Y]ô[ù^JJN⁄YäOOX›\úô[ù
-^ÿ›\úô[ùYÿ€€ùZ[ô\ãö[úŸ\ùYòXŸ[ùS
-	ÿôYõ‹ôY[ô	À]à€\‹œWö\›‹ûKY^WèâŸ^SXô[
-
-_OŸ]èò
-_X€€ùZ[ô\ãö[úŸ\ùYòXŸ[ùS
-	ÿôYõ‹ôY[ô	À]ô[ùÿ\ô
-JJ_Yÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄\›‹ûQ[\I Kò€\‹”\›ùŸŸ€J	⁄Y[âÀö[\ôYõ[ô›å
-Nÿ]ÿZ]Yò]P]Y[ €€ùZ[ô\ä_Wôù[ò›[€à[ò[\⁄\‘õ› ]K^
-^‹ô]\õò]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœâŸ\ÿ ]J_O‹›õ€ôœè‹[èâŸ\ÿ ^
-_O‹‹[èèŸ]èòWôù[ò›[€àY]öX ò[YKXô[
-^‹ô]\õò]à€\‹œWõY]öX◊èè›õ€ôœâŸ\ÿ ò[YJ_O‹›õ€ôœè‹[èâŸ\ÿ Xô[
-_O‹‹[èèŸ]èòWôù[ò›[€à[€Ÿ\õ\ ^I… ^ÿ€€ú›[õ‹õX[^ôU^
-^
-K\õ\œV…ÿÿ[[…À	›ò[ú]Z[…À	ÿô[IÀ	Ÿô[^âÀ	ÿ[ú⁄[‹€…À	ÿ[ú⁄YYYIÀ	⁄\úö]Y…À	›ö\›IÀ	ÿY⁄]Y…À	ÿÿ[úÿY…À	‹€€õ€[ù…À	⁄[ú€€öXIÀ	Ÿõÿ€…À	ÿ€€òŸ[ùòY…À	Ÿ‹àHÿXôXÿIÀ	€ò]\ŸXIÀ	›€ù\òI◊N‹ô]\õà\õ\Àôö[\ä\õOOùö[ò€Y\ õ‹õX[^ôU^
-\õJJJ_Wóôù[ò›[€à›\úô[ùﬁX€J]ô[ù ^ÿ€€ú›€Y\œY]ô[ùÀôö[\äOOôKù\OOOI‹€Y\	…âôKô[ô[YIâõô]»]JKô[ô[YJO[ô]»]J
-JKú€‹ù
+/* ---- v04c12.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Check-ins emocionais, gr√°ficos locais e revis√£o revers√≠vel da aba An√°lises. */\nconst EMOTION_ENGINE_VERSION='1.2.0-beta.44';\nconst EMOTION_DEFAULT_DIMENSIONS=[\n  {id:'anxiety',label:'Ansiedade',low:'nenhuma',high:'muito intensa',active:true},\n  {id:'happiness',label:'Felicidade',low:'nenhuma',high:'muito intensa',active:true},\n  {id:'energy',label:'Energia',low:'nenhuma',high:'muito alta',active:true},\n  {id:'irritability',label:'Irritabilidade',low:'nenhuma',high:'muito intensa',active:true},\n  {id:'activation',label:'Agita√ß√£o / ativa√ß√£o',low:'nenhuma',high:'muito intensa',active:true},\n  {id:'sadness',label:'Tristeza',low:'nenhuma',high:'muito intensa',active:true},\n  {id:'concentration',label:'Concentra√ß√£o',low:'muito baixa',high:'muito alta',active:true},\n  {id:'sleepiness',label:'Sonol√™ncia',low:'nenhuma',high:'muito intensa',active:true}\n];\nconst ANALYSIS_REVIEW_DEFS={\n  'analysis-current':'An√°lise atual',\n  'analysis-associations':'Associa√ß√µes temporais',\n  'analysis-sleep-summary':'Resumo de sono',\n  'analysis-medications':'Medicamentos',\n  'analysis-purchases':'Compras',\n  'chart-mood-line':'Humor ao longo do tempo',\n  'chart-mood-distribution':'Distribui√ß√£o das notas de humor',\n  'chart-dimension-line':'Dimens√µes emocionais',\n  'chart-sleep-line':'Dura√ß√£o do sono',\n  'chart-sleep-mood':'Sono √ó humor seguinte',\n  'chart-med-delta':'Mudan√ßa de humor ap√≥s medicamentos',\n  'chart-med-concepts':'Relatos ap√≥s medicamentos'\n};\n\nfunction emotionDimensions(){const s=getSettings(),saved=Array.isArray(s.emotionDimensions)?s.emotionDimensions:[];const byId=new Map(saved.map(x=>[x.id,x]));const defaults=EMOTION_DEFAULT_DIMENSIONS.map(d=>({...d,...(byId.get(d.id)||{})}));const custom=saved.filter(x=>!EMOTION_DEFAULT_DIMENSIONS.some(d=>d.id===x.id));return[...defaults,...custom]}\nfunction emotionSaveDimensions(list){const s=getSettings();s.emotionDimensions=list;saveSettings(s)}\nfunction emotionMoodScore(){const selected=document.querySelector('[data-mood-score].selected');return selected?Number(selected.dataset.moodScore):null}\nfunction emotionScoresFromForm(){const out={};document.querySelectorAll('[data-emotion-dimension]').forEach(row=>{const chosen=row.querySelector('[data-emotion-score].selected');if(chosen)out[row.dataset.emotionDimension]=Number(chosen.dataset.emotionScore)});return out}\nfunction emotionLabelsSnapshot(scores){const dims=emotionDimensions(),out={};Object.keys(scores).forEach(id=>{out[id]=dims.find(d=>d.id===id)?.label||id});return out}\nfunction emotionSelectMood(value){document.querySelectorAll('[data-mood-score]').forEach(b=>b.classList.toggle('selected',value!==null&&value!==undefined&&Number(b.dataset.moodScore)===Number(value)))}\nfunction emotionSelectDimension(id,value){const row=document.querySelector(`[data-emotion-dimension=\"${CSS.escape(id)}\"]`);row?.querySelectorAll('[data-emotion-score]').forEach(b=>b.classList.toggle('selected',Number(b.dataset.emotionScore)===Number(value)))}\nfunction emotionMoodSelectorHTML(value=null){return`<div class=\"mood-block\"><div class=\"mood-scale-labels\"><span>0 ¬∑ muito mal</span><span>5 ¬∑ neutro</span><span>10 ¬∑ muito bem</span></div><div class=\"mood-scale\">${Array.from({length:11},(_,n)=>`<button type=\"button\" class=\"mood-score ${value!==null&&value!==undefined&&Number(value)===n?'selected':''}\" data-mood-score=\"${n}\" style=\"--mood-h:${n*12}\">${n}</button>`).join('')}</div><button type=\"button\" class=\"tiny-clear\" id=\"clearMoodScore\">Limpar nota</button></div>`}\nfunction emotionDimensionHTML(d,value=null){return`<div class=\"emotion-dimension\" data-emotion-dimension=\"${esc(d.id)}\"><div class=\"emotion-dimension-head\"><strong>${esc(d.label)}</strong><button type=\"button\" class=\"tiny-clear\" data-clear-dimension=\"${esc(d.id)}\">Limpar</button></div><div class=\"emotion-scale\">${[0,1,2,3,4,5].map(n=>`<button type=\"button\" data-emotion-score=\"${n}\" class=\"${value!==null&&value!==undefined&&Number(value)===n?'selected':''}\">${n}</button>`).join('')}</div><div class=\"emotion-scale-caption\"><span>0 ¬∑ ${esc(d.low||'nenhuma')}</span><span>5 ¬∑ ${esc(d.high||'muito intensa')}</span></div></div>`}\nfunction emotionAdvancedHTML(values={}){const dims=emotionDimensions().filter(d=>d.active!==false);return`<details class=\"emotion-advanced\" id=\"emotionAdvanced\"><summary>Detalhar emo√ß√µes</summary><p class=\"helper\">Opcional. Nenhuma dimens√£o recebe valor automaticamente.</p><div id=\"emotionDimensionsList\">${dims.map(d=>emotionDimensionHTML(d,values[d.id])).join('')}</div><button type=\"button\" class=\"secondary-button full-button\" id=\"addEmotionDimensionBtn\">+ Criar nova dimens√£o</button><div class=\"emotion-new-dimension hidden\" id=\"emotionNewDimension\"><div class=\"field\"><label>Nome da dimens√£o</label><input id=\"emotionDimensionName\" placeholder=\"Ex.: despersonaliza√ß√£o\"></div><div class=\"field-grid\"><div class=\"field\"><label>0 significa</label><input id=\"emotionDimensionLow\" placeholder=\"nenhuma\"></div><div class=\"field\"><label>5 significa</label><input id=\"emotionDimensionHigh\" placeholder=\"muito intensa\"></div></div><div class=\"learning-actions\"><button type=\"button\" class=\"primary-button\" id=\"saveEmotionDimensionBtn\">Adicionar</button><button type=\"button\" class=\"secondary-button\" id=\"cancelEmotionDimensionBtn\">Cancelar</button></div></div></details>`}\nfunction wireEmotionControls(){document.querySelectorAll('[data-mood-score]').forEach(b=>b.onclick=()=>emotionSelectMood(b.dataset.moodScore));document.getElementById('clearMoodScore')?.addEventListener('click',()=>emotionSelectMood(null));document.querySelectorAll('[data-emotion-dimension]').forEach(row=>row.querySelectorAll('[data-emotion-score]').forEach(b=>b.onclick=()=>{row.querySelectorAll('[data-emotion-score]').forEach(x=>x.classList.toggle('selected',x===b))}));document.querySelectorAll('[data-clear-dimension]').forEach(b=>b.onclick=()=>{const row=b.closest('[data-emotion-dimension]');row?.querySelectorAll('[data-emotion-score]').forEach(x=>x.classList.remove('selected'))});const add=document.getElementById('addEmotionDimensionBtn'),panel=document.getElementById('emotionNewDimension');if(add&&panel)add.onclick=()=>{panel.classList.remove('hidden');add.classList.add('hidden');document.getElementById('emotionDimensionName')?.focus()};document.getElementById('cancelEmotionDimensionBtn')?.addEventListener('click',()=>{panel?.classList.add('hidden');add?.classList.remove('hidden')});document.getElementById('saveEmotionDimensionBtn')?.addEventListener('click',()=>{const name=document.getElementById('emotionDimensionName')?.value.trim();if(!name)return toast('D√™ um nome √† dimens√£o.');const low=document.getElementById('emotionDimensionLow')?.value.trim()||'nenhuma',high=document.getElementById('emotionDimensionHigh')?.value.trim()||'muito intensa',id=`custom-${normalizeText(name).replace(/\\s+/g,'-')}-${Date.now().toString(36)}`,list=emotionDimensions();const d={id,label:name,low,high,active:true,custom:true};list.push(d);emotionSaveDimensions(list);document.getElementById('emotionDimensionsList')?.insertAdjacentHTML('beforeend',emotionDimensionHTML(d));panel?.classList.add('hidden');add?.classList.remove('hidden');wireEmotionControls();toast('Dimens√£o adicionada.')})}\n\nconst emotionPreviousOpenNoteSheet=openNoteSheet;\nopenNoteSheet=async function(){currentType='note';pendingAudio=null;const now=toLocalInput();openBackdrop('Nova anota√ß√£o',`<div class=\"field\"><label>Como voc√™ est√° se sentindo agora?</label>${emotionMoodSelectorHTML()}</div>${emotionAdvancedHTML()}<div class=\"field\"><label for=\"noteText\">Anota√ß√£o opcional</label><textarea id=\"noteText\" rows=\"4\" data-autogrow placeholder=\"Escreva o quanto precisar ‚Äî ou deixe em branco e salve apenas sua nota emocional.\"></textarea></div><div class=\"voice-row\"><button type=\"button\" class=\"voice-button\" id=\"voiceBtn\">üéô Gravar voz</button><span class=\"voice-status\" id=\"voiceStatus\">Opcional. O √°udio fica neste aparelho.</span></div><div class=\"field\"><label for=\"noteTag\">Tag opcional</label><input id=\"noteTag\" placeholder=\"Ex.: ansiedade, calma, sono\"></div>${dateField('recordTime','Data e hor√°rio',now,{showNow:true,reserveNow:true})}<p class=\"helper\">‚Äúagora‚Äù desaparece se voc√™ alterar a data ou o hor√°rio.</p>${formButtons()}`,saveForm);currentType='note';setupVoice();wireEmotionControls();if(typeof wireAutoGrowTextareas==='function')wireAutoGrowTextareas(document.getElementById('form'))}\n\nconst emotionPreviousSaveForm=saveForm;\nsaveForm=async function(ev){if(currentType!=='note')return emotionPreviousSaveForm(ev);ev.preventDefault();const text=document.getElementById('noteText')?.value.trim()||'',moodScore=emotionMoodScore(),emotionScores=emotionScoresFromForm(),timestampValue=document.getElementById('recordTime')?.value;if(!text&&!pendingAudio&&moodScore==null&&!Object.keys(emotionScores).length)return toast('Escreva, grave ou registre pelo menos uma nota emocional.');const timestamp=new Date(timestampValue);if(Number.isNaN(timestamp.getTime()))return toast('Informe uma data e hor√°rio v√°lidos.');const id=uid('note'),record={id,type:'note',timestamp:timestamp.toISOString(),text,tag:document.getElementById('noteTag')?.value.trim()||'',hasAudio:Boolean(pendingAudio),audioOnly:Boolean(pendingAudio&&!text),moodScore,emotionScores,emotionLabels:emotionLabelsSnapshot(emotionScores),demo:false};await putEvent(record);if(pendingAudio)await saveAudio(id,pendingAudio);closeSheet();await renderAll();toast('Registro salvo.')}\n\nconst emotionPreviousSaveEditedEvent=saveEditedEvent;\nsaveEditedEvent=async function(ev,existing){if(existing?.type!=='note')return emotionPreviousSaveEditedEvent(ev,existing);ev.preventDefault();const text=document.getElementById('noteText')?.value.trim()||'',moodScore=emotionMoodScore(),emotionScores=emotionScoresFromForm(),timestampValue=document.getElementById('recordTime')?.value;if(!text&&!pendingAudio&&!existing.hasAudio&&moodScore==null&&!Object.keys(emotionScores).length)return toast('Escreva, grave ou registre pelo menos uma nota emocional.');const timestamp=new Date(timestampValue);if(Number.isNaN(timestamp.getTime()))return toast('Informe uma data e hor√°rio v√°lidos.');const hasAudio=Boolean(existing.hasAudio||pendingAudio),record={...existing,timestamp:timestamp.toISOString(),text,tag:document.getElementById('noteTag')?.value.trim()||'',hasAudio,audioOnly:Boolean(hasAudio&&!text),moodScore,emotionScores,emotionLabels:emotionLabelsSnapshot(emotionScores)};await putEvent(record);if(pendingAudio)await saveAudio(existing.id,pendingAudio);closeSheet();await renderAll();toast('Altera√ß√µes salvas.')}\n\nconst emotionPreviousOpenEventEditor=openEventEditor;\nopenEventEditor=async function(id){const existing=(await allEvents()).find(x=>x.id===id);await emotionPreviousOpenEventEditor(id);if(existing?.type!=='note')return;if(existing.moodScore!=null)emotionSelectMood(existing.moodScore);Object.entries(existing.emotionScores||{}).forEach(([k,v])=>emotionSelectDimension(k,v));if(Object.keys(existing.emotionScores||{}).length)document.getElementById('emotionAdvanced')?.setAttribute('open','')}\n\nconst emotionPreviousKindInfo=kindInfo;\nkindInfo=function(e){if(e?.type!=='note')return emotionPreviousKindInfo(e);const meta=[];if(e.moodScore!=null)meta.push(`Estado ${e.moodScore}/10`);if(e.tag)meta.push(e.tag);const scores=Object.entries(e.emotionScores||{}).slice(0,2);for(const [id,v] of scores)meta.push(`${e.emotionLabels?.[id]||emotionDimensions().find(d=>d.id===id)?.label||id} ${v}/4`);return{kind:e.audioOnly?'ANOTA√á√ÉO DE VOZ':(!e.text&&e.moodScore!=null?'CHECK-IN':'ANOTA√á√ÉO'),className:'note',title:e.text|| (e.moodScore!=null?`Estado emocional ${e.moodScore}/10`:'Grava√ß√£o de voz'),meta}}\n\nconst emotionPreviousOpenEventViewer=openEventViewer;\nopenEventViewer=async function(id){const e=(await allEvents()).find(x=>x.id===id);if(e?.type!=='note')return emotionPreviousOpenEventViewer(id);const rows=[registroDetailRow('Estado emocional',e.moodScore!=null?`${e.moodScore} de 10`:''),registroDetailRow('Anota√ß√£o',e.text||''),registroDetailRow('Tag',e.tag)];for(const [key,value] of Object.entries(e.emotionScores||{}))rows.push(registroDetailRow(e.emotionLabels?.[key]||emotionDimensions().find(d=>d.id===key)?.label||key,`${value} de 4`));rows.push(registroDetailRow('Data e hor√°rio',registroDetailDate(e.timestamp)));const audio=e.hasAudio?`<div class=\"analysis-row\"><strong>√Åudio</strong><span data-audio=\"${e.id}\"></span></div>`:'';openBackdrop(e.text?'Anota√ß√£o':'Check-in emocional',`<div class=\"analysis-stack\">${rows.join('')}${audio}</div><div class=\"form-actions\"><button type=\"button\" class=\"secondary-button\" id=\"viewerCloseBtn\">Fechar</button><button type=\"button\" class=\"primary-button\" id=\"viewerEditBtn\">Editar</button></div>`,ev=>ev.preventDefault());document.getElementById('viewerCloseBtn').onclick=closeSheet;document.getElementById('viewerEditBtn').onclick=()=>openEventEditor(id);if(e.hasAudio)await hydrateAudio(document.getElementById('form'))}\n\nfunction chartEmpty(text){return`<div class=\"chart-empty\">${esc(text)}</div>`}\nfunction chartBounds(values,minFallback,maxFallback){const nums=values.filter(Number.isFinite);if(!nums.length)return[minFallback,maxFallback];let min=Math.min(...nums),max=Math.max(...nums);if(min===max){min-=1;max+=1}return[min,max]}\nfunction localLineChart(points,{minY=0,maxY=10,yLabel='',formatY=v=>String(v),xLabel=p=>p.label||'',markers=[]}={}){if(points.length<2)return chartEmpty('Ainda h√° poucos pontos para desenhar uma linha.');const W=720,H=270,pad={l:42,r:16,t:18,b:35},iw=W-pad.l-pad.r,ih=H-pad.t-pad.b,x0=Math.min(...points.map(p=>p.x)),x1=Math.max(...points.map(p=>p.x)),span=Math.max(1,x1-x0),x=v=>pad.l+(v-x0)/span*iw,y=v=>pad.t+(maxY-v)/(maxY-minY)*ih,path=points.map((p,i)=>`${i?'L':'M'}${x(p.x).toFixed(1)},${y(p.y).toFixed(1)}`).join(' '),ticks=[minY,(minY+maxY)/2,maxY],first=points[0],last=points[points.length-1];return`<svg class=\"local-chart-svg\" viewBox=\"0 0 ${W} ${H}\" role=\"img\" aria-label=\"${esc(yLabel)}\"><g class=\"chart-grid\">${ticks.map(t=>`<line x1=\"${pad.l}\" y1=\"${y(t)}\" x2=\"${W-pad.r}\" y2=\"${y(t)}\"/><text x=\"${pad.l-8}\" y=\"${y(t)+4}\" text-anchor=\"end\">${esc(formatY(t))}</text>`).join('')}</g>${markers.map(m=>`<line class=\"chart-marker ${esc(m.kind||'')}\" x1=\"${x(m.x)}\" y1=\"${pad.t}\" x2=\"${x(m.x)}\" y2=\"${H-pad.b}\"><title>${esc(m.title||'')}</title></line>`).join('')}<path class=\"chart-line\" d=\"${path}\" fill=\"none\"/><g>${points.map(p=>`<circle class=\"chart-dot\" cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"4\"><title>${esc(`${xLabel(p)} ¬∑ ${formatY(p.y)}`)}</title></circle>`).join('')}</g><text class=\"chart-axis-label\" x=\"${pad.l}\" y=\"${H-10}\">${esc(xLabel(first))}</text><text class=\"chart-axis-label\" x=\"${W-pad.r}\" y=\"${H-10}\" text-anchor=\"end\">${esc(xLabel(last))}</text></svg>`}\nfunction localBarChart(rows,{minY=0,maxY=null,formatY=v=>String(v),valueLabel=r=>formatY(r.value)}={}){if(!rows.length)return chartEmpty('Ainda n√£o h√° dados suficientes.');const W=720,H=280,pad={l:44,r:16,t:18,b:54},iw=W-pad.l-pad.r,ih=H-pad.t-pad.b,max=maxY??Math.max(1,...rows.map(r=>Math.max(0,Math.abs(r.value)))),min=Math.min(minY,...rows.map(r=>r.value<0?r.value:minY)),span=Math.max(.0001,max-min),y=v=>pad.t+(max-v)/span*ih,zero=y(0),bw=Math.max(12,iw/rows.length*.62);return`<svg class=\"local-chart-svg\" viewBox=\"0 0 ${W} ${H}\" role=\"img\"><line class=\"chart-zero\" x1=\"${pad.l}\" y1=\"${zero}\" x2=\"${W-pad.r}\" y2=\"${zero}\"/>${rows.map((r,i)=>{const cx=pad.l+(i+.5)*iw/rows.length,yy=y(r.value),h=Math.abs(zero-yy),top=Math.min(zero,yy);return`<rect class=\"chart-bar ${r.value<0?'negative':''}\" x=\"${cx-bw/2}\" y=\"${top}\" width=\"${bw}\" height=\"${Math.max(2,h)}\" rx=\"6\"><title>${esc(`${r.label}: ${valueLabel(r)}`)}</title></rect><text class=\"chart-bar-label\" x=\"${cx}\" y=\"${H-31}\" text-anchor=\"middle\">${esc(r.short||r.label)}</text><text class=\"chart-bar-value\" x=\"${cx}\" y=\"${r.value>=0?Math.max(12,top-5):Math.min(H-pad.b+16,top+h+14)}\" text-anchor=\"middle\">${esc(valueLabel(r))}</text>`}).join('')}</svg>`}\nfunction localScatterChart(points,{xMin=null,xMax=null,yMin=0,yMax=10,xFormat=v=>String(v),yFormat=v=>String(v)}={}){if(points.length<3)return chartEmpty('S√£o necess√°rios pelo menos 3 pares de dados para esse gr√°fico.');const W=720,H=280,pad={l:46,r:16,t:18,b:42},iw=W-pad.l-pad.r,ih=H-pad.t-pad.b,[autoMin,autoMax]=chartBounds(points.map(p=>p.x),0,1),minX=xMin??autoMin,maxX=xMax??autoMax,x=v=>pad.l+(v-minX)/Math.max(.0001,maxX-minX)*iw,y=v=>pad.t+(yMax-v)/Math.max(.0001,yMax-yMin)*ih;return`<svg class=\"local-chart-svg\" viewBox=\"0 0 ${W} ${H}\" role=\"img\"><g class=\"chart-grid\">${[yMin,(yMin+yMax)/2,yMax].map(t=>`<line x1=\"${pad.l}\" y1=\"${y(t)}\" x2=\"${W-pad.r}\" y2=\"${y(t)}\"/><text x=\"${pad.l-8}\" y=\"${y(t)+4}\" text-anchor=\"end\">${esc(yFormat(t))}</text>`).join('')}</g>${points.map(p=>`<circle class=\"chart-scatter\" cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"6\"><title>${esc(`${p.label||''} ¬∑ ${xFormat(p.x)} ¬∑ ${yFormat(p.y)}`)}</title></circle>`).join('')}<text class=\"chart-axis-label\" x=\"${pad.l}\" y=\"${H-12}\">${esc(xFormat(minX))}</text><text class=\"chart-axis-label\" x=\"${W-pad.r}\" y=\"${H-12}\" text-anchor=\"end\">${esc(xFormat(maxX))}</text></svg>`}\nfunction chartDateLabel(iso){return new Date(iso).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}\nfunction analysisMoodNotes(events){return events.filter(e=>e.type==='note'&&Number.isFinite(Number(e.moodScore))).map(e=>({...e,moodScore:Number(e.moodScore)})).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp))}\nfunction chartReviewButton(key){return`<button type=\"button\" class=\"chart-review-btn\" data-analysis-review=\"${esc(key)}\" aria-label=\"Avaliar este item\">Avaliar</button>`}\nfunction chartCard(key,title,subtitle,body,extra=''){return`<section class=\"analysis-card analysis-review-item dashboard-chart\" data-analysis-item=\"${esc(key)}\"><span class=\"analysis-anchor\" data-analysis-anchor=\"${esc(key)}\"></span><div class=\"chart-card-head\"><div><p class=\"section-kicker\">VISUALIZA√á√ÉO</p><h2>${esc(title)}</h2>${subtitle?`<p>${esc(subtitle)}</p>`:''}</div>${chartReviewButton(key)}</div>${extra}${body}</section>`}\nfunction dimensionChartData(events){const dims=emotionDimensions(),notes=events.filter(e=>e.type==='note'&&e.emotionScores&&Object.keys(e.emotionScores).length),available=dims.filter(d=>notes.some(n=>Number.isFinite(Number(n.emotionScores?.[d.id]))));return{notes,available}}\nfunction selectedDimensionId(available){const s=getSettings(),saved=s.analysisDimensionChart;return available.some(d=>d.id===saved)?saved:available[0]?.id}\nfunction setSelectedDimension(id){const s=getSettings();s.analysisDimensionChart=id;saveSettings(s);renderAll()}\n\nfunction analysisReviewState(){const s=getSettings();return{s:s.analysisReview||{},general:s.analysisReviewGeneral||''}}\nfunction saveAnalysisReviewState(state,general=null){const s=getSettings();s.analysisReview=state;if(general!==null)s.analysisReviewGeneral=general;saveSettings(s)}\nfunction analysisReviewEntry(key){return analysisReviewState().s[key]||{status:'active',note:''}}\nfunction analysisFeedbackText(){const {s,general}=analysisReviewState(),lines=['REVIS√ÉO DA ABA AN√ÅLISES / GR√ÅFICOS'];const changed=Object.entries(s).filter(([,v])=>v?.status==='change'||v?.status==='rejected'||String(v?.note||'').trim());if(!changed.length&&!String(general||'').trim())lines.push('Nenhuma altera√ß√£o espec√≠fica registrada ainda.');for(const [key,v] of changed){const title=ANALYSIS_REVIEW_DEFS[key]||key,status=v.status==='rejected'?'EXCLUIR/OCULTAR':v.status==='change'?'ALTERAR':'OBSERVA√á√ÉO';lines.push(`\\n${status}: ${title}`);if(v.note)lines.push(`Pedido: ${v.note}`)}if(String(general||'').trim())lines.push(`\\nOBSERVA√á√ÉO GERAL:\\n${general.trim()}`);lines.push('\\nObserva√ß√£o: itens marcados para excluir continuam arquivados no pr√≥prio app e podem ser restaurados.');return lines.join('\\n')}\nfunction ensureAnalysisDashboardUI(){const view=document.querySelector('[data-view=\"analysis\"]');if(!view)return null;let dashboard=document.getElementById('quantitativeDashboard');if(!dashboard){dashboard=document.createElement('div');dashboard.id='quantitativeDashboard';const purchase=document.getElementById('purchaseAnalysis')?.closest('.analysis-card');purchase?.after(dashboard)}let feedback=document.getElementById('analysisFeedbackPanel');if(!feedback){feedback=document.createElement('section');feedback.id='analysisFeedbackPanel';feedback.className='analysis-card analysis-feedback-panel';feedback.innerHTML=`<p class=\"section-kicker\">REVIS√ÉO DA INTERFACE</p><h2>Minha opini√£o sobre esta aba</h2><p class=\"helper\">Use ‚ÄúAvaliar‚Äù em qualquer gr√°fico ou fun√ß√£o. O app transforma suas decis√µes em um texto para voc√™ copiar e me enviar.</p><div class=\"field\"><label>Observa√ß√£o geral opcional</label><textarea id=\"analysisGeneralFeedback\" data-autogrow placeholder=\"Ex.: quero gr√°ficos mais compactos; prefiro linhas mais finas‚Ä¶\"></textarea></div><div class=\"field\"><label>Texto gerado</label><textarea id=\"analysisFeedbackText\" class=\"feedback-output\" readonly></textarea></div><button type=\"button\" class=\"primary-button full-button\" id=\"copyAnalysisFeedback\">Copiar texto</button>`;dashboard.after(feedback)}let rejected=document.getElementById('analysisRejectedItems');if(!rejected){rejected=document.createElement('section');rejected.id='analysisRejectedItems';rejected.className='analysis-rejected-section';rejected.innerHTML=`<div class=\"section-title-row\"><div><p class=\"section-kicker\">ARQUIVO REVERS√çVEL</p><h2>Itens rejeitados</h2></div></div><p class=\"helper\">Eles continuam atualizados e vis√≠veis aqui. Se mudar de ideia, basta restaurar.</p><div id=\"analysisRejectedList\"></div>`;feedback.after(rejected)}return{view,dashboard,feedback,rejected}}\nfunction prepareExistingAnalysisItems(){const map=[['analysis-current','currentAnalysis'],['analysis-associations','associationAnalysis'],['analysis-sleep-summary','sleepAnalysis'],['analysis-medications','medicationAnalysis'],['analysis-purchases','purchaseAnalysis']];for(const [key,id] of map){const card=document.getElementById(id)?.closest('.analysis-card');if(!card)continue;card.classList.add('analysis-review-item');card.dataset.analysisItem=key;if(!document.querySelector(`[data-analysis-home-anchor=\"${CSS.escape(key)}\"]`)){const anchor=document.createElement('span');anchor.hidden=true;anchor.dataset.analysisHomeAnchor=key;card.before(anchor)}if(!card.querySelector('[data-analysis-review]')){const b=document.createElement('button');b.type='button';b.className='chart-review-btn floating-review';b.dataset.analysisReview=key;b.textContent='Avaliar';card.appendChild(b)}}}\nfunction wireAnalysisFeedback(){const general=document.getElementById('analysisGeneralFeedback'),out=document.getElementById('analysisFeedbackText'),copy=document.getElementById('copyAnalysisFeedback'),state=analysisReviewState();if(general){if(general.value!==state.general)general.value=state.general;general.oninput=()=>{const st=analysisReviewState();saveAnalysisReviewState(st.s,general.value);if(out)out.value=analysisFeedbackText();if(typeof autoGrowTextarea==='function')autoGrowTextarea(general)}}if(out){out.value=analysisFeedbackText();if(typeof autoGrowTextarea==='function')autoGrowTextarea(out)}if(copy)copy.onclick=async()=>{const text=analysisFeedbackText();try{await navigator.clipboard.writeText(text);toast('Texto copiado.')}catch{out?.focus();out?.select();document.execCommand?.('copy');toast('Texto selecionado para copiar.')}}}\nfunction openAnalysisReviewItem(key){const title=ANALYSIS_REVIEW_DEFS[key]||'Item da an√°lise',entry=analysisReviewEntry(key);openBackdrop(`Avaliar: ${title}`,`<p class=\"helper\">Marcar como ‚ÄúExcluir‚Äù apenas tira este item da √°rea principal. Ele continua vis√≠vel em ‚ÄúItens rejeitados‚Äù e pode ser restaurado.</p><div class=\"field\"><label>O que voc√™ quer mudar?</label><textarea id=\"analysisItemNote\" rows=\"5\" data-autogrow placeholder=\"Descreva a altera√ß√£o, o que incomoda ou por que quer remover.\">${esc(entry.note||'')}</textarea></div><div class=\"analysis-review-status\"><button type=\"button\" class=\"secondary-button\" data-review-status=\"active\">Manter</button><button type=\"button\" class=\"secondary-button\" data-review-status=\"change\">Quero alterar</button><button type=\"button\" class=\"danger-row secondary-button\" data-review-status=\"rejected\">Excluir desta aba</button></div>${formButtons('Fechar')}`,ev=>{ev.preventDefault();closeSheet()});document.querySelectorAll('[data-review-status]').forEach(b=>b.onclick=async()=>{const state=analysisReviewState(),note=document.getElementById('analysisItemNote')?.value.trim()||'',status=b.dataset.reviewStatus;state.s[key]={status,note,updatedAt:new Date().toISOString()};saveAnalysisReviewState(state.s,state.general);closeSheet();await renderAll();toast(status==='rejected'?'Item movido para rejeitados.':status==='change'?'Pedido de altera√ß√£o salvo.':'Item mantido.')});if(typeof wireAutoGrowTextareas==='function')wireAutoGrowTextareas(document.getElementById('form'))}\nfunction applyAnalysisReviewPlacement(){const ui=ensureAnalysisDashboardUI();if(!ui)return;const rejectedList=document.getElementById('analysisRejectedList');if(!rejectedList)return;document.querySelectorAll('[data-analysis-item]').forEach(card=>{const key=card.dataset.analysisItem,entry=analysisReviewEntry(key),homeAnchor=document.querySelector(`[data-analysis-home-anchor=\"${CSS.escape(key)}\"]`),chartAnchor=document.querySelector(`[data-analysis-chart-anchor=\"${CSS.escape(key)}\"]`);card.classList.toggle('analysis-item-rejected',entry.status==='rejected');card.classList.toggle('analysis-item-change',entry.status==='change');if(entry.status==='rejected'){rejectedList.appendChild(card);if(!card.querySelector('[data-restore-analysis]')){const restore=document.createElement('button');restore.type='button';restore.className='primary-button full-button analysis-restore';restore.dataset.restoreAnalysis=key;restore.textContent='Restaurar este item';card.appendChild(restore)}}else{card.querySelector('[data-restore-analysis]')?.remove();if(homeAnchor)homeAnchor.after(card);else if(chartAnchor)chartAnchor.after(card)}});rejectedList.querySelectorAll('[data-restore-analysis]').forEach(b=>b.onclick=async()=>{const state=analysisReviewState();state.s[b.dataset.restoreAnalysis]={...(state.s[b.dataset.restoreAnalysis]||{}),status:'active',updatedAt:new Date().toISOString()};saveAnalysisReviewState(state.s,state.general);await renderAll();toast('Item restaurado.')});ui.rejected.classList.toggle('hidden',!rejectedList.children.length)}\n\nasync function renderQuantitativeDashboard(events){const ui=ensureAnalysisDashboardUI();if(!ui)return;prepareExistingAnalysisItems();const mood=analysisMoodNotes(events),now=Date.now(),since=now-30*86400000,mood30=mood.filter(e=>new Date(e.timestamp).getTime()>=since),medEvents=events.filter(e=>e.type==='medication'),sleepEvents=events.filter(e=>e.type==='sleep').sort((a,b)=>new Date(a.endTime||a.timestamp)-new Date(b.endTime||b.timestamp));document.querySelectorAll('.dashboard-chart').forEach(el=>el.remove());const blocks=[];\n  const moodMarkers=medEvents.filter(e=>new Date(e.timestamp).getTime()>=since).map(e=>({x:new Date(e.timestamp).getTime(),kind:'med',title:`${e.medication||'Medicamento'} ${e.dose||''}`.trim()}));blocks.push({key:'chart-mood-line',html:chartCard('chart-mood-line','Humor ao longo do tempo','Notas emocionais de 0 a 10 nos √∫ltimos 30 dias.',localLineChart(mood30.map(e=>({x:new Date(e.timestamp).getTime(),y:e.moodScore,label:chartDateLabel(e.timestamp)})),{minY:0,maxY:10,yLabel:'Humor',formatY:v=>`${Number(v).toFixed(0)}/10`,xLabel:p=>p.label,markers:moodMarkers}))});\n  const dist=Array.from({length:11},(_,n)=>({label:String(n),short:String(n),value:mood30.filter(e=>e.moodScore===n).length}));blocks.push({key:'chart-mood-distribution',html:chartCard('chart-mood-distribution','Distribui√ß√£o das notas de humor','Quantas vezes cada nota foi registrada nos √∫ltimos 30 dias.',mood30.length?localBarChart(dist,{minY:0,formatY:v=>String(Math.round(v)),valueLabel:r=>String(r.value)}):chartEmpty('Registre notas de humor para ver a distribui√ß√£o.'))});\n  const {available}=dimensionChartData(events),selected=selectedDimensionId(available),selectedDim=available.find(d=>d.id===selected),dimPoints=selectedDim?events.filter(e=>e.type==='note'&&Number.isFinite(Number(e.emotionScores?.[selected]))).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp)).slice(-60).map(e=>({x:new Date(e.timestamp).getTime(),y:Number(e.emotionScores[selected]),label:chartDateLabel(e.timestamp)})):[];const dimTabs=available.length?`<div class=\"dimension-tabs\">${available.map(d=>`<button type=\"button\" data-dimension-chart=\"${esc(d.id)}\" class=\"${d.id===selected?'selected':''}\">${esc(d.label)}</button>`).join('')}</div>`:'';blocks.push({key:'chart-dimension-line',html:chartCard('chart-dimension-line','Dimens√µes emocionais','Escolha uma dimens√£o para acompanhar sua evolu√ß√£o em escala de 0 a 4.',selectedDim?localLineChart(dimPoints,{minY:0,maxY:4,yLabel:selectedDim.label,formatY:v=>`${Number(v).toFixed(0)}/4`,xLabel:p=>p.label}):chartEmpty('Preencha ‚ÄúDetalhar emo√ß√µes‚Äù em algumas anota√ß√µes para criar este gr√°fico.'),dimTabs)});\n  const recentSleeps=sleepEvents.slice(-14),sleepPoints=recentSleeps.map(e=>({x:new Date(e.endTime||e.timestamp).getTime(),y:durationHours(e.startTime,e.endTime),label:chartDateLabel(e.endTime||e.timestamp)})),sleepRange=chartBounds(sleepPoints.map(p=>p.y),0,10);blocks.push({key:'chart-sleep-line',html:chartCard('chart-sleep-line','Dura√ß√£o do sono','√öltimos 14 registros de sono.',sleepPoints.length>=2?localLineChart(sleepPoints,{minY:Math.max(0,Math.floor(sleepRange[0]-1)),maxY:Math.ceil(sleepRange[1]+1),yLabel:'Horas de sono',formatY:v=>`${Number(v).toFixed(1)}h`,xLabel:p=>p.label}):chartEmpty('Registre pelo menos duas noites para formar a linha.'))});\n  const pairs=[];for(const s of sleepEvents){const wake=new Date(s.endTime).getTime(),next=mood.find(n=>{const t=new Date(n.timestamp).getTime();return t>=wake&&t<=wake+16*3600000});if(next)pairs.push({x:durationHours(s.startTime,s.endTime),y:next.moodScore,label:chartDateLabel(s.endTime)})}blocks.push({key:'chart-sleep-mood',html:chartCard('chart-sleep-mood','Sono √ó humor seguinte','Cada ponto compara a dura√ß√£o de uma noite com o primeiro check-in emocional nas 16h seguintes.',localScatterChart(pairs.slice(-60),{yMin:0,yMax:10,xFormat:v=>`${Number(v).toFixed(1)}h`,yFormat:v=>`${Number(v).toFixed(0)}/10`}))});\n  const byMed={};for(const a of medEvents){const t=new Date(a.timestamp).getTime(),before=[...mood].reverse().find(n=>{const x=new Date(n.timestamp).getTime();return x<=t&&x>=t-4*3600000}),after=mood.find(n=>{const x=new Date(n.timestamp).getTime();return x>=t+30*60000&&x<=t+8*3600000});if(!before||!after)continue;const key=a.medication||'Medicamento';(byMed[key]??=[]).push(after.moodScore-before.moodScore)}const medRows=Object.entries(byMed).map(([label,vals])=>({label,short:label.length>11?label.slice(0,10)+'‚Ä¶':label,value:vals.reduce((a,b)=>a+b,0)/vals.length,n:vals.length})).filter(r=>r.n>=2).sort((a,b)=>Math.abs(b.value)-Math.abs(a.value)).slice(0,7);blocks.push({key:'chart-med-delta',html:chartCard('chart-med-delta','Mudan√ßa de humor ap√≥s medicamentos','Diferen√ßa m√©dia entre um check-in at√© 4h antes e outro entre 30min e 8h depois. Associa√ß√£o, n√£o causalidade.',medRows.length?localBarChart(medRows,{minY:Math.min(-1,...medRows.map(r=>r.value)),maxY:Math.max(1,...medRows.map(r=>r.value)),formatY:v=>`${v>0?'+':''}${Number(v).toFixed(1)}`,valueLabel:r=>`${r.value>0?'+':''}${r.value.toFixed(1)} (${r.n})`}):chartEmpty('Ainda n√£o h√° pares suficientes de check-ins antes e depois das administra√ß√µes.'))});\n  let conceptRows=[];if(typeof learningCollectObservations==='function'&&typeof learningConceptsInText==='function'){const obs=await learningCollectObservations(events,await allMedications()),counts={};for(const a of medEvents){const st=new Date(a.timestamp).getTime(),en=st+8*3600000;for(const o of obs){const t=new Date(o.timestamp).getTime();if(t<st||t>en)continue;for(const c of learningConceptsInText(o.text))counts[c.concept]=(counts[c.concept]||0)+1}}conceptRows=Object.entries(counts).map(([concept,value])=>({label:typeof learningConceptLabel==='function'?learningConceptLabel(concept):concept,short:(typeof learningConceptLabel==='function'?learningConceptLabel(concept):concept).slice(0,12),value})).sort((a,b)=>b.value-a.value).slice(0,8)}blocks.push({key:'chart-med-concepts',html:chartCard('chart-med-concepts','Relatos ap√≥s medicamentos','Conceitos encontrados em textos registrados at√© 8h ap√≥s administra√ß√µes.',conceptRows.length?localBarChart(conceptRows,{minY:0,formatY:v=>String(Math.round(v)),valueLabel:r=>String(r.value)}):chartEmpty('O motor de Aprendizado ainda n√£o encontrou conceitos suficientes nesse contexto.'))});\n  ui.dashboard.innerHTML=`<div class=\"quant-dashboard-head\"><p class=\"section-kicker\">LINHA DO TEMPO QUANTITATIVA</p><h2>Visualiza√ß√µes</h2><p>Todos os c√°lculos s√£o locais. Gr√°ficos de medicamentos mostram associa√ß√µes nos seus registros, n√£o causa m√©dica.</p></div>${blocks.map(b=>`<span hidden data-analysis-chart-anchor=\"${esc(b.key)}\"></span>${b.html}`).join('')}`;\n  ui.dashboard.querySelectorAll('[data-dimension-chart]').forEach(b=>b.onclick=()=>setSelectedDimension(b.dataset.dimensionChart));wireAnalysisFeedback();applyAnalysisReviewPlacement();if(typeof wireAutoGrowTextareas==='function')wireAutoGrowTextareas(ui.feedback)\n}\n\nfunction ensureEmotionStyles(){if(document.getElementById('emotion-analysis-style'))return;const st=document.createElement('style');st.id='emotion-analysis-style';st.textContent=`\n.mood-scale{display:grid;grid-template-columns:repeat(11,1fr);gap:4px;margin:8px 0}.mood-score{min-width:0;height:34px;border:1px solid color-mix(in srgb,hsl(var(--mood-h) 70% 48%) 35%,transparent);border-radius:9px;background:color-mix(in srgb,hsl(var(--mood-h) 70% 52%) 12%,transparent);color:inherit;font-weight:700;padding:0}.mood-score.selected{background:hsl(var(--mood-h) 70% 48%);color:white;transform:scale(1.06)}.mood-scale-labels,.emotion-scale-caption{display:flex;justify-content:space-between;gap:10px;font-size:10px;opacity:.62}.tiny-clear{border:0;background:transparent;color:inherit;opacity:.65;font-size:11px;padding:4px 0}.emotion-advanced{margin:8px 0 16px}.emotion-advanced>summary{font-weight:700;padding:10px 0;cursor:pointer}.emotion-dimension{padding:12px 0;border-bottom:1px solid rgba(120,120,128,.12)}.emotion-dimension-head{display:flex;align-items:center;justify-content:space-between}.emotion-scale{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin:8px 0}.emotion-scale button{border:0;border-radius:10px;padding:9px 0;background:rgba(120,120,128,.1);color:inherit;font-weight:700}.emotion-scale button.selected{background:var(--accent-color,#7457e8);color:white}.emotion-new-dimension{padding:12px;margin-top:10px;border-radius:16px;background:rgba(120,120,128,.07)}.quant-dashboard-head{margin:26px 2px 12px}.quant-dashboard-head h2{margin:2px 0 4px}.quant-dashboard-head p:last-child{font-size:12px;opacity:.65;margin:0}.dashboard-chart{position:relative}.chart-card-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:8px}.chart-card-head h2{margin:2px 0 2px}.chart-card-head p:last-child{font-size:12px;opacity:.64;margin:0;line-height:1.4}.chart-review-btn{border:0;border-radius:999px;background:rgba(116,167,255,.12);color:inherit;font-size:11px;font-weight:700;padding:7px 10px;flex:0 0 auto}.floating-review{position:absolute;right:14px;top:14px}.local-chart-svg{width:100%;height:auto;display:block;overflow:visible;margin-top:6px}.chart-grid line{stroke:rgba(120,120,128,.18);stroke-width:1}.chart-grid text,.chart-axis-label,.chart-bar-label,.chart-bar-value{fill:currentColor;font-size:11px;opacity:.58}.chart-line{stroke:var(--accent-color,#7457e8);stroke-width:4;stroke-linecap:round;stroke-linejoin:round}.chart-dot,.chart-scatter{fill:var(--accent-color,#7457e8);stroke:var(--card-bg,#fff);stroke-width:2}.chart-marker{stroke:rgba(120,120,128,.22);stroke-width:1}.chart-marker.med{stroke:rgba(116,167,255,.35)}.chart-zero{stroke:rgba(120,120,128,.28);stroke-width:1}.chart-bar{fill:var(--accent-color,#7457e8);opacity:.8}.chart-bar.negative{fill:rgba(224,70,70,.8)}.chart-empty{padding:28px 12px;text-align:center;font-size:13px;opacity:.6;border-radius:16px;background:rgba(120,120,128,.06)}.dimension-tabs{display:flex;gap:6px;overflow:auto;padding:3px 0 8px}.dimension-tabs button{white-space:nowrap;border:0;border-radius:999px;padding:7px 10px;background:rgba(120,120,128,.09);color:inherit;font-size:11px;font-weight:650}.dimension-tabs button.selected{background:rgba(116,167,255,.2)}.analysis-feedback-panel{margin-top:26px}.feedback-output{min-height:180px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;line-height:1.45}.analysis-rejected-section{margin:22px 0 40px}.analysis-rejected-section>.helper{margin-top:-4px}.analysis-item-rejected{border-style:dashed!important;opacity:.88}.analysis-item-rejected:before{content:'REJEITADO ¬∑ CONTINUA ATUALIZADO';display:inline-flex;font-size:9px;font-weight:800;letter-spacing:.08em;padding:5px 8px;border-radius:999px;background:rgba(224,70,70,.1);margin-bottom:10px}.analysis-item-change{outline:1px solid rgba(255,174,66,.28)}.analysis-restore{margin-top:12px}.analysis-review-status{display:grid;gap:8px;margin:12px 0}.analysis-review-item{position:relative}.analysis-rejected-section .analysis-review-item{margin-bottom:12px}\n`;document.head.appendChild(st)}\n\nconst emotionPreviousRenderAll=renderAll;\nrenderAll=async function(){await emotionPreviousRenderAll();const events=await allEvents();await renderQuantitativeDashboard(events)};\nfunction emotionDashboardBoot(){ensureEmotionStyles();ensureAnalysisDashboardUI();prepareExistingAnalysisItems();wireAnalysisFeedback();if(!document.documentElement.dataset.analysisReviewWired){document.documentElement.dataset.analysisReviewWired='1';document.addEventListener('click',e=>{const review=e.target.closest('[data-analysis-review]');if(review){e.preventDefault();openAnalysisReviewItem(review.dataset.analysisReview)}})}if(db)renderAll();else setTimeout(emotionDashboardBoot,220)}\nemotionDashboardBoot();\n";document.head.appendChild(s);s.remove();})();
 
-KäOOõô]»]Jãô[ô[YJK[ô]»]JKô[ô[YJJK\›€Y\\€Y\÷ÃN⁄Yä\›€Y\
-^ÿ€€ú›ÿZŸO[ô]»]J\›€Y\ô[ô[YJKôŸ][YJ
-N‹ô]\õû‹›\ùùÿZŸKXô[ò\ŸH»0Óõ[[»\‹\ù\à
-	›[YSXô[
-\›€Y\ô[ô[YJ_JX\›€Y\_\ô]\õû‹›\ùë]Kõõ› 
-KLç
-åÕåXô[âÊõ[X\»ç	À\›€Y\õù[_Wôù[ò›[€àYYXÿ][€ë]ô[ùXô[
-J^‹ô]\õò	ŸKõYYXÿ][€ü	”YYXÿ[Y[ù…ﬂIŸKô‹ŸOÿ	ŸKô‹Ÿ_Xâ…ﬂH0≠»	›[YSXô[
-Kù[Y\›[\
-_XWóôù[ò›[€àùZ[X⁄ÿYŸS› K]ô[ù ^ÿ€€ú›\ò⁄\Ÿ\œY]ô[ùÀôö[\äOOôKù\OOOI‹\ò⁄\ŸI…âõYYX]⁄\—]ô[ù
-KJJKú€‹ù
+/* ---- v04c15.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Paletas sem√¢nticas dos tipos de registro: altern√¢ncia em Ajustes + aplica√ß√£o global consistente. */\nconst REGISTRO_SEMANTIC_PALETTES={\n  suggested:{label:'Paleta sugerida',note:'#7259D6',medication:'#00C7BE',sleep:'#4A63B7',purchase:'#FF9500'},\n  user:{label:'Sua paleta',note:'#0188FE',medication:'#00C0E7',sleep:'#6155F4',purchase:'#FF4900'}\n};\n\nfunction semanticPaletteKey(){return getSettings().semanticPalette==='user'?'user':'suggested'}\nfunction semanticPalette(){return REGISTRO_SEMANTIC_PALETTES[semanticPaletteKey()]}\nfunction semanticPaletteSwatches(p){return`<div class=\"semantic-palette-swatches\"><span><i style=\"--swatch:${p.note}\"></i>Anota√ß√£o</span><span><i style=\"--swatch:${p.medication}\"></i>Medicamentos</span><span><i style=\"--swatch:${p.sleep}\"></i>Sono</span><span><i style=\"--swatch:${p.purchase}\"></i>Compra</span></div>`}\n\nfunction ensureSemanticPaletteStyles(){if(document.getElementById('semantic-palette-styles'))return;const st=document.createElement('style');st.id='semantic-palette-styles';st.textContent=`\n:root{--record-note:#7259D6;--record-med:#00C7BE;--record-sleep:#4A63B7;--record-buy:#FF9500}\n[data-icon=\"note\"]{color:var(--record-note)!important}\n[data-icon=\"pill\"]{color:var(--record-med)!important}\n[data-icon=\"moon\"]{color:var(--record-sleep)!important}\n[data-icon=\"bag\"]{color:var(--record-buy)!important}\n.compact-summary-list .summary-row:nth-child(1) .summary-row-icon{color:var(--record-note)!important}\n.compact-summary-list .summary-row:nth-child(2) .summary-row-icon{color:var(--record-med)!important}\n.compact-summary-list .summary-row:nth-child(3) .summary-row-icon{color:var(--record-sleep)!important}\n.compact-summary-list .summary-row:nth-child(4) .summary-row-icon{color:var(--record-buy)!important}\n.kind-note{color:var(--record-note)!important}.kind-medication{color:var(--record-med)!important}.kind-sleep{color:var(--record-sleep)!important}.kind-purchase{color:var(--record-buy)!important}\n.primary-action{background:color-mix(in srgb,var(--record-note) 10%,var(--surface));border-color:color-mix(in srgb,var(--record-note) 28%,transparent)}.primary-action strong{color:var(--record-note)}\n.semantic-palette-swatches{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px;margin-top:11px}.semantic-palette-swatches span{display:flex;align-items:center;gap:7px;color:var(--secondary);font-size:11px}.semantic-palette-swatches i{width:14px;height:14px;border-radius:50%;background:var(--swatch);box-shadow:0 0 0 1px color-mix(in srgb,var(--swatch) 52%,transparent),0 0 12px color-mix(in srgb,var(--swatch) 38%,transparent);flex:0 0 auto}.semantic-palette-note{margin:9px 1px 0;color:var(--secondary);font-size:10.5px;line-height:1.4}\n`;document.head.appendChild(st)}\n\nfunction ensureSemanticPaletteSettingsUI(){const accent=document.getElementById('accentControl')?.closest('.setting-block');if(!accent||document.getElementById('semanticPaletteControl'))return;const sep=document.createElement('div');sep.className='setting-separator';const block=document.createElement('div');block.className='setting-block';block.innerHTML=`<div class=\"setting-label\"><strong>Cores dos registros</strong><small>Identidade de Anota√ß√£o, Medicamentos, Sono e Compra</small></div><div class=\"segmented animated-segmented\" id=\"semanticPaletteControl\"><button type=\"button\" data-semantic-palette=\"suggested\">Paleta sugerida</button><button type=\"button\" data-semantic-palette=\"user\">Sua paleta</button></div><div id=\"semanticPalettePreview\"></div><p class=\"semantic-palette-note\">Essa escolha √© independente da Cor principal, que continua controlando sele√ß√µes e destaques gerais.</p>`;accent.after(sep,block)}\n\nfunction applySemanticPalette(){ensureSemanticPaletteStyles();ensureSemanticPaletteSettingsUI();const key=semanticPaletteKey(),p=REGISTRO_SEMANTIC_PALETTES[key],html=document.documentElement;html.dataset.semanticPalette=key;html.style.setProperty('--record-note',p.note);html.style.setProperty('--record-med',p.medication);html.style.setProperty('--record-sleep',p.sleep);html.style.setProperty('--record-buy',p.purchase);/* compatibilidade com componentes antigos */html.style.setProperty('--med',p.medication);html.style.setProperty('--sleep',p.sleep);html.style.setProperty('--buy',p.purchase);updateSegmentIndicator(document.getElementById('semanticPaletteControl'),'semanticPalette',key);const preview=document.getElementById('semanticPalettePreview');if(preview)preview.innerHTML=semanticPaletteSwatches(p)}\n\nconst semanticPreviousApplySettings=applySettings;\napplySettings=function(){semanticPreviousApplySettings();applySemanticPalette()};\n\ndocument.addEventListener('click',e=>{const b=e.target.closest('[data-semantic-palette]');if(!b)return;setSetting('semanticPalette',b.dataset.semanticPalette)});\n\napplySemanticPalette();\n";document.head.appendChild(s);s.remove();})();
 
-KäOOõô]»]JKù[Y\›[\
-K[ô]»]Jãù[Y\›[\
-JKYZ[úœY]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â…âõYYX]⁄\—]ô[ù
-KJJKú€‹ù
+/* ---- v04c16.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* √çcones preenchidos de Medicamentos e Compra, adaptados de CoreSVG para currentColor. */\nconst REGISTRO_RECORD_ICON_VERSION='1.2.0-beta.44';\n\n(function applyFilledRecordIcons(){\n  if(typeof baseIcons!=='object')return;\n\n  baseIcons.pill='<g transform=\"translate(.0592 1.7383)\" fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><path d=\"M23.4759 14.6719C23.1791 12.1016 20.9759 10.1016 18.3119 10.1016C15.6556 10.1016 13.4525 12.1016 13.1556 14.6719ZM23.4759 15.9375L13.1556 15.9375C13.4603 18.5156 15.6478 20.5234 18.3119 20.5234C20.9916 20.5234 23.1791 18.5234 23.4759 15.9375Z\"/><path d=\"M10.5384 11.8594L4.65563 5.97656L1.39782 9.23438C-0.438119 11.0703-0.461557 13.4453 1.30407 15.2031C3.09313 16.9766 5.45251 16.9453 7.28063 15.1172Z\"/><path d=\"M11.4525 10.9375L14.7103 7.6875C16.5463 5.85156 16.5697 3.47656 14.7963 1.71875C13.015-0.0546875 10.6556-0.0234375 8.82751 1.80469L5.57751 5.0625Z\"/></g>';\n\n  baseIcons.bag='<g transform=\"translate(.0039 1.4571)\" fill=\"currentColor\" fill-opacity=\".85\" stroke=\"none\"><path d=\"M0 2.0625C0 2.41406 0.28125 2.71094 0.632812 2.71094L4.16406 2.71094L5.82031 14.0547C6.01562 15.3906 6.72656 16.2188 8.08594 16.2188L19.9609 16.2188C20.2891 16.2188 20.5859 15.9375 20.5859 15.5703C20.5859 15.1953 20.2891 14.9219 19.9609 14.9219L8.25781 14.9219C7.64844 14.9219 7.26562 14.5156 7.17188 13.8672L6.98438 12.6484L19.9141 12.6484C21.3203 12.6484 22.0078 11.8047 22.2109 10.4297L23.0391 5C23.0547 4.88281 23.0781 4.71875 23.0781 4.64062C23.0781 4.1875 22.75 3.89062 22.2344 3.89062L5.69531 3.89062L5.47656 2.41406C5.38281 1.75 5.14062 1.41406 4.25781 1.41406L0.632812 1.41406C0.28125 1.41406 0 1.71094 0 2.0625ZM7.4375 19.4922C7.4375 20.3828 8.14844 21.0859 9.03906 21.0859C9.92969 21.0859 10.6328 20.3828 10.6328 19.4922C10.6328 18.6016 9.92969 17.8984 9.03906 17.8984C8.14844 17.8984 7.4375 18.6016 7.4375 19.4922ZM16.75 19.4922C16.75 20.3828 17.4688 21.0859 18.3594 21.0859C19.25 21.0859 19.9609 20.3828 19.9609 19.4922C19.9609 18.6016 19.25 17.8984 18.3594 17.8984C17.4688 17.8984 16.75 18.6016 16.75 19.4922Z\"/></g>';\n\n  hydrateIcons(document);\n  if(typeof applySemanticPalette==='function')applySemanticPalette();\n})();\n";document.head.appendChild(s);s.remove();})();
 
-KäOOõô]»]JKù[Y\›[\
-K[ô]»]Jãù[Y\›[\
-JNÿ€€ú››œV◊NŸõ‹ä€€ú›Ÿà\ò⁄\Ÿ\ ^ÿ€€ú›ô\œYö[ôô\Ÿ[ù][€äKúô\Ÿ[ù][€íY
-Nÿ€€ú›X⁄ÿYŸ\œSX]õX^
-KX]úõ›[ô
-ù[Xô\äúX⁄ÿYŸ\ _JJNÿ€€ú›[ö]‘\îX⁄ÿYŸOSù[Xô\äù[ö]‘\îX⁄ÿYŸJ_ù[Xô\äô\œÀù[ö]‘\îX⁄ÿYŸJ_ÿ€€ú››[öXŸO\\úŸS[€ô^JúöXŸJN⁄Yä][ö]‘\îX⁄ÿYŸJX€€ù[ùYNŸõ‹ä]OL⁄OX⁄ÿYŸ\Œ⁄J  [›Àú\⁄
-‹\ò⁄\ŸRYúöYô\Ÿ[ù][€íYúúô\Ÿ[ù][€íY›\ùõô]»]Jù[Y\›[\
-KôŸ][YJ
-K[ö]Œù[ö]‘\îX⁄ÿYŸKô[XZ[ö[ôŒù[ö]‘\îX⁄ÿYŸKöXŸNù›[öXŸOO[ù[€ù[ù›[öXŸK‹X⁄ÿYŸ\Àö[ö\⁄Y]õù[Xô[úô\œ‹ô\Ÿ[ù][€ë\‹^Jô\ NôTÿYôJõYYXÿ][€ä_J_Yõ‹ä€€ú›HŸàYZ[ú ^€]ôYYSù[Xô\äKù[ö]’ZŸ[ä_N€][ô]»]JKù[Y\›[\
-KôŸ][YJ
-NŸõ‹ä€€ú››Ÿà› ^⁄YäôYYL
-XúôXZŒ⁄Yä›ú›\ù›úô[XZ[ö[ôœL
-X€€ù[ùYNÿ€€ú›\ŸYSX]õZ[äôYY›úô[XZ[ö[ô N€›úô[XZ[ö[ôÀO]\ŸY€ôYYO]\ŸY⁄Yä›úô[XZ[ö[ôœL	âà[›ôö[ö\⁄Y]
-[›ôö[ö\⁄Y]]_\ô]\õà›ﬂWôù[ò›[€àTÿYôJä^‹ô]\õà›ö[ô ü	… _Wôù[ò›[€àYYXÿ][€ê€‹››[[X\ûJK]ô[ù ^ÿ€€ú››œXùZ[X⁄ÿYŸS› K]ô[ù K]\›VÀããõ›◊Kú€‹ù
+/* ---- v04c18.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Escala emocional principal 0‚Äì10; dimens√µes detalhadas permanecem independentes em 0‚Äì4. */\nconst RM_VISUAL_VERSION='1.2.0-beta.44';\nconst RM_MOOD_PALETTE={\n  0:{color:'#17171D',border:'#7657FF',text:'#F7F5FF',glow:'rgba(118,87,255,.52)'},\n  1:{color:'#FF3B30',border:'#FF766D',text:'#FFFFFF',glow:'rgba(255,59,48,.42)'},\n  2:{color:'#FF6A00',border:'#FFA05C',text:'#FFFFFF',glow:'rgba(255,106,0,.40)'},\n  3:{color:'#FFD60A',border:'#FFF079',text:'#3A2B00',glow:'rgba(255,214,10,.38)'},\n  4:{color:'#35D98B',border:'#8CF0BD',text:'#073321',glow:'rgba(53,217,139,.40)'},\n  5:{color:'#FFE119',border:'#FFF079',text:'#3A2B00',glow:'rgba(255,225,25,.38)'},\n  6:{color:'#BEEA2E',border:'#E7FF91',text:'#263000',glow:'rgba(190,234,46,.34)'},\n  7:{color:'#57D65A',border:'#9AF29C',text:'#073321',glow:'rgba(87,214,90,.34)'},\n  8:{color:'#31C46C',border:'#8CF0BD',text:'#073321',glow:'rgba(49,196,108,.34)'},\n  9:{color:'#20D6A3',border:'#91F7DE',text:'#06352B',glow:'rgba(32,214,163,.34)'},\n  10:{color:'#39E6D4',border:'#9CFFF2',text:'#06352B',glow:'rgba(57,230,212,.38)'}\n};\nconst RM_DIMENSION_COLORS={\n  anxiety:'#F07800',happiness:'#46C936',energy:'#00AEEA',irritability:'#F04455',activation:'#E83FC5',sadness:'#5266EE',concentration:'#00A7A5',sleepiness:'#895EEA'\n};\nfunction rmClamp(n,min,max){return Math.max(min,Math.min(max,Number(n)))}\nfunction rmMood(score){return RM_MOOD_PALETTE[Math.round(rmClamp(score,0,10))]||RM_MOOD_PALETTE[0]}\nfunction rmHashHue(text=''){let h=0;for(const ch of String(text))h=(h*31+ch.charCodeAt(0))%360;return h}\nfunction rmDimensionColor(d){if(!d)return'#7259D6';return RM_DIMENSION_COLORS[d.id]||`hsl(${rmHashHue(d.id||d.label)} 76% 52%)`}\n\n/* Escala emocional √∫nica 0‚Äì10. Recupera valores j√° migrados sem criar uma nota matem√°tica 0‚Äì5. */\nasync function rmNormalizeMoodScale10(){\n  const s=getSettings();if(s.rmScaleMigration==='0-10_v2')return false;\n  const events=await allEvents();let changed=false;\n  for(const e of events){\n    if(e?.type!=='note')continue;\n    const next={...e};\n    const hasLegacy10=e.moodScoreLegacy10!==null&&e.moodScoreLegacy10!==undefined&&e.moodScoreLegacy10!==''&&Number.isFinite(Number(e.moodScoreLegacy10));\n    const hasRawMood=e.moodScore!==null&&e.moodScore!==undefined&&e.moodScore!==''&&Number.isFinite(Number(e.moodScore));\n    const hasMood=hasLegacy10||hasRawMood;\n    const raw=hasLegacy10?Number(e.moodScoreLegacy10):Number(e.moodScore);\n    let touch=false;\n    if(hasMood){\n      const normalized=rmClamp(raw,0,10);\n      if(e.moodScore!==normalized||e.moodScaleModel!=='0-10'||Object.prototype.hasOwnProperty.call(e,'moodScoreLegacy10')){\n        next.moodScore=normalized;\n        next.moodScaleModel='0-10';\n        delete next.moodScoreLegacy10;\n        touch=true;\n      }\n    }else if(e.moodScaleModel==='0-5'||Object.prototype.hasOwnProperty.call(e,'moodScoreLegacy10')){\n      next.moodScaleModel='0-10';\n      delete next.moodScoreLegacy10;\n      touch=true;\n    }\n    if(touch){await putEvent(next);changed=true}\n  }\n  s.rmScaleMigration='0-10_v2';s.moodScaleModel='0-10';saveSettings(s);return changed\n}\n\n/* Componentes de preenchimento. */\nemotionMoodSelectorHTML=function(value=null){return`<div class=\"mood-block rm-mood-block\"><div class=\"mood-scale-labels\"><span>0 ¬∑ extremamente mal</span><span>5 ¬∑ neutro</span><span>10 ¬∑ estado ideal</span></div><div class=\"mood-scale\">${Array.from({length:11},(_,n)=>{const c=rmMood(n);return`<button type=\"button\" class=\"mood-score ${value!==null&&value!==undefined&&Number(value)===n?'selected':''}\" data-mood-score=\"${n}\" style=\"--mood-color:${c.color};--mood-border:${c.border};--mood-text:${c.text};--mood-glow:${c.glow}\">${n}</button>`}).join('')}</div><button type=\"button\" class=\"tiny-clear\" id=\"clearMoodScore\">Limpar nota</button></div>`};\n\nemotionDimensionHTML=function(d,value=null){const color=rmDimensionColor(d);return`<div class=\"emotion-dimension\" data-emotion-dimension=\"${esc(d.id)}\" style=\"--dimension-color:${color}\"><div class=\"emotion-dimension-head\"><strong>${esc(d.label)}</strong><button type=\"button\" class=\"tiny-clear\" data-clear-dimension=\"${esc(d.id)}\">Limpar</button></div><div class=\"emotion-scale\">${[0,1,2,3,4].map(n=>`<button type=\"button\" data-emotion-score=\"${n}\" class=\"${value!==null&&value!==undefined&&Number(value)===n?'selected':''}\">${n}</button>`).join('')}</div><div class=\"emotion-scale-caption\"><span>0 ¬∑ ${esc(d.low||'ausente')}</span><span>4 ¬∑ ${esc(d.high||'muito intensa')}</span></div></div>`};\n\nemotionAdvancedHTML=function(values={}){const dims=emotionDimensions().filter(d=>d.active!==false);return`<details class=\"emotion-advanced\" id=\"emotionAdvanced\"><summary>Detalhar emo√ß√µes e sensa√ß√µes</summary><p class=\"helper\">Opcional. Cada dimens√£o usa sua pr√≥pria cor; a intensidade vai de 0 (ausente/baixa) a 4 (muito intensa/alta).</p><div id=\"emotionDimensionsList\">${dims.map(d=>emotionDimensionHTML(d,values[d.id])).join('')}</div><button type=\"button\" class=\"secondary-button full-button\" id=\"addEmotionDimensionBtn\">+ Criar nova dimens√£o</button><div class=\"emotion-new-dimension hidden\" id=\"emotionNewDimension\"><div class=\"field\"><label>Nome da dimens√£o</label><input id=\"emotionDimensionName\" placeholder=\"Ex.: despersonaliza√ß√£o\"></div><div class=\"field-grid\"><div class=\"field\"><label>0 significa</label><input id=\"emotionDimensionLow\" placeholder=\"ausente\"></div><div class=\"field\"><label>4 significa</label><input id=\"emotionDimensionHigh\" placeholder=\"muito intensa\"></div></div><div class=\"learning-actions\"><button type=\"button\" class=\"primary-button\" id=\"saveEmotionDimensionBtn\">Adicionar</button><button type=\"button\" class=\"secondary-button\" id=\"cancelEmotionDimensionBtn\">Cancelar</button></div></div></details>`};\n\n/* Textos da linha do tempo e detalhes passam a refletir as novas escalas. */\nconst rmPreviousKindInfo=kindInfo;\nkindInfo=function(e){if(e?.type!=='note')return rmPreviousKindInfo(e);const meta=[];if(e.moodScore!=null)meta.push(`Estado ${e.moodScore}/10`);if(e.tag)meta.push(e.tag);for(const [id,v] of Object.entries(e.emotionScores||{}).slice(0,2))meta.push(`${e.emotionLabels?.[id]||emotionDimensions().find(d=>d.id===id)?.label||id} ${v}/4`);return{kind:e.audioOnly?'ANOTA√á√ÉO DE VOZ':(!e.text&&e.moodScore!=null?'CHECK-IN':'ANOTA√á√ÉO'),className:'note',title:e.text||(e.moodScore!=null?`Estado emocional ${e.moodScore}/10`:'Grava√ß√£o de voz'),meta}};\nconst rmPreviousOpenEventViewer=openEventViewer;\nopenEventViewer=async function(id){const e=(await allEvents()).find(x=>x.id===id);if(e?.type!=='note')return rmPreviousOpenEventViewer(id);const rows=[registroDetailRow('Estado emocional',e.moodScore!=null?`${e.moodScore} de 10`:''),registroDetailRow('Anota√ß√£o',e.text||''),registroDetailRow('Tag',e.tag)];for(const [key,value] of Object.entries(e.emotionScores||{}))rows.push(registroDetailRow(e.emotionLabels?.[key]||emotionDimensions().find(d=>d.id===key)?.label||key,`${value} de 4`));rows.push(registroDetailRow('Data e hor√°rio',registroDetailDate(e.timestamp)));const audio=e.hasAudio?`<div class=\"analysis-row\"><strong>√Åudio</strong><span data-audio=\"${e.id}\"></span></div>`:'';openBackdrop(e.text?'Anota√ß√£o':'Check-in emocional',`<div class=\"analysis-stack\">${rows.join('')}${audio}</div><div class=\"form-actions\"><button type=\"button\" class=\"secondary-button\" id=\"viewerCloseBtn\">Fechar</button><button type=\"button\" class=\"primary-button\" id=\"viewerEditBtn\">Editar</button></div>`,ev=>ev.preventDefault());document.getElementById('viewerCloseBtn').onclick=closeSheet;document.getElementById('viewerEditBtn').onclick=()=>openEventEditor(id);if(e.hasAudio)await hydrateAudio(document.getElementById('form'))};\n\n/* Gr√°ficos emocionais com cor informativa, glow e √°rea em degrad√™. */\nlet rmChartUid=0;\nfunction rmLineChart(points,opts,mode,dimension=null){\n  if(points.length<2)return chartEmpty('Ainda h√° poucos pontos para desenhar uma linha.');\n  const W=720,H=270,pad={l:42,r:16,t:18,b:35},iw=W-pad.l-pad.r,ih=H-pad.t-pad.b,minY=mode==='mood'?0:0,maxY=mode==='mood'?5:4,x0=Math.min(...points.map(p=>p.x)),x1=Math.max(...points.map(p=>p.x)),span=Math.max(1,x1-x0),x=v=>pad.l+(v-x0)/span*iw,y=v=>pad.t+(maxY-v)/(maxY-minY)*ih,id=`rm${++rmChartUid}`,ticks=[minY,(minY+maxY)/2,maxY],path=points.map((p,i)=>`${i?'L':'M'}${x(p.x).toFixed(1)},${y(p.y).toFixed(1)}`).join(' '),base=`${path} L${x(points[points.length-1].x).toFixed(1)},${H-pad.b} L${x(points[0].x).toFixed(1)},${H-pad.b} Z`,dimColor=dimension?rmDimensionColor(dimension):null;\n  const stops=mode==='mood'?points.map(p=>`<stop offset=\"${((p.x-x0)/span*100).toFixed(1)}%\" stop-color=\"${rmMood(p.y).color}\"/>`).join(''):`<stop offset=\"0%\" stop-color=\"${dimColor}\"/><stop offset=\"100%\" stop-color=\"${dimColor}\"/>`;\n  const defs=`<defs><linearGradient id=\"${id}line\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\">${stops}</linearGradient><linearGradient id=\"${id}fade\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"#fff\" stop-opacity=\".7\"/><stop offset=\"55%\" stop-color=\"#fff\" stop-opacity=\".25\"/><stop offset=\"100%\" stop-color=\"#fff\" stop-opacity=\"0\"/></linearGradient><mask id=\"${id}mask\"><rect width=\"100%\" height=\"100%\" fill=\"url(#${id}fade)\"/></mask><filter id=\"${id}glow\" x=\"-60%\" y=\"-60%\" width=\"220%\" height=\"220%\"><feGaussianBlur stdDeviation=\"5\" result=\"b\"/><feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter></defs>`;\n  const grid=`<g class=\"chart-grid\">${ticks.map(t=>`<line x1=\"${pad.l}\" y1=\"${y(t)}\" x2=\"${W-pad.r}\" y2=\"${y(t)}\"/><text x=\"${pad.l-8}\" y=\"${y(t)+4}\" text-anchor=\"end\">${mode==='mood'?`${Number(t).toFixed(t%1?1:0)}/10`:`${Number(t).toFixed(t%1?1:0)}/4`}</text>`).join('')}</g>`;\n  const markers=(opts.markers||[]).map(m=>`<line class=\"chart-marker ${esc(m.kind||'')}\" x1=\"${x(m.x)}\" y1=\"${pad.t}\" x2=\"${x(m.x)}\" y2=\"${H-pad.b}\"><title>${esc(m.title||'')}</title></line>`).join('');\n  const dots=points.map(p=>{if(mode==='mood'){const c=rmMood(p.y),isZero=Number(p.y)===0,isTen=Number(p.y)===10,r=isTen?7:isZero?6:5.3;return`<circle cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"${r+5}\" fill=\"${isZero?'#7657FF':c.color}\" opacity=\".16\" filter=\"url(#${id}glow)\"/><circle cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"${r}\" fill=\"${c.color}\" stroke=\"${isZero?'#7657FF':c.border}\" stroke-width=\"${isTen?2.7:2}\"><title>${esc(`${opts.xLabel?.(p)||p.label||''} ¬∑ ${p.y}/10`)}</title></circle>${isTen?`<circle cx=\"${x(p.x)-1.6}\" cy=\"${y(p.y)-2}\" r=\"2\" fill=\"rgba(255,255,255,.92)\"/>`:''}`};const level=rmClamp(p.y,0,4),opacity=[.28,.42,.60,.80,1][level]||.7;return`<circle cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"9\" fill=\"${dimColor}\" opacity=\"${opacity*.16}\" filter=\"url(#${id}glow)\"/><circle cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"5.5\" fill=\"${dimColor}\" opacity=\"${opacity}\" stroke=\"color-mix(in srgb,${dimColor} 70%,white 30%)\" stroke-width=\"2\"><title>${esc(`${opts.xLabel?.(p)||p.label||''} ¬∑ ${p.y}/4`)}</title></circle>`}).join('');\n  const areaColor=mode==='mood'?`url(#${id}line)`:dimColor;\n  return`<svg class=\"local-chart-svg rm-emotion-chart\" viewBox=\"0 0 ${W} ${H}\" role=\"img\" aria-label=\"${esc(opts.yLabel||'')}\">${defs}${grid}${markers}<path d=\"${base}\" fill=\"${areaColor}\" opacity=\"${mode==='mood'?'.22':'.14'}\" mask=\"url(#${id}mask)\"/><path class=\"chart-line\" d=\"${path}\" fill=\"none\" stroke=\"url(#${id}line)\" stroke-width=\"4\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/>${dots}<text class=\"chart-axis-label\" x=\"${pad.l}\" y=\"${H-10}\">${esc(opts.xLabel?.(points[0])||points[0].label||'')}</text><text class=\"chart-axis-label\" x=\"${W-pad.r}\" y=\"${H-10}\" text-anchor=\"end\">${esc(opts.xLabel?.(points[points.length-1])||points[points.length-1].label||'')}</text></svg>`\n}\nconst rmPreviousLocalLineChart=localLineChart;\nlocalLineChart=function(points,opts={}){if(opts?.yLabel==='Humor')return rmLineChart(points,{...opts,maxY:10,formatY:v=>`${Number(v).toFixed(0)}/10`},'mood');const dim=emotionDimensions().find(d=>d.label===opts?.yLabel);if(dim)return rmLineChart(points,{...opts,maxY:4,formatY:v=>`${Number(v).toFixed(0)}/4`},'dimension',dim);return rmPreviousLocalLineChart(points,opts)};\n\nfunction rmMoodBarChart(rows){rows=rows.slice(0,11);if(!rows.length)return chartEmpty('Ainda n√£o h√° dados suficientes.');const W=720,H=280,pad={l:44,r:16,t:18,b:54},iw=W-pad.l-pad.r,ih=H-pad.t-pad.b,max=Math.max(1,...rows.map(r=>r.value)),y=v=>pad.t+(max-v)/max*ih,zero=y(0),bw=Math.max(20,iw/rows.length*.58),id=`rmb${++rmChartUid}`;return`<svg class=\"local-chart-svg rm-mood-bars\" viewBox=\"0 0 ${W} ${H}\" role=\"img\"><defs><filter id=\"${id}g\" x=\"-50%\" y=\"-50%\" width=\"200%\" height=\"200%\"><feGaussianBlur stdDeviation=\"6\" result=\"b\"/><feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter>${rows.map((r,i)=>{const c=rmMood(i);return`<linearGradient id=\"${id}${i}\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0%\" stop-color=\"${c.border}\"/><stop offset=\"100%\" stop-color=\"${c.color}\"/></linearGradient>`}).join('')}</defs><line class=\"chart-zero\" x1=\"${pad.l}\" y1=\"${zero}\" x2=\"${W-pad.r}\" y2=\"${zero}\"/>${rows.map((r,i)=>{const c=rmMood(i),cx=pad.l+(i+.5)*iw/rows.length,yy=y(r.value),h=Math.max(3,zero-yy),top=zero-h;return`<rect x=\"${cx-bw/2}\" y=\"${top}\" width=\"${bw}\" height=\"${h}\" rx=\"12\" fill=\"${i===0?'#17171D':`url(#${id}${i})`}\" stroke=\"${i===0?'#7657FF':c.border}\" stroke-width=\"${i===10?2.5:1.5}\"/><rect x=\"${cx-bw/2}\" y=\"${top}\" width=\"${bw}\" height=\"${h}\" rx=\"12\" fill=\"${i===0?'#7657FF':c.color}\" opacity=\".10\" filter=\"url(#${id}g)\"/><text class=\"chart-bar-label\" x=\"${cx}\" y=\"${H-31}\" text-anchor=\"middle\">${i}</text><text class=\"chart-bar-value\" x=\"${cx}\" y=\"${Math.max(12,top-7)}\" text-anchor=\"middle\">${r.value}</text>`}).join('')}</svg>`}\nconst rmPreviousLocalBarChart=localBarChart;\nlocalBarChart=function(rows,opts={}){const looksMood=rows?.length>=6&&rows.slice(0,6).every((r,i)=>String(r.label)===String(i));return looksMood?rmMoodBarChart(rows):rmPreviousLocalBarChart(rows,opts)};\n\nfunction rmMoodScatterChart(points,opts={}){if(points.length<3)return chartEmpty('S√£o necess√°rios pelo menos 3 pares de dados para esse gr√°fico.');const W=720,H=280,pad={l:46,r:16,t:18,b:42},iw=W-pad.l-pad.r,ih=H-pad.t-pad.b,[autoMin,autoMax]=chartBounds(points.map(p=>p.x),0,1),minX=opts.xMin??autoMin,maxX=opts.xMax??autoMax,x=v=>pad.l+(v-minX)/Math.max(.0001,maxX-minX)*iw,y=v=>pad.t+(10-v)/10*ih,id=`rms${++rmChartUid}`;return`<svg class=\"local-chart-svg rm-mood-scatter\" viewBox=\"0 0 ${W} ${H}\" role=\"img\"><defs><filter id=\"${id}g\" x=\"-50%\" y=\"-50%\" width=\"200%\" height=\"200%\"><feGaussianBlur stdDeviation=\"5\" result=\"b\"/><feMerge><feMergeNode in=\"b\"/><feMergeNode in=\"SourceGraphic\"/></feMerge></filter></defs><g class=\"chart-grid\">${[0,5,10].map(t=>`<line x1=\"${pad.l}\" y1=\"${y(t)}\" x2=\"${W-pad.r}\" y2=\"${y(t)}\"/><text x=\"${pad.l-8}\" y=\"${y(t)+4}\" text-anchor=\"end\">${t%1?t.toFixed(1):t}/10</text>`).join('')}</g>${points.map(p=>{const c=rmMood(p.y),r=Number(p.y)===10?7:6;return`<circle cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"${r+4}\" fill=\"${Number(p.y)===0?'#7657FF':c.color}\" opacity=\".14\" filter=\"url(#${id}g)\"/><circle class=\"chart-scatter\" cx=\"${x(p.x)}\" cy=\"${y(p.y)}\" r=\"${r}\" fill=\"${c.color}\" stroke=\"${Number(p.y)===0?'#7657FF':c.border}\" stroke-width=\"2\"><title>${esc(`${p.label||''} ¬∑ ${opts.xFormat?.(p.x)||p.x} ¬∑ ${p.y}/10`)}</title></circle>`}).join('')}<text class=\"chart-axis-label\" x=\"${pad.l}\" y=\"${H-12}\">${esc(opts.xFormat?.(minX)||minX)}</text><text class=\"chart-axis-label\" x=\"${W-pad.r}\" y=\"${H-12}\" text-anchor=\"end\">${esc(opts.xFormat?.(maxX)||maxX)}</text></svg>`}\nconst rmPreviousLocalScatterChart=localScatterChart;\nlocalScatterChart=function(points,opts={}){let isMood=false;try{isMood=Number(opts.yMax)===10&&String(opts.yFormat?.(3)||'').includes('/10')}catch{}return isMood?rmMoodScatterChart(points,{...opts,yMax:10,yFormat:v=>`${Number(v).toFixed(0)}/10`}):rmPreviousLocalScatterChart(points,opts)};\n\nfunction rmFixAnalysisCopy(){const mood=document.querySelector('[data-analysis-item=\"chart-mood-line\"] .chart-card-head div>p:last-child');if(mood)mood.textContent='Notas emocionais de 0 a 10 nos √∫ltimos 30 dias.';const dim=document.querySelector('[data-analysis-item=\"chart-dimension-line\"] .chart-card-head div>p:last-child');if(dim)dim.textContent='Escolha uma dimens√£o para acompanhar sua evolu√ß√£o em escala de 0 a 4.'}\nconst rmPreviousRenderQuantitativeDashboard=renderQuantitativeDashboard;\nrenderQuantitativeDashboard=async function(events){await rmPreviousRenderQuantitativeDashboard(events);rmFixAnalysisCopy()};\n\n/* Linguagem visual global: fundos em degrad√™, cart√µes luminosos, glow interno/externo e movimento suave. */\n(function rmEnsureVisualStyles(){if(document.getElementById('rm-visual-system'))return;const st=document.createElement('style');st.id='rm-visual-system';st.textContent=`\n:root{\n --rm-glass:rgba(255,255,255,.70);--rm-glass-2:rgba(248,249,255,.62);--rm-line:rgba(255,255,255,.80);\n --rm-shadow:0 16px 38px rgba(50,58,100,.10);--rm-shadow-soft:0 8px 24px rgba(50,58,100,.08);\n --rm-inner:inset 0 1px 0 rgba(255,255,255,.92);--rm-input:rgba(247,248,253,.76)\n}\nhtml[data-theme=\"dark\"]{--rm-glass:rgba(28,29,36,.72);--rm-glass-2:rgba(22,23,30,.66);--rm-line:rgba(255,255,255,.10);--rm-shadow:0 18px 42px rgba(0,0,0,.34);--rm-shadow-soft:0 9px 26px rgba(0,0,0,.26);--rm-inner:inset 0 1px 0 rgba(255,255,255,.08);--rm-input:rgba(42,43,52,.74)}\nbody{background:radial-gradient(circle at 8% 4%,color-mix(in srgb,var(--record-note,var(--accent)) 11%,transparent),transparent 28%),radial-gradient(circle at 92% 12%,rgba(86,200,255,.12),transparent 34%),radial-gradient(circle at 62% 86%,rgba(118,87,255,.08),transparent 36%),linear-gradient(180deg,color-mix(in srgb,var(--bg) 94%,white 6%),var(--bg))!important;background-color:var(--bg)!important}\nhtml[data-theme=\"dark\"] body{background:radial-gradient(circle at 8% 4%,rgba(118,87,255,.15),transparent 28%),radial-gradient(circle at 92% 12%,rgba(35,168,255,.10),transparent 34%),radial-gradient(circle at 55% 86%,rgba(0,199,190,.07),transparent 36%),linear-gradient(180deg,#09090d,#000)!important}\n.app-shell,.content{background:transparent!important}\n.summary-card,.analysis-card,.settings-card,.notice-card,.action-card,.timeline-item,.empty-state,.registry-card,.learning-question,.presentation-row,.med-note-row,.package-row,.autocomplete-results{\n background:linear-gradient(145deg,var(--rm-glass),var(--rm-glass-2))!important;border:1px solid var(--rm-line)!important;box-shadow:var(--rm-inner),var(--rm-shadow)!important\n}\n.summary-card,.analysis-card,.settings-card,.notice-card,.action-card{backdrop-filter:blur(14px) saturate(140%);-webkit-backdrop-filter:blur(14px) saturate(140%)}\n.analysis-card,.notice-card{box-shadow:var(--rm-inner),var(--rm-shadow),0 0 22px color-mix(in srgb,var(--accent) 5%,transparent)!important}\n.primary-action{--rm-card-accent:var(--record-note,var(--accent));background:radial-gradient(circle at 18% 22%,color-mix(in srgb,var(--rm-card-accent) 20%,transparent),transparent 40%),linear-gradient(145deg,var(--rm-glass),var(--rm-glass-2))!important;box-shadow:var(--rm-inner),var(--rm-shadow-soft),0 0 22px color-mix(in srgb,var(--rm-card-accent) 16%,transparent)!important;border-color:color-mix(in srgb,var(--rm-card-accent) 32%,var(--rm-line))!important}\n.med-action{--rm-card-accent:var(--record-med,var(--med))}.sleep-action{--rm-card-accent:var(--record-sleep,var(--sleep))}.buy-action{--rm-card-accent:var(--record-buy,var(--buy))}\n.action-card:not(.primary-action){background:radial-gradient(circle at 50% 28%,color-mix(in srgb,var(--rm-card-accent,var(--accent)) 15%,transparent),transparent 44%),linear-gradient(145deg,var(--rm-glass),var(--rm-glass-2))!important;box-shadow:var(--rm-inner),var(--rm-shadow-soft),0 0 18px color-mix(in srgb,var(--rm-card-accent,var(--accent)) 12%,transparent)!important;border-color:color-mix(in srgb,var(--rm-card-accent,var(--accent)) 22%,var(--rm-line))!important}\n.action-icon,.analysis-title>span,.notice-icon,.settings-row-icon{filter:drop-shadow(0 0 5px color-mix(in srgb,currentColor 42%,transparent));transition:transform .28s cubic-bezier(.2,.9,.2,1),filter .28s ease}\n.action-card:active .action-icon,.settings-row:active .settings-row-icon{transform:scale(.92)}\n.round-button,.sheet-close,.filter-chip,.secondary-button,.tiny-clear,.chart-review-btn{background:linear-gradient(145deg,var(--rm-glass),var(--rm-glass-2))!important;border:1px solid var(--rm-line)!important;box-shadow:var(--rm-inner),var(--rm-shadow-soft)!important}\n.primary-button,.full-button,.filter-chip.selected{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 82%,white 18%),var(--accent))!important;color:#fff!important;border:1px solid color-mix(in srgb,var(--accent) 72%,white 28%)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 0 16px color-mix(in srgb,var(--accent) 28%,transparent),0 10px 22px color-mix(in srgb,var(--accent) 16%,transparent)!important}\n.metric,.analysis-row,.continuity-alert-row,.learning-context,.dose-result,.segmented,.emotion-advanced{background:linear-gradient(145deg,color-mix(in srgb,var(--surface-2) 82%,white 18%),var(--surface-2))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.24),inset 0 0 18px color-mix(in srgb,var(--accent) 4%,transparent)}\n.sheet{background:linear-gradient(155deg,color-mix(in srgb,var(--surface) 91%,white 9%),color-mix(in srgb,var(--surface) 96%,var(--accent) 4%))!important;border:1px solid var(--rm-line);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 -18px 50px rgba(0,0,0,.20)!important;backdrop-filter:blur(22px) saturate(145%);-webkit-backdrop-filter:blur(22px) saturate(145%)}\n.sheet-header{background:color-mix(in srgb,var(--surface) 86%,transparent)!important;backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}\n.field input,.field textarea,.field select{background:linear-gradient(145deg,var(--rm-input),color-mix(in srgb,var(--rm-input) 92%,var(--accent) 8%))!important;border-color:color-mix(in srgb,var(--separator) 76%,white 24%)!important;box-shadow:inset 0 1px 2px rgba(0,0,0,.025),inset 0 0 16px color-mix(in srgb,var(--accent) 3%,transparent)}\n.field input:focus,.field textarea:focus,.field select:focus{border-color:color-mix(in srgb,var(--accent) 72%,white 28%)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent),0 0 16px color-mix(in srgb,var(--accent) 16%,transparent),inset 0 1px 2px rgba(0,0,0,.02)!important}\n.timeline-item:has(.kind-note){box-shadow:var(--rm-inner),var(--rm-shadow-soft),0 0 16px color-mix(in srgb,var(--record-note,var(--accent)) 8%,transparent)!important}.timeline-item:has(.kind-medication){box-shadow:var(--rm-inner),var(--rm-shadow-soft),0 0 16px color-mix(in srgb,var(--record-med,var(--med)) 8%,transparent)!important}.timeline-item:has(.kind-sleep){box-shadow:var(--rm-inner),var(--rm-shadow-soft),0 0 16px color-mix(in srgb,var(--record-sleep,var(--sleep)) 8%,transparent)!important}.timeline-item:has(.kind-purchase){box-shadow:var(--rm-inner),var(--rm-shadow-soft),0 0 16px color-mix(in srgb,var(--record-buy,var(--buy)) 8%,transparent)!important}\n.segmented button.selected,.dimension-tabs button.selected{background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 18%,var(--surface)),var(--surface))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 13px color-mix(in srgb,var(--accent) 15%,transparent)!important}\n.tab-bubble{box-shadow:inset 0 1px 0 rgba(255,255,255,.20),0 0 18px color-mix(in srgb,var(--accent) 18%,transparent)!important}.tab-item.selected>span{filter:drop-shadow(0 0 5px color-mix(in srgb,currentColor 40%,transparent))}\n.dashboard-chart{overflow:hidden;position:relative}.dashboard-chart::before{content:\"\";position:absolute;inset:-80px auto auto -70px;width:190px;height:150px;border-radius:50%;background:radial-gradient(circle,color-mix(in srgb,var(--accent) 9%,transparent),transparent 70%);pointer-events:none}.local-chart-svg{overflow:visible}.chart-grid line{stroke:color-mix(in srgb,var(--secondary) 13%,transparent)!important}.chart-grid text,.chart-axis-label,.chart-bar-label,.chart-bar-value{fill:var(--secondary)!important}.rm-emotion-chart .chart-line{filter:drop-shadow(0 0 4px color-mix(in srgb,var(--accent) 14%,transparent))}\n.rm-mood-block{padding:3px 0 2px}.mood-scale{grid-template-columns:repeat(6,minmax(0,1fr))!important;gap:10px!important}.mood-score{height:52px!important;border-radius:16px!important;border:1.5px solid var(--mood-border)!important;color:var(--mood-text)!important;background:linear-gradient(145deg,color-mix(in srgb,var(--mood-color) 78%,white 22%),var(--mood-color) 70%,color-mix(in srgb,var(--mood-color) 92%,white 8%))!important;box-shadow:inset 0 1px 1px rgba(255,255,255,.36),inset 0 0 12px color-mix(in srgb,var(--mood-color) 14%,transparent),0 0 10px var(--mood-glow)!important;font-size:16px;font-weight:850;transition:transform .28s cubic-bezier(.2,.9,.2,1),box-shadow .28s ease,filter .28s ease!important}.mood-score.rm-zero{background:radial-gradient(circle at 35% 22%,#393545 0%,#201E28 42%,#111116 100%)!important;box-shadow:inset 0 1px 2px rgba(190,170,255,.18),0 0 10px rgba(118,87,255,.42),0 0 20px rgba(118,87,255,.18)!important}.mood-score.selected{transform:scale(1.14) translateY(-2px)!important;z-index:4;border-width:2px!important;box-shadow:inset 0 1px 2px rgba(255,255,255,.58),0 0 0 2px color-mix(in srgb,var(--mood-border) 48%,white 52%),0 0 16px var(--mood-glow),0 0 31px var(--mood-glow)!important;animation:rmMoodBloom .34s cubic-bezier(.2,.95,.2,1)}.mood-score.rm-five.selected{box-shadow:inset 0 1px 3px rgba(255,255,255,.76),0 0 0 2px rgba(220,248,255,.90),0 0 18px rgba(86,200,255,.82),0 0 38px rgba(86,200,255,.48)!important;filter:saturate(1.06) brightness(1.04)}.mood-score:active{transform:scale(.94)!important}.mood-scale-labels{font-size:11px}.mood-scale-labels span:nth-child(2){text-align:center}.mood-scale-labels span:last-child{text-align:right}\n.emotion-advanced{border:1px solid var(--rm-line);border-radius:20px;padding:12px 12px 14px;margin-top:14px}.emotion-advanced summary{font-weight:800;cursor:pointer}.emotion-dimension{margin-top:15px;padding:12px;border-radius:18px;background:radial-gradient(circle at 12% 0%,color-mix(in srgb,var(--dimension-color) 10%,transparent),transparent 42%),linear-gradient(145deg,var(--rm-glass),var(--rm-glass-2));border:1px solid color-mix(in srgb,var(--dimension-color) 16%,var(--rm-line));box-shadow:inset 0 1px 0 rgba(255,255,255,.35),0 0 18px color-mix(in srgb,var(--dimension-color) 7%,transparent)}.emotion-scale{grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:8px!important}.emotion-scale button{--fill:8%;min-height:42px!important;border-radius:14px!important;border:1px solid color-mix(in srgb,var(--dimension-color) calc(var(--fill) + 18%),var(--separator))!important;background:color-mix(in srgb,var(--dimension-color) var(--fill),var(--surface-2))!important;color:var(--text)!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.20),0 0 8px color-mix(in srgb,var(--dimension-color) calc(var(--fill)/3),transparent);transition:transform .24s cubic-bezier(.2,.9,.2,1),box-shadow .24s ease,background .24s ease,border-color .24s ease}.emotion-scale button[data-emotion-score=\"0\"]{--fill:7%}.emotion-scale button[data-emotion-score=\"1\"]{--fill:18%}.emotion-scale button[data-emotion-score=\"2\"]{--fill:34%}.emotion-scale button[data-emotion-score=\"3\"]{--fill:56%;color:#fff!important;text-shadow:0 1px 6px rgba(0,0,0,.18)}.emotion-scale button[data-emotion-score=\"4\"]{--fill:78%;color:#fff!important;text-shadow:0 1px 6px rgba(0,0,0,.20)}.emotion-scale button.selected{transform:scale(1.10) translateY(-1px);z-index:2;border:2px solid color-mix(in srgb,var(--dimension-color) 74%,white 26%)!important;background:color-mix(in srgb,var(--dimension-color) 88%,var(--surface))!important;color:#fff!important;box-shadow:inset 0 1px 2px rgba(255,255,255,.42),0 0 0 2px color-mix(in srgb,var(--dimension-color) 24%,transparent),0 0 15px color-mix(in srgb,var(--dimension-color) 48%,transparent),0 0 27px color-mix(in srgb,var(--dimension-color) 22%,transparent)!important}.emotion-scale-caption{font-size:10.5px!important}\n@keyframes rmMoodBloom{0%{transform:scale(.96)}62%{transform:scale(1.18) translateY(-2px)}100%{transform:scale(1.14) translateY(-2px)}}\n@keyframes rmCardIn{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}\n.view.active>.summary-card,.view.active>.analysis-card,.view.active>.notice-card,.view.active>.settings-group,.view.active>.action-section,.view.active>.recent-section{animation:rmCardIn .34s cubic-bezier(.2,.85,.2,1) both}\n@media(prefers-color-scheme:dark){html[data-theme=\"system\"]{--rm-glass:rgba(28,29,36,.72);--rm-glass-2:rgba(22,23,30,.66);--rm-line:rgba(255,255,255,.10);--rm-shadow:0 18px 42px rgba(0,0,0,.34);--rm-shadow-soft:0 9px 26px rgba(0,0,0,.26);--rm-inner:inset 0 1px 0 rgba(255,255,255,.08);--rm-input:rgba(42,43,52,.74)}html[data-theme=\"system\"] body{background:radial-gradient(circle at 8% 4%,rgba(118,87,255,.15),transparent 28%),radial-gradient(circle at 92% 12%,rgba(35,168,255,.10),transparent 34%),radial-gradient(circle at 55% 86%,rgba(0,199,190,.07),transparent 36%),linear-gradient(180deg,#09090d,#000)!important}}\n@media(prefers-reduced-motion:reduce){.mood-score,.emotion-scale button,.view.active>*{animation:none!important;transition:none!important}}\n`;document.head.appendChild(st)})();\n\n/* Inicializa√ß√£o: normaliza e reaplica cores ap√≥s conte√∫do din√¢mico. */\nfunction rmApplyDimensionColors(root=document){root.querySelectorAll?.('[data-emotion-dimension]').forEach(row=>{const d=emotionDimensions().find(x=>x.id===row.dataset.emotionDimension);row.style.setProperty('--dimension-color',rmDimensionColor(d||{id:row.dataset.emotionDimension,label:row.dataset.emotionDimension}))})}\nconst rmObserver=new MutationObserver(()=>{rmApplyDimensionColors();rmFixAnalysisCopy()});rmObserver.observe(document.documentElement,{childList:true,subtree:true});\n(async()=>{try{let attempts=0;while(!db&&attempts<200){attempts+=1;await new Promise(resolve=>setTimeout(resolve,40))}if(!db)throw new Error('Banco local n√£o ficou pronto para a migra√ß√£o.');const changed=await rmNormalizeMoodScale10();rmApplyDimensionColors();if(changed&&typeof renderAll==='function')await renderAll();else rmFixAnalysisCopy()}catch(err){console.error('Falha ao normalizar a escala emocional',err)}})();\n";document.head.appendChild(s);s.remove();})();
 
-KäOOòãú›\ùXKú›\ù
-VÃN⁄Yä[]\›
-\ô]\õàù[ÿ€€ú›ô\œYö[ôô\Ÿ[ù][€äK]\›úô\Ÿ[ù][€íY
-K[ö][]\›úöXŸOO[ù[€ù[õ]\›úöXŸK€]\›ù[ö]Àõ\›\è][ö]O[ù[	âìù[Xô\äô\œÀù[ö]‘\êõ\›\äO›[ö]
-ìù[Xô\äô\Àù[ö]‘\êõ\›\äNõù[ÿ€€ú›⁄[òŸOQ]Kõõ› 
-KLÃ
-éç\ŸYÃY]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â…âõYYX]⁄\—]ô[ù
-KJIâõô]»]JKù[Y\›[\
-KôŸ][YJ
-Oè\⁄[òŸJKúôYXŸJ
-ÀJOOú  ù[Xô\äKù[ö]’ZŸ[ä_JK
-K[€ùO][ö]O[ù[€ù[ù[ö]
-ù\ŸYÃ‹ô]\õû€]\›[ö]õ\›\ã[€ùK›ﬂ_WàéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÕöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
+/* ---- v04c20.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Modos visuais: Fancy / Ultra preserva o acabamento completo; Otimizado reduz custo gr√°fico sem mudar a identidade. */\nconst RM_VISUAL_MODE_VERSION='1.2.0-beta.44';\nconst RM_VISUAL_MODE_RELEASE='0.4.19';\n\nfunction rmVisualMode(){const mode=getSettings()?.visualMode;return mode==='optimized'?'optimized':'ultra'}\nfunction rmApplyVisualMode(explicit=null){\n  const mode=explicit==='optimized'?'optimized':explicit==='ultra'?'ultra':rmVisualMode();\n  document.documentElement.dataset.visualMode=mode;\n  const control=document.getElementById('visualModeControl');\n  if(control&&typeof updateSegmentIndicator==='function')updateSegmentIndicator(control,'visualMode',mode);\n  const help=document.getElementById('visualModeHelp');\n  if(help)help.textContent=mode==='optimized'?'Menos blur, glow e filtros pesados; mant√©m cores, gradientes, √≠cones e hierarquia.':'Todos os efeitos visuais, glow, blur, sombras e acabamento luminoso.';\n  return mode;\n}\nfunction rmSetVisualMode(mode){\n  mode=mode==='optimized'?'optimized':'ultra';\n  const s=getSettings();s.visualMode=mode;\n  /* Salva sem passar pelo renderizador: trocar o modo n√£o precisa reconstruir nenhuma aba. */\n  try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(s))}catch{}\n  rmApplyVisualMode(mode);\n  toast(mode==='optimized'?'Modo Otimizado ativado.':'Modo Fancy / Ultra ativado.');\n}\nfunction rmEnsureVisualModeUI(){\n  if(document.getElementById('visualModeControl'))return;\n  const appearance=[...document.querySelectorAll('.settings-group')].find(g=>g.querySelector(':scope>h2')?.textContent.trim()==='Apar√™ncia');\n  const card=appearance?.querySelector('.settings-card');\n  const theme=card?.querySelector('.setting-block');\n  if(!card||!theme)return;\n  const sep=document.createElement('div');sep.className='setting-separator';sep.dataset.visualModeSeparator='1';\n  const block=document.createElement('div');block.className='setting-block';block.id='visualModeSetting';\n  block.innerHTML=`<div class=\"setting-label\"><strong>Efeitos visuais</strong><small id=\"visualModeHelp\">Fancy / Ultra usa o acabamento completo; Otimizado prioriza fluidez.</small></div><div class=\"segmented animated-segmented\" id=\"visualModeControl\"><button type=\"button\" data-visual-mode=\"ultra\">Fancy / Ultra</button><button type=\"button\" data-visual-mode=\"optimized\">Otimizado</button></div>`;\n  theme.after(sep,block);\n  block.querySelectorAll('[data-visual-mode]').forEach(b=>b.onclick=()=>rmSetVisualMode(b.dataset.visualMode));\n  rmApplyVisualMode();\n}\n\n/* Toda mudan√ßa futura de apar√™ncia mant√©m o modo visual aplicado. */\nif(typeof applySettings==='function'&&!applySettings.__rmVisualMode){\n  const previous=applySettings;\n  const wrapped=function(...args){const result=previous(...args);rmEnsureVisualModeUI();rmApplyVisualMode();return result};\n  wrapped.__rmVisualMode=true;wrapped.__rmPrevious=previous;applySettings=wrapped;\n}\n\n(function rmEnsureVisualModeStyles(){if(document.getElementById('rm-visual-mode-style'))return;const st=document.createElement('style');st.id='rm-visual-mode-style';st.textContent=`\n/* O modo Ultra √© o visual atual; apenas explicitamos a prefer√™ncia. */\nhtml[data-visual-mode=\"ultra\"]{--rm-visual-detail:1}\n\n/* Otimizado: mesma linguagem visual, com efeitos mais baratos para Safari/iPhone. */\nhtml[data-visual-mode=\"optimized\"]{--rm-visual-detail:.45}\nhtml[data-visual-mode=\"optimized\"] body{\n background:radial-gradient(circle at 86% 10%,rgba(70,160,255,.09),transparent 32%),linear-gradient(180deg,#fbfcff 0%,#f4f7fd 100%)!important\n}\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] body{\n background:radial-gradient(circle at 88% 8%,rgba(86,200,255,.07),transparent 34%),linear-gradient(180deg,#09090d,#020205)!important\n}\nhtml[data-visual-mode=\"optimized\"] .summary-card,\nhtml[data-visual-mode=\"optimized\"] .analysis-card,\nhtml[data-visual-mode=\"optimized\"] .settings-card,\nhtml[data-visual-mode=\"optimized\"] .notice-card,\nhtml[data-visual-mode=\"optimized\"] .action-card,\nhtml[data-visual-mode=\"optimized\"] .timeline-item,\nhtml[data-visual-mode=\"optimized\"] .empty-state,\nhtml[data-visual-mode=\"optimized\"] .registry-card,\nhtml[data-visual-mode=\"optimized\"] .learning-question,\nhtml[data-visual-mode=\"optimized\"] .presentation-row,\nhtml[data-visual-mode=\"optimized\"] .med-note-row,\nhtml[data-visual-mode=\"optimized\"] .package-row,\nhtml[data-visual-mode=\"optimized\"] .autocomplete-results{\n backdrop-filter:none!important;-webkit-backdrop-filter:none!important;\n box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 7px 18px rgba(48,54,93,.07)!important\n}\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .summary-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .analysis-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .settings-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .notice-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .action-card,\nhtml[data-theme=\"dark\"][data-visual-mode=\"optimized\"] .timeline-item{\n box-shadow:inset 0 1px 0 rgba(255,255,255,.06),0 7px 16px rgba(0,0,0,.18)!important\n}\nhtml[data-visual-mode=\"optimized\"] .primary-action,\nhtml[data-visual-mode=\"optimized\"] .action-card:not(.primary-action){\n box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 7px 18px rgba(48,54,93,.07),0 0 10px color-mix(in srgb,var(--rm-card-accent,var(--accent)) 7%,transparent)!important\n}\nhtml[data-visual-mode=\"optimized\"] .analysis-card,\nhtml[data-visual-mode=\"optimized\"] .notice-card{box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 7px 18px rgba(48,54,93,.07)!important}\nhtml[data-visual-mode=\"optimized\"] .action-icon,\nhtml[data-visual-mode=\"optimized\"] .analysis-title>span,\nhtml[data-visual-mode=\"optimized\"] .notice-icon,\nhtml[data-visual-mode=\"optimized\"] .settings-row-icon,\nhtml[data-visual-mode=\"optimized\"] .tab-item.selected>span{filter:none!important}\nhtml[data-visual-mode=\"optimized\"] .round-button,\nhtml[data-visual-mode=\"optimized\"] .sheet-close,\nhtml[data-visual-mode=\"optimized\"] .filter-chip,\nhtml[data-visual-mode=\"optimized\"] .secondary-button,\nhtml[data-visual-mode=\"optimized\"] .tiny-clear,\nhtml[data-visual-mode=\"optimized\"] .chart-review-btn{\n box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 4px 10px rgba(48,54,93,.06)!important\n}\nhtml[data-visual-mode=\"optimized\"] .primary-button,\nhtml[data-visual-mode=\"optimized\"] .full-button,\nhtml[data-visual-mode=\"optimized\"] .filter-chip.selected{\n box-shadow:inset 0 1px 0 rgba(255,255,255,.28),0 6px 14px color-mix(in srgb,var(--accent) 10%,transparent),0 0 8px color-mix(in srgb,var(--accent) 12%,transparent)!important\n}\nhtml[data-visual-mode=\"optimized\"] .metric,\nhtml[data-visual-mode=\"optimized\"] .analysis-row,\nhtml[data-visual-mode=\"optimized\"] .continuity-alert-row,\nhtml[data-visual-mode=\"optimized\"] .learning-context,\nhtml[data-visual-mode=\"optimized\"] .dose-result,\nhtml[data-visual-mode=\"optimized\"] .segmented,\nhtml[data-visual-mode=\"optimized\"] .emotion-advanced{box-shadow:inset 0 1px 0 rgba(255,255,255,.16)!important}\nhtml[data-visual-mode=\"optimized\"] .sheet{\n backdrop-filter:none!important;-webkit-backdrop-filter:none!important;\n box-shadow:inset 0 1px 0 rgba(255,255,255,.24),0 -12px 28px rgba(0,0,0,.14)!important\n}\nhtml[data-visual-mode=\"optimized\"] .sheet-header{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}\nhtml[data-visual-mode=\"optimized\"] .field input,\nhtml[data-visual-mode=\"optimized\"] .field textarea,\nhtml[data-visual-mode=\"optimized\"] .field select{box-shadow:inset 0 1px 2px rgba(0,0,0,.025)!important}\nhtml[data-visual-mode=\"optimized\"] .field input:focus,\nhtml[data-visual-mode=\"optimized\"] .field textarea:focus,\nhtml[data-visual-mode=\"optimized\"] .field select:focus{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 12%,transparent)!important}\nhtml[data-visual-mode=\"optimized\"] .timeline-item:has(.kind-note),\nhtml[data-visual-mode=\"optimized\"] .timeline-item:has(.kind-medication),\nhtml[data-visual-mode=\"optimized\"] .timeline-item:has(.kind-sleep),\nhtml[data-visual-mode=\"optimized\"] .timeline-item:has(.kind-purchase){box-shadow:inset 0 1px 0 rgba(255,255,255,.22),0 6px 15px rgba(48,54,93,.06)!important}\nhtml[data-visual-mode=\"optimized\"] .tab-bar,\nhtml[data-visual-mode=\"optimized\"] .capsule-tabbar{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}\nhtml[data-visual-mode=\"optimized\"] .tab-bubble{box-shadow:inset 0 1px 0 rgba(255,255,255,.16),0 3px 9px rgba(0,0,0,.08)!important}\nhtml[data-visual-mode=\"optimized\"] .mood-score{box-shadow:inset 0 1px 1px rgba(255,255,255,.24),0 3px 9px rgba(0,0,0,.05)!important}\nhtml[data-visual-mode=\"optimized\"] .mood-score.selected{box-shadow:inset 0 1px 1px rgba(255,255,255,.32),0 0 0 2px color-mix(in srgb,var(--mood-border) 58%,white 42%),0 0 10px var(--mood-glow)!important;transform:scale(1.10) translateY(-1px)!important}\nhtml[data-visual-mode=\"optimized\"] .emotion-scale button{box-shadow:none!important}\nhtml[data-visual-mode=\"optimized\"] .emotion-scale button.selected{box-shadow:0 0 8px color-mix(in srgb,var(--dimension-color) 22%,transparent)!important}\nhtml[data-visual-mode=\"optimized\"] .rm-emotion-chart [filter],\nhtml[data-visual-mode=\"optimized\"] .rm-mood-bars [filter],\nhtml[data-visual-mode=\"optimized\"] .rm-mood-scatter [filter]{filter:none!important}\nhtml[data-visual-mode=\"optimized\"] .rm-emotion-chart path[mask]{opacity:.12!important}\nhtml[data-visual-mode=\"optimized\"] .dashboard-chart,\nhtml[data-visual-mode=\"optimized\"] .analysis-card{will-change:auto!important}\nhtml[data-visual-mode=\"optimized\"] button,\nhtml[data-visual-mode=\"optimized\"] .action-icon,\nhtml[data-visual-mode=\"optimized\"] .mood-score,\nhtml[data-visual-mode=\"optimized\"] .tab-bubble{transition-duration:.16s!important}\nhtml[data-visual-mode=\"optimized\"] .view.active .summary-card,\nhtml[data-visual-mode=\"optimized\"] .view.active .analysis-card,\nhtml[data-visual-mode=\"optimized\"] .view.active .settings-card,\nhtml[data-visual-mode=\"optimized\"] .view.active .action-card{animation-duration:.18s!important}\n\n#visualModeControl{grid-template-columns:repeat(2,minmax(0,1fr))}\n#visualModeControl button{font-size:12px;white-space:nowrap}\n`;document.head.appendChild(st)})();\n\nrmEnsureVisualModeUI();rmApplyVisualMode();\nconst releaseTopVisualMode=document.getElementById('topVersion'),releaseAboutVisualMode=document.getElementById('versionLabel');if(releaseTopVisualMode)releaseTopVisualMode.textContent=`v${RM_VISUAL_MODE_RELEASE}`;if(releaseAboutVisualMode)releaseAboutVisualMode.textContent=RM_VISUAL_MODE_RELEASE;\n";document.head.appendChild(s);s.remove();})();
 
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hò\ﬁ[ò»ù[ò›[€àô[ô\ê[ò[\⁄\ ]ô[ù ^ÿ€€ú›€‹ùYVÀããô]ô[ù◊Kú€‹ù
+/* ---- v04c21.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Ajustes 0.4.21: organiza Apar√™ncia, move op√ß√µes avan√ßadas para uma p√°gina pr√≥pria e aplica o patch visual do editor DEV (base 0.4.19). */\nconst RM_SETTINGS_LAYOUT_RELEASE='0.4.21';\n\nfunction rmSystemFontOnly(){\n  const html=document.documentElement;\n  html.dataset.fontFamily='system';\n  if(document.body)document.body.style.fontFamily='-apple-system,BlinkMacSystemFont,\"SF Pro Text\",\"Segoe UI\",sans-serif';\n  try{const s=getSettings();if(s.fontFamily!=='system'){s.fontFamily='system';localStorage.setItem(SETTINGS_KEY,JSON.stringify(s))}}catch{}\n  const control=document.getElementById('fontFamilyControl');\n  const block=control?.closest('.setting-block');\n  if(block){const prev=block.previousElementSibling;block.remove();if(prev?.classList.contains('setting-separator'))prev.remove()}\n}\n\nfunction rmEnsureVisualModeControl(){\n  if(!document.getElementById('visualModeControl')){\n    const theme=document.getElementById('themeControl')?.closest('.setting-block');\n    if(theme){\n      const sep=document.createElement('div');sep.className='setting-separator';\n      const block=document.createElement('div');block.className='setting-block rm-center-setting';\n      block.innerHTML='<div class=\"setting-label\"><strong>Efeitos visuais</strong><small id=\"visualModeHelp\">Fancy / Ultra usa o acabamento completo; Otimizado prioriza fluidez.</small></div><div class=\"segmented animated-segmented\" id=\"visualModeControl\"><button type=\"button\" data-visual-mode=\"ultra\">Fancy / Ultra</button><button type=\"button\" data-visual-mode=\"optimized\">Otimizado</button></div>';\n      theme.after(sep,block);\n    }\n  }\n  const control=document.getElementById('visualModeControl');\n  if(!control)return;\n  control.querySelectorAll('[data-visual-mode]').forEach(button=>{\n    if(button.dataset.rmVisualWired==='1')return;\n    button.dataset.rmVisualWired='1';\n    button.addEventListener('click',()=>{\n      const mode=button.dataset.visualMode==='optimized'?'optimized':'ultra';\n      if(typeof rmSetVisualMode==='function')rmSetVisualMode(mode);\n      else{\n        const s=getSettings();s.visualMode=mode;localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));\n        document.documentElement.dataset.visualMode=mode;\n        updateSegmentIndicator(control,'visualMode',mode);\n      }\n    });\n  });\n  const mode=getSettings()?.visualMode==='optimized'?'optimized':'ultra';\n  document.documentElement.dataset.visualMode=mode;\n  updateSegmentIndicator(control,'visualMode',mode);\n}\n\nfunction rmCenterSuitableSettings(){\n  ['themeControl','visualModeControl','accentControl','iconSizeControl','iconWeightControl','healthImportModeControl','fontWeightControl'].forEach(id=>{\n    document.getElementById(id)?.closest('.setting-block')?.classList.add('rm-center-setting');\n  });\n  const themeLabel=document.getElementById('themeControl')?.closest('.setting-block')?.querySelector('.setting-label');\n  themeLabel?.querySelector('small')?.remove();\n  const accentLabel=document.getElementById('accentControl')?.closest('.setting-block')?.querySelector('.setting-label');\n  accentLabel?.querySelector('small')?.remove();\n}\n\nfunction rmDetachBlock(id){\n  const el=document.getElementById(id),block=el?.closest('.setting-block,.setting-inline,.settings-row');\n  if(!block)return null;\n  const prev=block.previousElementSibling;\n  if(prev?.classList.contains('setting-separator'))prev.remove();\n  block.remove();\n  return block;\n}\n\nfunction rmCreateAdvancedPage(){\n  if(document.querySelector('[data-view=\"advanced-settings\"]'))return document.querySelector('[data-view=\"advanced-settings\"]');\n  const main=document.getElementById('content');if(!main)return null;\n  const page=document.createElement('section');\n  page.className='view rm-advanced-settings-view';page.dataset.view='advanced-settings';\n  page.innerHTML=`\n    <header class=\"page-header rm-subpage-header\">\n      <button type=\"button\" class=\"round-button rm-back-button\" id=\"advancedSettingsBackBtn\" aria-label=\"Voltar\">‚Äπ</button>\n      <div class=\"rm-subpage-title\"><p class=\"eyebrow\">Ajustes</p><h1>Personaliza√ß√£o avan√ßada</h1></div>\n    </header>\n    <section class=\"settings-group\"><h2>Texto</h2><div class=\"settings-card\" id=\"rmAdvancedText\"></div></section>\n    <section class=\"settings-group\"><h2>Interface</h2><div class=\"settings-card\" id=\"rmAdvancedInterface\"></div></section>\n    <section class=\"settings-group\"><h2>√çcones e barra inferior</h2><div class=\"settings-card list-card\" id=\"rmAdvancedNavigation\"></div></section>`;\n  main.appendChild(page);\n  document.getElementById('advancedSettingsBackBtn').addEventListener('click',rmCloseAdvancedSettings);\n  return page;\n}\n\nfunction rmMoveAdvancedSettings(){\n  const page=rmCreateAdvancedPage();if(!page)return;\n  const textCard=document.getElementById('rmAdvancedText');\n  const interfaceCard=document.getElementById('rmAdvancedInterface');\n  const navCard=document.getElementById('rmAdvancedNavigation');\n\n  const weight=rmDetachBlock('fontWeightControl');\n  if(weight){weight.classList.add('rm-center-setting');textCard.appendChild(weight)}\n\n  const showVersion=rmDetachBlock('showVersionToggle');\n  const hideLabels=rmDetachBlock('hideTabLabelsToggle');\n  [showVersion,hideLabels].filter(Boolean).forEach((node,i)=>{if(i)interfaceCard.appendChild(Object.assign(document.createElement('div'),{className:'setting-separator'}));interfaceCard.appendChild(node)});\n\n  const customIcons=rmDetachBlock('customIconsBtn');\n  const tabbarLab=rmDetachBlock('tabbarLabBtn');\n  [customIcons,tabbarLab].filter(Boolean).forEach((node,i)=>{if(i)navCard.appendChild(Object.assign(document.createElement('div'),{className:'setting-separator inset'}));navCard.appendChild(node)});\n\n  const oldGroup=[...document.querySelectorAll('[data-view=\"settings\"] .settings-group')].find(g=>g.querySelector('h2')?.textContent.trim()==='Personaliza√ß√£o avan√ßada');\n  if(oldGroup){\n    oldGroup.querySelector('h2').textContent='Personaliza√ß√£o';\n    const card=oldGroup.querySelector('.settings-card');\n    if(card)card.innerHTML='<button class=\"settings-row\" id=\"advancedSettingsBtn\"><span class=\"settings-row-icon\" data-icon=\"settings\"></span><span><strong>Personaliza√ß√£o avan√ßada</strong><small>Peso da fonte, vers√£o, √≠cones e barra inferior</small></span><span class=\"chevron\">‚Ä∫</span></button>';\n  }else if(!document.getElementById('advancedSettingsBtn')){\n    const dataGroup=[...document.querySelectorAll('[data-view=\"settings\"] .settings-group')].find(g=>g.querySelector('h2')?.textContent.trim()==='Dados');\n    const group=document.createElement('section');group.className='settings-group';\n    group.innerHTML='<h2>Personaliza√ß√£o</h2><div class=\"settings-card list-card\"><button class=\"settings-row\" id=\"advancedSettingsBtn\"><span class=\"settings-row-icon\" data-icon=\"settings\"></span><span><strong>Personaliza√ß√£o avan√ßada</strong><small>Peso da fonte, vers√£o, √≠cones e barra inferior</small></span><span class=\"chevron\">‚Ä∫</span></button></div>';\n    dataGroup?.before(group);\n  }\n  document.getElementById('advancedSettingsBtn')?.addEventListener('click',rmOpenAdvancedSettings);\n  if(typeof hydrateIcons==='function')hydrateIcons(page.parentElement||document);\n}\n\nfunction rmOpenAdvancedSettings(){\n  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.dataset.view==='advanced-settings'));\n  document.documentElement.dataset.settingsSubpage='advanced';\n  window.scrollTo({top:0,behavior:'instant'});\n}\nfunction rmCloseAdvancedSettings(){\n  document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.dataset.view==='settings'));\n  document.documentElement.dataset.settingsSubpage='';\n  document.querySelectorAll('.tab-item').forEach(b=>b.classList.toggle('selected',b.dataset.tab==='settings'));\n  if(typeof updateTabBubble==='function')updateTabBubble();\n  window.scrollTo({top:0,behavior:'instant'});\n}\n\n(function rmSettingsLayoutStyles(){\n  if(document.getElementById('rm-settings-layout-style'))return;\n  const st=document.createElement('style');st.id='rm-settings-layout-style';st.textContent=`\n  .rm-center-setting .setting-label{align-items:center;text-align:center}\n  .rm-center-setting .setting-label strong,.rm-center-setting .setting-label small{width:100%}\n  .rm-center-setting .accent-options{justify-content:center}\n  .rm-subpage-header{position:relative;align-items:center;min-height:48px;margin-bottom:24px}\n  .rm-subpage-header .rm-back-button{position:absolute;left:0;top:0;font-size:30px;font-weight:350;line-height:1}\n  .rm-subpage-title{width:100%;text-align:center;padding:0 48px}\n  .rm-subpage-title .eyebrow{margin-bottom:3px}\n  .rm-subpage-title h1{font-size:27px;line-height:1.08}\n  html[data-settings-subpage=\"advanced\"] .tab-bar{opacity:0!important;pointer-events:none!important;transform:translateX(-50%) translateY(24px)!important}\n  #rmAdvancedText:empty,#rmAdvancedInterface:empty,#rmAdvancedNavigation:empty{display:none}\n  #visualModeControl{grid-template-columns:repeat(2,minmax(0,1fr))}\n  #visualModeControl button{font-size:12px;white-space:nowrap}\n  `;document.head.appendChild(st)\n})();\n\n/* Altera√ß√µes exportadas pelo Editor Visual DEV. O arquivo informado foi editado sobre a interface 0.4.19. */\n(function rmDevEditsStyles(){\n  if(document.getElementById('rm-dev-edits-style'))return;\n  const st=document.createElement('style');st.id='rm-dev-edits-style';st.textContent=`\n  .view[data-view=\"home\"] .home-header h1{position:relative;top:4px}\n  .view[data-view=\"home\"] #recentTitle{position:relative;top:4px}\n  .view[data-view=\"home\"] .recent-section .section-title-row .section-kicker{position:relative;top:8px}\n  .view[data-view=\"home\"] .recent-section [data-go=\"history\"]{position:relative;left:-4px;top:8px}\n  #quantitativeDashboard > section.analysis-card.analysis-review-item:nth-of-type(2) > .chart-card-head > div > p:nth-of-type(2){text-align:left!important}\n  #personalInterviewSection > p.helper{position:relative;top:-4px}\n  `;document.head.appendChild(st)\n})();\n\nfunction rmApplyDevEditsText(){\n  const p=document.querySelector('.view[data-view=\"learning\"] .learning-explain > p');\n  if(p&&!p.dataset.rmDevTextPatched){\n    const expected='O app n√£o inventa diagn√≥sticos. Ele reconhece conceitos, respeita nega√ß√µes simples, observa quando express√µes aparecem pr√≥ximas e cruza isso com hor√°rios de medicamentos e sono. Quando n√£o tem confian√ßa, pergunta.';\n    if(p.textContent.trim()===expected){\n      p.innerHTML='O app n√£o inventa diagn√≥sticos.<br>Ele reconhece conceitos, respeita nega√ß√µes simples, observa quando express√µes aparecem pr√≥ximas e cruza isso com hor√°rios de medicamentos e sono. Quando n√£o tem confian√ßa, pergunta.';\n      p.dataset.rmDevTextPatched='1';\n    }\n  }\n}\n\nfunction rmApplySettingsLayout(){\n  rmSystemFontOnly();\n  rmEnsureVisualModeControl();\n  rmMoveAdvancedSettings();\n  rmCenterSuitableSettings();\n  rmApplyDevEditsText();\n  const top=document.getElementById('topVersion'),about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_SETTINGS_LAYOUT_RELEASE}`;\n  if(about)about.textContent=RM_SETTINGS_LAYOUT_RELEASE;\n}\n\nrmApplySettingsLayout();\nsetTimeout(rmApplySettingsLayout,0);\n[700,1600,3200,6000].forEach(ms=>setTimeout(rmApplyDevEditsText,ms));\ndocument.addEventListener('click',e=>{if(e.target.closest('[data-tab=\"learning\"]'))setTimeout(rmApplyDevEditsText,80)},true);\n";document.head.appendChild(s);s.remove();})();
 
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JKﬁX€OX›\úô[ùﬁX€J€‹ùY
-K]\›õ›O\€‹ùYôö[ô
-OOôKù\OOOI€õ›I KﬁX€SYYœ\€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â…âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OèXﬁX€Kú›\ù
-K€€ù^›\ùXﬁX€Kú›\ùLç
-åÕå€€ù^YYœXﬁX€Kõ\›€Y\‹€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â…âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OﬁX€Kú›\ù	âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OèX€€ù^›\ù
-Nñ◊K\›€Y\XﬁX€Kõ\›€Y\€‹ùYôö[ô
-OOôKù\OOOI‹€Y\	 NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ›\úô[ù[ò[\⁄\… Kö[õô\íSVÿ[ò[\⁄\‘õ› 	‘\∞Î[Ÿ»€€ú⁄Y\òY…ÀﬁX€KõXô[
-K[ò[\⁄\‘õ› 	Êõ[[»ô[]…À]\›õ›Oÿ8†'	€]\›õ›Kù^	–[õ›pÈË€»Hõﬁâﬂx†'H0≠»	⁄[X[êY€ ]\›õ›Kù[Y\›[\
-_Xâ–Z[ôH∞Ë€»0ËH[õ›pÈÌY\Àâ K[ò[\⁄\‘õ› ﬁX€Kõ\›€Y\…”YYXÿ[Y[ù‹»\ŸH]YHX€‹ô›IŒâ”YYXÿ[Y[ù‹»ôXŸ[ù\…ÀﬁX€SYYÀõ[ô›ÿﬁX€SYYÀõX\
-YYXÿ][€ë]ô[ùXô[
-Köõ⁄[ä	»0≠»	 Nâ”ô[ö[HôY⁄\›õ»ô\‹ŸH\∞Î[ŸÀâ Kããä€€ù^YYÀõ[ô›÷ÿ[ò[\⁄\‘õ› 	–€€ù^»[ù\»»0Óõ[[»€€õ…À€€ù^YYÀõX\
-YYXÿ][€ë]ô[ùXô[
-Köõ⁄[ä	»0≠»	 JWNñ◊JK[ò[\⁄\‘õ› 	‘€€õ»XZ\»ôXŸ[ùIÀ\›€Y\ÿ	Ÿ\ò][€ìXô[
-\ò][€í›\ú \›€Y\ú›\ù[YK\›€Y\ô[ô[YJJ_I€\›€Y\ú]X[]Oÿ0≠»]X[YYH	€\›€Y\ú]X[]_Xâ…ﬂXâ–Z[ôH∞Ë€»0ËHôY⁄\›õ‹»H€€õÀâ WKöõ⁄[ä	… Nÿ€€ú›YZ[úœ\€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â Kõ›\œ\€‹ùYôö[\äOOôKù\OOOI€õ›I…âôKù^
-K‹õ›\Y^ﬂNŸõ‹ä€€ú›HŸàYZ[ú ^ÿ€€ú›Ÿ^OXKõYYXÿ][€ü	”YYXÿ[Y[ù…Œ⁄YäY‹õ›\Y⁄Ÿ^WJY‹õ›\Y⁄Ÿ^WO^ÿ€›[ùå\õ\Œñ◊_Nÿ€€ú››[ô]»]JKù[Y\›[\
-KôŸ][YJ
-K[è\›
-Œ
-åÕåôX\òûO[õ›\Àôö[\äèOûÿ€€ú›[ô]»]Jãù[Y\›[\
-KôŸ][YJ
-N‹ô]\õàè\›	âùY[üJNŸ‹õ›\Y⁄Ÿ^WKò€›[ù
-œ[ôX\òûKõ[ô›Ÿ‹õ›\Y⁄Ÿ^WKù\õ\Àú\⁄
-ããõôX\òûKôõ]X\
-èOõ[€Ÿ\õ\ ãù^
-JJ_X€€ú›\‹€ÿœSÿöôX›ô[ùöY\ ‹õ›\Y
-Kú€‹ù
+/* ---- v04c11.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Aprendizado local: vocabul√°rio pessoal + perguntas de confirma√ß√£o + an√°lise de todo texto observacional. */\nconst LEARNING_ENGINE_VERSION='1.2.0-beta.44';\nconst LEARNING_CONCEPTS={\n  ansiedade:'Ansiedade',humor_negativo:'Humor negativo',humor_positivo:'Humor positivo',calma:'Calma',\n  sonolencia:'Sonol√™ncia',cansaco:'Cansa√ßo / baixa energia',concentracao:'Concentra√ß√£o / aten√ß√£o',\n  agitacao:'Agita√ß√£o',irritabilidade:'Irritabilidade',confusao:'Confus√£o / lentifica√ß√£o',\n  nausea:'N√°usea / enjoo',tontura:'Tontura',dor_cabeca:'Dor de cabe√ßa',insonia:'Ins√¥nia',apetite:'Apetite'\n};\nconst LEARNING_BASE_LEXICON={\n  ansiedade:['ansiedade','ansioso','ansiosa','aflito','aflita','aflicao','agonia','nervoso','nervosa','panico','preocupado','preocupada'],\n  humor_negativo:['triste','tristeza','desanimado','desanimada','deprimido','deprimida','pessimo','pessima','mal','vazio','vazia','sem esperanca'],\n  humor_positivo:['feliz','felicidade','animado','animada','otimo','otima','bem','empolgado','empolgada'],\n  calma:['calmo','calma','tranquilo','tranquila','relaxado','relaxada'],\n  sonolencia:['sono','sonolento','sonolenta','sonolencia','grogue','sedado','sedada','bocejando','apagando'],\n  cansaco:['cansado','cansada','cansaco','exausto','exausta','exaustao','fadiga','sem energia'],\n  concentracao:['foco','concentrado','concentrada','concentracao','distraido','distraida','disperso','dispersa','sem foco'],\n  agitacao:['agitado','agitada','agitacao','acelerado','acelerada','inquieto','inquieta'],\n  irritabilidade:['irritado','irritada','irritabilidade','raiva','impaciente'],\n  confusao:['confuso','confusa','confusao','lerdo','lerda','lento','lenta','lentidao'],\n  nausea:['nausea','enjoado','enjoada','enjoo'],\n  tontura:['tontura','tonto','tonta','vertigem'],\n  dor_cabeca:['dor de cabeca','cefaleia','enxaqueca'],\n  insonia:['insonia','sem dormir','nao consegui dormir','dificuldade para dormir'],\n  apetite:['apetite','fome','sem fome']\n};\nconst LEARNING_STOPWORDS=new Set(('a o os as um uma uns umas de da do das dos em no na nos nas por para com sem e ou mas que se eu meu minha meus minhas voce voces ele ela eles elas isso isto aquilo esse essa esses essas ao aos ate desde entre sobre como quando onde porque pois entao ainda tambem muito muita muitos muitas pouco pouca poucos poucas mais menos ja agora hoje ontem amanha aqui ali la depois antes durante foi fui era estou estava estou estou tenho tinha tive tem ter ser estar fazer fiz fez vou vai vamos pra pro pela pelo pelas pelos cada todo toda todos todas algum alguma alguns algumas nenhum nenhuma mesmo mesma mesmo assim so apenas realmente meio quase tipo coisa coisas vez vezes dia dias hora horas minuto minutos momento momentos tomei tomar tomado tomando medicamento remedio remedios comprimido comprimidos capsula capsulas dose doses mg mcg ml g unidade unidades caixa caixas minha meu seu sua nao nem nunca nada me mim te lhe deles delas nossa nosso voce').split(' '));\nconst LEARNING_NEGATIONS=new Set(['nao','nem','nunca','sem']);\n\nfunction learningState(){const s=getSettings(),raw=s.learning||{};return{version:1,terms:{...(raw.terms||{})},ignored:{...(raw.ignored||{})},rejected:{...(raw.rejected||{})},postponed:{...(raw.postponed||{})}}}\nfunction learningSaveState(state){const s=getSettings();s.learning={...state,version:1};saveSettings(s)}\nfunction learningConceptLabel(key){return LEARNING_CONCEPTS[key]||key}\nfunction learningContainsPhrase(norm,phrase){const p=normalizeText(phrase);return (` ${norm} `).includes(` ${p} `)}\nfunction learningPhraseNegated(norm,phrase){const p=normalizeText(phrase),idx=(` ${norm} `).indexOf(` ${p} `);if(idx<0)return false;const before=norm.slice(0,Math.max(0,idx-1)).trim().split(/\\s+/).filter(Boolean).slice(-4);return before.some(x=>LEARNING_NEGATIONS.has(x))}\nfunction learningBaseLookup(){const out={};Object.entries(LEARNING_BASE_LEXICON).forEach(([concept,terms])=>terms.forEach(term=>out[normalizeText(term)]={concept,display:term}));return out}\nconst LEARNING_BASE_LOOKUP=learningBaseLookup();\n\nfunction learningMappings(){const state=learningState(),maps=[];\n  Object.entries(state.terms).forEach(([term,data])=>{if(data?.concept&&data.concept!=='ignore')maps.push({term,concept:data.concept,source:'user'})});\n  Object.entries(LEARNING_BASE_LOOKUP).forEach(([term,data])=>{const user=state.terms[term];if(user)return;if(state.ignored[term])return;if(state.rejected[`${term}|${data.concept}`])return;maps.push({term,concept:data.concept,source:'base'})});\n  return maps.sort((a,b)=>b.term.length-a.term.length)\n}\nfunction learningConceptsInText(text=''){const norm=normalizeText(text);if(!norm)return[];const found=new Map();for(const m of learningMappings()){if(!learningContainsPhrase(norm,m.term))continue;if(learningPhraseNegated(norm,m.term))continue;const current=found.get(m.concept)||{concept:m.concept,count:0,terms:[]};current.count++;current.terms.push(m.term);found.set(m.concept,current)}return[...found.values()]}\n\nasync function learningCollectObservations(events=null,meds=null){events=events||await allEvents();meds=meds||await allMedications();const out=[];\n  const add=(text,timestamp,source,eventId=null,medicationId=null)=>{text=String(text||'').trim();if(!text)return;out.push({text,timestamp:timestamp||new Date().toISOString(),source,eventId,medicationId})};\n  for(const e of events){if(e.type==='note'){add(e.text,e.timestamp,'Anota√ß√£o',e.id);add(e.tag,e.timestamp,'Tag da anota√ß√£o',e.id)}else if(e.type==='medication')add(e.note,e.timestamp,'Observa√ß√£o da tomada',e.id,e.medicationId);else if(e.type==='sleep')add(e.note,e.timestamp,'Observa√ß√£o do sono',e.id)}\n  for(const m of meds)for(const n of (m.notes||[]))add(n.text,n.timestamp,'Anota√ß√£o do medicamento',n.id,m.id);\n  return out.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp))\n}\nfunction learningMedicationWords(meds){const set=new Set();for(const m of meds){[m.activeIngredient,m.referenceName,m.lab,...(m.aliases||[])].filter(Boolean).forEach(v=>normalizeText(v).split(' ').forEach(w=>set.add(w)));for(const p of (m.presentations||[]))[p.brand,p.lab,p.form].filter(Boolean).forEach(v=>normalizeText(v).split(' ').forEach(w=>set.add(w)))}return set}\nfunction learningQuestionPostponed(state,key){const until=state.postponed[key];return until&&Number(until)>Date.now()}\nfunction learningExample(text,term){const clean=String(text||'').replace(/\\s+/g,' ').trim();return clean.length>170?`${clean.slice(0,167)}‚Ä¶`:clean}\n\nasync function learningBuildQuestions(events=null,meds=null){events=events||await allEvents();meds=meds||await allMedications();const observations=await learningCollectObservations(events,meds),state=learningState(),medWords=learningMedicationWords(meds),baseSeen={},unknown={};\n  for(const obs of observations){const norm=normalizeText(obs.text),concepts=learningConceptsInText(obs.text);\n    for(const [term,data] of Object.entries(LEARNING_BASE_LOOKUP)){if(!learningContainsPhrase(norm,term)||learningPhraseNegated(norm,term))continue;const key=`confirm|${term}|${data.concept}`;(baseSeen[key]??={type:'confirm',key,term,display:data.display,concept:data.concept,count:0,examples:[]}).count++;if(baseSeen[key].examples.length<2)baseSeen[key].examples.push({text:learningExample(obs.text,term),source:obs.source})}\n    const tokens=[...new Set(norm.split(' ').filter(Boolean))];\n    for(const term of tokens){if((term.length<4&&term!=='mal'&&term!=='bem')||LEARNING_STOPWORDS.has(term)||medWords.has(term)||LEARNING_BASE_LOOKUP[term]||state.terms[term]||state.ignored[term]||/^\\d+$/.test(term))continue;const st=unknown[term]??={type:'unknown',term,display:term,count:0,examples:[],conceptScores:{}};st.count++;if(st.examples.length<2)st.examples.push({text:learningExample(obs.text,term),source:obs.source});for(const c of concepts)st.conceptScores[c.concept]=(st.conceptScores[c.concept]||0)+1;unknown[term]=st}\n  }\n  const questions=[];\n  Object.values(baseSeen).sort((a,b)=>b.count-a.count).forEach(q=>{if(questions.length>=3)return;if(state.terms[q.term]||state.ignored[q.term]||state.rejected[`${q.term}|${q.concept}`]||learningQuestionPostponed(state,q.key))return;questions.push(q)});\n  Object.values(unknown).sort((a,b)=>b.count-a.count).forEach(st=>{if(questions.length>=8)return;const ranked=Object.entries(st.conceptScores).sort((a,b)=>b[1]-a[1]),top=ranked[0],second=ranked[1];if(top&&top[1]>=2&&(!second||top[1]>second[1])){const key=`infer|${st.term}|${top[0]}`;if(state.rejected[`${st.term}|${top[0]}`]||learningQuestionPostponed(state,key))return;questions.push({...st,type:'infer',key,concept:top[0]})}else if(st.count>=3){const key=`classify|${st.term}`;if(learningQuestionPostponed(state,key))return;questions.push({...st,type:'classify',key})}});\n  return{observations,questions}\n}\n\nfunction learningConceptButtons(term,key){return`<div class=\"learning-concepts\">${Object.entries(LEARNING_CONCEPTS).map(([concept,label])=>`<button type=\"button\" class=\"learning-chip\" data-learning-action=\"map\" data-learning-term=\"${esc(term)}\" data-learning-concept=\"${concept}\" data-learning-key=\"${esc(key)}\">${esc(label)}</button>`).join('')}</div>`}\nfunction learningQuestionHTML(q){const example=q.examples?.[0]?`<div class=\"learning-context\"><small>${esc(q.examples[0].source)}</small><p>‚Äú${esc(q.examples[0].text)}‚Äù</p></div>`:'';\n  if(q.type==='confirm')return`<article class=\"learning-question\"><span class=\"learning-confidence high\">SIGNIFICADO CONHECIDO</span><h3>Quando voc√™ usa ‚Äú${esc(q.display)}‚Äù, devo interpretar como <b>${esc(learningConceptLabel(q.concept))}</b>?</h3><p>Encontrei esse termo ${q.count} vez(es) nos seus registros.</p>${example}<div class=\"learning-actions\"><button type=\"button\" class=\"primary-button\" data-learning-action=\"yes\" data-learning-term=\"${esc(q.term)}\" data-learning-concept=\"${q.concept}\" data-learning-key=\"${esc(q.key)}\">Sim</button><button type=\"button\" class=\"secondary-button\" data-learning-action=\"no\" data-learning-term=\"${esc(q.term)}\" data-learning-concept=\"${q.concept}\" data-learning-key=\"${esc(q.key)}\">N√£o</button><button type=\"button\" class=\"secondary-button\" data-learning-action=\"later\" data-learning-term=\"${esc(q.term)}\" data-learning-key=\"${esc(q.key)}\">N√£o sei</button></div></article>`;\n  if(q.type==='infer')return`<article class=\"learning-question\"><span class=\"learning-confidence medium\">HIP√ìTESE DO APP</span><h3>‚Äú${esc(q.display)}‚Äù parece estar relacionado a <b>${esc(learningConceptLabel(q.concept))}</b>. Faz sentido para voc√™?</h3><p>Essa hip√≥tese surgiu porque o termo se repetiu perto de express√µes que o app j√° conhece.</p>${example}<div class=\"learning-actions\"><button type=\"button\" class=\"primary-button\" data-learning-action=\"yes\" data-learning-term=\"${esc(q.term)}\" data-learning-concept=\"${q.concept}\" data-learning-key=\"${esc(q.key)}\">Sim</button><button type=\"button\" class=\"secondary-button\" data-learning-action=\"no\" data-learning-term=\"${esc(q.term)}\" data-learning-concept=\"${q.concept}\" data-learning-key=\"${esc(q.key)}\">N√£o</button><button type=\"button\" class=\"secondary-button\" data-learning-action=\"later\" data-learning-term=\"${esc(q.term)}\" data-learning-key=\"${esc(q.key)}\">N√£o sei</button></div><details class=\"learning-other\"><summary>Escolher outro significado</summary>${learningConceptButtons(q.term,q.key)}<button type=\"button\" class=\"learning-chip muted\" data-learning-action=\"ignore\" data-learning-term=\"${esc(q.term)}\" data-learning-key=\"${esc(q.key)}\">N√£o √© relevante</button></details></article>`;\n  return`<article class=\"learning-question\"><span class=\"learning-confidence low\">TERMO NOVO</span><h3>Voc√™ usou ‚Äú${esc(q.display)}‚Äù ${q.count} vezes. O que esse termo costuma significar para voc√™?</h3>${example}${learningConceptButtons(q.term,q.key)}<div class=\"learning-actions\"><button type=\"button\" class=\"secondary-button\" data-learning-action=\"ignore\" data-learning-term=\"${esc(q.term)}\" data-learning-key=\"${esc(q.key)}\">N√£o √© relevante</button><button type=\"button\" class=\"secondary-button\" data-learning-action=\"later\" data-learning-term=\"${esc(q.term)}\" data-learning-key=\"${esc(q.key)}\">N√£o sei agora</button></div></article>`\n}\n\nfunction learningEnsureUI(){if(document.querySelector('[data-view=\"learning\"]'))return;const settingsView=document.querySelector('[data-view=\"settings\"]'),content=document.getElementById('content');if(!content||!settingsView)return;const view=document.createElement('section');view.className='view';view.dataset.view='learning';view.innerHTML=`<header class=\"page-header\"><div><p class=\"eyebrow\">Ensine como voc√™ se expressa</p><h1>Aprendizado</h1></div></header><div class=\"notice-card learning-notice\"><span class=\"notice-icon\" data-icon=\"spark\"></span><div><strong>Aprendizado local</strong><p>O app l√™ os textos dos seus registros, cria hip√≥teses e pergunta quando tem d√∫vida. Suas respostas ficam neste aparelho e ajudam as pr√≥ximas an√°lises.</p></div></div><section class=\"analysis-card\"><p class=\"section-kicker\">MOTOR LOCAL</p><h2>O que ele est√° aprendendo</h2><div class=\"metric-grid\" id=\"learningMetrics\"></div></section><section class=\"learning-section\"><div class=\"section-title-row\"><div><p class=\"section-kicker\">PERGUNTAS</p><h2>Ajude o app a entender voc√™</h2></div></div><div id=\"learningQuestions\"></div></section><section class=\"learning-section\"><div class=\"section-title-row\"><div><p class=\"section-kicker\">MEM√ìRIA</p><h2>Vocabul√°rio pessoal</h2></div></div><div class=\"analysis-card\" id=\"learningVocabulary\"></div></section><section class=\"analysis-card learning-explain\"><h2>Como isso funciona</h2><p>O app n√£o inventa diagn√≥sticos. Ele reconhece conceitos, respeita nega√ß√µes simples, observa quando express√µes aparecem pr√≥ximas e cruza isso com hor√°rios de medicamentos e sono. Quando n√£o tem confian√ßa, pergunta.</p></section>`;content.insertBefore(view,settingsView);\n  const bar=document.querySelector('.tab-bar'),settingsTab=bar?.querySelector('[data-tab=\"settings\"]');if(bar&&settingsTab){const button=document.createElement('button');button.className='tab-item';button.dataset.tab='learning';button.innerHTML='<span data-icon=\"spark\"></span><small>Aprendizado</small>';bar.insertBefore(button,settingsTab)}\n  if(!document.getElementById('learning-style')){const st=document.createElement('style');st.id='learning-style';st.textContent='.learning-section{margin:22px 0}.learning-notice{margin-bottom:18px}.learning-question{background:var(--card-bg,#fff);border:1px solid var(--line,#e6e6ea);border-radius:22px;padding:16px;margin:10px 0;box-shadow:0 8px 24px rgba(0,0,0,.04)}.learning-question h3{font-size:16px;line-height:1.35;margin:8px 0 6px}.learning-question>p{font-size:13px;opacity:.7;margin:0 0 10px}.learning-confidence{display:inline-flex;font-size:9px;font-weight:750;letter-spacing:.08em;padding:5px 8px;border-radius:999px;background:rgba(116,167,255,.15)}.learning-confidence.medium{background:rgba(255,174,66,.15)}.learning-confidence.low{background:rgba(140,140,145,.12)}.learning-context{padding:10px 12px;border-radius:14px;background:rgba(120,120,128,.08);margin:10px 0}.learning-context small{font-size:10px;font-weight:700;opacity:.6}.learning-context p{font-size:13px;line-height:1.45;margin:4px 0 0}.learning-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.learning-actions button{flex:1;min-width:82px}.learning-concepts{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.learning-chip{border:0;border-radius:999px;padding:8px 10px;background:rgba(116,167,255,.13);color:inherit;font:inherit;font-size:12px;font-weight:650}.learning-chip.muted{background:rgba(120,120,128,.1)}.learning-other{margin-top:10px}.learning-other summary{font-size:12px;font-weight:650;cursor:pointer}.learning-vocab-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 0;border-bottom:1px solid rgba(120,120,128,.12)}.learning-vocab-row:last-child{border-bottom:0}.learning-vocab-row span{display:flex;flex-direction:column;gap:3px}.learning-vocab-row small{opacity:.6}.learning-remove{border:0;background:rgba(120,120,128,.1);border-radius:999px;padding:7px 10px;color:inherit}.learning-empty{font-size:13px;opacity:.65;padding:8px 0}.learning-explain p{font-size:13px;line-height:1.55;opacity:.75}';document.head.appendChild(st)}\n  hydrateIcons(view);hydrateIcons(bar);if(typeof applyRegistroTabBar==='function')applyRegistroTabBar()\n}\n\nasync function renderLearning(){learningEnsureUI();if(!db)return;const events=await allEvents(),meds=await allMedications(),{observations,questions}=await learningBuildQuestions(events,meds),state=learningState(),metrics=document.getElementById('learningMetrics'),box=document.getElementById('learningQuestions'),vocab=document.getElementById('learningVocabulary');if(!metrics||!box||!vocab)return;\n  metrics.innerHTML=[metric(String(observations.length),'Trechos analisados'),metric(String(Object.keys(state.terms).length),'Termos aprendidos'),metric(String(questions.length),'Perguntas pendentes'),metric('Local','Processamento')].join('');\n  box.innerHTML=questions.length?questions.map(learningQuestionHTML).join(''):'<div class=\"analysis-card\"><div class=\"learning-empty\">Nenhuma d√∫vida importante agora. O app continuar√° observando novos textos e perguntar√° quando encontrar algo que valha confirmar.</div></div>';\n  const entries=Object.entries(state.terms).sort((a,b)=>(b[1].updatedAt||'').localeCompare(a[1].updatedAt||''));vocab.innerHTML=entries.length?entries.map(([term,data])=>`<div class=\"learning-vocab-row\"><span><strong>${esc(data.display||term)}</strong><small>${esc(learningConceptLabel(data.concept))} ¬∑ ${data.source==='confirmed'?'confirmado por voc√™':'aprendido com voc√™'}</small></span><button type=\"button\" class=\"learning-remove\" data-learning-action=\"remove\" data-learning-term=\"${esc(term)}\">Remover</button></div>`).join(''):`<div class=\"learning-empty\">Ainda n√£o h√° termos pessoais aprendidos. As confirma√ß√µes que voc√™ fizer aparecer√£o aqui.</div>`;\n  box.querySelectorAll('[data-learning-action]').forEach(b=>b.onclick=()=>learningHandleAction(b));vocab.querySelectorAll('[data-learning-action]').forEach(b=>b.onclick=()=>learningHandleAction(b))\n}\n\nasync function learningHandleAction(button){const action=button.dataset.learningAction,term=normalizeText(button.dataset.learningTerm||''),concept=button.dataset.learningConcept,key=button.dataset.learningKey||`term|${term}`,state=learningState();if(!term)return;\n  if(action==='yes'||action==='map'){state.terms[term]={display:button.dataset.learningTerm||term,concept,source:action==='yes'&&LEARNING_BASE_LOOKUP[term]?'confirmed':'learned',updatedAt:new Date().toISOString()};delete state.ignored[term];delete state.rejected[`${term}|${concept}`];delete state.postponed[key]}\n  else if(action==='no'){state.rejected[`${term}|${concept}`]={updatedAt:new Date().toISOString()};delete state.postponed[key]}\n  else if(action==='later'){state.postponed[key]=Date.now()+7*86400000}\n  else if(action==='ignore'){state.ignored[term]={display:button.dataset.learningTerm||term,updatedAt:new Date().toISOString()};delete state.terms[term];delete state.postponed[key]}\n  else if(action==='remove'){delete state.terms[term]}\n  learningSaveState(state);await renderAll();if(action==='later')toast('Pergunta adiada.');else if(action==='no')toast('Entendido. N√£o vou usar essa associa√ß√£o.');else if(action==='ignore')toast('Termo marcado como n√£o relevante.');else if(action==='remove')toast('Termo removido do vocabul√°rio pessoal.');else toast('Aprendizado salvo.')\n}\n\n/* A aba An√°lises passa a considerar todos os textos observacionais relevantes. */\nrenderAnalysis=async function(events){const sorted=[...events].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)),meds=await allMedications(),observations=await learningCollectObservations(sorted,meds),cycle=currentCycle(sorted),latestObs=observations[0],cycleMeds=sorted.filter(e=>e.type==='medication'&&new Date(e.timestamp).getTime()>=cycle.start),contextStart=cycle.start-24*3600000,contextMeds=cycle.lastSleep?sorted.filter(e=>e.type==='medication'&&new Date(e.timestamp).getTime()<cycle.start&&new Date(e.timestamp).getTime()>=contextStart):[],lastSleep=cycle.lastSleep||sorted.find(e=>e.type==='sleep');document.getElementById('currentAnalysis').innerHTML=[analysisRow('Per√≠odo considerado',cycle.label),analysisRow('√öltimo relato',latestObs?`‚Äú${latestObs.text.length>120?latestObs.text.slice(0,117)+'‚Ä¶':latestObs.text}‚Äù ¬∑ ${latestObs.source} ¬∑ ${humanAgo(latestObs.timestamp)}`:'Ainda n√£o h√° textos observacionais.'),analysisRow(cycle.lastSleep?'Medicamentos desde que acordou':'Medicamentos recentes',cycleMeds.length?cycleMeds.map(medicationEventLabel).join(' ¬∑ '):'Nenhum registro nesse per√≠odo.'),...(contextMeds.length?[analysisRow('Contexto antes do √∫ltimo sono',contextMeds.map(medicationEventLabel).join(' ¬∑ '))]:[]),analysisRow('Sono mais recente',lastSleep?`${durationLabel(durationHours(lastSleep.startTime,lastSleep.endTime))}${lastSleep.quality?` ¬∑ qualidade ${lastSleep.quality}`:''}`:'Ainda n√£o h√° registros de sono.')].join('');\n  const admins=sorted.filter(e=>e.type==='medication'),grouped={};for(const a of admins){const key=a.medication||'Medicamento';if(!grouped[key])grouped[key]={count:0,concepts:[],sources:{}};const st=new Date(a.timestamp).getTime(),en=st+8*3600000,nearby=observations.filter(o=>{const t=new Date(o.timestamp).getTime();return t>=st&&t<=en});grouped[key].count+=nearby.length;for(const o of nearby){grouped[key].sources[o.source]=(grouped[key].sources[o.source]||0)+1;for(const c of learningConceptsInText(o.text))grouped[key].concepts.push(c.concept)}}const assoc=Object.entries(grouped).sort((a,b)=>b[1].count-a[1].count).slice(0,4);document.getElementById('associationAnalysis').innerHTML=assoc.length?assoc.map(([name,data])=>{const c={};data.concepts.forEach(t=>c[t]=(c[t]||0)+1);const common=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([t,n])=>`${learningConceptLabel(t)} (${n})`).join(', ');const src=Object.entries(data.sources).sort((a,b)=>b[1]-a[1]).slice(0,2).map(([s,n])=>`${s}: ${n}`).join(' ¬∑ ');return analysisRow(name,`${data.count} relato(s) at√© 8h depois das administra√ß√µes${common?`. Conceitos recorrentes: ${common}`:''}${src?`. Fontes: ${src}`:''}.`) }).join(''):analysisRow('Ainda sem padr√£o','Registre administra√ß√µes e textos ao longo do tempo.');\n  const sleeps=sorted.filter(e=>e.type==='sleep'),avg=sleeps.length?sleeps.reduce((s,e)=>s+durationHours(e.startTime,e.endTime),0)/sleeps.length:null,qs=sleeps.filter(e=>Number(e.quality)),avgQ=qs.length?qs.reduce((s,e)=>s+Number(e.quality),0)/qs.length:null;document.getElementById('sleepAnalysis').innerHTML=[metric(avg==null?'‚Äî':durationLabel(avg),'M√©dia de dura√ß√£o'),metric(avgQ==null?'‚Äî':avgQ.toFixed(1),'Qualidade m√©dia'),metric(String(sleeps.length),'Noites registradas'),metric(sleeps[0]?durationLabel(durationHours(sleeps[0].startTime,sleeps[0].endTime)):'‚Äî','√öltimo sono')].join('');\n  const medRows=[];for(const m of meds){const c=medicationCostSummary(m,sorted);if(c)medRows.push(analysisRow(m.activeIngredient,`√öltimo custo: ${c.unit!=null?`${money(c.unit)}/unidade`:'sem unidades definidas'}${c.monthly!=null?` ¬∑ gasto registrado nos √∫ltimos 30 dias ‚âà ${money(c.monthly)}`:''}`))}document.getElementById('medicationAnalysis').innerHTML=medRows.length?medRows.slice(0,6).join(''):analysisRow('Cadastre apresenta√ß√µes','Com unidades por caixa, compras e administra√ß√µes o app calcula custo e dura√ß√£o.');\n  const buys=sorted.filter(e=>e.type==='purchase'),groups={};for(const p of buys){const n=parseMoney(p.price);if(n==null)continue;(groups[p.medication||'Medicamento']??=[]).push(n)}const priceRows=Object.entries(groups).slice(0,5);document.getElementById('purchaseAnalysis').innerHTML=priceRows.length?priceRows.map(([name,vals])=>analysisRow(name,`${vals.length} compra(s) ¬∑ m√©dia ${money(vals.reduce((a,b)=>a+b,0)/vals.length)} ¬∑ menor ${money(Math.min(...vals))} ¬∑ maior ${money(Math.max(...vals))}`)).join(''):analysisRow('Ainda sem hist√≥rico de pre√ßo','Registre compras com valor para comparar pre√ßos.')\n};\n\nconst learningOriginalRenderAll=renderAll;renderAll=async function(){await learningOriginalRenderAll();await renderLearning()};\nfunction learningBoot(){learningEnsureUI();hydrateIcons();if(typeof applyRegistroTabBar==='function')applyRegistroTabBar();if(db)renderAll();else setTimeout(learningBoot,180)}\nlearningBoot();\n";document.head.appendChild(s);s.remove();})();
 
-KäOOòñÃWKò€›[ùXVÃWKò€›[ù
-Kú€XŸJ
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ\‹€ÿ⁄X][€ê[ò[\⁄\… Kö[õô\íSX\‹€ÿÀõ[ô›ÿ\‹€ÿÀõX\
+/* ---- v04c13.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Alertas por aus√™ncia + continuidade como contexto factual para An√°lises/Aprendizado. */\nconst CONTINUITY_ENGINE_VERSION='1.0.1';\nconst DEFAULT_GAP_THRESHOLDS={text:3,mood:2,purchase:45,medication:3,sleep:2};\nconst GAP_LABELS={text:'Anota√ß√£o',mood:'humor',purchase:'compra',medication:'medicamento',sleep:'sono'};\n\nfunction continuitySettings(){const s=getSettings();return{...DEFAULT_GAP_THRESHOLDS,...(s.inactivityThresholds||{})}}\nfunction saveContinuitySettings(next){const s=getSettings();s.inactivityThresholds=next;saveSettings(s)}\nfunction continuityFirstSeen(){let raw=localStorage.getItem('registro-first-seen');if(!raw){raw=new Date().toISOString();localStorage.setItem('registro-first-seen',raw)}return new Date(raw).getTime()}\nfunction continuityDays(ms){return Math.max(0,ms/86400000)}\nfunction continuityDayText(value,decimals=null){const n=Number(value)||0,shown=decimals===null?String(Math.floor(n)):n.toFixed(decimals).replace('.',',');return `${shown} ${Math.abs(n-1)<.000001?'dia':'dias'}`}\nfunction continuityDate(v){return new Date(v).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'2-digit'})}\nfunction latestTimestamp(list){return list.length?Math.max(...list.map(x=>new Date(x.timestamp).getTime())):null}\nfunction continuityMoodEvents(events){return events.filter(e=>e.type==='note'&&e.moodScore!==null&&e.moodScore!==undefined&&e.moodScore!==''&&Number.isFinite(Number(e.moodScore)))}\n\nasync function continuityNarratives(events,meds){const obs=typeof learningCollectObservations==='function'?await learningCollectObservations(events,meds):[];return obs.filter(o=>o.source!=='Tag da anota√ß√£o'&&String(o.text||'').trim())}\nasync function continuityLastTimes(events,meds){const narratives=await continuityNarratives(events,meds),moods=continuityMoodEvents(events);return{\n  text:latestTimestamp(narratives),\n  mood:latestTimestamp(moods),\n  purchase:latestTimestamp(events.filter(e=>e.type==='purchase')),\n  medication:latestTimestamp(events.filter(e=>e.type==='medication')),\n  sleep:latestTimestamp(events.filter(e=>e.type==='sleep'))\n}}\nasync function continuityOverdue(events,meds){const thresholds=continuitySettings(),last=await continuityLastTimes(events,meds),first=continuityFirstSeen(),now=Date.now(),out=[];for(const key of Object.keys(GAP_LABELS)){const threshold=Number(thresholds[key]);if(!Number.isFinite(threshold)||threshold<=0)continue;const base=last[key]??first,gap=continuityDays(now-base);if(gap>=threshold)out.push({key,threshold,gap,last:last[key]})}return out.sort((a,b)=>(b.gap/b.threshold)-(a.gap/a.threshold))}\n\nfunction ensureContinuityHomeCard(){const home=document.querySelector('[data-view=\"home\"]'),summary=home?.querySelector('.summary-card');if(!home||!summary||document.getElementById('continuityAlertCard'))return;const card=document.createElement('section');card.id='continuityAlertCard';card.className='analysis-card continuity-alert hidden';summary.after(card)}\nasync function renderContinuityHome(events,meds){ensureContinuityHomeCard();const card=document.getElementById('continuityAlertCard'),items=await continuityOverdue(events,meds);if(!card)return;card.classList.toggle('hidden',!items.length);if(!items.length){card.innerHTML='';return}card.innerHTML=`<div class=\"continuity-alert-head\"><div class=\"continuity-alert-titleline\"><span class=\"notice-icon\" data-icon=\"clock\"></span><p class=\"section-kicker\">LEMBRETE DE CONTINUIDADE</p></div><h2>Voc√™ n√£o registra isso tem um tempo:</h2></div><p class=\"continuity-disclaimer\">O app s√≥ est√° observando a frequ√™ncia dos registros. Um intervalo n√£o significa, por si s√≥, piora de humor, cansa√ßo ou qualquer outro estado.</p><div class=\"continuity-alert-list\">${items.map(i=>`<button type=\"button\" class=\"continuity-alert-row\" data-gap-action=\"${i.key}\"><span><strong>${esc(GAP_LABELS[i.key])}</strong><small>${i.last?`√∫ltimo registro h√° ${continuityDayText(i.gap)}`:'ainda sem registro'}</small></span><span>Registrar ‚Ä∫</span></button>`).join('')}</div>`;hydrateIcons(card);card.querySelectorAll('[data-gap-action]').forEach(b=>b.onclick=()=>{const key=b.dataset.gapAction;if(key==='text'||key==='mood')openNoteSheet();else if(key==='purchase')openPurchaseSheet();else if(key==='medication')openMedicationSheet();else if(key==='sleep')openSleepSheet()})}\n\nfunction openContinuitySettings(){const s=continuitySettings();openBackdrop('Alertas por aus√™ncia',`<p class=\"helper\">Defina quantos dias sem cada tipo de registro fazem o cart√£o aparecer na tela inicial. Use 0 para desativar um alerta.</p>${Object.entries(GAP_LABELS).map(([key,label])=>`<div class=\"field\"><label for=\"gap-${key}\">${esc(label)}</label><div class=\"inline-unit\"><input id=\"gap-${key}\" type=\"number\" min=\"0\" step=\"1\" inputmode=\"numeric\" value=\"${Number(s[key])}\"><span class=\"continuity-unit\">dias</span></div></div>`).join('')}<p class=\"helper\">Esses prazos afetam apenas os lembretes e as an√°lises de continuidade; nunca geram um diagn√≥stico.</p>${formButtons('Salvar')}`,ev=>{ev.preventDefault();const next={};for(const key of Object.keys(GAP_LABELS))next[key]=Math.max(0,Number(document.getElementById(`gap-${key}`)?.value)||0);saveContinuitySettings(next);closeSheet();renderAll();toast('Prazos atualizados.')})}\nfunction ensureContinuitySettingsUI(){const view=document.querySelector('[data-view=\"settings\"]');if(!view||document.getElementById('continuitySettingsGroup'))return;const groups=[...view.querySelectorAll('.settings-group')],health=groups.find(g=>g.querySelector('h2')?.textContent.includes('Sa√∫de e sono')),group=document.createElement('section');group.id='continuitySettingsGroup';group.className='settings-group';group.innerHTML=`<h2>Continuidade dos registros</h2><div class=\"settings-card list-card\"><button class=\"settings-row\" id=\"continuitySettingsBtn\"><span class=\"settings-row-icon\" data-icon=\"clock\"></span><span><strong>Alertas por aus√™ncia</strong><small>Prazos independentes para texto, humor, compras, medicamentos e sono</small></span><span class=\"chevron\">‚Ä∫</span></button></div><p class=\"group-footnote\">O cart√£o s√≥ aparece quando algum prazo configurado √© ultrapassado.</p>`;(health||groups[0])?.after(group);hydrateIcons(group);document.getElementById('continuitySettingsBtn').onclick=openContinuitySettings}\n\nfunction continuityLargestGap(items){const times=[...items].map(x=>new Date(x.timestamp).getTime()).filter(Number.isFinite).sort((a,b)=>a-b);let best=null;for(let i=1;i<times.length;i++){const gap=continuityDays(times[i]-times[i-1]);if(!best||gap>best.gap)best={gap,start:times[i-1],end:times[i]}}return best}\nfunction continuityQualifyingGaps(items,threshold){const sorted=[...items].sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp)),out=[];for(let i=1;i<sorted.length;i++){const gap=continuityDays(new Date(sorted[i].timestamp)-new Date(sorted[i-1].timestamp));if(gap>=threshold)out.push({gap,before:sorted[i-1],after:sorted[i]})}return out}\nfunction continuityConceptLabels(text){if(typeof learningConceptsInText!=='function')return[];return learningConceptsInText(text).map(c=>learningConceptLabel(c.concept))}\nfunction ensureContinuityAnalysisCard(){const view=document.querySelector('[data-view=\"analysis\"]');if(!view||document.getElementById('continuityAnalysisCard'))return;const anchor=document.createElement('span');anchor.hidden=true;anchor.dataset.analysisHomeAnchor='analysis-continuity';const card=document.createElement('section');card.id='continuityAnalysisCard';card.className='analysis-card analysis-review-item';card.dataset.analysisItem='analysis-continuity';card.innerHTML=`<div class=\"analysis-title\"><span data-icon=\"clock\"></span><h2>Continuidade dos registros</h2></div><div id=\"continuityAnalysis\" class=\"analysis-stack\"></div>`;const sleep=document.getElementById('sleepAnalysis')?.closest('.analysis-card');if(sleep){sleep.after(anchor);anchor.after(card)}else{view.append(anchor,card)}if(typeof ANALYSIS_REVIEW_DEFS!=='undefined')ANALYSIS_REVIEW_DEFS['analysis-continuity']='Continuidade dos registros';if(!card.querySelector('[data-analysis-review]')){const b=document.createElement('button');b.type='button';b.className='chart-review-btn floating-review';b.dataset.analysisReview='analysis-continuity';b.textContent='Avaliar';card.appendChild(b)}hydrateIcons(card)}\nasync function renderContinuityAnalysis(events,meds){ensureContinuityAnalysisCard();const box=document.getElementById('continuityAnalysis');if(!box)return;const narratives=await continuityNarratives(events,meds),moods=continuityMoodEvents(events),overdue=await continuityOverdue(events,meds),settings=continuitySettings(),largestText=continuityLargestGap(narratives),largestMood=continuityLargestGap(moods),rows=[];if(overdue.length)rows.push(analysisRow('Intervalos atuais',overdue.map(i=>`${GAP_LABELS[i.key]}: ${continuityDayText(i.gap)}`).join(' ¬∑ ')));else rows.push(analysisRow('Intervalos atuais','Nenhum dos prazos configurados foi ultrapassado.'));if(largestText)rows.push(analysisRow('Maior intervalo entre textos',`${continuityDayText(largestText.gap,1)}, de ${continuityDate(largestText.start)} a ${continuityDate(largestText.end)}`));if(largestMood)rows.push(analysisRow('Maior intervalo entre notas de humor',`${continuityDayText(largestMood.gap,1)}, de ${continuityDate(largestMood.start)} a ${continuityDate(largestMood.end)}`));const textThreshold=Number(settings.text)||0,gaps=textThreshold>0?continuityQualifyingGaps(narratives,textThreshold):[],conceptCounts={},examples=[];for(const g of gaps){const concepts=continuityConceptLabels(g.after.text);for(const c of concepts)conceptCounts[c]=(conceptCounts[c]||0)+1;if(concepts.length&&examples.length<2)examples.push({gap:g.gap,concepts,text:g.after.text})}const recurrent=Object.entries(conceptCounts).sort((a,b)=>b[1]-a[1]).filter(([,n])=>n>=2).slice(0,3);if(gaps.length&&recurrent.length)rows.push(analysisRow('Padr√£o nas retomadas',`Ap√≥s ${gaps.length} intervalo(s) de pelo menos ${continuityDayText(settings.text)}, os primeiros relatos repetiram termos ligados a ${recurrent.map(([c,n])=>`${c} (${n})`).join(', ')}. Isso descreve os relatos ap√≥s os intervalos; n√£o explica por que voc√™ parou de registrar.`));else if(examples.length)rows.push(analysisRow('Contexto ap√≥s um intervalo',`Depois de um intervalo de ${continuityDayText(examples[0].gap,1)}, o primeiro texto continha termos ligados a ${examples[0].concepts.slice(0,3).join(', ')}. O app trata isso apenas como contexto temporal.`));box.innerHTML=rows.join('');if(typeof applyAnalysisReviewPlacement==='function')applyAnalysisReviewPlacement()}\n\nfunction ensureContinuityLearningCard(){const view=document.querySelector('[data-view=\"learning\"]');if(!view||document.getElementById('learningContinuityCard'))return;const card=document.createElement('section');card.id='learningContinuityCard';card.className='analysis-card';card.innerHTML=`<p class=\"section-kicker\">CONTEXTO TEMPORAL</p><h2>Intervalos sem registrar tamb√©m contam</h2><div id=\"learningContinuityText\" class=\"analysis-stack\"></div>`;const explain=view.querySelector('.learning-explain');(explain||view.lastElementChild)?.before(card)}\nasync function renderContinuityLearning(events,meds){ensureContinuityLearningCard();const box=document.getElementById('learningContinuityText');if(!box)return;const items=await continuityOverdue(events,meds),settings=continuitySettings();box.innerHTML=[analysisRow('O que o app observa','Ele mede quanto tempo passa entre registros e usa isso como contexto, sem transformar aus√™ncia em sintoma.'),analysisRow('Prazos atuais',Object.entries(settings).map(([k,v])=>`${GAP_LABELS[k]}: ${v===0?'desativado':continuityDayText(v)}`).join(' ¬∑ ')),analysisRow('Agora',items.length?items.map(i=>`${GAP_LABELS[i.key]} h√° ${continuityDayText(i.gap)}`).join(' ¬∑ '):'Nenhum prazo ultrapassado.')].join('')}\n\nfunction ensureContinuityStyles(){if(document.getElementById('continuity-style'))return;const st=document.createElement('style');st.id='continuity-style';st.textContent=`.continuity-alert{margin:14px 0;border:1px solid rgba(255,159,10,.22)}.continuity-alert-head{display:flex;gap:10px;align-items:flex-start}.continuity-disclaimer{font-size:12px;line-height:1.45;opacity:.66;margin:8px 0 12px}.continuity-alert-list{display:grid;gap:8px}.continuity-alert-row{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;text-align:left;border:0;border-radius:14px;padding:11px 12px;background:rgba(120,120,128,.08);color:inherit}.continuity-alert-row span:first-child{display:flex;flex-direction:column;gap:2px}.continuity-alert-row small{font-size:11px;opacity:.62}.continuity-unit{padding:0 8px;opacity:.65}.analysis-review-item{position:relative}`;document.head.appendChild(st)}\n\n/* Corrige a leitura quantitativa: aus√™ncia de nota n√£o vale 0/10. */\nif(typeof analysisMoodNotes==='function')analysisMoodNotes=function(events){return events.filter(e=>e.type==='note'&&e.moodScore!==null&&e.moodScore!==undefined&&e.moodScore!==''&&Number.isFinite(Number(e.moodScore))).map(e=>({...e,moodScore:Number(e.moodScore)})).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp))};\n\nconst continuityPreviousRenderAll=renderAll;\nrenderAll=async function(){await continuityPreviousRenderAll();const events=await allEvents(),meds=await allMedications();ensureContinuitySettingsUI();await renderContinuityHome(events,meds);await renderContinuityAnalysis(events,meds);await renderContinuityLearning(events,meds)};\nfunction continuityBoot(){ensureContinuityStyles();ensureContinuityHomeCard();ensureContinuitySettingsUI();ensureContinuityAnalysisCard();ensureContinuityLearningCard();if(db)renderAll();else setTimeout(continuityBoot,240)}\ncontinuityBoot();\n";document.head.appendChild(s);s.remove();})();
 
-€ò[YK]WJOOûÿ€€ú›œ^ﬂNŸ]Kù\õ\Àôõ‹ëXX⁄
-Oò÷›OJ÷›_
-JÃJNÿ€€ú›€€[[€èSÿöôX›ô[ùöY\  Kú€‹ù
+/* ---- v04c22.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Ajustes de Sa√∫de 0.4.22: re√∫ne medicamentos, importa√ß√£o de sono e continuidade em um √∫nico cart√£o. */\nconst RM_HEALTH_HUB_RELEASE='0.4.22';\n\nfunction rmHealthModeCopy(mode){\n  if(mode==='auto')return 'Salva o sono importado diretamente, sem abrir a ficha de revis√£o.';\n  if(mode==='ask')return 'Pergunta antes de salvar cada per√≠odo de sono recebido do Atalho.';\n  return 'Abre a ficha com hor√°rios e detalhes antes de salvar. √â o modo mais seguro para corrigir o que o rel√≥gio n√£o registrou bem.';\n}\n\nfunction rmRefreshHealthImportMode(){\n  const control=document.getElementById('rmHealthImportModeControl');\n  if(!control)return;\n  const mode=getSettings()?.healthImportMode||'review';\n  if(typeof updateSegmentIndicator==='function')updateSegmentIndicator(control,'healthMode',mode);\n  const text=document.getElementById('rmHealthModeDescription');if(text)text.textContent=rmHealthModeCopy(mode);\n}\n\nfunction rmHealthImportSheet(){\n  const last=localStorage.getItem(LAST_HEALTH_IMPORT_KEY);\n  openBackdrop('Importar sono do app Sa√∫de',`\n    <div class=\"rm-health-source-card\">\n      <span class=\"rm-health-app-icon\" aria-hidden=\"true\"><span>‚ô•</span></span>\n      <div><strong>Apple Sa√∫de</strong><small>O Atalho funciona como ponte entre os dados de sono do app Sa√∫de e este registro.</small></div>\n    </div>\n    <div class=\"analysis-row rm-health-how\"><strong>Como funciona</strong><span>O Atalho l√™ os per√≠odos de sono registrados no app Sa√∫de e abre este PWA com os hor√°rios. Voc√™ continua livre para corrigir ou completar informa√ß√µes manualmente.</span></div>\n    <div class=\"setting-block rm-health-mode-block\">\n      <div class=\"setting-label\"><strong>Ao receber um sono do Atalho</strong></div>\n      <div class=\"segmented animated-segmented three-wide\" id=\"rmHealthImportModeControl\">\n        <button type=\"button\" data-health-mode=\"auto\">Auto</button>\n        <button type=\"button\" data-health-mode=\"review\">Revisar</button>\n        <button type=\"button\" data-health-mode=\"ask\">Perguntar</button>\n      </div>\n      <p class=\"helper rm-health-mode-description\" id=\"rmHealthModeDescription\"></p>\n    </div>\n    <div class=\"analysis-row\"><strong>Status</strong><span>${last?`√öltima importa√ß√£o ${humanAgo(last)}`:'Nenhuma importa√ß√£o registrada neste aparelho.'}</span></div>\n    <p class=\"helper\">O bot√£o ‚ÄúSono‚Äù da tela inicial continua dispon√≠vel para incluir ou corrigir registros manualmente.</p>\n    ${formButtons('Fechar')}\n  `,ev=>{ev.preventDefault();closeSheet()});\n  rmRefreshHealthImportMode();\n  document.getElementById('rmHealthImportModeControl')?.querySelectorAll('[data-health-mode]').forEach(button=>{\n    button.addEventListener('click',()=>requestAnimationFrame(rmRefreshHealthImportMode));\n  });\n}\n\nfunction rmRemoveSettingGroup(group){if(group&&group.parentNode)group.remove()}\nfunction rmGroupContaining(el){return el?.closest('.settings-group')||null}\nfunction rmDetachRow(el){\n  if(!el)return null;\n  const row=el.closest('.settings-row,.setting-block,.setting-inline');if(!row)return null;\n  const prev=row.previousElementSibling;if(prev?.classList.contains('setting-separator'))prev.remove();\n  const next=row.nextElementSibling;if(next?.classList.contains('setting-separator'))next.remove();\n  row.remove();return row;\n}\nfunction rmSeparator(inset=true){const x=document.createElement('div');x.className=`setting-separator${inset?' inset':''}`;return x}\n\nfunction rmOrganizeHealthSettings(){\n  const view=document.querySelector('[data-view=\"settings\"]');if(!view)return false;\n  const medBtn=document.getElementById('medicationRegistryBtn');\n  const healthBtn=document.getElementById('healthImportInfoBtn');\n  const continuityBtn=document.getElementById('continuitySettingsBtn');\n  if(!medBtn||!healthBtn||!continuityBtn)return false;\n\n  const medGroup=rmGroupContaining(medBtn),oldHealthGroup=rmGroupContaining(healthBtn),continuityGroup=rmGroupContaining(continuityBtn);\n  if(!medGroup)return false;\n  medGroup.id='healthSettingsGroup';\n  const heading=medGroup.querySelector(':scope>h2');if(heading)heading.textContent='Sa√∫de';\n  const card=medGroup.querySelector('.settings-card');if(!card)return false;\n  card.classList.add('list-card','rm-health-settings-card');\n\n  /* Importa√ß√£o deixa de ocupar espa√ßo na tela principal e passa a abrir a pr√≥pria configura√ß√£o. */\n  const healthModeMain=document.getElementById('healthImportModeControl')?.closest('.setting-block');\n  if(healthModeMain){const sep=healthModeMain.previousElementSibling;healthModeMain.remove();if(sep?.classList.contains('setting-separator'))sep.remove()}\n\n  const healthRow=rmDetachRow(healthBtn);\n  const continuityRow=rmDetachRow(continuityBtn);\n  if(healthRow){\n    const icon=healthRow.querySelector('.settings-row-icon');if(icon){icon.classList.remove('health-icon');icon.dataset.icon='moon'}\n    const title=healthRow.querySelector('strong');if(title)title.textContent='Importar sono do app Sa√∫de';\n    card.append(rmSeparator(true),healthRow);\n  }\n  if(continuityRow)card.append(rmSeparator(true),continuityRow);\n\n  if(oldHealthGroup&&oldHealthGroup!==medGroup)rmRemoveSettingGroup(oldHealthGroup);\n  if(continuityGroup&&continuityGroup!==medGroup)rmRemoveSettingGroup(continuityGroup);\n\n  const oldFoot=[...view.querySelectorAll('.group-footnote')].find(p=>p.textContent.includes('cart√£o s√≥ aparece'));\n  oldFoot?.remove();\n\n  healthBtn.onclick=rmHealthImportSheet;\n  if(typeof hydrateIcons==='function')hydrateIcons(medGroup);\n  if(typeof renderHealthState==='function')renderHealthState();\n  return true;\n}\n\n(function rmHealthHubStyles(){\n  if(document.getElementById('rm-health-hub-style'))return;\n  const st=document.createElement('style');st.id='rm-health-hub-style';st.textContent=`\n  #healthSettingsGroup>.settings-card{overflow:hidden}\n  #healthSettingsGroup .settings-row-icon[data-icon=\"moon\"]{color:var(--record-sleep,var(--sleep))!important}\n  .rm-health-source-card{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;align-items:center;padding:13px 14px;margin:6px 0 12px;border-radius:16px;background:color-mix(in srgb,var(--surface-2) 84%,transparent);border:1px solid color-mix(in srgb,var(--separator) 70%,transparent)}\n  .rm-health-source-card strong{display:block;font-size:14px}.rm-health-source-card small{display:block;margin-top:2px;color:var(--secondary);font-size:11px;line-height:1.4}\n  .rm-health-app-icon{width:42px;height:42px;border-radius:11px;background:#fff;display:grid;place-items:center;box-shadow:0 5px 14px rgba(0,0,0,.09),inset 0 0 0 1px rgba(0,0,0,.04)}\n  .rm-health-app-icon span{font-size:25px;line-height:1;color:#ff375f;text-shadow:0 0 9px rgba(255,55,95,.18);transform:translateY(-1px)}\n  .rm-health-how{margin-bottom:12px}.rm-health-mode-block{padding:14px 0 6px}.rm-health-mode-block .setting-label{text-align:center;align-items:center;margin-bottom:10px}.rm-health-mode-description{text-align:center;margin:9px 5px 0!important;min-height:31px}\n  #rmHealthImportModeControl{grid-template-columns:repeat(3,minmax(0,1fr))}\n  `;document.head.appendChild(st)\n})();\n\nfunction rmBootHealthHub(){\n  if(rmOrganizeHealthSettings())return;\n  let attempts=0;const timer=setInterval(()=>{attempts++;if(rmOrganizeHealthSettings()||attempts>20)clearInterval(timer)},120);\n}\nrmBootHealthHub();\n\nconst releaseTopHealthHub=document.getElementById('topVersion'),releaseAboutHealthHub=document.getElementById('versionLabel');\nif(releaseTopHealthHub)releaseTopHealthHub.textContent=`v${RM_HEALTH_HUB_RELEASE}`;if(releaseAboutHealthHub)releaseAboutHealthHub.textContent=RM_HEALTH_HUB_RELEASE;\n";document.head.appendChild(s);s.remove();})();
 
-KäOOòñÃWKXVÃWJKú€XŸJ KõX\
+/* ---- v04c14.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Entrevista pessoal do motor + pr√©vias compactas no Hist√≥rico. */\nconst PERSONAL_INTERVIEW_VERSION='1.0.1';\nconst PERSONAL_INTERVIEW_GAP_DAYS=15;\nconst PERSONAL_INTERVIEW_REASONS=[\n  ['forgot','Esqueci de anotar'],\n  ['discouraged','Estava desanimado'],\n  ['sad','Estava triste'],\n  ['happy_busy','Estava feliz e envolvido com outras coisas'],\n  ['busy','Estava muito ocupado'],\n  ['tired','Estava cansado / sem energia'],\n  ['distracted','Estava distra√≠do / desatento'],\n  ['dont_know','N√£o sei / n√£o lembro']\n];\n\nfunction personalInterviewState(){const s=getSettings();return{responses:{...(s.personalInterview?.responses||{})},dismissed:{...(s.personalInterview?.dismissed||{})}}}\nfunction personalInterviewSave(state){const s=getSettings();s.personalInterview={version:1,responses:state.responses,dismissed:state.dismissed};saveSettings(s)}\nfunction personalInterviewDate(v){return new Date(v).toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'})}\nfunction personalInterviewStartKey(timestamp){return String(new Date(timestamp).getTime())}\n\nasync function personalInterviewTextEvents(events,meds){const narratives=typeof continuityNarratives==='function'?await continuityNarratives(events,meds):await learningCollectObservations(events,meds);return narratives.filter(o=>String(o.text||'').trim()).sort((a,b)=>new Date(a.timestamp)-new Date(b.timestamp))}\nasync function personalInterviewQuestions(events,meds){const texts=await personalInterviewTextEvents(events,meds),state=personalInterviewState(),answeredStarts=new Set(Object.values(state.responses).map(r=>r.startKey).filter(Boolean)),dismissedStarts=new Set(Object.values(state.dismissed).map(r=>r.startKey).filter(Boolean)),questions=[];\n  for(let i=1;i<texts.length;i++){\n    const before=texts[i-1],after=texts[i],gap=(new Date(after.timestamp)-new Date(before.timestamp))/86400000,startKey=personalInterviewStartKey(before.timestamp);if(gap<PERSONAL_INTERVIEW_GAP_DAYS||answeredStarts.has(startKey)||dismissedStarts.has(startKey))continue;const key=`text-gap|${startKey}|${new Date(after.timestamp).getTime()}`;questions.push({key,startKey,gap,before,after,open:false})\n  }\n  if(texts.length){const before=texts[texts.length-1],gap=(Date.now()-new Date(before.timestamp).getTime())/86400000,startKey=personalInterviewStartKey(before.timestamp);if(gap>=PERSONAL_INTERVIEW_GAP_DAYS&&!answeredStarts.has(startKey)&&!dismissedStarts.has(startKey))questions.push({key:`text-gap|${startKey}|open`,startKey,gap,before,after:null,open:true})}\n  return questions.sort((a,b)=>b.gap-a.gap).slice(0,4)\n}\nfunction personalInterviewQuestionHTML(q){const period=q.open?`Voc√™ est√° h√° ${Math.floor(q.gap)} dias sem registrar um texto ou observa√ß√£o.`:`Houve um intervalo de ${q.gap.toFixed(1).replace('.',',')} dias entre ${personalInterviewDate(q.before.timestamp)} e ${personalInterviewDate(q.after.timestamp)}.`;return`<article class=\"learning-question personal-interview-question\" data-interview-question=\"${esc(q.key)}\"><span class=\"learning-confidence medium\">ENTREVISTA PESSOAL</span><h3>${esc(period)}</h3><p>Gostaria de informar se houve algum motivo? Sua resposta vira contexto relatado por voc√™; o app n√£o presume o motivo sozinho.</p><div class=\"interview-reasons\">${PERSONAL_INTERVIEW_REASONS.map(([id,label])=>`<button type=\"button\" class=\"learning-chip\" data-interview-reason=\"${id}\">${esc(label)}</button>`).join('')}</div><div class=\"field\"><label>Explica√ß√£o opcional</label><textarea data-interview-text rows=\"3\" data-autogrow placeholder=\"Escreva com suas palavras, se quiser explicar melhor.\"></textarea></div><div class=\"learning-actions\"><button type=\"button\" class=\"primary-button\" data-interview-save>Salvar resposta</button><button type=\"button\" class=\"secondary-button\" data-interview-dismiss>Prefiro n√£o responder</button></div></article>`}\nfunction ensurePersonalInterviewUI(){const view=document.querySelector('[data-view=\"learning\"]');if(!view||document.getElementById('personalInterviewSection'))return;const section=document.createElement('section');section.id='personalInterviewSection';section.className='learning-section';section.innerHTML=`<div class=\"section-title-row\"><div><p class=\"section-kicker\">ENTREVISTA PESSOAL</p><h2>Coisas que o app quer entender</h2></div></div><p class=\"helper\">Aqui o motor pergunta sobre fatos que percebeu, mas cuja explica√ß√£o ele n√£o conhece. Voc√™ pode responder, explicar com texto ou simplesmente ignorar.</p><div id=\"personalInterviewQuestions\"></div><div class=\"analysis-card\" id=\"personalInterviewMemory\"><h2>Explica√ß√µes que voc√™ j√° deu</h2><div id=\"personalInterviewResponses\" class=\"analysis-stack\"></div></div>`;const questions=view.querySelector('.learning-section');questions?.before(section)}\nasync function renderPersonalInterview(events,meds){ensurePersonalInterviewUI();const box=document.getElementById('personalInterviewQuestions'),memory=document.getElementById('personalInterviewResponses');if(!box||!memory)return;const questions=await personalInterviewQuestions(events,meds),state=personalInterviewState();box.innerHTML=questions.length?questions.map(personalInterviewQuestionHTML).join(''):'<div class=\"analysis-card\"><div class=\"learning-empty\">Nenhuma pergunta pessoal pendente agora.</div></div>';const responses=Object.values(state.responses).sort((a,b)=>new Date(b.answeredAt)-new Date(a.answeredAt)).slice(0,12);memory.innerHTML=responses.length?responses.map(r=>analysisRow(r.periodLabel,r.summary||'Voc√™ explicou esse intervalo.')).join(''):analysisRow('Ainda vazio','As explica√ß√µes que voc√™ decidir dar aparecer√£o aqui e poder√£o participar do contexto das an√°lises.');\n  box.querySelectorAll('[data-interview-question]').forEach(card=>{let selected='';card.querySelectorAll('[data-interview-reason]').forEach(b=>b.onclick=()=>{selected=b.dataset.interviewReason;card.querySelectorAll('[data-interview-reason]').forEach(x=>x.classList.toggle('selected',x===b))});card.querySelector('[data-interview-save]').onclick=async()=>{const q=questions.find(x=>x.key===card.dataset.interviewQuestion);if(!q)return;const text=card.querySelector('[data-interview-text]')?.value.trim()||'',reason=PERSONAL_INTERVIEW_REASONS.find(([id])=>id===selected),summary=[reason?.[1],text].filter(Boolean).join(' ‚Äî ');if(!summary)return toast('Escolha um motivo, escreva uma explica√ß√£o ou toque em ‚ÄúPrefiro n√£o responder‚Äù.');const st=personalInterviewState();st.responses[q.key]={key:q.key,startKey:q.startKey,gapDays:q.gap,reason:selected||'custom',reasonLabel:reason?.[1]||'',text,summary,periodLabel:q.open?`Intervalo atual de ${Math.floor(q.gap)} dias sem texto`:`Intervalo de ${q.gap.toFixed(1).replace('.',',')} dias sem texto`,startedAt:q.before.timestamp,endedAt:q.after?.timestamp||null,answeredAt:new Date().toISOString()};personalInterviewSave(st);await renderAll();toast('Resposta guardada como contexto relatado por voc√™.')};card.querySelector('[data-interview-dismiss]').onclick=async()=>{const q=questions.find(x=>x.key===card.dataset.interviewQuestion);if(!q)return;const st=personalInterviewState();st.dismissed[q.key]={key:q.key,startKey:q.startKey,at:new Date().toISOString()};personalInterviewSave(st);await renderAll();toast('Pergunta arquivada.')};if(typeof wireAutoGrowTextareas==='function')wireAutoGrowTextareas(card)})}\n\n/* As respostas da entrevista s√£o contexto declarado pelo usu√°rio, mas n√£o entram como eventos temporais de medicamento. */\nfunction personalInterviewAnalysisContext(){const responses=Object.values(personalInterviewState().responses).sort((a,b)=>new Date(b.answeredAt)-new Date(a.answeredAt));if(!responses.length)return'';const recent=responses.slice(0,4),parts=recent.map(r=>{const concepts=typeof learningConceptsInText==='function'?learningConceptsInText([r.reasonLabel,r.text].filter(Boolean).join('. ')).map(c=>learningConceptLabel(c.concept)):[];return`${r.periodLabel}: ${r.summary}${concepts.length?` ¬∑ conceitos reconhecidos: ${concepts.slice(0,3).join(', ')}`:''}`});return analysisRow('Explica√ß√µes informadas por voc√™',parts.join(' | '))}\nfunction renderPersonalInterviewAnalysisContext(){const box=document.getElementById('continuityAnalysis');if(!box)return;box.querySelector('[data-interview-context]')?.remove();const html=personalInterviewAnalysisContext();if(html){const wrap=document.createElement('div');wrap.dataset.interviewContext='1';wrap.innerHTML=html;box.appendChild(wrap)}}\n\n/* Hist√≥rico: textos longos ficam compactos, mas o cart√£o continua abrindo a visualiza√ß√£o completa. */\nconst personalInterviewPreviousEventCard=eventCard;\neventCard=function(e){if(e?.type!=='note'||!e.text)return personalInterviewPreviousEventCard(e);const k=kindInfo(e),long=String(e.text).length>150||String(e.text).split(/\\n/).length>3;return`<article class=\"timeline-item ${long?'has-long-note':''}\"><div class=\"timeline-time\">${timeLabel(e.timestamp)}</div><div><div class=\"timeline-kind kind-${k.className}\">${k.kind}</div><div class=\"timeline-title note-preview\">${esc(e.text)}</div>${long?'<span class=\"note-more\">Ver mais</span>':''}${k.meta.length?`<div class=\"timeline-meta\">${k.meta.map(esc).join(' ¬∑ ')}</div>`:''}${e.hasAudio?`<div data-audio=\"${e.id}\"></div>`:''}</div><button class=\"item-menu\" data-menu=\"${e.id}\" aria-label=\"Op√ß√µes\">‚Ä¢‚Ä¢‚Ä¢</button></article>`};\n\nfunction ensurePersonalInterviewStyles(){if(document.getElementById('personal-interview-style'))return;const st=document.createElement('style');st.id='personal-interview-style';st.textContent=`.interview-reasons{display:flex;gap:7px;flex-wrap:wrap;margin:12px 0}.interview-reasons .learning-chip.selected{background:rgba(116,167,255,.28);outline:1px solid rgba(116,167,255,.42)}.personal-interview-question textarea{min-height:84px}.note-preview{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:3;overflow:hidden;white-space:normal;line-height:1.35}.note-more{display:inline-block;margin-top:4px;color:var(--accent-color,#7457e8);font-size:12px;font-weight:700}.has-long-note{cursor:pointer}`;document.head.appendChild(st)}\n\nconst personalInterviewPreviousRenderAll=renderAll;\nrenderAll=async function(){await personalInterviewPreviousRenderAll();const events=await allEvents(),meds=await allMedications();await renderPersonalInterview(events,meds);renderPersonalInterviewAnalysisContext()};\nfunction personalInterviewBoot(){ensurePersonalInterviewStyles();ensurePersonalInterviewUI();if(db)renderAll();else setTimeout(personalInterviewBoot,260)}\npersonalInterviewBoot();\n";document.head.appendChild(s);s.remove();})();
 
-›óJOOò	›H
-	€üJX
-Köõ⁄[ä	À	 N‹ô]\õà[ò[\⁄\‘õ› ò[YK	Ÿ]Kò€›[ùH[õ›pÈË€ 0ÌY\ H]0ÍH\⁄\»HYZ[ö\›òpÈÌY\…ÿ€€[[€èÿà\õ[‹»ôX€‹úô[ù\Œà	ÿ€€[[€üXâ…ﬂKò
-HJKöõ⁄[ä	… Nò[ò[\⁄\‘õ› 	–Z[ôHŸ[HY∞Ë€…À	‘ôY⁄\›ôHYZ[ö\›òpÈÌY\»H[õ›pÈÌY\»[»€ô€»»[\Àâ Nÿ€€ú›€Y\œ\€‹ùYôö[\äOOôKù\OOOI‹€Y\	 K]ôœ\€Y\Àõ[ô›‹€Y\ÀúôYXŸJ
-ÀJOOú Ÿ\ò][€í›\ú Kú›\ù[YKKô[ô[YJK
-K‹€Y\Àõ[ô›õù[\œ\€Y\Àôö[\äOOìù[Xô\äKú]X[]JJK]ô‘O\\Àõ[ô›‹\ÀúôYXŸJ
-ÀJOOú ”ù[Xô\äKú]X[]JK
-K‹\Àõ[ô›õù[Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ò[\⁄\… Kö[õô\íSV€Y]öX ]ôœO[ù[…¯†%	Œô\ò][€ìXô[
-]ô K	”pÍYXHH\òpÈË€… KY]öX ]ô‘OO[ù[…¯†%	Œò]ô‘Kù—ö^Y
-JK	‘]X[YYHpÍYXI KY]öX ›ö[ô €Y\Àõ[ô›
-K	”õ⁄]\»ôY⁄\›òY\… KY]öX €Y\÷ÃOŸ\ò][€ìXô[
-\ò][€í›\ú €Y\÷ÃKú›\ù[YK€Y\÷ÃKô[ô[YJJNâ¯†%	À	Êõ[[»€€õ… WKöõ⁄[ä	… Nÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-Nÿ€€ú›YYõ›‹œV◊NŸõ‹ä€€ú›HŸàYY ^ÿ€€ú›œ[YYXÿ][€ê€‹››[[X\ûJK€‹ùY
-N⁄Yä [YYõ›‹Àú\⁄
-[ò[\⁄\‘õ› KòX›]ôR[ô‹ôYY[ù0Êõ[[»›\›Œà	ÿÀù[ö]O[ù[ÿ	€[€ô^JÀù[ö]
-_K›[öYYXà	‹Ÿ[H[öYY\»Yö[öY\…ﬂIÿÀõ[€ùHO[ù[ÿ0≠»ÿ\›»ôY⁄\›òY»õ‹»0Óõ[[‹»ÃX\»8¢b	€[€ô^JÀõ[€ùJ_Xâ…ﬂX
-J_Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYXÿ][€ê[ò[\⁄\… Kö[õô\íS[YYõ›‹Àõ[ô›€YYõ›‹Àú€XŸJäKöõ⁄[ä	… Nò[ò[\⁄\‘õ› 	–ÿY\›ôH\ô\Ÿ[ùpÈÌY\…À	–€€H[öYY\»‹àÿZ^K€€\ò\»HYZ[ö\›òpÈÌY\»»\ÿ[›[H›\›»H\òpÈË€Àâ Nÿ€€ú›ù^\œ\€‹ùYôö[\äOOôKù\OOOI‹\ò⁄\ŸI K‹õ›\œ^ﬂNŸõ‹ä€€ú›Ÿàù^\ ^ÿ€€ú›è\\úŸS[€ô^JúöXŸJN⁄YäèO[ù[
-X€€ù[ùYN ‹õ›\÷‹õYYXÿ][€ü	”YYXÿ[Y[ù…◊OœœV◊JKú\⁄
-ä_X€€ú›öXŸTõ›‹œSÿöôX›ô[ùöY\ ‹õ›\ Kú€XŸJJNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸP[ò[\⁄\… Kö[õô\íS\öXŸTõ›‹Àõ[ô›‹öXŸTõ›‹ÀõX\
+/* ---- v04c23.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Revis√£o da aba An√°lises 0.4.23: hierarquia, legibilidade, sem√¢ntica visual e dados fict√≠cios suficientes para gr√°ficos. */\nconst RM_ANALYSIS_REVIEW_RELEASE='0.4.23';\n\nfunction rmAnalysisIcon(name){return `<span class=\"rm-insight-icon\" data-icon=\"${name}\" aria-hidden=\"true\"></span>`}\nfunction rmInsightRow(icon,label,body,tone='neutral'){\n  return `<div class=\"rm-insight-row rm-tone-${tone}\">${rmAnalysisIcon(icon)}<div class=\"rm-insight-copy\"><strong class=\"rm-insight-label\">${esc(label)}</strong><div class=\"rm-insight-value\">${body}</div></div></div>`\n}\nfunction rmTextLines(items){return items.filter(Boolean).map(x=>`<span class=\"rm-detail-line\">${esc(String(x))}</span>`).join('')}\nfunction rmDetailLine(label,value,{accent=false}={}){if(value===null||value===undefined||value==='')return'';return `<span class=\"rm-detail-line\"><b${accent?' class=\"rm-accent-text\"':''}>${esc(label)}</b> ${esc(String(value))}</span>`}\nfunction rmPurchasePackPrice(p){const total=parseMoney(p?.price),packs=Math.max(1,Number(p?.packages)||1);return total==null?null:total/packs}\n\nfunction rmDemoAnalyticsSpecs(){\n  return [\n    [0,2,25,2,'Acordei cansado e um pouco ansioso.','sono',{anxiety:3,happiness:1,energy:1,concentration:1,sleepiness:3}],\n    [1,13,0,2,'Antes das medica√ß√µes, eu estava com pouca energia e alguma ansiedade.','check-in',{anxiety:2,happiness:1,energy:1,concentration:1,sleepiness:2}],\n    [1,15,30,3,'Depois, consegui come√ßar uma tarefa e fiquei mais concentrado.','foco',{anxiety:1,happiness:2,energy:3,concentration:3,sleepiness:1}],\n    [2,13,15,2,'Acordei ainda um pouco sonolento e sem muito foco.','sono',{anxiety:1,happiness:1,energy:1,concentration:1,sleepiness:3}],\n    [2,16,0,4,'Mais tarde me senti disposto e com boa concentra√ß√£o.','foco',{anxiety:1,happiness:3,energy:3,concentration:4,sleepiness:0}],\n    [3,9,0,4,'Acordei descansado, calmo e de bom humor.','sono',{anxiety:0,happiness:4,energy:3,concentration:3,sleepiness:0}],\n    [4,9,50,2,'Comecei o dia mais lento e com dificuldade para iniciar tarefas.','check-in',{anxiety:2,happiness:1,energy:1,concentration:1,sleepiness:2}],\n    [4,14,0,4,'Durante a tarde fiquei produtivo e com mais energia.','foco',{anxiety:1,happiness:3,energy:4,concentration:4,sleepiness:0}],\n    [5,10,0,3,'Acordei razoavelmente descansado e est√°vel.','sono',{anxiety:1,happiness:2,energy:2,concentration:2,sleepiness:1}],\n    [6,12,0,3,'Antes das medica√ß√µes eu estava neutro e um pouco disperso.','check-in',{anxiety:1,happiness:2,energy:2,concentration:1,sleepiness:1}],\n    [6,17,0,4,'No fim da tarde me senti mais tranquilo e concentrado.','calma',{anxiety:0,happiness:3,energy:3,concentration:3,sleepiness:0}],\n    [7,12,0,1,'Dormi pouco e acordei muito sonolento, com pouca energia.','sono',{anxiety:2,happiness:0,energy:0,concentration:0,sleepiness:4}],\n    [8,12,30,3,'Eu estava razo√°vel, mas ainda um pouco distra√≠do.','check-in',{anxiety:1,happiness:2,energy:2,concentration:1,sleepiness:1}],\n    [8,16,0,4,'Depois consegui manter o foco e fiquei mais disposto.','foco',{anxiety:1,happiness:3,energy:3,concentration:4,sleepiness:0}],\n    [9,12,0,4,'Depois de dormir melhor, acordei bem e com energia.','sono',{anxiety:0,happiness:4,energy:4,concentration:3,sleepiness:0}],\n    [10,13,45,2,'Antes das medica√ß√µes eu estava cansado e com pouca concentra√ß√£o.','check-in',{anxiety:2,happiness:1,energy:1,concentration:1,sleepiness:2}],\n    [10,17,0,3,'Mais tarde fiquei um pouco melhor e consegui me organizar.','check-in',{anxiety:1,happiness:2,energy:2,concentration:3,sleepiness:1}],\n    [11,14,30,3,'Comecei a tarde razo√°vel e sem muita ansiedade.','check-in',{anxiety:1,happiness:2,energy:2,concentration:2,sleepiness:1}],\n    [11,18,0,4,'Consegui trabalhar por bastante tempo e me senti satisfeito.','foco',{anxiety:0,happiness:3,energy:3,concentration:4,sleepiness:0}]\n  ];\n}\nfunction rmDemoIso(days,h,m){const d=new Date();d.setDate(d.getDate()-days);d.setHours(h,m,0,0);return d.toISOString()}\nasync function rmEnsureDemoAnalyticsData(){\n  if(!db)return false;\n  const all=await allEvents();if(!all.some(e=>e?.demo))return false;\n  const ids=new Set(all.map(e=>e.id));let changed=false;\n  for(const [days,h,m,mood,text,tag,scores] of rmDemoAnalyticsSpecs()){\n    const id=`demo-analysis-check-${days}-${h}-${m}`;if(ids.has(id))continue;\n    const labels={anxiety:'Ansiedade',happiness:'Felicidade',energy:'Energia',concentration:'Concentra√ß√£o',sleepiness:'Sonol√™ncia'};\n    await putEvent({id,type:'note',timestamp:rmDemoIso(days,h,m),text,tag,moodScore:mood,moodScaleModel:'0-10',emotionScores:{...scores},emotionLabels:labels,emotionIntensityModel:'0-4',demo:true});changed=true;\n  }\n  return changed;\n}\nasync function rmLoadRichDemoScript(){\n  if(typeof installRichDemo==='function')return;\n  await new Promise((resolve,reject)=>{const old=document.querySelector('script[data-rm-rich-demo]');if(old){old.addEventListener('load',resolve,{once:true});setTimeout(resolve,200);return}const s=document.createElement('script');s.dataset.rmRichDemo='1';s.src='./v04demo.js?v=0.4.23';s.onload=resolve;s.onerror=reject;document.head.appendChild(s)})\n}\nrestoreDemo=async function(){\n  if(!confirm('Substituir todos os registros e cadastros pelos dados fict√≠cios ampliados?'))return;\n  try{await rmLoadRichDemoScript();if(typeof installRichDemo==='function')await installRichDemo({replace:true});else return toast('N√£o foi poss√≠vel carregar os dados fict√≠cios.');await rmEnsureDemoAnalyticsData();if(typeof rmInvalidate==='function')rmInvalidate();await renderAll();toast('Dados fict√≠cios ampliados restaurados.')}catch(err){console.error(err);toast('N√£o foi poss√≠vel restaurar os dados fict√≠cios.')}\n};\n\nrenderAnalysis=async function(events){\n  if(await rmEnsureDemoAnalyticsData())events=(await allEvents()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));\n  const sorted=[...events].sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp)),cycle=currentCycle(sorted),latestNote=sorted.find(e=>e.type==='note'),cycleMeds=sorted.filter(e=>e.type==='medication'&&new Date(e.timestamp).getTime()>=cycle.start),contextStart=cycle.start-24*3600000,contextMeds=cycle.lastSleep?sorted.filter(e=>e.type==='medication'&&new Date(e.timestamp).getTime()<cycle.start&&new Date(e.timestamp).getTime()>=contextStart):[],lastSleep=cycle.lastSleep||sorted.find(e=>e.type==='sleep');\n  const latestText=latestNote?(latestNote.text?`‚Äú${esc(latestNote.text)}‚Äù<small>${esc(humanAgo(latestNote.timestamp))}</small>`:`Check-in emocional <b>${esc(String(latestNote.moodScore))}/10</b><small>${esc(humanAgo(latestNote.timestamp))}</small>`):'Ainda n√£o h√° anota√ß√µes.';\n  const medNow=cycleMeds.length?rmTextLines(cycleMeds.map(medicationEventLabel)):'Nenhum registro nesse per√≠odo.';\n  const current=document.getElementById('currentAnalysis');if(current)current.innerHTML=`<div class=\"rm-analysis-list\">${rmInsightRow('clock','Per√≠odo analisado',`<b>${esc(cycle.label)}</b>`,'accent')}${rmInsightRow('note','√öltimo relato',latestText,'note')}${rmInsightRow('pill',cycle.lastSleep?'Medicamentos desde que acordou':'Medicamentos recentes',medNow,'med')}${contextMeds.length?rmInsightRow('pill','Antes do √∫ltimo sono',rmTextLines(contextMeds.map(medicationEventLabel)),'med'):''}${rmInsightRow('moon','Sono mais recente',lastSleep?`<b>${esc(durationLabel(durationHours(lastSleep.startTime,lastSleep.endTime)))}</b>${lastSleep.quality?`<small>Qualidade percebida: ${esc(String(lastSleep.quality))}/5</small>`:''}`:'Ainda n√£o h√° registros de sono.','sleep')}</div>`;\n\n  const admins=sorted.filter(e=>e.type==='medication'),notes=sorted.filter(e=>e.type==='note'&&e.text),grouped={};\n  for(const a of admins){const key=a.medication||'Medicamento';if(!grouped[key])grouped[key]={count:0,terms:[]};const st=new Date(a.timestamp).getTime(),en=st+8*3600000,nearby=notes.filter(n=>{const t=new Date(n.timestamp).getTime();return t>=st&&t<=en});grouped[key].count+=nearby.length;grouped[key].terms.push(...nearby.flatMap(n=>moodTerms(n.text)))}\n  const assoc=Object.entries(grouped).filter(([,d])=>d.count>0).sort((a,b)=>b[1].count-a[1].count).slice(0,4),association=document.getElementById('associationAnalysis');\n  if(association)association.innerHTML=assoc.length?`<div class=\"rm-analysis-list\">${assoc.map(([name,data])=>{const c={};data.terms.forEach(t=>c[t]=(c[t]||0)+1);const common=Object.entries(c).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([t,n])=>`${t} (${n})`).join(', ');return rmInsightRow('pill',name,`${rmDetailLine('Relatos pr√≥ximos:',`${data.count} at√© 8h ap√≥s administra√ß√µes`,{accent:true})}${common?rmDetailLine('Termos recorrentes:',common):'<span class=\"rm-detail-line\">Ainda sem termos recorrentes suficientes.</span>'}`,'med')}).join('')}</div>`:rmInsightRow('link','Ainda sem padr√£o','Registre administra√ß√µes e relatos ao longo do tempo. O app mostra apenas proximidade temporal, n√£o causalidade.','accent');\n\n  const sleeps=sorted.filter(e=>e.type==='sleep'),avg=sleeps.length?sleeps.reduce((s,e)=>s+durationHours(e.startTime,e.endTime),0)/sleeps.length:null,qs=sleeps.filter(e=>Number(e.quality)),avgQ=qs.length?qs.reduce((s,e)=>s+Number(e.quality),0)/qs.length:null,sleep=document.getElementById('sleepAnalysis');\n  if(sleep)sleep.innerHTML=[metric(avg==null?'‚Äî':durationLabel(avg),'M√©dia de dura√ß√£o'),metric(avgQ==null?'‚Äî':avgQ.toFixed(1),'Qualidade m√©dia'),metric(sleeps[0]?durationLabel(durationHours(sleeps[0].startTime,sleeps[0].endTime)):'‚Äî','√öltimo sono')].join('');\n\n  const meds=await allMedications(),medRows=[];\n  for(const m of meds){const c=medicationCostSummary(m,sorted);if(!c)continue;const lines=[rmDetailLine('Custo por unidade:',c.unit!=null?money(c.unit):'sem unidades definidas',{accent:true}),c.monthly!=null?rmDetailLine('Gasto registrado nos √∫ltimos 30 dias:',`‚âà ${money(c.monthly)}`):''];medRows.push(rmInsightRow('pill',m.activeIngredient,lines.join(''),'med'))}\n  const medication=document.getElementById('medicationAnalysis');if(medication)medication.innerHTML=medRows.length?`<div class=\"rm-analysis-list\">${medRows.slice(0,6).join('')}</div>`:rmInsightRow('pill','Cadastre apresenta√ß√µes','Com unidades por caixa, compras e administra√ß√µes o app calcula custos de forma mais √∫til.','med');\n\n  const buys=sorted.filter(e=>e.type==='purchase'&&parseMoney(e.price)!=null),groups=new Map();\n  for(const p of buys){const key=`${p.medicationId||p.medication||'med'}|${p.presentationId||''}`;if(!groups.has(key))groups.set(key,[]);groups.get(key).push(p)}\n  const purchaseRows=[...groups.values()].map(list=>{list.sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));const last=list[0],prices=list.map(rmPurchasePackPrice).filter(v=>v!=null),lastPack=rmPurchasePackPrice(last),min=prices.length?Math.min(...prices):null;return{last,html:rmInsightRow('bag',last.medication||'Medicamento',`${rmDetailLine('√öltima compra:',humanAgo(last.timestamp),{accent:true})}${rmDetailLine('Valor por embalagem:',lastPack==null?'‚Äî':money(lastPack),{accent:true})}${rmDetailLine('Onde:',last.place||'n√£o informado')}${rmDetailLine('Menor valor registrado:',min==null?'‚Äî':money(min),{accent:true})}`,'buy')}}).sort((a,b)=>new Date(b.last.timestamp)-new Date(a.last.timestamp));\n  const purchase=document.getElementById('purchaseAnalysis');if(purchase)purchase.innerHTML=purchaseRows.length?`<div class=\"rm-analysis-list\">${purchaseRows.slice(0,6).map(x=>x.html).join('')}</div>`:rmInsightRow('bag','Ainda sem hist√≥rico de pre√ßo','Registre compras com valor e local para comparar embalagens ao longo do tempo.','buy');\n  rmDecorateAnalysisHeaders();if(typeof hydrateIcons==='function')hydrateIcons(document.querySelector('[data-view=\"analysis\"]'));\n};\n\nfunction rmDecorateAnalysisHeaders(){\n  const current=document.getElementById('currentAnalysis')?.closest('.analysis-card'),h=current?.querySelector(':scope>h2');\n  if(h&&!h.closest('.analysis-title')){const row=document.createElement('div');row.className='analysis-title rm-analysis-title';row.innerHTML='<span data-icon=\"spark\"></span>';h.before(row);row.appendChild(h)}\n}\n\nif(typeof renderContinuityAnalysis==='function'){\n  const rmPrevContinuityAnalysis=renderContinuityAnalysis;\n  renderContinuityAnalysis=async function(...args){await rmPrevContinuityAnalysis(...args);const box=document.getElementById('continuityAnalysis');if(!box)return;[...box.querySelectorAll('.analysis-row')].forEach(row=>{const span=row.querySelector('span');if(span?.textContent.trim()==='Nenhum dos prazos configurados foi ultrapassado.'){span.textContent='Tudo certo: voc√™ est√° fazendo seus registros com frequ√™ncia.';span.classList.add('rm-positive-text')}})};\n}\n\nif(typeof renderQuantitativeDashboard==='function'){\n  const rmPrevQuantitativeDashboardV23=renderQuantitativeDashboard;\n  renderQuantitativeDashboard=async function(events){if(await rmEnsureDemoAnalyticsData())events=(await allEvents()).sort((a,b)=>new Date(b.timestamp)-new Date(a.timestamp));await rmPrevQuantitativeDashboardV23(events);rmImproveAnalysisCharts()};\n}\nfunction rmImproveAnalysisCharts(){\n  const view=document.querySelector('[data-view=\"analysis\"]');if(!view)return;\n  view.querySelectorAll('.dashboard-chart').forEach(card=>card.classList.add('rm-readable-chart'));\n  const concepts=view.querySelector('[data-analysis-item=\"chart-med-concepts\"]');concepts?.classList.add('rm-concepts-chart');\n  const sleep=view.querySelector('[data-analysis-item=\"chart-sleep-line\"]');sleep?.classList.add('rm-sleep-chart');\n  if(typeof hydrateIcons==='function')hydrateIcons(view)\n}\n\n(function rmAnalysisReviewStyles(){\n  if(document.getElementById('rm-analysis-review-style'))return;\n  const st=document.createElement('style');st.id='rm-analysis-review-style';st.textContent=`\n  [data-view=\"analysis\"] .analysis-card{overflow:hidden}\n  .rm-analysis-list{display:grid;gap:9px;margin-top:10px}\n  .rm-insight-row{display:grid;grid-template-columns:34px minmax(0,1fr);gap:11px;align-items:flex-start;padding:12px;border-radius:15px;background:rgba(120,120,128,.055);border:1px solid rgba(120,120,128,.10)}\n  .rm-insight-icon{width:32px;height:32px;border-radius:11px;display:grid;place-items:center;background:rgba(120,120,128,.07)}\n  .rm-insight-icon .svg-icon,.rm-insight-icon>svg{width:19px!important;height:19px!important}\n  .rm-insight-copy{min-width:0}.rm-insight-label{display:block;font-size:13px;line-height:1.25;margin:1px 0 5px}.rm-insight-value{font-size:13px;line-height:1.48;color:var(--secondary)}\n  .rm-insight-value>b{color:var(--text);font-weight:750}.rm-insight-value small{display:block;margin-top:3px;font-size:11px;line-height:1.35;opacity:.75}\n  .rm-detail-line{display:block;margin-top:3px}.rm-detail-line:first-child{margin-top:0}.rm-detail-line b{color:var(--text);font-weight:700}.rm-accent-text{font-weight:760!important}\n  .rm-tone-note .rm-insight-icon{color:var(--record-note,var(--accent));background:color-mix(in srgb,var(--record-note,var(--accent)) 10%,transparent)}\n  .rm-tone-med .rm-insight-icon,.rm-tone-med .rm-accent-text{color:var(--record-med,var(--med))}.rm-tone-med .rm-insight-icon{background:color-mix(in srgb,var(--record-med,var(--med)) 10%,transparent)}\n  .rm-tone-sleep .rm-insight-icon{color:var(--record-sleep,var(--sleep));background:color-mix(in srgb,var(--record-sleep,var(--sleep)) 10%,transparent)}\n  .rm-tone-buy .rm-insight-icon,.rm-tone-buy .rm-accent-text{color:var(--record-buy,var(--buy))}.rm-tone-buy .rm-insight-icon{background:color-mix(in srgb,var(--record-buy,var(--buy)) 10%,transparent)}\n  .rm-tone-accent .rm-insight-icon{color:var(--accent);background:color-mix(in srgb,var(--accent) 10%,transparent)}\n  #sleepAnalysis{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:8px}\n  #sleepAnalysis .metric{min-width:0;text-align:center;padding:12px 6px;border-radius:14px;background:color-mix(in srgb,var(--record-sleep,var(--sleep)) 7%,transparent);border:1px solid color-mix(in srgb,var(--record-sleep,var(--sleep)) 13%,transparent)}\n  #sleepAnalysis .metric strong{font-size:22px!important;line-height:1.05;color:var(--record-sleep,var(--sleep));font-weight:780}#sleepAnalysis .metric span{font-size:11px!important;line-height:1.25;font-weight:700;margin-top:5px}\n  .rm-positive-text{color:#30C878!important;font-weight:760!important}\n  [data-view=\"analysis\"] .chart-card-head>div>p:last-child{font-size:13px!important;line-height:1.45!important;opacity:.72}\n  [data-view=\"analysis\"] .rm-readable-chart .local-chart-svg text{font-size:20px!important;font-weight:620}\n  [data-view=\"analysis\"] .rm-readable-chart .local-chart-svg .chart-axis-label{font-size:21px!important;font-weight:700}\n  [data-view=\"analysis\"] .rm-readable-chart .local-chart-svg .chart-grid text{font-size:20px!important;font-weight:650}\n  [data-view=\"analysis\"] .rm-readable-chart .local-chart-svg .chart-line{stroke-width:4.4px}\n  [data-view=\"analysis\"] .rm-concepts-chart .local-chart-svg text{font-size:22px!important;font-weight:700}\n  [data-view=\"analysis\"] .rm-sleep-chart .local-chart-svg text{font-size:22px!important;font-weight:700}\n  html[data-theme=\"dark\"] .rm-insight-row{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.075)}\n  @media (prefers-color-scheme:dark){html[data-theme=\"system\"] .rm-insight-row{background:rgba(255,255,255,.045);border-color:rgba(255,255,255,.075)}}\n  @media(max-width:390px){#sleepAnalysis .metric strong{font-size:19px!important}#sleepAnalysis .metric span{font-size:10px!important}.rm-insight-row{grid-template-columns:31px minmax(0,1fr);padding:11px;gap:9px}.rm-insight-icon{width:30px;height:30px}}\n  `;document.head.appendChild(st)\n})();\n\nconst releaseTopAnalysisReview=document.getElementById('topVersion'),releaseAboutAnalysisReview=document.getElementById('versionLabel');if(releaseTopAnalysisReview)releaseTopAnalysisReview.textContent=`v${RM_ANALYSIS_REVIEW_RELEASE}`;if(releaseAboutAnalysisReview)releaseAboutAnalysisReview.textContent=RM_ANALYSIS_REVIEW_RELEASE;\nif(typeof rmInvalidate==='function')rmInvalidate('analysis');\n";document.head.appendChild(s);s.remove();})();
 
-€ò[YKò[◊JOOò[ò[\⁄\‘õ› ò[YK	›ò[Àõ[ô›H€€\òJ H0≠»pÍYXH	€[€ô^Jò[ÀúôYXŸJ
-KäOOòJÿã
-K›ò[Àõ[ô›
-_H0≠»Y[õ‹à	€[€ô^JX]õZ[äããùò[ J_H0≠»XZ[‹à	€[€ô^JX]õX^
-ããùò[ J_X
-JKöõ⁄[ä	… Nò[ò[\⁄\‘õ› 	–Z[ôHŸ[H\›0Ï‹öX€»HôpÈ€…À	‘ôY⁄\›ôH€€\ò\»€€Hò[‹à\òH€€\\ò\àôpÈ€‹Àâ _Wóò\ﬁ[ò»ù[ò›[€àô[ô\ê[
+/* ---- v04c24.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* Corre√ß√µes 0.4.24: uni√£o robusta dos ajustes de Sa√∫de + revis√£o crom√°tica/legibilidade da aba An√°lises. */\nconst RM_V24_RELEASE='1.2.0-beta.44';\n\n/* ---------- AJUSTES: um √∫nico cart√£o Sa√∫de ---------- */\nfunction rmV24Separator(inset=true){const e=document.createElement('div');e.className=`setting-separator${inset?' inset':''}`;return e}\nfunction rmV24RowFor(el){return el?.closest('.settings-row,.setting-block,.setting-inline')||null}\nfunction rmV24RemoveAdjacentSeparators(row){\n  if(!row)return;\n  const p=row.previousElementSibling,n=row.nextElementSibling;\n  if(p?.classList.contains('setting-separator'))p.remove();\n  if(n?.classList.contains('setting-separator'))n.remove();\n}\nfunction rmV24ConsolidateHealthSettings(){\n  const view=document.querySelector('[data-view=\"settings\"]');if(!view)return false;\n  try{if(typeof ensureContinuitySettingsUI==='function')ensureContinuitySettingsUI()}catch{}\n  const medBtn=document.getElementById('medicationRegistryBtn'),healthBtn=document.getElementById('healthImportInfoBtn'),continuityBtn=document.getElementById('continuitySettingsBtn');\n  if(!medBtn||!healthBtn||!continuityBtn)return false;\n\n  const medRow=rmV24RowFor(medBtn),healthRow=rmV24RowFor(healthBtn),continuityRow=rmV24RowFor(continuityBtn);\n  if(!medRow||!healthRow||!continuityRow)return false;\n  const sourceGroups=[medRow.closest('.settings-group'),healthRow.closest('.settings-group'),continuityRow.closest('.settings-group')].filter(Boolean);\n\n  let group=document.getElementById('healthSettingsGroup');\n  if(!group){\n    group=document.createElement('section');group.id='healthSettingsGroup';group.className='settings-group';\n    group.innerHTML='<h2>Sa√∫de</h2><div class=\"settings-card list-card rm-health-settings-card\"></div>';\n    sourceGroups[0]?.before(group);\n  }\n  group.querySelector(':scope>h2')?.replaceChildren(document.createTextNode('Sa√∫de'));\n  let card=group.querySelector(':scope>.settings-card');\n  if(!card){card=document.createElement('div');card.className='settings-card list-card rm-health-settings-card';group.appendChild(card)}\n  card.classList.add('list-card','rm-health-settings-card');\n\n  [medRow,healthRow,continuityRow].forEach(r=>rmV24RemoveAdjacentSeparators(r));\n  card.replaceChildren();\n  card.append(medRow,rmV24Separator(true),healthRow,rmV24Separator(true),continuityRow);\n\n  const hIcon=healthRow.querySelector('.settings-row-icon');\n  if(hIcon){hIcon.classList.remove('health-icon');hIcon.dataset.icon='moon'}\n  const hTitle=healthRow.querySelector('strong');if(hTitle)hTitle.textContent='Importar sono do app Sa√∫de';\n  const cTitle=continuityRow.querySelector('strong');if(cTitle)cTitle.textContent='Alertas por aus√™ncia';\n\n  /* As op√ß√µes Auto/Revisar/Perguntar pertencem √† p√°gina de importa√ß√£o, n√£o √† tela principal. */\n  const oldMode=document.getElementById('healthImportModeControl')?.closest('.setting-block');\n  if(oldMode&&!oldMode.closest('#backdrop')){rmV24RemoveAdjacentSeparators(oldMode);oldMode.remove()}\n\n  sourceGroups.forEach(g=>{if(g!==group&&g.isConnected)g.remove()});\n  [...view.querySelectorAll('.settings-group')].forEach(g=>{\n    if(g===group)return;\n    const t=g.querySelector(':scope>h2')?.textContent.trim();\n    if(['Medicamentos','Sa√∫de e sono','Continuidade dos registros'].includes(t))g.remove();\n  });\n  [...view.querySelectorAll('.group-footnote')].forEach(p=>{if(/cart√£o s√≥ aparece|prazo configurado/i.test(p.textContent||''))p.remove()});\n\n  if(typeof rmHealthImportSheet==='function')healthBtn.onclick=rmHealthImportSheet;\n  if(typeof openContinuitySettings==='function')continuityBtn.onclick=openContinuitySettings;\n  if(typeof hydrateIcons==='function')hydrateIcons(group);\n  return true;\n}\n\n/* ---------- AN√ÅLISES: remove contagem de noites e usa cor como informa√ß√£o ---------- */\nfunction rmV24RemoveNightCount(){\n  const sleep=document.getElementById('sleepAnalysis');if(!sleep)return;\n  sleep.querySelectorAll('.metric,.analysis-row,.rm-insight-row').forEach(el=>{\n    const txt=(el.textContent||'').trim();\n    if(/noites?\\s+registrad|n[√∫u]mero\\s+de\\s+noites|quantidade\\s+de\\s+noites/i.test(txt))el.remove();\n  });\n  const count=sleep.querySelectorAll('.metric').length;\n  if(count)sleep.style.gridTemplateColumns=`repeat(${Math.min(3,count)},minmax(0,1fr))`;\n}\nfunction rmV24ThemeCard(card,tone){if(!card)return;[...card.classList].filter(c=>c.startsWith('rm-theme-')).forEach(c=>card.classList.remove(c));card.classList.add('rm-analysis-colored',`rm-theme-${tone}`)}\nfunction rmV24AddChartTitleIcon(card,icon){\n  const box=card?.querySelector('.chart-card-head>div'),h=box?.querySelector(':scope>h2');if(!box||!h||box.querySelector('.rm-chart-title-row'))return;\n  const row=document.createElement('div');row.className='rm-chart-title-row';const i=document.createElement('span');i.className='rm-chart-title-icon';i.dataset.icon=icon;i.setAttribute('aria-hidden','true');h.before(row);row.append(i,h)\n}\nfunction rmV24ColorizeAnalysis(){\n  const view=document.querySelector('[data-view=\"analysis\"]');if(!view)return;\n  rmV24RemoveNightCount();\n  rmV24ThemeCard(document.getElementById('currentAnalysis')?.closest('.analysis-card'),'current');\n  rmV24ThemeCard(document.getElementById('associationAnalysis')?.closest('.analysis-card'),'med');\n  rmV24ThemeCard(document.getElementById('sleepAnalysis')?.closest('.analysis-card'),'sleep');\n  rmV24ThemeCard(document.getElementById('medicationAnalysis')?.closest('.analysis-card'),'med');\n  rmV24ThemeCard(document.getElementById('purchaseAnalysis')?.closest('.analysis-card'),'buy');\n\n  const continuity=document.getElementById('continuityAnalysis')?.closest('.analysis-card');\n  if(continuity){const positive=/tudo (?:certo|ok)|com frequ[√™e]ncia|nenhum dos prazos/i.test(continuity.textContent||'');rmV24ThemeCard(continuity,positive?'positive':'current')}\n\n  const specs={\n    'chart-mood-line':['spark','mood'],'chart-mood-distribution':['chart','mood'],\n    'chart-dimension-line':['spark','dimension'],'chart-sleep-line':['moon','sleep'],\n    'chart-sleep-mood':['moon','sleep'],'chart-med-delta':['pill','med'],\n    'chart-med-concepts':['pill','med']\n  };\n  Object.entries(specs).forEach(([key,[icon,tone]])=>{const card=view.querySelector(`[data-analysis-item=\"${key}\"]`);if(!card)return;rmV24ThemeCard(card,tone);rmV24AddChartTitleIcon(card,icon)});\n  if(typeof hydrateIcons==='function')hydrateIcons(view)\n}\n\n/* Reaplica depois de cada render din√¢mico. */\nif(typeof renderAnalysis==='function'){\n  const prev=renderAnalysis;renderAnalysis=async function(...args){const out=await prev(...args);rmV24ColorizeAnalysis();return out}\n}\nif(typeof renderQuantitativeDashboard==='function'){\n  const prev=renderQuantitativeDashboard;renderQuantitativeDashboard=async function(...args){const out=await prev(...args);rmV24ColorizeAnalysis();return out}\n}\nif(typeof renderContinuityAnalysis==='function'){\n  const prev=renderContinuityAnalysis;renderContinuityAnalysis=async function(...args){const out=await prev(...args);const box=document.getElementById('continuityAnalysis');if(box){box.querySelectorAll('.analysis-row span').forEach(span=>{if(/nenhum dos prazos configurados foi ultrapassado/i.test(span.textContent||''))span.textContent='Tudo certo: voc√™ est√° fazendo seus registros com frequ√™ncia.';if(/tudo certo|com frequ[√™e]ncia/i.test(span.textContent||''))span.classList.add('rm-positive-text')})}rmV24ColorizeAnalysis();return out}\n}\n\n(function rmV24Styles(){if(document.getElementById('rm-v24-style'))return;const st=document.createElement('style');st.id='rm-v24-style';st.textContent=`\n/* Sa√∫de unificada */\n#healthSettingsGroup>.settings-card{overflow:hidden}\n#healthSettingsGroup .settings-row-icon[data-icon=\"pill\"]{color:var(--record-med,var(--med))!important}\n#healthSettingsGroup .settings-row-icon[data-icon=\"moon\"]{color:var(--record-sleep,var(--sleep))!important}\n#healthSettingsGroup #continuitySettingsBtn .settings-row-icon{color:var(--accent)!important}\n\n/* Cada fam√≠lia usa uma cor sem√¢ntica pr√≥pria, inclusive no modo escuro. */\n[data-view=\"analysis\"] .rm-analysis-colored{--rm-analysis-tone:var(--accent);border-color:color-mix(in srgb,var(--rm-analysis-tone) 18%,var(--separator))!important;box-shadow:inset 0 1px 0 rgba(255,255,255,.32),0 10px 28px color-mix(in srgb,var(--rm-analysis-tone) 7%,transparent)!important}\n[data-view=\"analysis\"] .rm-theme-sleep{--rm-analysis-tone:var(--record-sleep,var(--sleep))}\n[data-view=\"analysis\"] .rm-theme-med{--rm-analysis-tone:var(--record-med,var(--med))}\n[data-view=\"analysis\"] .rm-theme-buy{--rm-analysis-tone:var(--record-buy,var(--buy))}\n[data-view=\"analysis\"] .rm-theme-positive{--rm-analysis-tone:#30C878}\n[data-view=\"analysis\"] .rm-theme-mood{--rm-analysis-tone:#56C8FF}\n[data-view=\"analysis\"] .rm-theme-dimension{--rm-analysis-tone:var(--accent)}\n[data-view=\"analysis\"] .rm-theme-current{--rm-analysis-tone:var(--accent)}\n[data-view=\"analysis\"] .rm-analysis-colored>.analysis-title span,[data-view=\"analysis\"] .rm-analysis-colored>.analysis-title h2{color:var(--rm-analysis-tone)!important}\n[data-view=\"analysis\"] .rm-analysis-colored>.section-kicker{color:var(--rm-analysis-tone)!important;opacity:.92}\n\n/* Blocos internos deixam o cinza gen√©rico e passam a carregar a categoria. */\n[data-view=\"analysis\"] .rm-tone-note{--rm-row-tone:var(--record-note,var(--accent))}\n[data-view=\"analysis\"] .rm-tone-med{--rm-row-tone:var(--record-med,var(--med))}\n[data-view=\"analysis\"] .rm-tone-sleep{--rm-row-tone:var(--record-sleep,var(--sleep))}\n[data-view=\"analysis\"] .rm-tone-buy{--rm-row-tone:var(--record-buy,var(--buy))}\n[data-view=\"analysis\"] .rm-tone-accent{--rm-row-tone:var(--accent)}\n[data-view=\"analysis\"] .rm-insight-row{background:linear-gradient(145deg,color-mix(in srgb,var(--rm-row-tone,var(--accent)) 9%,var(--surface-2)),color-mix(in srgb,var(--rm-row-tone,var(--accent)) 3%,var(--surface)))!important;border-color:color-mix(in srgb,var(--rm-row-tone,var(--accent)) 18%,var(--separator))!important}\n[data-view=\"analysis\"] .rm-insight-label{color:var(--rm-row-tone,var(--text))!important;font-weight:760!important}\n[data-view=\"analysis\"] .rm-insight-icon{box-shadow:0 0 14px color-mix(in srgb,var(--rm-row-tone,var(--accent)) 18%,transparent)}\n[data-view=\"analysis\"] .rm-tone-med .rm-detail-line b{color:var(--record-med,var(--med))}\n[data-view=\"analysis\"] .rm-tone-buy .rm-detail-line b{color:var(--record-buy,var(--buy))}\n[data-view=\"analysis\"] .rm-tone-sleep .rm-detail-line b{color:var(--record-sleep,var(--sleep))}\n\n/* Sono: s√≥ m√©tricas √∫teis; cor do sono nos n√∫meros E nas descri√ß√µes. */\n#sleepAnalysis .metric{background:linear-gradient(145deg,color-mix(in srgb,var(--record-sleep,var(--sleep)) 13%,var(--surface-2)),color-mix(in srgb,var(--record-sleep,var(--sleep)) 5%,var(--surface)))!important;border-color:color-mix(in srgb,var(--record-sleep,var(--sleep)) 24%,var(--separator))!important}\n#sleepAnalysis .metric strong{color:var(--record-sleep,var(--sleep))!important;text-shadow:0 0 14px color-mix(in srgb,var(--record-sleep,var(--sleep)) 20%,transparent)}\n#sleepAnalysis .metric span{color:var(--record-sleep,var(--sleep))!important;font-weight:760!important;opacity:.92!important}\n\n/* Cabe√ßalhos de gr√°ficos tamb√©m t√™m refer√™ncia visual. */\n.rm-chart-title-row{display:flex;align-items:center;gap:9px;margin-bottom:3px}\n.rm-chart-title-row h2{margin:0!important;color:var(--rm-analysis-tone,var(--text))!important}\n.rm-chart-title-icon{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;color:var(--rm-analysis-tone,var(--accent));background:color-mix(in srgb,var(--rm-analysis-tone,var(--accent)) 11%,transparent);box-shadow:0 0 13px color-mix(in srgb,var(--rm-analysis-tone,var(--accent)) 16%,transparent)}\n.rm-chart-title-icon .svg-icon,.rm-chart-title-icon>svg{width:17px!important;height:17px!important}\n[data-view=\"analysis\"] .rm-theme-sleep .chart-grid text,[data-view=\"analysis\"] .rm-theme-sleep .chart-axis-label{fill:var(--record-sleep,var(--sleep))!important;opacity:.88!important}\n[data-view=\"analysis\"] .rm-theme-med .chart-grid text,[data-view=\"analysis\"] .rm-theme-med .chart-axis-label{fill:var(--record-med,var(--med))!important;opacity:.88!important}\n[data-view=\"analysis\"] .rm-theme-sleep .chart-line{stroke:var(--record-sleep,var(--sleep))!important}\n[data-view=\"analysis\"] .rm-theme-med .chart-line{stroke:var(--record-med,var(--med))!important}\n[data-view=\"analysis\"] .rm-positive-text{color:#30C878!important;font-weight:780!important}\n\nhtml[data-theme=\"dark\"] [data-view=\"analysis\"] .rm-insight-row{background:linear-gradient(145deg,color-mix(in srgb,var(--rm-row-tone,var(--accent)) 14%,#19191f),color-mix(in srgb,var(--rm-row-tone,var(--accent)) 6%,#111116))!important;border-color:color-mix(in srgb,var(--rm-row-tone,var(--accent)) 25%,rgba(255,255,255,.10))!important}\n@media(prefers-color-scheme:dark){html[data-theme=\"system\"] [data-view=\"analysis\"] .rm-insight-row{background:linear-gradient(145deg,color-mix(in srgb,var(--rm-row-tone,var(--accent)) 14%,#19191f),color-mix(in srgb,var(--rm-row-tone,var(--accent)) 6%,#111116))!important;border-color:color-mix(in srgb,var(--rm-row-tone,var(--accent)) 25%,rgba(255,255,255,.10))!important}}\n`;document.head.appendChild(st)})();\n\nfunction rmV24Boot(){\n  rmV24ConsolidateHealthSettings();rmV24ColorizeAnalysis();\n  const top=document.getElementById('topVersion'),about=document.getElementById('versionLabel');if(top)top.textContent=`v${RM_V24_RELEASE}`;if(about)about.textContent=RM_V24_RELEASE;\n}\nrmV24Boot();\n[80,250,700,1500].forEach(ms=>setTimeout(rmV24Boot,ms));\ndocument.addEventListener('click',e=>{if(e.target.closest('[data-tab=\"settings\"]'))setTimeout(rmV24ConsolidateHealthSettings,30);if(e.target.closest('[data-tab=\"analysis\"]'))setTimeout(rmV24ColorizeAnalysis,60)},true);\nif(typeof rmInvalidate==='function')rmInvalidate('analysis','settings');\n";document.head.appendChild(s);s.remove();})();
 
-^ÿ€€ú›]ô[ùœJ]ÿZ][]ô[ù 
-JKú€‹ù
+/* ---- v04c26.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.26 ‚Äî laborat√≥rio da barra inferior reconstru√≠do como editor leve e independente. */\nconst RM_V26_RELEASE='1.2.0-beta.44';\n\nfunction rmV26OpenTabbarLab(){\n  location.href='./tabbar-lab.html';\n}\n\n/* Intercepta o bot√£o mesmo depois de ele ser movido para Personaliza√ß√£o avan√ßada. */\ndocument.addEventListener('click',e=>{\n  const button=e.target.closest('#tabbarLabBtn');\n  if(!button)return;\n  e.preventDefault();\n  e.stopImmediatePropagation();\n  rmV26OpenTabbarLab();\n},true);\n\n/* Ao retornar do laborat√≥rio, reaplica imediatamente a configura√ß√£o salva. */\nwindow.addEventListener('pageshow',()=>{\n  try{if(typeof applyRegistroTabBar==='function')applyRegistroTabBar()}catch{}\n});\n\nfunction rmV26Finalize(){\n  try{if(typeof RM_V28_RELEASE!=='undefined'||typeof RM_V27_RELEASE!=='undefined')return}catch{}\n  const top=document.getElementById('topVersion'),about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V26_RELEASE}`;\n  if(about)about.textContent=RM_V26_RELEASE;\n}\nrmV26Finalize();\nsetTimeout(rmV26Finalize,1200);\n\n/* A revis√£o seguinte precisa entrar depois da 0.4.27, pois redefine cart√µes e visualizadores. */\n";document.head.appendChild(s);s.remove();})();
 
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JNÿ]ÿZ]ô[ô\í€YJ]ô[ù Nÿ]ÿZ]ô[ô\í\›‹ûJ]ô[ù Nÿ]ÿZ]ô[ô\ê[ò[\⁄\ ]ô[ù N‹ô[ô\êòX⁄›\›]J
-N‹ô[ô\íX[›]J
-Nÿ\TŸ][ô‹ 
-_Wóôù[ò›[€à]QöY[
-YXô[ò[YK‹⁄›”õ›œYò[ŸKô\Ÿ\ùôSõ›œ]ùY_O^ﬂJ^ÿ€€ú›õ›–€\‹œ\ô\Ÿ\ùôSõ›œ…Ÿ]K\õ›…ŒâŸ]K\õ›»õÀ[õ›ÀX€€[[âŒÿ€€ú›€›\ô\Ÿ\ùôSõ›œÿ‹[à€\‹œWõõ›À\€›	‹⁄›”õ›œ……ŒâŸ[\IﬂWèâ‹⁄›”õ›œ…œ‹[à€\‹œWõõ›À]Y◊èòY€‹òO‹‹[èâŒâ…ﬂO‹‹[èòâ…Œ‹ô]\õò]à€\‹œWôöY[èèXô[õ‹èWâ⁄YWèâ€Xô[O€Xô[è]à€\‹œWâ‹õ›–€\‹ﬂWèè[ú]€\‹œWô]KZ[ú]à\OWô]][YK[ÿÿ[àYWâ⁄YWàò[YOWâ›ò[Y_Wà	‹⁄›”õ›œÿ]K[õ›ÀXò\ŸOWâ›ò[Y_Wòâ…ﬂOâ‹€›OŸ]èèŸ]èòWôù[ò›[€àX›]ò]Sõ›’Y‹ õ€›Yÿ›[Y[ù
-^‹õ€›ú]Y\ûTŸ[X›‹ê[
-	Àô]KZ[ú]Ÿ]K[õ›ÀXò\ŸWI Kôõ‹ëXX⁄
-[ú]Oûÿ€€ú›õ›œZ[ú]ò€‹Ÿ\›
-	Àô]K\õ›… K€›\õ›œÀú]Y\ûTŸ[X›‹ä	Àõõ›À\€›	 K\]OJ
-OOû⁄Yä€›
-\€›ò€\‹”\›ùŸŸ€J	Ÿ[\IÀ[ú]ùò[YHOOZ[ú]ô]\Ÿ]õõ›–ò\ŸJ_N⁄[ú]òY]ô[ù\›[ô\ä	⁄[ú]	À\]JN⁄[ú]òY]ô[ù\›[ô\ä	ÿ⁄[ôŸIÀ\]JN›\]J
-_J_Wôù[ò›[€à]X[]TŸ[X›‹äò[YOM
-^‹ô]\õò]à€\‹œWú€Y\\]X[]WàYWú€Y\]X[]Wèâ÷ÃKãÀWKõX\
-OOòù]€à\OWòù]€óà]K\]X[]OWâ‹_Wà€\‹œWâ”ù[Xô\äò[YJOOO\O…‹Ÿ[X›Y	Œâ…ﬂWà\öXK\ô\‹ŸYWâ”ù[Xô\äò[YJOOO\_Wèè‹[à€\‹œWúKY›èè‹‹[èè›õ€ôœâ‹_O‹›õ€ôœèÿù]€èò
-Köõ⁄[ä	… _OŸ]èè[ú]\OWöY[óàYWú€Y\]X[]Uò[YWàò[YOWâ”ù[Xô\äò[YJ_WèòWôù[ò›[€à⁄\ôT]X[]TŸ[X›‹ä
-^Ÿÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	»‹€Y\]X[]HŸ]K\]X[]WI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOûŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	»‹€Y\]X[]HŸ]K\]X[]WI Kôõ‹ëXX⁄
-Oûﬁò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	ÀOOXäNﬁúŸ]]öXù]J	ÿ\öXK\ô\‹ŸY	À›ö[ô OOXäJ_JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\]X[]Uò[YI Kùò[YOXãô]\Ÿ]ú]X[]_J_Wôù[ò›[€àõ‹õPù]€ú Xô[I‘ÿ[ò\â ^‹ô]\õò]à€\‹œWôõ‹õKXX›[€ú◊èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óà]KXÿ[òŸ[êÿ[òŸ[\èÿù]€èèù]€à\OWú›XõZ]à€\‹œWúö[X\ûKXù]€óèâ€Xô[Oÿù]€èèŸ]èòWôù[ò›[€à‹[êòX⁄Ÿõ‹
-]K[€î›XõZ]
-^ÿ›\úô[ù\O[ù[Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	‹⁄Y]]I Kù^€€ù[ù]]Nÿ€€ú›õ‹õOYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI NŸõ‹õKö[õô\íSZ[Ÿõ‹õKõ€ú›XõZ][€î›XõZ]
+/* ---- v04c27.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.27 ‚Äî revis√£o acumulada: hist√≥rico, formul√°rios, detalhes, an√°lises e legibilidade. */\nconst RM_V27_RELEASE='1.2.0-beta.44';\n\nfunction rmV27TypeIcon(type){return type==='note'?'note':type==='medication'?'pill':type==='sleep'?'moon':'bag'}\nfunction rmV27TypeClass(type){return type==='note'?'note':type==='medication'?'medication':type==='sleep'?'sleep':'purchase'}\nfunction rmV27TypeTone(type){return type==='note'?'var(--record-note,var(--accent))':type==='medication'?'var(--record-med,var(--med))':type==='sleep'?'var(--record-sleep,var(--sleep))':'var(--record-buy,var(--buy))'}\nfunction rmV27DoseLabel(e){if(e?.totalDoseValue!=null&&Number.isFinite(Number(e.totalDoseValue)))return`${Number(e.totalDoseValue).toLocaleString('pt-BR')} ${e.doseUnit||''}`.trim();return String(e?.dose||'').trim()}\nfunction rmV27MoneyValue(v){const n=parseMoney(v);return n==null?'':money(n)}\nfunction rmV27PackageLabel(n){n=Math.max(1,Number(n)||1);return`${n.toLocaleString('pt-BR')} ${n===1?'caixa':'caixas'}`}\nfunction rmV27UnitsLabel(n){n=Number(n);return Number.isFinite(n)&&n>0?`${n.toLocaleString('pt-BR')} ${n===1?'unidade':'unidades'}`:''}\nfunction rmV27HumanDurationMs(ms,{compact=true}={}){let min=Math.max(0,Math.round(Number(ms)/60000));if(!Number.isFinite(min))return'‚Äî';if(min<60)return`${min} min`;const h=Math.floor(min/60),m=min%60;if(h<24){if(!m)return`${h}h`;return compact?`${h}h${String(m).padStart(2,'0')}`:`${h}h e ${m}min`}const d=Math.floor(h/24),rh=h%24;if(!rh)return`${d} ${d===1?'dia':'dias'}`;return`${d} ${d===1?'dia':'dias'} e ${rh}h`}\nfunction rmV27HumanizeDurationText(text=''){let out=String(text);out=out.replace(/(\\d+(?:[,.]\\d+)?)\\s*dia\\(s\\)/gi,(_,n)=>rmV27HumanDurationMs(Number(String(n).replace(',','.'))*86400000,{compact:true}));out=out.replace(/(\\d+[,.]\\d+)\\s*h\\b/gi,(_,n)=>rmV27HumanDurationMs(Number(String(n).replace(',','.'))*3600000,{compact:true}));return out}\nfunction rmV27HumanizeRoot(root){if(!root)return;const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);const nodes=[];while(walker.nextNode())nodes.push(walker.currentNode);for(const node of nodes){const p=node.parentElement;if(!p||p.closest('svg,script,style,textarea,input'))continue;const next=rmV27HumanizeDurationText(node.nodeValue||'');if(next!==node.nodeValue)node.nodeValue=next}}\n\nfunction rmV27MoodBadge(){return''}\nfunction rmV27TagChip(tag){return tag?`<span class=\"rm-note-tag\">${esc(tag)}</span>`:''}\nfunction rmV27AdvancedMeta(e){const items=[];for(const [id,v] of Object.entries(e?.emotionScores||{}).slice(0,2)){const label=e.emotionLabels?.[id]||((typeof emotionDimensions==='function'?emotionDimensions():[]).find(d=>d.id===id)?.label)||id;items.push(`<span class=\"rm-meta-text\">${esc(label)} ${esc(v)}/4</span>`)}return items.join('')}\n\n/* Cart√µes de Hist√≥rico/Recentes: √≠cone acima do hor√°rio, coluna menor, dose como dado principal. */\neventCard=function(e){\n  const type=rmV27TypeClass(e.type),icon=rmV27TypeIcon(e.type),tone=rmV27TypeTone(e.type);let kind='REGISTRO',title='',meta='';\n  if(e.type==='note'){\n    kind=e.audioOnly?'ANOTA√á√ÉO DE VOZ':(!e.text&&e.moodScore!=null?'CHECK-IN':'ANOTA√á√ÉO');title=e.text||'Check-in emocional';const badges=`${rmV27MoodBadge(e.moodScore)}${rmV27TagChip(e.tag)}${rmV27AdvancedMeta(e)}`;if(badges)meta=`<div class=\"timeline-meta rm-meta-badges\">${badges}</div>`;\n  }else if(e.type==='medication'){\n    kind='MEDICAMENTO';const dose=rmV27DoseLabel(e);title=`${e.medication||'Medicamento'}${dose?` ¬∑ ${dose}`:''}`;if(e.note)meta=`<div class=\"timeline-meta\">${esc(e.note)}</div>`;\n  }else if(e.type==='sleep'){\n    kind='SONO';title=durationLabel(durationHours(e.startTime,e.endTime));const bits=[e.quality?`Qualidade ${e.quality}/5`:null,e.source==='health-shortcut'?'Importado do Sa√∫de':'Manual',e.note].filter(Boolean);if(bits.length)meta=`<div class=\"timeline-meta\">${bits.map(esc).join(' ¬∑ ')}</div>`;\n  }else{\n    kind='COMPRA';const price=rmV27MoneyValue(e.price);title=`${e.medication||'Medicamento'}${price?` ¬∑ ${price}`:''}`;const bits=[e.packages?rmV27PackageLabel(e.packages):null,e.place].filter(Boolean);if(bits.length)meta=`<div class=\"timeline-meta\">${bits.map(esc).join(' ¬∑ ')}</div>`;\n  }\n  return`<article class=\"timeline-item rm-v27-timeline rm-type-${type}\" style=\"--rm-record-tone:${tone}\"><div class=\"timeline-side\"><span class=\"timeline-type-icon\">${svg(icon)}</span><div class=\"timeline-time\">${timeLabel(e.timestamp)}</div></div><div class=\"timeline-main\"><div class=\"timeline-kind kind-${type}\">${kind}</div><div class=\"timeline-title\">${esc(title)}</div>${meta}${e.hasAudio?`<div data-audio=\"${e.id}\"></div>`:''}</div><button class=\"item-menu\" data-menu=\"${e.id}\" aria-label=\"Op√ß√µes\">‚Ä¢‚Ä¢‚Ä¢</button></article>`\n};\n\nfunction rmV27EnhanceHistoryFilters(){const box=document.getElementById('historyFilters');if(!box)return;const map={note:['note','Anota√ß√µes'],medication:['pill','Medicamentos'],sleep:['moon','Sono'],purchase:['bag','Compras']};for(const b of box.querySelectorAll('[data-filter]')){const spec=map[b.dataset.filter];if(!spec||b.dataset.rmV27Icon==='1')continue;b.dataset.rmV27Icon='1';b.classList.add('rm-filter-type');b.style.setProperty('--rm-filter-tone',rmV27TypeTone(b.dataset.filter));b.innerHTML=`<span class=\"rm-filter-icon\">${svg(spec[0])}</span><span>${spec[1]}</span>`}}\n\n/* Sono usa a mesma linguagem visual da escala de humor, mantendo 1‚Äì5. */\nqualitySelector=function(value=4){return`<div class=\"sleep-quality rm-sleep-quality\" id=\"sleepQuality\">${[1,2,3,4,5].map(q=>{const c=typeof rmMood==='function'?rmMood(q):{color:['','#FF3B30','#FF6A00','#FFD60A','#35D98B','#56C8FF'][q],border:'#fff',text:q===3?'#332800':'#fff',glow:'rgba(100,160,255,.3)'};return`<button type=\"button\" data-quality=\"${q}\" class=\"mood-score rm-sleep-quality-score ${Number(value)===q?'selected':''}\" aria-pressed=\"${Number(value)===q}\" style=\"--mood-color:${c.color};--mood-border:${c.border};--mood-text:${c.text};--mood-glow:${c.glow}\">${q}</button>`}).join('')}</div><input type=\"hidden\" id=\"sleepQualityValue\" value=\"${Math.max(1,Math.min(5,Number(value)||4))}\">`};\nwireQualitySelector=function(){const buttons=[...document.querySelectorAll('#sleepQuality [data-quality]')],hidden=document.getElementById('sleepQualityValue');buttons.forEach(b=>b.onclick=()=>{buttons.forEach(x=>{x.classList.toggle('selected',x===b);x.setAttribute('aria-pressed',String(x===b))});if(hidden)hidden.value=b.dataset.quality})};\n\n/* Dinheiro em compras: apresenta sempre R$ e centavos quando o campo perde foco/salva. */\nfunction rmV27FormatMoneyInput(el){if(!el||!String(el.value||'').trim())return;const n=parseMoney(el.value);if(n!=null)el.value=money(n)}\ndocument.addEventListener('focusout',e=>{if(e.target?.id==='purchasePrice')rmV27FormatMoneyInput(e.target)},true);\ndocument.addEventListener('submit',()=>{rmV27FormatMoneyInput(document.getElementById('purchasePrice'))},true);\nif(typeof openPurchaseSheet==='function'){\n  const rmV27PrevOpenPurchaseSheet=openPurchaseSheet;\n  openPurchaseSheet=async function(...args){const out=await rmV27PrevOpenPurchaseSheet(...args);const input=document.getElementById('purchasePrice');if(input){input.placeholder='R$ 0,00';setTimeout(()=>rmV27FormatMoneyInput(input),0)}return out}\n}\n\n/* Visualiza√ß√£o de Compra com r√≥tulo discreto e dado principal em destaque. */\nfunction rmV27PurchaseDetail(label,value,{tone=false}={}){if(value===null||value===undefined||String(value).trim()==='')return'';return`<div class=\"rm-purchase-detail${tone?' tone':''}\"><small>${esc(label)}</small><strong>${esc(String(value))}</strong></div>`}\nif(typeof openEventViewer==='function'){\n  const rmV27PrevViewer=openEventViewer;\n  openEventViewer=async function(id){const e=(await allEvents()).find(x=>x.id===id);if(e?.type!=='purchase')return rmV27PrevViewer(id);const meds=await allMedications(),m=meds.find(x=>x.id===e.medicationId)||findProfileByEvent(e,meds),p=findPresentation(m,e.presentationId),presentation=p?presentationDisplay(p):'';const price=rmV27MoneyValue(e.price)||e.price||'‚Äî';const body=[rmV27PurchaseDetail('Medicamento',e.medication||'Medicamento',{tone:true}),rmV27PurchaseDetail('Apresenta√ß√£o',presentation),rmV27PurchaseDetail('',rmV27PackageLabel(e.packages)),rmV27PurchaseDetail('',rmV27UnitsLabel(e.totalUnits)),rmV27PurchaseDetail('Valor pago',price,{tone:true}),rmV27PurchaseDetail('Comprado em',e.place||'N√£o informado'),`<div class=\"rm-purchase-date\">${esc(registroDetailDate(e.timestamp))}</div>`].join('');openBackdrop('Compra',`<div class=\"rm-purchase-details\">${body}</div><div class=\"form-actions\"><button type=\"button\" class=\"secondary-button\" id=\"viewerCloseBtn\">Fechar</button><button type=\"button\" class=\"primary-button\" id=\"viewerEditBtn\">Editar</button></div>`,ev=>ev.preventDefault());document.getElementById('viewerCloseBtn').onclick=closeSheet;document.getElementById('viewerEditBtn').onclick=()=>openEventEditor(id)}\n}\n\n/* Gr√°fico de distribui√ß√£o 0‚Äì10: r√≥tulos grandes, base colorida e contagem dentro/fora da coluna. */\nrmMoodBarChart=function(rows){rows=rows.slice(0,11);if(!rows.length)return chartEmpty('Ainda n√£o h√° dados suficientes.');const W=720,H=310,pad={l:22,r:18,t:30,b:66},iw=W-pad.l-pad.r,baseY=H-48,baseH=34,barBase=baseY-10,plotH=barBase-pad.t,max=Math.max(1,...rows.map(r=>Number(r.value)||0)),bw=Math.max(42,iw/rows.length*.56);return`<svg class=\"local-chart-svg rm-mood-bars rm-v27-mood-bars\" viewBox=\"0 0 ${W} ${H}\" role=\"img\" aria-label=\"Distribui√ß√£o do humor\"><line class=\"chart-zero\" x1=\"${pad.l}\" y1=\"${barBase}\" x2=\"${W-pad.r}\" y2=\"${barBase}\"/>${rows.map((r,i)=>{const c=rmMood(i),value=Number(r.value)||0,cx=pad.l+(i+.5)*iw/rows.length,h=value?Math.max(12,value/max*plotH):3,top=barBase-h,inside=value>0&&h>=46,countY=inside?top+27:Math.max(19,top-10),countFill=inside?c.text:'currentColor',barFill=i===0?'#17171D':c.color;return`<rect class=\"rm-v27-mood-bar\" x=\"${cx-bw/2}\" y=\"${top}\" width=\"${bw}\" height=\"${h}\" rx=\"11\" fill=\"${barFill}\" stroke=\"${i===0?'#7657FF':c.border}\" stroke-width=\"2\"><title>Nota ${i}: ${value} registro(s)</title></rect><text class=\"chart-bar-value ${inside?'inside':'outside'}\" x=\"${cx}\" y=\"${countY}\" text-anchor=\"middle\" fill=\"${countFill}\">${value}</text><rect class=\"rm-v27-mood-base\" x=\"${cx-bw/2}\" y=\"${baseY}\" width=\"${bw}\" height=\"${baseH}\" rx=\"10\" fill=\"${barFill}\" stroke=\"${i===0?'#7657FF':c.border}\" stroke-width=\"1.8\"/><text class=\"rm-v27-mood-base-label\" x=\"${cx}\" y=\"${baseY+23}\" text-anchor=\"middle\" fill=\"${c.text}\">${i}</text>`}).join('')}</svg>`};\n\nfunction rmV27PolishContinuity(){const box=document.getElementById('continuityAnalysis');if(!box)return;for(const row of [...box.querySelectorAll('.analysis-row')]){const strong=row.querySelector('strong'),label=strong?.textContent.trim()||'',span=row.querySelector('span');if(/^Maior intervalo entre textos/i.test(label)){row.remove();continue}if(/^Intervalos atuais/i.test(label)){strong?.remove();row.classList.add('rm-continuity-status');const positive=/tudo certo|com frequ[√™e]ncia|nenhum dos prazos/i.test(span?.textContent||'');row.classList.toggle('positive',positive);if(positive&&span)span.textContent='Tudo certo, voc√™ est√° fazendo seus registros com frequ√™ncia.'}}rmV27HumanizeRoot(box)}\nfunction rmV27PolishAnalysis(){const view=document.querySelector('[data-view=\"analysis\"]');if(!view)return;const dist=view.querySelector('[data-analysis-item=\"chart-mood-distribution\"] h2');if(dist)dist.textContent='Distribui√ß√£o do humor';const purchase=view.querySelector('#purchaseAnalysis');purchase?.querySelectorAll('.rm-detail-line b').forEach(b=>{if(/^Onde:/i.test(b.textContent||''))b.textContent='Comprado em:'});rmV27PolishContinuity();rmV27HumanizeRoot(view)}\n\nif(typeof renderAnalysis==='function'){\n  const rmV27PrevRenderAnalysis=renderAnalysis;renderAnalysis=async function(...args){const out=await rmV27PrevRenderAnalysis(...args);rmV27PolishAnalysis();return out}\n}\nif(typeof renderQuantitativeDashboard==='function'){\n  const rmV27PrevRenderDashboard=renderQuantitativeDashboard;renderQuantitativeDashboard=async function(...args){const out=await rmV27PrevRenderDashboard(...args);rmV27PolishAnalysis();return out}\n}\nif(typeof renderContinuityAnalysis==='function'){\n  const rmV27PrevContinuity=renderContinuityAnalysis;renderContinuityAnalysis=async function(...args){const out=await rmV27PrevContinuity(...args);rmV27PolishContinuity();return out}\n}\nif(typeof applyAnalysisReviewPlacement==='function'){\n  const rmV27PrevReviewPlacement=applyAnalysisReviewPlacement;applyAnalysisReviewPlacement=function(...args){const out=rmV27PrevReviewPlacement(...args);setTimeout(rmV27PolishAnalysis,0);return out}\n}\n\nfunction rmV27EnsureStyles(){let st=document.getElementById('rm-v27-style');if(!st){st=document.createElement('style');st.id='rm-v27-style';document.head.appendChild(st)}st.textContent=`\n/* Cabe√ßalhos: t√≠tulo principal primeiro, descri√ß√£o depois. */\n.page-header>div{display:flex;flex-direction:column}.page-header>div>h1{order:0}.page-header>div>.eyebrow{order:1;margin:6px 0 0!important}\n\n/* Remove a faixa/caixa escura atr√°s dos t√≠tulos dos sheets. */\n.sheet-header,.sheet-header h2{background:transparent!important;background-image:none!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}.sheet-header{border:0!important}.sheet-header:before,.sheet-header:after{display:none!important}\n\n/* Hist√≥rico / recentes */\n.timeline-item.rm-v27-timeline{grid-template-columns:40px minmax(0,1fr) 24px!important;column-gap:8px!important;padding-left:11px!important}.timeline-side{display:flex;flex-direction:column;align-items:center;gap:7px;min-width:0}.timeline-type-icon{width:23px;height:23px;display:grid;place-items:center;color:var(--rm-record-tone)}.timeline-type-icon .svg-icon,.timeline-type-icon svg{width:21px!important;height:21px!important}.timeline-side .timeline-time{padding-top:0!important;text-align:center;white-space:nowrap;font-variant-numeric:tabular-nums}.timeline-main{min-width:0}.rm-meta-badges{display:flex!important;align-items:center;gap:7px;flex-wrap:wrap}.rm-mini-mood{width:27px;height:27px;border-radius:9px;display:inline-grid;place-items:center;background:var(--rm-mini-mood);border:1.5px solid var(--rm-mini-border);color:var(--rm-mini-text);font-size:13px;font-weight:850;line-height:1;box-shadow:0 0 9px var(--rm-mini-glow)}.rm-note-tag{position:relative;display:inline-flex;align-items:center;min-height:25px;padding:4px 9px 4px 12px;clip-path:polygon(6px 0,100% 0,100% 100%,6px 100%,0 50%);background:color-mix(in srgb,var(--secondary) 11%,var(--surface-2));color:var(--secondary);font-size:11px;font-weight:700}.rm-meta-text{font-size:11px;color:var(--secondary)}\n\n/* Filtros com √≠cones sem√¢nticos. */\n#historyFilters .filter-chip.rm-filter-type{display:inline-flex;align-items:center;gap:6px;border:1px solid color-mix(in srgb,var(--rm-filter-tone) 18%,var(--separator))!important}#historyFilters .rm-filter-icon{width:17px;height:17px;display:grid;place-items:center;color:var(--rm-filter-tone)}#historyFilters .rm-filter-icon svg{width:16px!important;height:16px!important}#historyFilters .filter-chip.rm-filter-type.selected{background:color-mix(in srgb,var(--rm-filter-tone) 15%,var(--surface))!important;background-image:none!important;color:var(--text)!important;border-color:color-mix(in srgb,var(--rm-filter-tone) 42%,var(--separator))!important;box-shadow:0 2px 8px color-mix(in srgb,var(--rm-filter-tone) 9%,transparent)!important}\n\n/* Qualidade do sono no padr√£o visual do humor. */\n.rm-sleep-quality{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr))!important;gap:9px!important;padding:6px 2px 5px;overflow:visible}.rm-sleep-quality-score{height:58px!important;border-radius:17px!important;background:var(--mood-color)!important;color:var(--mood-text)!important;border:1.8px solid var(--mood-border)!important;font-size:19px!important;font-weight:850!important;box-shadow:0 3px 9px rgba(0,0,0,.07)!important;transition:transform .18s cubic-bezier(.2,.8,.2,1),box-shadow .18s ease!important}.rm-sleep-quality-score.selected{transform:scale(1.09) translateY(-1px)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--mood-border) 58%,white 42%),0 0 11px var(--mood-glow)!important;z-index:2}\n\n/* Detalhes de compra */\n.rm-purchase-details{display:grid;gap:10px}.rm-purchase-detail{padding:13px 14px;border:1px solid var(--separator);border-radius:16px;background:color-mix(in srgb,var(--record-buy,var(--buy)) 4%,var(--surface-2))}.rm-purchase-detail small{display:block;color:var(--secondary);font-size:10.5px;font-weight:720;margin-bottom:4px}.rm-purchase-detail strong{display:block;color:var(--text);font-size:17px;line-height:1.3;overflow-wrap:anywhere}.rm-purchase-detail.tone strong{color:var(--record-buy,var(--buy))}.rm-purchase-date{text-align:center;color:var(--secondary);font-size:12.5px;padding:4px 0 2px;font-variant-numeric:tabular-nums}\n\n/* Aviso introdut√≥rio de An√°lises mais compacto e leg√≠vel. */\n[data-view=\"analysis\"]>.notice-card{padding:10px 12px!important;grid-template-columns:34px minmax(0,1fr)!important;align-items:center!important}[data-view=\"analysis\"]>.notice-card .notice-icon{justify-self:center!important;align-self:center!important;padding:0!important}[data-view=\"analysis\"]>.notice-card p{text-align:justify;text-justify:inter-word;hyphens:auto}\n\n/* Cart√µes internos: fundo tonal e harm√¥nico, nunca cinza chapado. */\n[data-view=\"analysis\"] .rm-insight-row,[data-view=\"analysis\"] .rm-analysis-colored .analysis-row{background:color-mix(in srgb,var(--rm-row-tone,var(--rm-analysis-tone,var(--accent))) 8%,var(--surface-2))!important;background-image:none!important;border:1px solid color-mix(in srgb,var(--rm-row-tone,var(--rm-analysis-tone,var(--accent))) 20%,var(--separator))!important;box-shadow:none!important}html[data-theme=\"dark\"] [data-view=\"analysis\"] .rm-insight-row,html[data-theme=\"dark\"] [data-view=\"analysis\"] .rm-analysis-colored .analysis-row{background:color-mix(in srgb,var(--rm-row-tone,var(--rm-analysis-tone,var(--accent))) 11%,#14151a)!important;border-color:color-mix(in srgb,var(--rm-row-tone,var(--rm-analysis-tone,var(--accent))) 27%,rgba(255,255,255,.10))!important}@media(prefers-color-scheme:dark){html[data-theme=\"system\"] [data-view=\"analysis\"] .rm-insight-row,html[data-theme=\"system\"] [data-view=\"analysis\"] .rm-analysis-colored .analysis-row{background:color-mix(in srgb,var(--rm-row-tone,var(--rm-analysis-tone,var(--accent))) 11%,#14151a)!important;border-color:color-mix(in srgb,var(--rm-row-tone,var(--rm-analysis-tone,var(--accent))) 27%,rgba(255,255,255,.10))!important}}\n\n/* Avaliar fica visualmente fora do cart√£o, √† direita e claramente associado ao item abaixo. */\n[data-view=\"analysis\"] .analysis-review-item:not(.analysis-item-rejected){margin-top:48px!important;overflow:visible!important}[data-view=\"analysis\"] .analysis-review-item:not(.analysis-item-rejected)>.floating-review,[data-view=\"analysis\"] .dashboard-chart:not(.analysis-item-rejected) .chart-card-head>.chart-review-btn{position:absolute!important;top:-35px!important;right:2px!important;z-index:4;margin:0!important}.dashboard-chart .chart-card-head{position:static!important}.analysis-rejected-section .chart-review-btn{position:static!important}\n\n/* Cabe√ßalho dos gr√°ficos: sem caixinha estranha atr√°s do √≠cone. Glow s√≥ no Ultra. */\n.rm-chart-title-icon{background:transparent!important;border-radius:0!important;box-shadow:none!important;width:27px!important;height:27px!important}.rm-chart-title-icon .svg-icon,.rm-chart-title-icon>svg{width:22px!important;height:22px!important}html[data-visual-mode=\"optimized\"] .rm-chart-title-icon{filter:none!important}html[data-visual-mode=\"ultra\"] .rm-chart-title-icon{filter:drop-shadow(0 0 7px color-mix(in srgb,var(--rm-analysis-tone,var(--accent)) 58%,transparent))!important}\n\n/* Gr√°ficos mais leg√≠veis. */\n[data-view=\"analysis\"] .local-chart-svg .chart-grid text,[data-view=\"analysis\"] .local-chart-svg .chart-axis-label,[data-view=\"analysis\"] .local-chart-svg .chart-bar-label{font-size:15px!important;opacity:.84!important}[data-view=\"analysis\"] .local-chart-svg .chart-bar-value{font-size:18px!important;font-weight:850!important;opacity:1!important}[data-analysis-item=\"chart-mood-distribution\"] .chart-card-head h2{font-size:19px!important;white-space:nowrap!important;letter-spacing:-.02em!important}.rm-v27-mood-bars .rm-v27-mood-base-label{font-size:18px;font-weight:900}.rm-v27-mood-bars .chart-bar-value{font-size:19px!important;font-weight:900!important}.rm-v27-mood-bars .chart-bar-value.outside{fill:currentColor!important}.rm-v27-mood-bars .chart-zero{opacity:.45}\n\n/* Continuidade: status positivo sem t√≠tulo t√©cnico, com flat green transl√∫cido. */\n#continuityAnalysis .rm-continuity-status{padding:14px 16px!important;text-align:center!important;background:color-mix(in srgb,#30C878 15%,var(--surface-2))!important;border:1px solid color-mix(in srgb,#30C878 34%,var(--separator))!important;border-radius:16px!important}#continuityAnalysis .rm-continuity-status span{margin:0!important;color:color-mix(in srgb,#30C878 84%,var(--text) 16%)!important;font-size:14px!important;font-weight:780!important;line-height:1.4!important}#continuityAnalysis .rm-continuity-status:not(.positive){background:color-mix(in srgb,var(--accent) 8%,var(--surface-2))!important;border-color:color-mix(in srgb,var(--accent) 20%,var(--separator))!important}#continuityAnalysis .rm-continuity-status:not(.positive) span{color:var(--text)!important;font-weight:650!important}\n\n@media(max-width:390px){.timeline-item.rm-v27-timeline{grid-template-columns:37px minmax(0,1fr) 22px!important;column-gap:7px!important}.timeline-type-icon{width:21px;height:21px}.timeline-type-icon .svg-icon,.timeline-type-icon svg{width:19px!important;height:19px!important}[data-analysis-item=\"chart-mood-distribution\"] .chart-card-head h2{font-size:17px!important}}\n`}\n\nfunction rmV27Finalize(){rmV27EnsureStyles();rmV27EnhanceHistoryFilters();rmV27PolishAnalysis();rmV27HumanizeRoot(document.querySelector('[data-view=\"learning\"]'));const top=document.getElementById('topVersion'),about=document.getElementById('versionLabel');if(top)top.textContent=`v${RM_V27_RELEASE}`;if(about)about.textContent=RM_V27_RELEASE}\n\nrmV27Finalize();[120,650,1700,3200].forEach(ms=>setTimeout(rmV27Finalize,ms));\ndocument.addEventListener('click',e=>{if(e.target.closest('[data-tab=\"history\"]'))setTimeout(rmV27EnhanceHistoryFilters,30);if(e.target.closest('[data-tab=\"analysis\"]'))setTimeout(rmV27PolishAnalysis,80)},true);\ntry{if(typeof rmInvalidate==='function')rmInvalidate()}catch{}\ntry{if(db&&typeof rmRenderActive==='function')rmRenderActive(null,{force:true}).catch(console.error)}catch{}\n";document.head.appendChild(s);s.remove();})();
 
-JOOôKúô]ô[ùYò][
+/* ---- v04c28.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.28 ‚Äî cart√µes compactos, detalhes em grade e distribui√ß√£o de humor leg√≠vel. */\nconst RM_V28_RELEASE='1.2.0-beta.44';\n\nfunction rmV28TypeIcon(type){return type==='note'?'note':type==='medication'?'pill':type==='sleep'?'moon':'bag'}\nfunction rmV28TypeClass(type){return type==='note'?'note':type==='medication'?'medication':type==='sleep'?'sleep':'purchase'}\nfunction rmV28TypeLabel(e){if(e.type==='note')return e.audioOnly?'Anota√ß√£o de voz':(!e.text&&e.moodScore!=null?'Check-in':'Anota√ß√£o');if(e.type==='medication')return'Medicamento';if(e.type==='sleep')return'Sono';return'Compra'}\nfunction rmV28Tone(type){return type==='note'?'var(--record-note,var(--accent))':type==='medication'?'var(--record-med,var(--med))':type==='sleep'?'var(--record-sleep,var(--sleep))':'var(--record-buy,var(--buy))'}\nfunction rmV28Dose(e){if(typeof rmV27DoseLabel==='function')return rmV27DoseLabel(e);if(e?.totalDoseValue!=null)return`${Number(e.totalDoseValue).toLocaleString('pt-BR')} ${e.doseUnit||''}`.trim();return String(e?.dose||'').trim()}\nfunction rmV28Money(v){if(typeof rmV27MoneyValue==='function')return rmV27MoneyValue(v);const n=parseMoney(v);return n==null?'':money(n)}\nfunction rmV28Package(n){if(typeof rmV27PackageLabel==='function')return rmV27PackageLabel(n);n=Math.max(1,Number(n)||1);return`${n} ${n===1?'caixa':'caixas'}`}\nfunction rmV28Units(n){if(typeof rmV27UnitsLabel==='function')return rmV27UnitsLabel(n);n=Number(n);return Number.isFinite(n)&&n>0?`${n} ${n===1?'unidade':'unidades'}`:''}\n\n/* Hist√≥rico/Recentes: elimina a coluna lateral e o menu de tr√™s pontos. */\neventCard=function(e){\n  const type=rmV28TypeClass(e.type),icon=rmV28TypeIcon(e.type),tone=rmV28Tone(e.type),label=rmV28TypeLabel(e);let body='',meta='';\n  if(e.type==='note'){\n    body=`<div class=\"timeline-title\">${esc(e.text||'Check-in emocional')}</div>`;\n    const badges=`${typeof rmV27MoodBadge==='function'?rmV27MoodBadge(e.moodScore):''}${typeof rmV27TagChip==='function'?rmV27TagChip(e.tag):''}${typeof rmV27AdvancedMeta==='function'?rmV27AdvancedMeta(e):''}`;\n    if(badges)meta=`<div class=\"timeline-meta rm-meta-badges\">${badges}</div>`;\n  }else if(e.type==='medication'){\n    const dose=rmV28Dose(e);body=`<div class=\"timeline-title rm-record-name\">${esc(e.medication||'Medicamento')}</div>${dose?`<div class=\"rm-record-subline\">${esc(dose)}</div>`:''}`;\n    if(e.note)meta=`<div class=\"timeline-meta rm-record-note\">${esc(e.note)}</div>`;\n  }else if(e.type==='sleep'){\n    body=`<div class=\"timeline-title rm-record-name\">${esc(durationLabel(durationHours(e.startTime,e.endTime)))}</div>`;\n    const bits=[e.quality?`Qualidade ${e.quality}/5`:null,e.source==='health-shortcut'?'Importado do Sa√∫de':'Manual',e.note].filter(Boolean);if(bits.length)meta=`<div class=\"timeline-meta\">${bits.map(esc).join(' ¬∑ ')}</div>`;\n  }else{\n    const price=rmV28Money(e.price);body=`<div class=\"timeline-title rm-record-name\">${esc(e.medication||'Medicamento')}</div>${price?`<div class=\"rm-record-subline rm-purchase-price\">${esc(price)}</div>`:''}`;\n    const packageLabel=e.packages?rmV28Package(e.packages):'';const place=e.place?`<span class=\"rm-purchase-place\"><span class=\"rm-purchase-place-icon\" aria-hidden=\"true\"><svg class=\"rm-purchase-place-svg\" xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 20.7578 20.3672\"><path d=\"M20.3516 10.1797C20.3516 15.7812 15.7812 20.3516 10.1719 20.3516C4.57031 20.3516 0 15.7812 0 10.1797C0 4.57031 4.57031 0 10.1719 0C15.7812 0 20.3516 4.57031 20.3516 10.1797ZM11.5625 10.7969C11.0312 10.7969 10.5391 10.6094 10.1719 10.2969C9.80469 10.6094 9.3125 10.7969 8.78125 10.7969C8.23438 10.7969 7.75 10.6094 7.38281 10.2969C7 10.6094 6.52344 10.7969 5.98438 10.7969C5.60938 10.7969 5.26562 10.7109 4.96875 10.5781L4.96875 14.8359C4.96875 15.5625 5.39062 15.9766 6.125 15.9766L14.2188 15.9766C14.9531 15.9766 15.375 15.5547 15.375 14.8359L15.375 10.5547C15.0781 10.6953 14.7266 10.7969 14.3594 10.7969C13.8281 10.7969 13.3359 10.6094 12.9688 10.2969C12.5938 10.6094 12.1094 10.7969 11.5625 10.7969ZM12.1406 12.1953L12.1406 15.0312L8.20312 15.0312L8.20312 12.1953C8.20312 11.9609 8.35938 11.8125 8.59375 11.8125L11.7656 11.8125C11.9922 11.8125 12.1406 11.9609 12.1406 12.1953ZM4.21094 8.58594L4.21094 8.74219C4.21094 9.47656 4.97656 10.1172 5.92969 10.1172C6.53125 10.1172 7.03125 9.82812 7.32812 9.375C7.60938 9.82812 8.10938 10.1172 8.72656 10.1172C9.32812 10.1172 9.82812 9.82812 10.1172 9.375C10.4062 9.82812 10.9062 10.1172 11.5078 10.1172C12.125 10.1172 12.625 9.82812 12.9141 9.375C13.2031 9.82812 13.7109 10.1172 14.3047 10.1172C15.2656 10.1172 16.0234 9.39062 16.0234 8.66406L16.0234 8.58594ZM6.92969 4.38281C6.46875 4.38281 6.07812 4.60938 5.85938 5.00781L4.3125 7.92188L15.9219 7.92188L14.375 5.00781C14.1641 4.60938 13.7656 4.38281 13.3125 4.38281Z\" fill=\"currentColor\" fill-opacity=\"0.85\"/></svg></span>${esc(e.place)}</span>`:'';if(packageLabel||place)meta=`<div class=\"timeline-meta rm-purchase-meta\">${packageLabel?`<span class=\"rm-purchase-quantity\">${esc(packageLabel)}</span>`:''}${packageLabel&&place?'<span class=\"rm-purchase-separator\">¬∑</span>':''}${place}</div>`;\n  }\n  return`<article class=\"timeline-item rm-v28-timeline rm-type-${type}\" style=\"--rm-record-tone:${tone}\"><span data-menu=\"${esc(e.id)}\" hidden></span><div class=\"rm-card-header\"><div class=\"rm-card-header-main\"><span class=\"timeline-type-icon\">${svg(icon)}</span><div class=\"timeline-kind kind-${type}\">${esc(label)}</div></div><time class=\"timeline-time\">${esc(timeLabel(e.timestamp))}</time></div><div class=\"timeline-main\">${body}${meta}${e.hasAudio?`<div data-audio=\"${esc(e.id)}\"></div>`:''}</div></article>`\n};\n\n/* Detalhes compactos e em duas colunas quando faz sentido. */\nfunction rmV28DetailCard(label,value,{wide=false,tone=false,html=false}={}){if(value===null||value===undefined||String(value).trim()==='')return'';return`<div class=\"rm-v28-detail-card${wide?' wide':''}${tone?' tone':''}\">${label?`<small>${esc(label)}</small>`:''}${html?value:`<strong>${esc(String(value))}</strong>`}</div>`}\nfunction rmV28DetailDate(value){return`<div class=\"rm-v28-detail-date\">${esc(registroDetailDate(value))}</div>`}\nfunction rmV28ViewerActions(id){\n  const del=document.getElementById('viewerDeleteBtn'),edit=document.getElementById('viewerEditBtn');\n  if(edit)edit.onclick=()=>openEventEditor(id);\n  if(del)del.onclick=async()=>{if(!confirm('Excluir este registro?'))return;await deleteEvent(id);closeSheet();await renderAll();toast('Registro exclu√≠do.')};\n}\nfunction rmV28DetailButtons(){return`<div class=\"form-actions rm-v28-viewer-actions\"><button type=\"button\" class=\"secondary-button danger-row\" id=\"viewerDeleteBtn\">Excluir</button><button type=\"button\" class=\"primary-button\" id=\"viewerEditBtn\">Editar</button></div>`}\n\nopenEventViewer=async function(id){\n  const e=(await allEvents()).find(x=>x.id===id);if(!e)return;\n  const meds=await allMedications(),m=meds.find(x=>x.id===e.medicationId)||findProfileByEvent(e,meds),p=findPresentation(m,e.presentationId),presentation=p?presentationDisplay(p):'',tone=rmV28Tone(e.type);let title='Registro',cards='';\n  if(e.type==='purchase'){\n    title='Compra';const price=rmV28Money(e.price)||e.price||'‚Äî';cards=[\n      rmV28DetailCard('Medicamento',e.medication||'Medicamento',{tone:true}),rmV28DetailCard('Apresenta√ß√£o',presentation||'N√£o informada'),\n      rmV28DetailCard('',rmV28Package(e.packages)),rmV28DetailCard('',rmV28Units(e.totalUnits)||'Unidades n√£o informadas'),\n      rmV28DetailCard('Valor pago',price,{tone:true}),rmV28DetailCard('Comprado em',e.place||'N√£o informado'),rmV28DetailDate(e.timestamp)\n    ].join('');\n  }else if(e.type==='medication'){\n    title='Medicamento';const dose=rmV28Dose(e),qty=e.unitsTaken!=null?`${Number(e.unitsTaken).toLocaleString('pt-BR')} ${Number(e.unitsTaken)===1?'unidade':'unidades'}`:(e.quantity||'');cards=[\n      rmV28DetailCard('Medicamento',e.medication||'Medicamento',{tone:true}),rmV28DetailCard('Apresenta√ß√£o',presentation||'N√£o informada'),\n      rmV28DetailCard('Dose',dose||'N√£o informada',{tone:true}),rmV28DetailCard('Quantidade',qty||'N√£o informada'),\n      rmV28DetailCard('Observa√ß√£o',e.note,{wide:true}),rmV28DetailDate(e.timestamp)\n    ].join('');\n  }else if(e.type==='sleep'){\n    title='Sono';cards=[\n      rmV28DetailCard('Dormiu √†s',registroDetailDate(e.startTime),{tone:true}),rmV28DetailCard('Acordou √†s',registroDetailDate(e.endTime),{tone:true}),\n      rmV28DetailCard('Dura√ß√£o',durationLabel(durationHours(e.startTime,e.endTime))),rmV28DetailCard('Qualidade percebida',e.quality?`${e.quality} de 5`:''),\n      rmV28DetailCard('Observa√ß√µes',e.note,{wide:true}),rmV28DetailCard('Origem',e.source==='health-shortcut'?'Importado do app Sa√∫de':'Manual',{wide:true})\n    ].join('');\n  }else if(e.type==='note'){\n    title=e.text?'Anota√ß√£o':'Check-in emocional';const mood=e.moodScore!=null&&typeof rmV27MoodBadge==='function'?rmV27MoodBadge(e.moodScore):'',tag=e.tag&&typeof rmV27TagChip==='function'?rmV27TagChip(e.tag):'';\n    if(mood)cards+=rmV28DetailCard('Humor',mood,{html:true,tone:true});if(tag)cards+=rmV28DetailCard('Tag',tag,{html:true});\n    cards+=rmV28DetailCard('Anota√ß√£o',e.text||'Anota√ß√£o de voz',{wide:true});\n    for(const [key,value] of Object.entries(e.emotionScores||{})){const label=e.emotionLabels?.[key]||((typeof emotionDimensions==='function'?emotionDimensions():[]).find(d=>d.id===key)?.label)||key;cards+=rmV28DetailCard(label,`${value} de 4`)}\n    if(e.hasAudio)cards+=rmV28DetailCard('√Åudio',`<span data-audio=\"${esc(e.id)}\"></span>`,{wide:true,html:true});cards+=rmV28DetailDate(e.timestamp);\n  }else return;\n  openBackdrop(title,`<div class=\"rm-v28-detail-grid rm-detail-${rmV28TypeClass(e.type)}\" style=\"--rm-detail-tone:${tone}\">${cards}</div>${rmV28DetailButtons()}`,ev=>ev.preventDefault());rmV28ViewerActions(id);if(e.hasAudio)await hydrateAudio(document.getElementById('form'));\n};\n\n/* Distribui√ß√£o do humor: n√∫meros maiores e contraste adaptativo ao fundo. */\nfunction rmV28Contrast(hex,fallback='#fff'){const m=String(hex||'').match(/^#([0-9a-f]{6})$/i);if(!m)return fallback;const n=parseInt(m[1],16),r=(n>>16)&255,g=(n>>8)&255,b=n&255,yiq=(r*299+g*587+b*114)/1000;return yiq>=155?'#111318':'#FFFFFF'}\nrmMoodBarChart=function(rows){rows=rows.slice(0,11);if(!rows.length)return chartEmpty('Ainda n√£o h√° dados suficientes.');const W=720,H=320,pad={l:22,r:18,t:34,b:70},iw=W-pad.l-pad.r,baseY=H-50,baseH=38,barBase=baseY-12,plotH=barBase-pad.t,max=Math.max(1,...rows.map(r=>Number(r.value)||0)),bw=Math.max(44,iw/rows.length*.58);return`<svg class=\"local-chart-svg rm-mood-bars rm-v28-mood-bars\" viewBox=\"0 0 ${W} ${H}\" role=\"img\" aria-label=\"Distribui√ß√£o do humor\"><line class=\"chart-zero\" x1=\"${pad.l}\" y1=\"${barBase}\" x2=\"${W-pad.r}\" y2=\"${barBase}\"/>${rows.map((r,i)=>{const c=rmMood(i),value=Number(r.value)||0,cx=pad.l+(i+.5)*iw/rows.length,h=value?Math.max(14,value/max*plotH):3,top=barBase-h,inside=value>0&&h>=52,countY=inside?top+31:Math.max(22,top-11),barFill=i===0?'#17171D':c.color,countFill=inside?rmV28Contrast(barFill,c.text):'var(--text)',baseText=rmV28Contrast(barFill,c.text);return`<rect class=\"rm-v28-mood-bar\" x=\"${cx-bw/2}\" y=\"${top}\" width=\"${bw}\" height=\"${h}\" rx=\"12\" fill=\"${barFill}\" stroke=\"${i===0?'#7657FF':c.border}\" stroke-width=\"2\"><title>Nota ${i}: ${value} registro(s)</title></rect><text class=\"rm-v28-bar-value ${inside?'inside':'outside'}\" x=\"${cx}\" y=\"${countY}\" text-anchor=\"middle\" fill=\"${countFill}\">${value}</text><rect class=\"rm-v28-mood-base\" x=\"${cx-bw/2}\" y=\"${baseY}\" width=\"${bw}\" height=\"${baseH}\" rx=\"11\" fill=\"${barFill}\" stroke=\"${i===0?'#7657FF':c.border}\" stroke-width=\"1.8\"/><text class=\"rm-v28-base-label\" x=\"${cx}\" y=\"${baseY+26}\" text-anchor=\"middle\" fill=\"${baseText}\">${i}</text>`}).join('')}</svg>`};\n\nfunction rmV28Styles(){if(document.getElementById('rm-v28-style'))return;const st=document.createElement('style');st.id='rm-v28-style';st.textContent=`\n/* Hist√≥rico e recentes */\n.timeline-item.rm-v28-timeline{display:block!important;position:relative;padding:11px 12px 12px!important;border-radius:24px!important;min-width:0}\n.rm-v28-timeline .rm-card-header{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px}\n.rm-v28-timeline .rm-card-header-main{display:flex;align-items:center;gap:8px;min-width:0}\n.rm-v28-timeline .timeline-type-icon{width:24px;height:24px;display:grid;place-items:center;flex:0 0 24px;color:var(--rm-record-tone)}\n.rm-v28-timeline .timeline-type-icon svg{width:21px!important;height:21px!important}\n.rm-v28-timeline .timeline-kind{margin:0!important;font-size:15.5px!important;line-height:1.1!important;font-weight:800!important;letter-spacing:0!important;text-transform:none!important;color:var(--rm-record-tone)!important}\n.rm-v28-timeline .timeline-time{padding:0!important;font-size:14.5px!important;line-height:1.1!important;font-weight:760!important;color:var(--secondary)!important;white-space:nowrap}\n.rm-v28-timeline .timeline-main{padding-left:32px;min-width:0}\n.rm-v28-timeline .timeline-title{font-size:14.75px!important;line-height:1.35!important;font-weight:560!important;letter-spacing:-.008em}\n.rm-v28-timeline .rm-record-name{font-size:15.25px!important;font-weight:720!important}\n.rm-v28-timeline .rm-record-subline{margin-top:2px;font-size:13.5px;line-height:1.25;font-weight:700;color:var(--secondary)}\n.rm-v28-timeline .rm-purchase-price{color:var(--record-buy,var(--buy))}\n.rm-v28-timeline .timeline-meta{margin-top:5px!important;font-size:11.75px!important;line-height:1.35!important}\n.rm-v28-timeline .item-menu{display:none!important}\n.rm-v28-timeline .rm-meta-badges{display:flex;align-items:center;flex-wrap:wrap;gap:7px;margin-top:8px!important}\n.rm-v28-timeline .rm-mini-mood{width:31px!important;height:32px!important;min-width:31px!important;border-radius:10px!important;font-size:18px!important;font-weight:850!important;display:inline-grid!important;place-items:center!important;background:var(--rm-mini-mood)!important;color:var(--rm-mini-text)!important;border:1.6px solid var(--rm-mini-border)!important;box-shadow:0 0 10px var(--rm-mini-glow)!important}\n.rm-v28-timeline .rm-note-tag{position:relative;display:inline-flex!important;align-items:center;height:24px!important;min-height:24px!important;padding:0 9px!important;margin-left:5px;border:1px solid color-mix(in srgb,var(--secondary) 72%,transparent)!important;border-radius:9px!important;background:transparent!important;color:var(--secondary)!important;font-size:11.5px!important;font-weight:700!important;clip-path:none!important}\n.rm-v28-timeline .rm-note-tag:before{content:'';position:absolute;left:-5px;top:6px;width:9px;height:9px;background:var(--surface);border-left:1px solid color-mix(in srgb,var(--secondary) 72%,transparent);border-bottom:1px solid color-mix(in srgb,var(--secondary) 72%,transparent);transform:rotate(45deg);border-bottom-left-radius:2px}\nhtml[data-theme=\"dark\"] .rm-v28-timeline .rm-note-tag:before{background:color-mix(in srgb,var(--surface) 95%,black 5%)}\n@media(prefers-color-scheme:dark){html[data-theme=\"system\"] .rm-v28-timeline .rm-note-tag:before{background:color-mix(in srgb,var(--surface) 95%,black 5%)}}\n\n/* Arredondamento consistente nos cart√µes compactos desta fam√≠lia. */\n.timeline-item,.analysis-row,.metric,.rm-insight-row,.registry-card,.med-suggestion-card,.continuity-alert-row{border-radius:22px!important}\n\n/* Detalhes */\n.rm-v28-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:8px}\n.rm-v28-detail-card{min-width:0;padding:11px 12px;border-radius:22px;background:color-mix(in srgb,var(--surface-2) 92%,var(--rm-detail-tone) 8%);border:1px solid color-mix(in srgb,var(--separator) 82%,var(--rm-detail-tone) 18%)}\n.rm-v28-detail-card.wide,.rm-v28-detail-date{grid-column:1/-1}\n.rm-v28-detail-card small{display:block;margin:0 0 2px;color:var(--secondary);font-size:10.75px;line-height:1.15;font-weight:720}\n.rm-v28-detail-card strong{display:block;color:var(--text);font-size:14.5px;line-height:1.25;font-weight:760;overflow-wrap:anywhere}\n.rm-v28-detail-card.tone strong{color:var(--rm-detail-tone)}\n.rm-v28-detail-card .rm-mini-mood{width:32px;height:33px;display:inline-grid;place-items:center;border-radius:10px;background:var(--rm-mini-mood);color:var(--rm-mini-text);border:1.5px solid var(--rm-mini-border);font-size:18px;font-weight:850}\n.rm-v28-detail-card .rm-note-tag{display:inline-flex;align-items:center;height:24px;padding:0 9px;border:1px solid var(--separator);border-radius:9px;background:transparent;color:var(--secondary);font-size:11.5px;font-weight:700}\n.rm-v28-detail-date{text-align:center;color:var(--secondary);font-size:12.5px;font-weight:650;padding:5px 2px 2px}\n.rm-v28-viewer-actions{grid-template-columns:1fr 1.35fr!important;gap:9px!important;margin-top:13px!important}\n.rm-v28-viewer-actions #viewerDeleteBtn{color:var(--danger)!important;border-color:color-mix(in srgb,var(--danger) 32%,var(--separator))!important;background:color-mix(in srgb,var(--danger) 6%,var(--surface))!important}\n.sheet:has(.rm-v28-detail-grid) .sheet-header{margin-bottom:2px!important}\n.sheet:has(.rm-v28-detail-grid){padding-left:14px!important;padding-right:14px!important}\n\n/* Gr√°fico */\n.rm-v28-mood-bars .rm-v28-bar-value{font-size:18px!important;font-weight:850!important;opacity:1!important}\n.rm-v28-mood-bars .rm-v28-base-label{font-size:17px!important;font-weight:850!important;opacity:1!important}\n.rm-v28-mood-bars text.outside{paint-order:stroke;stroke:color-mix(in srgb,var(--surface) 82%,transparent);stroke-width:2px;stroke-linejoin:round}\n\n@media(max-width:390px){\n  .rm-v28-timeline .timeline-main{padding-left:29px}\n  .rm-v28-timeline .timeline-kind{font-size:15px!important}\n  .rm-v28-timeline .timeline-time{font-size:14px!important}\n  .rm-v28-detail-card{padding:10px 10px}\n  .rm-v28-detail-card strong{font-size:13.75px}\n}\n`;document.head.appendChild(st)}\n\nfunction rmV28Finalize(){rmV28Styles();const top=document.getElementById('topVersion'),about=document.getElementById('versionLabel');if(top)top.textContent=`v${RM_V28_RELEASE}`;if(about)about.textContent=RM_V28_RELEASE;if(typeof rmInvalidate==='function')rmInvalidate('home','history','analysis');try{rmV27EnhanceHistoryFilters?.()}catch{}}\nrmV28Finalize();\n\n\n/* Carrega o refinamento visual seguinte ap√≥s esta revis√£o. */\n";document.head.appendChild(s);s.remove();})();
 
-JNŸõ‹õKú]Y\ûTŸ[X›‹ä	÷Ÿ]KXÿ[òŸ[I OÀòY]ô[ù\›[ô\ä	ÿ€X⁄…À€‹ŸT⁄Y]
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄Ÿõ‹	 Kò€\‹”\›òY
-	€‹[â NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄Ÿõ‹	 KúŸ]]öXù]J	ÿ\öXKZY[âÀ	Ÿò[ŸI N⁄Yò]RX€€ú õ‹õJNÿX›]ò]Sõ›’Y‹ õ‹õJ_Wôù[ò›[€à€‹ŸT⁄Y]
+/* ---- v04c29.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.29 ‚Äî bot√µes mais arredondados na aba Aprendizado. */\nconst RM_V29_RELEASE='1.2.0-beta.44';\n\nfunction rmV29EnsureStyles(){\n  if(document.getElementById('rm-v29-style'))return;\n  const st=document.createElement('style');\n  st.id='rm-v29-style';\n  st.textContent=`\n[data-view=\"learning\"] .learning-actions button{\n  border-radius:18px!important;\n  min-height:44px;\n  padding-left:15px!important;\n  padding-right:15px!important;\n}\n[data-view=\"learning\"] .learning-chip{\n  border-radius:999px!important;\n}\n[data-view=\"learning\"] .learning-remove{\n  border-radius:16px!important;\n  min-height:36px;\n  padding-left:12px!important;\n  padding-right:12px!important;\n}\n[data-view=\"learning\"] .learning-actions button:active,\n[data-view=\"learning\"] .learning-chip:active,\n[data-view=\"learning\"] .learning-remove:active{\n  transform:scale(.97);\n}\n`;\n  document.head.appendChild(st);\n}\n\nfunction rmV29Finalize(){\n  rmV29EnsureStyles();\n  const top=document.getElementById('topVersion');\n  const about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V29_RELEASE}`;\n  if(about)about.textContent=RM_V29_RELEASE;\n}\nrmV29Finalize();\n[250,900,1800].forEach(ms=>setTimeout(rmV29Finalize,ms));\n\n\n/* Carrega o alinhamento global dos controles de fechar. */\n";document.head.appendChild(s);s.remove();})();
 
-^⁄YäYYXTôX€‹ô\èÀú›]OOOI‹ôX€‹ô[ô… [YYXTôX€‹ô\ãú›‹
+/* ---- v04c30.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.30 ‚Äî controles de fechar alinhados √† esquerda em todas as janelas. */\nconst RM_V30_RELEASE='1.2.0-beta.44';\n\nfunction rmV30EnsureStyles(){\n  if(document.getElementById('rm-v30-style'))return;\n  const st=document.createElement('style');\n  st.id='rm-v30-style';\n  st.textContent=`\n.sheet-header{\n  display:grid!important;\n  grid-template-columns:40px minmax(0,1fr) 40px!important;\n  align-items:center!important;\n  column-gap:8px!important;\n}\n.sheet-header .sheet-close{\n  grid-column:1!important;\n  grid-row:1!important;\n  justify-self:start!important;\n  order:-1!important;\n}\n.sheet-header h2{\n  grid-column:2!important;\n  grid-row:1!important;\n  min-width:0;\n  margin:0!important;\n  text-align:center!important;\n  line-height:1.2!important;\n}\n.form-actions>.rm-close-action,\n.registry-toolbar>.rm-close-action{\n  order:-1!important;\n  grid-column:1!important;\n}\n`;\n  document.head.appendChild(st);\n}\n\nfunction rmV30MarkCloseActions(root=document){\n  root.querySelectorAll?.('button').forEach(button=>{\n    const label=String(button.textContent||'').replace(/\\s+/g,' ').trim().toLocaleLowerCase('pt-BR');\n    button.classList.toggle('rm-close-action',label==='fechar');\n  });\n}\n\nfunction rmV30WatchCloseActions(){\n  const form=document.getElementById('form');\n  if(!form||form.dataset.rmV30Watch==='1')return;\n  form.dataset.rmV30Watch='1';\n  rmV30MarkCloseActions(form);\n  new MutationObserver(()=>rmV30MarkCloseActions(form)).observe(form,{childList:true,subtree:true});\n}\n\nfunction rmV30Finalize(){\n  rmV30EnsureStyles();\n  rmV30WatchCloseActions();\n  rmV30MarkCloseActions(document);\n  const top=document.getElementById('topVersion');\n  const about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V30_RELEASE}`;\n  if(about)about.textContent=RM_V30_RELEASE;\n}\nrmV30Finalize();\n[250,900,1800].forEach(ms=>setTimeout(rmV30Finalize,ms));\n\n\n/* Carrega o novo s√≠mbolo de fechamento. */\n";document.head.appendChild(s);s.remove();})();
 
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄Ÿõ‹	 Kò€\‹”\›úô[[›ôJ	€‹[â NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄Ÿõ‹	 KúŸ]]öXù]J	ÿ\öXKZY[âÀ	›ùYI N‹[ô[ô–]Y[œ[ù[‹Ÿ[X›YYYXÿ][€íY[ù[‹Ÿ[X›Yô\Ÿ[ù][€íY[ù[ÿ›\úô[ù\O[ù[Wóò\ﬁ[ò»ù[ò›[€à\Xÿ[YYXÿ][€î›YŸŸ\›[€ä
-^ÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-K]ô[ùœX]ÿZ][]ô[ù 
-Kõ›œX›\úô[ùZ[ù]\ 
-Kÿ[ôY]\œV◊NŸõ‹ä€€ú›HŸàYY ^ÿ€€ú›[Y\œY]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â…âõYYX]⁄\—]ô[ù
-KJJKõX\
-OOûÿ€€ú›[ô]»]JKù[Y\›[\
-N‹ô]\õàôŸ]›\ú 
-Jçå
-ŸôŸ]Z[ù]\ 
-_JN⁄Yä[Y\Àõ[ô›äX€€ù[ùYNÿ€€ú›][Y\ÀúôYXŸJ
-À
-OOú ”X]ò€‹ ÃM
-åäìX]îJK
-KO][Y\ÀúôYXŸJ
-À
-OOú ”X]ú⁄[äÃM
-åäìX]îJK
-N€][ôœSX]ò][åäK
-N⁄Yä[ôœ
-X[ô œLäìX]îNÿ€€ú›]ôœX[ôÀ äìX]îJJåM\›[Z[ù]Q\›[òŸJ]ôÀõ› N⁄Yä\›LML
-Xÿ[ôY]\Àú\⁄
-€K\›]ôÀ€›[ùù[Y\Àõ[ô›J_\ô]\õàÿ[ôY]\Àú€‹ù
+/* ---- v04c31.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.31 ‚Äî novo √≠cone circular de fechamento. */\nconst RM_V31_RELEASE='1.2.0-beta.44';\nconst RM_V31_CLOSE_ICON=\"<svg class=\\\"rm-close-icon\\\" xmlns=\\\"http://www.w3.org/2000/svg\\\" viewBox=\\\"0 0 20.7578 20.3672\\\" aria-hidden=\\\"true\\\" focusable=\\\"false\\\"><g><rect height=\\\"20.3672\\\" opacity=\\\"0\\\" width=\\\"20.7578\\\" x=\\\"0\\\" y=\\\"0\\\"/><path d=\\\"M20.3516 10.1797C20.3516 15.7812 15.7812 20.3516 10.1719 20.3516C4.57031 20.3516 0 15.7812 0 10.1797C0 4.57031 4.57031 0 10.1719 0C15.7812 0 20.3516 4.57031 20.3516 10.1797ZM13.25 6.125L10.1819 9.17967L7.11719 6.125C6.96875 5.98438 6.80469 5.91406 6.60938 5.91406C6.20312 5.91406 5.88281 6.21875 5.88281 6.60938C5.88281 6.8125 5.96094 6.99219 6.10156 7.13281L9.16294 10.1942L6.10156 13.2422C5.96094 13.3906 5.88281 13.5625 5.88281 13.7578C5.88281 14.1562 6.20312 14.4766 6.60938 14.4766C6.8125 14.4766 6.98438 14.3984 7.13281 14.2578L10.1797 11.2109L13.2266 14.2578C13.3672 14.3984 13.5391 14.4766 13.75 14.4766C14.1484 14.4766 14.4688 14.1562 14.4688 13.7578C14.4688 13.5625 14.3984 13.3906 14.2578 13.2422L11.1981 10.1925L14.2578 7.13281C14.3984 6.99219 14.4688 6.8125 14.4688 6.60938C14.4688 6.21875 14.1484 5.91406 13.75 5.91406C13.5547 5.91406 13.3828 5.98438 13.25 6.125Z\\\" fill=\\\"currentColor\\\" fill-opacity=\\\"0.85\\\"/></g></svg>\";\n\nfunction rmV31EnsureStyles(){\n  if(document.getElementById('rm-v31-style'))return;\n  const st=document.createElement('style');\n  st.id='rm-v31-style';\n  st.textContent=`\n.rm-close-icon{\n  display:block;\n  width:24px;\n  height:24px;\n  pointer-events:none;\n}\n.sheet-close{\n  font-size:0!important;\n}\n`;\n  document.head.appendChild(st);\n}\n\nfunction rmV31ApplyCloseIcons(root=document){\n  root.querySelectorAll?.('button[aria-label=\"Fechar\"],button.sheet-close').forEach(button=>{\n    if(!button.querySelector('.rm-close-icon'))button.innerHTML=RM_V31_CLOSE_ICON;\n  });\n}\n\nfunction rmV31Finalize(){\n  rmV31EnsureStyles();\n  rmV31ApplyCloseIcons(document);\n  const top=document.getElementById('topVersion');\n  const about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V31_RELEASE}`;\n  if(about)about.textContent=RM_V31_RELEASE;\n}\nrmV31Finalize();\nnew MutationObserver(records=>records.forEach(record=>record.addedNodes.forEach(node=>{\n  if(node.nodeType===1)rmV31ApplyCloseIcons(node.matches?.('button')?node:node);\n}))).observe(document.body,{childList:true,subtree:true});\n[250,900,1800].forEach(ms=>setTimeout(rmV31Finalize,ms));\n\n\n/* Carrega o novo √≠cone de Hist√≥rico. */\n";document.head.appendChild(s);s.remove();})();
 
-KäOOòKô\›Xãô\›ãò€›[ùXKò€›[ù
-VÃ_ù[Wò\ﬁ[ò»ù[ò›[€àYYXÿ][€î›YŸŸ\›[€ú ]Y\ûJ^ÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-N‹ô]\õàYYÀõX\
-OOä€Kÿ€‹ôNõYYŸX\ò⁄ÿ€‹ôJK]Y\ûJ_JJKôö[\äOûúÿ€‹ôO
-Kú€‹ù
+/* ---- v04c32.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.32 ‚Äî novo √≠cone de Hist√≥rico. */\nconst RM_V32_RELEASE='1.2.0-beta.44';\nconst RM_V32_HISTORY_ICON=\"<g transform=\\\"translate(4.49 0) scale(.874)\\\" fill=\\\"currentColor\\\" fill-opacity=\\\".85\\\" stroke=\\\"none\\\"><path d=\\\"M16.7734 6.80469L16.7734 22.25C16.7734 24.2734 15.7656 25.2891 13.7656 25.2891L3.00781 25.2891C1.00781 25.2891 0 24.2734 0 22.25L0 6.80469C0 4.78125 1.00781 3.75781 3.00781 3.75781L3.33824 3.75781C3.33147 3.82921 3.32812 3.9022 3.32812 3.97656L3.32812 5.02344C3.32812 5.06591 3.3292 5.10792 3.33363 5.14844L3.08594 5.14844C1.96094 5.14844 1.38281 5.74219 1.38281 6.82812L1.38281 22.2266C1.38281 23.3125 1.96094 23.9062 3.08594 23.9062L13.6875 23.9062C14.8125 23.9062 15.3906 23.3125 15.3906 22.2266L15.3906 6.82812C15.3906 5.74219 14.8125 5.14844 13.6875 5.14844L13.4398 5.14844C13.4442 5.10792 13.4453 5.06591 13.4453 5.02344L13.4453 3.97656C13.4453 3.9022 13.442 3.82921 13.4352 3.75781L13.7656 3.75781C15.7656 3.75781 16.7734 4.78125 16.7734 6.80469Z\\\"/><path d=\\\"M5.29688 5.92969L11.4766 5.92969C12.0234 5.92969 12.3594 5.59375 12.3594 5.02344L12.3594 3.97656C12.3594 3.40625 12.0234 3.07031 11.4766 3.07031L10.4688 3.07031C10.4141 1.97656 9.5 1.08594 8.39062 1.08594C7.27344 1.08594 6.35938 1.97656 6.30469 3.07031L5.29688 3.07031C4.75 3.07031 4.41406 3.40625 4.41406 3.97656L4.41406 5.02344C4.41406 5.59375 4.75 5.92969 5.29688 5.92969ZM8.39062 4.02344C7.89062 4.02344 7.49219 3.60938 7.49219 3.13281C7.49219 2.63281 7.89062 2.23438 8.39062 2.23438C8.88281 2.23438 9.28125 2.63281 9.28125 3.13281C9.28125 3.60938 8.88281 4.02344 8.39062 4.02344Z\\\"/><path d=\\\"M3.85938 11.5625L12.9141 11.5625C13.2109 11.5625 13.4609 11.3125 13.4609 11.0156C13.4609 10.7188 13.2109 10.4688 12.9141 10.4688L3.85938 10.4688C3.5625 10.4688 3.3125 10.7188 3.3125 11.0156C3.3125 11.3125 3.5625 11.5625 3.85938 11.5625ZM3.85938 15.1719L12.9141 15.1719C13.2188 15.1719 13.4609 14.9297 13.4609 14.625C13.4609 14.3281 13.2188 14.0859 12.9141 14.0859L3.85938 14.0859C3.55469 14.0859 3.3125 14.3281 3.3125 14.625C3.3125 14.9297 3.55469 15.1719 3.85938 15.1719ZM3.85938 18.9922L8.5625 18.9922C8.85938 18.9922 9.10938 18.7422 9.10938 18.4453C9.10938 18.1406 8.86719 17.8984 8.5625 17.8984L3.85938 17.8984C3.55469 17.8984 3.3125 18.1406 3.3125 18.4453C3.3125 18.7422 3.5625 18.9922 3.85938 18.9922Z\\\"/></g>\";\n\nfunction rmV32ApplyHistoryIcon(){\n  try{\n    if(typeof baseIcons==='object')baseIcons.history=RM_V32_HISTORY_ICON;\n    if(window.REGISTRO_NAV_ICONS)window.REGISTRO_NAV_ICONS.history=RM_V32_HISTORY_ICON;\n    const bar=document.querySelector('.tab-bar');\n    if(bar&&typeof hydrateIcons==='function')hydrateIcons(bar);\n  }catch{}\n}\nfunction rmV32Finalize(){\n  rmV32ApplyHistoryIcon();\n  const top=document.getElementById('topVersion');\n  const about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V32_RELEASE}`;\n  if(about)about.textContent=RM_V32_RELEASE;\n}\nrmV32Finalize();\n[250,900,1800].forEach(ms=>setTimeout(rmV32Finalize,ms));\n\n\n/* Carrega a corre√ß√£o de restaura√ß√£o e atualiza√ß√£o autom√°tica. */\n";document.head.appendChild(s);s.remove();})();
 
-KäOOòKúÿ€‹ôKXãúÿ€‹ôJKú€XŸJJKõX\
-OûõJ_Wôù[ò›[€à]]ÿ€€\]RS
+/* ---- v04c33.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.33 ‚Äî restaura√ß√£o verificada e atualiza√ß√£o confi√°vel do PWA. */\nconst RM_V33_RELEASE='1.2.0-beta.44';\n\nfunction rmV33ValidEvent(e){\n  return Boolean(e&&typeof e.id==='string'&&e.id&&typeof e.timestamp==='string'&&e.timestamp&&['note','medication','sleep','purchase'].includes(e.type));\n}\nfunction rmV33ValidMedication(m){\n  return Boolean(m&&typeof m.id==='string'&&m.id&&typeof m.activeIngredient==='string'&&m.activeIngredient.trim());\n}\n\nimportData=async function(file){\n  try{\n    toast('Importando e verificando backup‚Ä¶');\n    const parsed=JSON.parse(await file.text());\n    const sourceEvents=Array.isArray(parsed)?parsed:parsed?.events;\n    if(!Array.isArray(sourceEvents))throw new Error('O backup n√£o cont√©m uma lista de registros.');\n    const events=sourceEvents.filter(rmV33ValidEvent);\n    const medications=Array.isArray(parsed?.medications)?parsed.medications.filter(rmV33ValidMedication):[];\n    if(!events.length&&!medications.length)throw new Error('Nenhum registro v√°lido foi encontrado no backup.');\n\n    for(const event of events)await putEvent({...event});\n    for(const medication of medications)await putMedication({...medication});\n\n    const storedEvents=await allEvents();\n    const storedMedications=await allMedications();\n    const eventIds=new Set(storedEvents.map(item=>item.id));\n    const medicationIds=new Set(storedMedications.map(item=>item.id));\n    const verifiedEvents=events.filter(item=>eventIds.has(item.id)).length;\n    const verifiedMedications=medications.filter(item=>medicationIds.has(item.id)).length;\n    if(verifiedEvents!==events.length||verifiedMedications!==medications.length){\n      throw new Error(`A grava√ß√£o n√£o foi confirmada (${verifiedEvents}/${events.length} registros; ${verifiedMedications}/${medications.length} medicamentos).`);\n    }\n\n    if(parsed?.settings&&typeof parsed.settings==='object'&&!Array.isArray(parsed.settings)){\n      saveSettings({...getSettings(),...parsed.settings});\n    }\n    localStorage.setItem('registro-beta-demo-seeded','yes');\n    if(typeof rmInvalidate==='function')rmInvalidate();\n    if(typeof switchTab==='function')switchTab('history');\n    if(typeof rmRenderActive==='function')await rmRenderActive('history',{force:true});\n    else await renderAll();\n    const ignored=sourceEvents.length-events.length;\n    const summary=`${verifiedEvents} registro${verifiedEvents===1?'':'s'} e ${verifiedMedications} medicamento${verifiedMedications===1?'':'s'} restaurado${verifiedEvents+verifiedMedications===1?'':'s'}.`;\n    toast(ignored?`${summary} ${ignored} item${ignored===1?'':'s'} ignorado${ignored===1?'':'s'}.`:summary);\n  }catch(error){\n    console.error('Falha ao restaurar backup',error);\n    const message=error instanceof Error?error.message:'N√£o foi poss√≠vel ler o arquivo.';\n    alert(`O backup n√£o foi restaurado.\\n\\n${message}\\n\\nNenhum dado existente foi apagado.`);\n    toast('Falha ao restaurar o backup.');\n  }\n};\n\nfunction rmV33UpdateVersion(){\n  const top=document.getElementById('topVersion');\n  const about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V33_RELEASE}`;\n  if(about)about.textContent=RM_V33_RELEASE;\n}\n\nfunction rmV33InstallUpdateRuntime(){\n  if(!('serviceWorker' in navigator))return;\n  const hadController=Boolean(navigator.serviceWorker.controller);\n  let reloading=false;\n  navigator.serviceWorker.addEventListener('controllerchange',()=>{\n    if(!hadController||reloading)return;\n    reloading=true;\n    location.reload();\n  });\n  const check=async()=>{\n    try{\n      const registration=await window.__RM_DISABLED_SW_REGISTER(`./sw.js?v=${RM_V33_RELEASE}`,{updateViaCache:'none'});\n      await registration.update();\n      if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});\n    }catch(error){console.error('Falha ao verificar atualiza√ß√£o',error)}\n  };\n  check();\n  document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')check()});\n  setInterval(check,15*60*1000);\n}\n\nrmV33UpdateVersion();\n[250,900,1800].forEach(ms=>setTimeout(rmV33UpdateVersion,ms));\nrmV33InstallUpdateRuntime();\n\n\n/* Carrega os modos seguro de substituir ou combinar backups. */\n";document.head.appendChild(s);s.remove();})();
 
-^‹ô]\õâœ]à€\‹œWò]]ÿ€€\]K\ô\›[»Y[óàYWõYY]]ÿ€€\]WèèŸ]èâﬂWàéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÕKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
+/* ---- v04c34.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.34 ‚Äî escolha entre substituir ou combinar ao restaurar um backup. */\nconst RM_V34_RELEASE='1.2.0-beta.44';\nlet rmV34PendingImport=null;\n\nfunction rmV34UniqueById(items){\n  return [...new Map(items.map(item=>[item.id,{...item}])).values()];\n}\nfunction rmV34Transaction(mode,events,medications){\n  const stores=[EVENTS,MEDICATIONS];\n  return new Promise((resolve,reject)=>{\n    const transaction=db.transaction(stores,'readwrite');\n    transaction.oncomplete=()=>resolve();\n    transaction.onerror=()=>reject(transaction.error||new Error('Falha ao gravar o backup.'));\n    transaction.onabort=()=>reject(transaction.error||new Error('A restaura√ß√£o foi cancelada pelo banco local.'));\n    if(mode==='replace'){\n      transaction.objectStore(EVENTS).clear();\n      transaction.objectStore(MEDICATIONS).clear();\n    }\n    const eventStore=transaction.objectStore(EVENTS);\n    const medicationStore=transaction.objectStore(MEDICATIONS);\n    events.forEach(item=>eventStore.put(item));\n    medications.forEach(item=>medicationStore.put(item));\n  });\n}\n\nasync function rmV34Restore(parsed,mode){\n  const sourceEvents=Array.isArray(parsed)?parsed:parsed?.events;\n  const events=rmV34UniqueById(sourceEvents.filter(rmV33ValidEvent));\n  const medications=rmV34UniqueById(Array.isArray(parsed?.medications)?parsed.medications.filter(rmV33ValidMedication):[]);\n  try{\n    closeSheet();\n    toast(mode==='replace'?'Substituindo e verificando dados‚Ä¶':'Combinando e verificando dados‚Ä¶');\n    await rmV34Transaction(mode,events,medications);\n\n    const storedEvents=await allEvents();\n    const storedMedications=await allMedications();\n    const eventIds=new Set(storedEvents.map(item=>item.id));\n    const medicationIds=new Set(storedMedications.map(item=>item.id));\n    const verifiedEvents=events.filter(item=>eventIds.has(item.id)).length;\n    const verifiedMedications=medications.filter(item=>medicationIds.has(item.id)).length;\n    const exactReplacement=mode!=='replace'||(storedEvents.length===events.length&&storedMedications.length===medications.length);\n    if(verifiedEvents!==events.length||verifiedMedications!==medications.length||!exactReplacement){\n      throw new Error(`A verifica√ß√£o encontrou ${verifiedEvents}/${events.length} registros e ${verifiedMedications}/${medications.length} medicamentos.`);\n    }\n\n    if(mode==='replace'){\n      const restoredSettings=parsed?.settings&&typeof parsed.settings==='object'&&!Array.isArray(parsed.settings)?parsed.settings:{};\n      saveSettings({...defaultSettings,...restoredSettings});\n    }\n    localStorage.setItem('registro-beta-demo-seeded','yes');\n    if(typeof rmInvalidate==='function')rmInvalidate();\n    switchTab('history');\n    if(typeof rmRenderActive==='function')await rmRenderActive('history',{force:true});\n    else await renderAll();\n    const action=mode==='replace'?'Backup restaurado':'Backup somado aos dados atuais';\n    toast(`${action}: ${verifiedEvents} registro${verifiedEvents===1?'':'s'} e ${verifiedMedications} medicamento${verifiedMedications===1?'':'s'}.`);\n  }catch(error){\n    console.error('Falha na restaura√ß√£o escolhida',error);\n    const message=error instanceof Error?error.message:'N√£o foi poss√≠vel concluir a restaura√ß√£o.';\n    alert(`N√£o foi poss√≠vel restaurar o backup.\\n\\n${message}`);\n    toast('Falha ao restaurar o backup.');\n  }finally{\n    rmV34PendingImport=null;\n  }\n}\n\nfunction rmV34OpenChoice(parsed,events,medications,ignored){\n  rmV34PendingImport=parsed;\n  const countText=`${events.length} registro${events.length===1?'':'s'} e ${medications.length} medicamento${medications.length===1?'':'s'}`;\n  openBackdrop('Como importar o backup?',`\n    <div class=\"analysis-row rm-v34-import-summary\"><strong>Este backup cont√©m ${esc(countText)}</strong><span>Escolha o que deve acontecer com os dados que j√° est√£o neste aparelho.${ignored?` ${ignored} item${ignored===1?'':'s'} inv√°lido${ignored===1?'':'s'} n√£o ser√°${ignored===1?'':'√£o'} importado${ignored===1?'':'s'}.`:''}</span></div>\n    <div class=\"rm-v34-import-choice\">\n      <button type=\"button\" class=\"primary-button full-button\" id=\"rmImportReplace\">Substituir tudo pelo backup</button>\n      <small>Apaga os registros e medicamentos atuais e restaura o conte√∫do e as configura√ß√µes deste backup. √â a op√ß√£o normal para recuperar uma c√≥pia completa.</small>\n    </div>\n    <div class=\"rm-v34-import-choice\">\n      <button type=\"button\" class=\"secondary-button full-button\" id=\"rmImportMerge\">Somar aos dados atuais</button>\n      <small>Mant√©m o que j√° existe e adiciona o backup. Quando um item tiver o mesmo identificador, prevalece a vers√£o do backup. As configura√ß√µes atuais s√£o mantidas.</small>\n    </div>\n    <button type=\"button\" class=\"secondary-button full-button\" data-cancel>Cancelar</button>\n  `);\n  document.getElementById('rmImportReplace').onclick=()=>rmV34Restore(rmV34PendingImport,'replace');\n  document.getElementById('rmImportMerge').onclick=()=>rmV34Restore(rmV34PendingImport,'merge');\n}\n\nimportData=async function(file){\n  try{\n    const parsed=JSON.parse(await file.text());\n    const sourceEvents=Array.isArray(parsed)?parsed:parsed?.events;\n    if(!Array.isArray(sourceEvents))throw new Error('O arquivo n√£o cont√©m uma lista de registros.');\n    const events=rmV34UniqueById(sourceEvents.filter(rmV33ValidEvent));\n    const medications=rmV34UniqueById(Array.isArray(parsed?.medications)?parsed.medications.filter(rmV33ValidMedication):[]);\n    if(!events.length&&!medications.length)throw new Error('Nenhum registro v√°lido foi encontrado no backup.');\n    rmV34OpenChoice(parsed,events,medications,sourceEvents.length-events.length);\n  }catch(error){\n    console.error('Backup inv√°lido',error);\n    const message=error instanceof Error?error.message:'N√£o foi poss√≠vel ler o arquivo.';\n    alert(`Este arquivo n√£o pode ser importado.\\n\\n${message}\\n\\nNenhum dado atual foi alterado.`);\n    toast('Arquivo de backup inv√°lido.');\n  }\n};\n\nfunction rmV34Styles(){\n  if(document.getElementById('rm-v34-style'))return;\n  const style=document.createElement('style');\n  style.id='rm-v34-style';\n  style.textContent=`\n    .rm-v34-import-summary{margin-bottom:12px}\n    .rm-v34-import-choice{display:grid;gap:6px;margin-bottom:13px}\n    .rm-v34-import-choice small{padding:0 4px;color:var(--secondary);font-size:12px;line-height:1.35}\n  `;\n  document.head.appendChild(style);\n}\nfunction rmV34Finalize(){\n  rmV34Styles();\n  const top=document.getElementById('topVersion');\n  const about=document.getElementById('versionLabel');\n  if(top)top.textContent=`v${RM_V34_RELEASE}`;\n  if(about)about.textContent=RM_V34_RELEASE;\n}\nrmV34Finalize();\n[250,900,1800].forEach(ms=>setTimeout(rmV34Finalize,ms));\n\n/* Carrega a consolida√ß√£o da interface e do indicador oficial de vers√£o. */\n";document.head.appendChild(s);s.remove();})();
 
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hò\ﬁ[ò»ù[ò›[€à⁄\ôSYYXÿ][€ê]]ÿ€€\]J[ú]Y€îŸ[X›
-^ÿ€€ú›[ú]Yÿ›[Y[ùôŸ][[Y[ùûRY
-[ú]Y
-KõﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	€YY]]ÿ€€\]I N⁄YäZ[ú]Xõﬁ
-\ô]\õéÿ€€ú›ô[ô\èX\ﬁ[ò 
-OOûÿ€€ú›OZ[ú]ùò[YKùö[J
-N⁄Yä\J^ÿõﬁò€\‹”\›òY
-	⁄Y[â N‹ô]\õüX€€ú›\›X]ÿZ]YYXÿ][€î›YŸŸ\›[€ú JNÿõﬁö[õô\íS[\›õX\
-OOòù]€à\OWòù]€óà]K[YYX⁄⁄XŸOWâ€KöYWèè›õ€ôœâŸ\ÿ YYXÿ][€ë\‹^JJJ_O‹›õ€ôœè€X[âŸ\ÿ 
-Kúô\Ÿ[ù][€úﬂ◊JKõX\
-Oúô\Ÿ[ù][€ë\‹^J
-JKú€XŸJ Köõ⁄[ä	»0≠»	 _	‘Ÿ[H\ô\Ÿ[ùpÈË€»ÿY\›òYI _O‹€X[èÿù]€èò
-Köõ⁄[ä	… Nÿõﬁò€\‹”\›ùŸŸ€J	⁄Y[âÀ[\›õ[ô›
-Nÿõﬁú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K[YYX⁄⁄XŸWI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOXãô]\Ÿ]õYY⁄⁄XŸJN⁄Yä[J\ô]\õé⁄[ú]ùò[YO[YYXÿ][€ë\‹^JJNÿõﬁò€\‹”\›òY
-	⁄Y[â N€€îŸ[X›ÀäJ_J_N⁄[ú]òY]ô[ù\›[ô\ä	⁄[ú]	Àô[ô\äN⁄[ú]òY]ô[ù\›[ô\ä	Ÿõÿ›\…Àô[ô\ä_Wóò\ﬁ[ò»ù[ò›[€à‹[ìõ›T⁄Y]
+/* ---- v04c35.js preservado como script isolado ---- */
+(()=>{const s=document.createElement('script');s.text="/* 0.4.35 ‚Äî consolida a vers√£o somente ap√≥s toda a revis√£o visual e funcional carregar. */\nconst RM_V35_RELEASE='1.2.0-beta.44';\n\nfunction rmV35ModulesReady(){\n  return [\n    typeof rmV29Finalize==='function',\n    typeof rmV30Finalize==='function',\n    typeof rmV31Finalize==='function',\n    typeof rmV32Finalize==='function',\n    typeof rmV33UpdateVersion==='function',\n    typeof rmV34Finalize==='function'\n  ].every(Boolean);\n}\nfunction rmV35PublishRelease(){\n  if(!rmV35ModulesReady()){\n    console.error('A atualiza√ß√£o 0.4.35 n√£o terminou de carregar.');\n    return false;\n  }\n  window.REGISTRO_CURRENT_RELEASE=RM_V35_RELEASE;\n  window.dispatchEvent(new CustomEvent('registro:release-ready',{detail:{release:RM_V35_RELEASE}}));\n  return true;\n}\nfunction rmV35RefreshWorker(){\n  if(!('serviceWorker' in navigator))return;\n  window.__RM_DISABLED_SW_REGISTER(`./sw.js?v=${RM_V35_RELEASE}`,{updateViaCache:'none'})\n    .then(registration=>registration.update())\n    .catch(error=>console.error('Falha ao atualizar o aplicativo',error));\n}\n\nconst rmV35PreviousSaveForm=saveForm;\nconst rmV35PreviousSaveEditedEvent=saveEditedEvent;\nconst rmV35PreviousOpenEventEditor=openEventEditor;\n\nopenNoteSheet=async function(){\n  currentType='note';\n  pendingAudio=null;\n  const now=toLocalInput();\n  openBackdrop('Nova anota√ß√£o',`\n    <div class=\"field\"><label>Como voc√™ est√° se sentindo agora?</label>${emotionMoodSelectorHTML()}</div>\n    ${emotionAdvancedHTML()}\n    <div class=\"field\"><label for=\"noteText\">Anota√ß√£o opcional</label><textarea id=\"noteText\" rows=\"2\" data-autogrow placeholder=\"O que voc√™ percebeu, sentiu ou pensou?\"></textarea></div>\n    <div class=\"field\"><label for=\"noteTag\">Tag opcional</label><input id=\"noteTag\" placeholder=\"Ex.: ansiedade, calma, sono\"></div>\n    ${dateField('recordTime','Data e hor√°rio',now,{showNow:true,reserveNow:true})}\n    ${formButtons()}\n  `,saveForm);\n  currentType='note';\n  const form=document.getElementById('form');\n  form?.classList.add('rm-note-form');\n  wireEmotionControls();\n  if(typeof wireAutoGrowTextareas==='function')wireAutoGrowTextareas(form);\n};\n\nsaveForm=async function(event){\n  if(currentType!=='note')return rmV35PreviousSaveForm(event);\n  event.preventDefault();\n  const text=document.getElementById('noteText')?.value.trim()||'';\n  const moodScore=emotionMoodScore();\n  const emotionScores=emotionScoresFromForm();\n  const timestamp=new Date(document.getElementById('recordTime')?.value);\n  if(!text&&moodScore==null&&!Object.keys(emotionScores).length)return toast('Escreva ou registre pelo menos uma nota emocional.');\n  if(Number.isNaN(timestamp.getTime()))return toast('Informe uma data e hor√°rio v√°lidos.');\n  await putEvent({\n    id:uid('note'),type:'note',timestamp:timestamp.toISOString(),text,\n    tag:document.getElementById('noteTag')?.value.trim()||'',\n    moodScore,emotionScores,emotionLabels:emotionLabelsSnapshot(emotionScores),demo:false\n  });\n  closeSheet();\n  await renderAll();\n  toast('Anota√ß√£o salva.');\n};\n\nsaveEditedEvent=async function(event,existing){\n  if(existing?.type!=='note')return rmV35PreviousSaveEditedEvent(event,existing);\n  event.preventDefault();\n  const text=document.getElementById('noteText')?.value.trim()||'';\n  const moodScore=emotionMoodScore();\n  const emotionScores=emotionScoresFromForm();\n  const timestamp=new Date(document.getElementById('recordTime')?.value);\n  if(!text&&moodScore==null&&!Object.keys(emotionScores).length)return toast('Escreva ou registre pelo menos uma nota emocional.');\n  if(Number.isNaN(timestamp.getTime()))return toast('Informe uma data e hor√°rio v√°lidos.');\n  const record={...existing,timestamp:timestamp.toISOString(),text,tag:document.getElementById('noteTag')?.value.trim()||'',moodScore,emotionScores,emotionLabels:emotionLabelsSnapshot(emotionScores)};\n  await putEvent(record);\n  closeSheet();\n  await renderAll();\n  toast('Altera√ß√µes salvas.');\n};\n\nopenEventEditor=async function(id){\n  await rmV35PreviousOpenEventEditor(id);\n  document.querySelector('#form .voice-row')?.remove();\n  document.getElementById('form')?.classList.toggle('rm-note-form',currentType==='note');\n};\n\nfunction rmV35CompactNoteStyles(){\n  if(document.getElementById('rm-v35-note-style'))return;\n  const style=document.createElement('style');\n  style.id='rm-v35-note-style';\n  style.textContent=`\n    .rm-note-form{display:grid;gap:9px}\n    .rm-note-form>.field,.rm-note-form>.emotion-advanced,.rm-note-form>.form-actions{margin-top:0!important;margin-bottom:0!important}\n    .rm-note-form textarea#noteText{min-height:64px!important;height:64px;padding-top:10px;padding-bottom:10px}\n    .rm-note-form .mood-block{margin-top:5px}\n    .rm-note-form .mood-scale{gap:3px}\n    .rm-note-form .mood-score{min-height:34px!important}\n    .rm-note-form .emotion-advanced{padding-top:7px!important;padding-bottom:7px!important}\n    .rm-note-form .form-actions{padding-top:2px!important}\n    .sheet:has(.rm-note-form){padding-top:10px!important;padding-bottom:max(10px,env(safe-area-inset-bottom))!important}\n    .sheet:has(.rm-note-form) .sheet-header{margin-bottom:6px!important}\n  `;\n  document.head.appendChild(style);\n}\n\nfunction rmV35InstallUpdateButton(){\n  const card=document.querySelector('.about-group .info-card');\n  if(!card||document.getElementById('rmForceUpdateBtn'))return;\n  card.insertAdjacentHTML('beforeend',`<div class=\"rm-update-row\"><span>Atualiza√ß√µes</span><button type=\"button\" class=\"secondary-button rm-update-button\" id=\"rmForceUpdateBtn\">Buscar agora</button></div>`);\n  document.getElementById('rmForceUpdateBtn').onclick=async event=>{\n    const button=event.currentTarget;\n    if(!navigator.onLine)return toast('Conecte-se √† internet para atualizar.');\n    button.disabled=true;\n    button.textContent='Buscando‚Ä¶';\n    try{\n      const probe=await fetch(`./release-guard.js?verificar=${Date.now()}`,{cache:'no-store'});\n      if(!probe.ok)throw new Error('A publica√ß√£o n√£o respondeu.');\n      if('serviceWorker' in navigator){\n        const registration=await window.__RM_DISABLED_SW_REGISTER(`./sw.js?forcar=${Date.now()}`,{updateViaCache:'none'});\n        await registration.update();\n        if(registration.waiting)registration.waiting.postMessage({type:'SKIP_WAITING'});\n      }\n      if('caches' in window){\n        const keys=await caches.keys();\n        await Promise.all(keys.filter(key=>key.startsWith('registro-beta-v1-')).map(key=>caches.delete(key)));\n      }\n      button.textContent='Atualizando‚Ä¶';\n      location.replace(`${location.pathname}?atualizar=${Date.now()}`);\n    }catch(error){\n      console.error('Falha ao for√ßar atualiza√ß√£o',error);\n      button.disabled=false;\n      button.textContent='Tentar novamente';\n      toast('N√£o foi poss√≠vel buscar a atualiza√ß√£o.');\n    }\n  };\n}\n\nrmV35CompactNoteStyles();\nrmV35InstallUpdateButton();\nrmV35PublishRelease();\nrequestAnimationFrame(rmV35PublishRelease);\n[250,900,1800].forEach(ms=>setTimeout(rmV35PublishRelease,ms));\nrmV35RefreshWorker();\n";document.head.appendChild(s);s.remove();})();
 
-^ÿ›\úô[ù\OI€õ›IŒ‹[ô[ô–]Y[œ[ù[ÿ€€ú›õ›œ]”ÿÿ[[ú]
-
-N€‹[êòX⁄Ÿõ‹
-	”õ›òH[õ›pÈË€…À]à€\‹œWôöY[èèXô[õ‹èWõõ›U^èê[õ›pÈË€œ€Xô[è^\ôXHYWõõ›U^àõ›‹œWçWà›[OWõ›ô\ôõ›ŒöY[é‹ô\⁄^ôNõõ€ôWà€ôõÿ›\œWù\Àú›[KöZY⁄Iÿ]]…Œ›\Àú›[KöZY⁄]\Àúÿ‹õ€ZY⁄
-…‹	◊à€ö[ú]Wù\Àú›[KöZY⁄Iÿ]]…Œ›\Àú›[KöZY⁄]\Àúÿ‹õ€ZY⁄
-…‹	◊àXŸZ€\èWì»]YHõÿÍà\òŸXô]KŸ[ù]H›H[ú€›O◊èè›^\ôXOèŸ]èè]à€\‹œWùõ⁄XŸK\õ›◊èèù]€à\OWòù]€óà€\‹œWùõ⁄XŸKXù]€óàYWùõ⁄XŸPùóèº'„¶H‹ò]ò\àõﬁèÿù]€èè‹[à€\‹œWùõ⁄XŸK\›]\◊àYWùõ⁄XŸT›]\◊èì‹⁄[€ò[à»0Ë]Y[»öXÿHô\›H\\ô[Àè‹‹[èèŸ]èè]à€\‹œWôöY[èèXô[õ‹èWõõ›UY◊èïY»‹⁄[€ò[€Xô[è[ú]YWõõ›UY◊àXŸZ€\èWë^éà[ú⁄YYYKÿ[XK€€õ◊èèŸ]èâŸ]QöY[
-	‹ôX€‹ô[YIÀ	—]HH‹∞Ë\ö[…Àõ›À‹⁄›”õ›ŒùùYKô\Ÿ\ùôSõ›ŒùùY_J_O€\‹œWö[\óè∏†'Y€‹òx†'H\ÿ\\ôXŸHŸHõÿÍà[\ò\àH]H›H»‹∞Ë\ö[Àè‹âŸõ‹õPù]€ú 
-_Xÿ]ôQõ‹õJNÿ›\úô[ù\OI€õ›IŒ‹Ÿ]\õ⁄XŸJ
-_Wóôù[ò›[€àô\Ÿ[ù][€ì‹[€ú J^‹ô]\õò‹[€àò[YOWóèîŸ[H\ô\Ÿ[ùpÈË€»\‹XÎYöXÿO€‹[€èâ OÀúô\Ÿ[ù][€úﬂ◊JKõX\
-Oò‹[€àò[YOWâ‹öYWèâŸ\ÿ ô\Ÿ[ù][€ë\‹^J
-J_O€‹[€èò
-Köõ⁄[ä	… _XWò\ﬁ[ò»ù[ò›[€à‹[ìYYXÿ][€î⁄Y]
-
-^ÿ›\úô[ù\OI€YYXÿ][€âŒ‹[ô[ô–]Y[œ[ù[‹Ÿ[X›YYYXÿ][€íY[ù[‹Ÿ[X›Yô\Ÿ[ù][€íY[ù[ÿ€€ú›õ›œ]”ÿÿ[[ú]
-
-K›YŸŸ\›X]ÿZ]\Xÿ[YYXÿ][€î›YŸŸ\›[€ä
-N€‹[êòX⁄Ÿõ‹
-	‘ôY⁄\›ò\àYYXÿ[Y[ù…À	‹›YŸŸ\›ÿù]€à\OWòù]€óà€\‹œWõYY\›YŸŸ\›[€ãXÿ\ôàYWù[YSYY›YŸŸ\›[€óà]K[YYZYWâ‹›YŸŸ\›õKöYWèè‹[à€\‹œWõZ[öKZX€€óèâ‹›ô 	ÿ€ÿ⁄… _O‹‹[èè‹[èè›õ€ôœï[ô^àY€‹òNà	Ÿ\ÿ ›YŸŸ\›õKòX›]ôR[ô‹ôYY[ù
-_O‹›õ€ôœè€X[êò\ŸXY»õ‹»‹∞Ë\ö[‹»\»›X\»YZ[ö\›òpÈÌY\»ôY⁄\›òY\œ‹€X[è‹‹[èè‹[à€\‹œWò⁄]óè∏†.è‹‹[èèÿù]€èòâ…ﬂO]à€\‹œWôöY[]]ÿ€€\]WèèXô[õ‹èWõYYò[YWèìYYXÿ[Y[ùœ€Xô[è[ú]YWõYYò[YWàXŸZ€\èWê€€YXŸHHY⁄]\∏†)óà]]ÿ€€\]OWõŸôóèâÿ]]ÿ€€\]RS
-
-_OŸ]èè]à€\‹œWôöY[Y[óàYWúô\Ÿ[ù][€ëöY[èèXô[õ‹èWúô\Ÿ[ù][€îŸ[X›èê\ô\Ÿ[ùpÈË€œ€Xô[èŸ[X›YWúô\Ÿ[ù][€îŸ[X›èè‹Ÿ[X›èŸ]èè]à€\‹œWôöY[èèXô[ê€€[»]Y\à[ôõ‹õX\àH‹ŸOœ€Xô[è]à€\‹œWúŸY€Y[ùY[ö[X]Y\ŸY€Y[ùYàYWô‹ŸS[ŸWèèù]€à\OWòù]€óà]KY‹ŸK[[ŸOWù›[èë‹ŸH›[ÿù]€èèù]€à\OWòù]€óà]KY‹ŸK[[ŸOWú\ï[ö]èî‹à€€\ö[ZYÀÿË\›[Oÿù]€èèŸ]èèŸ]èè]àYWô‹ŸQöY[◊èèŸ]èè]à€\‹œWôöY[èèXô[õ‹èWõYYõ›WèìÿúŸ\ùòpÈË€»‹⁄[€ò[€Xô[è^\ôXHYWõYYõ›Wàõ›‹œWçà›[OWõ›ô\ôõ›ŒöY[é‹ô\⁄^ôNõõ€ôWà€ôõÿ›\œWù\Àú›[KöZY⁄Iÿ]]…Œ›\Àú›[KöZY⁄]\Àúÿ‹õ€ZY⁄
-…‹	◊à€ö[ú]Wù\Àú›[KöZY⁄Iÿ]]…Œ›\Àú›[KöZY⁄]\Àúÿ‹õ€ZY⁄
-…‹	◊àXŸZ€\èWë^éà\0Ï‹»€€Y\ãYôZ]‹»\òŸXöY‹À€€[»õÿÍà\›]òHŸHŸ[ù[ô¯†)óèè›^\ôXOèŸ]èâŸ]QöY[
-	‹ôX€‹ô[YIÀ	—]HH‹∞Ë\ö[…Àõ›À‹⁄›”õ›ŒùùYKô\Ÿ\ùôSõ›ŒùùY_J_IŸõ‹õPù]€ú 
-_Xÿ]ôQõ‹õJNÿ›\úô[ù\OI€YYXÿ][€âŒ€][ŸOI‹\ï[ö]	Œÿ€€ú›Ÿ][ŸOX\ﬁ[ò»OOû€[ŸO[N›\]TŸY€Y[ù[ôXÿ]‹äÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ‹ŸS[ŸI K	Ÿ‹ŸS[ŸIÀ[ŸJNÿ]ÿZ]ô[ô\ë‹ŸQöY[ [ŸJ_NŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY‹ŸK[[ŸWI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOúŸ][ŸJãô]\Ÿ]ô‹ŸS[ŸJJNÿ]ÿZ]Ÿ][ŸJ	‹\ï[ö]	 Nÿ€€ú›Ÿ[X›YYX\ﬁ[ò»OOû‹Ÿ[X›YYYXÿ][€íY[KöYŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ô\Ÿ[ù][€ëöY[	 Kò€\‹”\›úô[[›ôJ	⁄Y[â Nÿ€€ú›Ÿ[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ô\Ÿ[ù][€îŸ[X›	 N‹Ÿ[ö[õô\íS\ô\Ÿ[ù][€ì‹[€ú JN⁄Yä
-Kúô\Ÿ[ù][€úﬂ◊JKõ[ô›OOLJ^‹Ÿ[ùò[YO[Kúô\Ÿ[ù][€ú÷ÃKöY‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_\Ÿ[õ€ò⁄[ôŸOX\ﬁ[ò 
-OOû‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_ù[ÿ]ÿZ]ô[ô\ë‹ŸQöY[ [ŸJ_Nÿ]ÿZ]ô[ô\ë‹ŸQöY[ [ŸJ_Nÿ]ÿZ]⁄\ôSYYXÿ][€ê]]ÿ€€\]J	€YYò[YIÀŸ[X›YY
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	›[YSYY›YŸŸ\›[€â OÀòY]ô[ù\›[ô\ä	ÿ€X⁄…À\ﬁ[ò»OOûÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOYKò›\úô[ù\ôŸ]ô]\Ÿ]õYYY
-N⁄YäJ^Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYò[YI Kùò[YO[YYXÿ][€ë\‹^JJNÿ]ÿZ]Ÿ[X›YY
-J__J_Wò\ﬁ[ò»ù[ò›[€àô[ô\ë‹ŸQöY[ [ŸJ^◊à€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ‹ŸQöY[… N◊àYäXõﬁ
-\ô]\õé◊à€€ú›YYœX]ÿZ][YYXÿ][€ú 
-N◊à€€ú›O[YYÀôö[ô
-OûöYOO\Ÿ[X›YYYXÿ][€íY
-N◊à€€ú›Yö[ôô\Ÿ[ù][€äKŸ[X›Yô\Ÿ[ù][€íY
-N◊àYä[ŸOOOI››[	 ^◊àõﬁö[õô\íSX]à€\‹œWôöY[èèXô[ë‹ŸH›[€XYO€Xô[è]à€\‹œWö[õ[ôK][ö]èè[ú]YWù›[‹ŸUò[YWà[ú][ŸOWôX⁄[X[àXŸZ€\èWë^éàÃèèŸ[X›YWô‹ŸU[ö]èè‹[€èõYœ€‹[€èè‹[€èõXŸœ€‹[€èè‹[€èôœ€‹[€èè‹[€èõS€‹[€èè‹Ÿ[X›èŸ]èèŸ]èò◊àY[Ÿ^◊àõﬁö[õô\íSX]à€\‹œWôöY[Y‹öYèè]à€\‹œWôöY[èèXô[ë‹ŸHHÿYH[öYYO€Xô[è[ú]YWù[ö]‹ŸUò[YWà[ú][ŸOWôX⁄[X[àò[YOWâŸ\ÿ Àú›ô[ô›ò[Y_	… _WàXŸZ€\èWçÃèèŸ]èè]à€\‹œWôöY[èèXô[î]X[ùYYO€Xô[è[ú]YWù[ö]’ZŸ[óà[ú][ŸOWôX⁄[X[àò[YOWåWèèŸ]èèŸ]èè]à€\‹œWôöY[èèXô[ï[öYYO€Xô[èŸ[X›YWô‹ŸU[ö]èè‹[€à	‹Àú›ô[ô›[ö]OOI€Y…œ…‹Ÿ[X›Y	Œâ…ﬂOõYœ€‹[€èè‹[€à	‹Àú›ô[ô›[ö]OOI€XŸ…œ…‹Ÿ[X›Y	Œâ…ﬂOõXŸœ€‹[€èè‹[€à	‹Àú›ô[ô›[ö]OOIŸ…œ…‹Ÿ[X›Y	Œâ…ﬂOôœ€‹[€èè‹[€à	‹Àú›ô[ô›[ö]OOI€S	œ…‹Ÿ[X›Y	Œâ…ﬂOõS€‹[€èè‹Ÿ[X›èŸ]èè]à€\‹œWô‹ŸK\ô\›[èè‹[èë‹ŸH›[ÿ[›[YO‹‹[èè›õ€ô»YWô‹ŸU›[ô]öY]◊è∏†%‹›õ€ôœèŸ]èò◊à€€ú›\]OJ
-OOû◊à€€ú›èSù[Xô\ä›ö[ô ÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ö]‹ŸUò[YI Kùò[YJKúô\XŸJ	À	À	Àâ JN◊à€€ú›OSù[Xô\ä›ö[ô ÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ö]’ZŸ[â Kùò[YJKúô\XŸJ	À	À	Àâ J_N◊à€€ú›OYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ‹ŸU[ö]	 Kùò[YN◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ‹ŸU›[ô]öY]… Kù^€€ù[ùSù[Xô\ãö\—ö[ö]JäOÿ	 äúJKù”ÿÿ[T›ö[ô 	‹Pîâ _H	›_Xâ¯†%	Œ◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ö]’ZŸ[â Kùò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ö]’ZŸ[â Kùò[Y_	ÃIŒ◊àN◊à…›[ö]‹ŸUò[YIÀ	›[ö]’ZŸ[âÀ	Ÿ‹ŸU[ö]	◊Kôõ‹ëXX⁄
-YOôÿ›[Y[ùôŸ][[Y[ùûRY
-Y
-OÀòY]ô[ù\›[ô\ä	⁄[ú]	À\]JJN◊à\]J
-N◊àWàYò]RX€€ú õﬁ
-N◊üWóò\ﬁ[ò»ù[ò›[€à‹[î\ò⁄\ŸT⁄Y]
-
-^ÿ›\úô[ù\OI‹\ò⁄\ŸIŒ‹Ÿ[X›YYYXÿ][€íY[ù[‹Ÿ[X›Yô\Ÿ[ù][€íY[ù[ÿ€€ú›õ›œ]”ÿÿ[[ú]
-
-N€‹[êòX⁄Ÿõ‹
-	‘ôY⁄\›ò\à€€\òIÀ]à€\‹œWôöY[]]ÿ€€\]WèèXô[õ‹èWú\ò⁄\ŸSYYèìYYXÿ[Y[ùœ€Xô[è[ú]YWú\ò⁄\ŸSYYàXŸZ€\èWê€€YXŸHHY⁄]\∏†)óà]]ÿ€€\]OWõŸôóèâÿ]]ÿ€€\]RS
-
-_OŸ]èè]à€\‹œWôöY[Y[óàYWú\ò⁄\ŸTô\Ÿ[ù][€ëöY[èèXô[õ‹èWú\ò⁄\ŸTô\Ÿ[ù][€óèê\ô\Ÿ[ùpÈË€œ€Xô[èŸ[X›YWú\ò⁄\ŸTô\Ÿ[ù][€óèè‹Ÿ[X›èŸ]èè]à€\‹œWôöY[Y‹öYèè]à€\‹œWôöY[èèXô[õ‹èWú\ò⁄\ŸTX⁄ÿYŸ\◊èêÿZ^\œ€Xô[è[ú]YWú\ò⁄\ŸTX⁄ÿYŸ\◊à[ú][ŸOWõù[Y\öX◊àò[YOWåWèèŸ]èè]à€\‹œWôöY[èèXô[õ‹èWú\ò⁄\ŸTöXŸWèïò[‹à›[Y€œ€Xô[è[ú]YWú\ò⁄\ŸTöXŸWà[ú][ŸOWôX⁄[X[àXŸZ€\èWîâãLèèŸ]èèŸ]èè]à€\‹œWôöY[èèXô[õ‹èWú\ò⁄\ŸTXŸWèì€ôH€€\õ›O€Xô[è[ú]YWú\ò⁄\ŸTXŸWàXŸZ€\èWëò\õpËX⁄XH›H⁄òWèèŸ]èè]à€\‹œWò[ò[\⁄\À\õ›»Y[óàYWú\ò⁄\ŸP€‹›ô]öY]◊èè›õ€ôœê›\›‹»ÿ[›[Y‹œ‹›õ€ôœè‹[àYWú\ò⁄\ŸP€‹›^èè‹‹[èèŸ]èâŸ]QöY[
-	‹ôX€‹ô[YIÀ	—]HH‹∞Ë\ö[…Àõ›À‹⁄›”õ›ŒùùYKô\Ÿ\ùôSõ›ŒùùY_J_IŸõ‹õPù]€ú 
-_Xÿ]ôQõ‹õJNÿ›\úô[ù\OI‹\ò⁄\ŸIŒÿ€€ú›€îŸ[X›X\ﬁ[ò»OOû‹Ÿ[X›YYYXÿ][€íY[KöYÿ€€ú›öY[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTô\Ÿ[ù][€ëöY[	 KŸ[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTô\Ÿ[ù][€â NŸöY[ò€\‹”\›úô[[›ôJ	⁄Y[â N‹Ÿ[ö[õô\íS\ô\Ÿ[ù][€ì‹[€ú JN⁄Yä
-Kúô\Ÿ[ù][€úﬂ◊JKõ[ô›OOLJ^‹Ÿ[ùò[YO[Kúô\Ÿ[ù][€ú÷ÃKöY‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_\Ÿ[õ€ò⁄[ôŸOJ
-OOû‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_ù[›\]T\ò⁄\ŸTô]öY] 
-_N›\]T\ò⁄\ŸTô]öY] 
-_Nÿ]ÿZ]⁄\ôSYYXÿ][€ê]]ÿ€€\]J	‹\ò⁄\ŸSYY	À€îŸ[X›
-N÷…‹\ò⁄\ŸTX⁄ÿYŸ\…À	‹\ò⁄\ŸTöXŸI◊Kôõ‹ëXX⁄
-YOôÿ›[Y[ùôŸ][[Y[ùûRY
-Y
-OÀòY]ô[ù\›[ô\ä	⁄[ú]	À\]T\ò⁄\ŸTô]öY] J_WàéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÕãöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hò\ﬁ[ò»ù[ò›[€à\]T\ò⁄\ŸTô]öY] 
-^ÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOO\Ÿ[X›YYYXÿ][€íY
-KYö[ôô\Ÿ[ù][€äKŸ[X›Yô\Ÿ[ù][€íY
-KöXŸO\\úŸS[€ô^Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTöXŸI OÀùò[YJKX⁄ÿYŸ\œSù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTX⁄ÿYŸ\… OÀùò[YJ_K[ö]œSù[Xô\äÀù[ö]‘\îX⁄ÿYŸJ_õ\›\èSù[Xô\äÀù[ö]‘\êõ\›\ä_õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸP€‹›ô]öY]… K^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸP€‹›^	 N⁄YäXõﬁ]^
-\ô]\õé⁄YäöXŸHO[ù[	âù[ö] ^ÿ€€ú›\ï[ö]\öXŸK X⁄ÿYŸ\ ù[ö] K\êõ\›\èXõ\›\è‹\ï[ö]
-òõ\›\éõù[›^ù^€€ù[ùX	€[€ô^J\ï[ö]
-_H‹à[öYYI‹\êõ\›\àO[ù[ÿ0≠»	€[€ô^J\êõ\›\ä_H‹àÿ\ù[Xâ…ﬂXÿõﬁò€\‹”\›úô[[›ôJ	⁄Y[â _Y[ŸHõﬁò€\‹”\›òY
-	⁄Y[â _Wóôù[ò›[€à‹[î€Y\⁄Y]
-^[ÿY[ù[
-^ÿ›\úô[ù\OI‹€Y\	Œ‹[ô[ô‘€Y\€›\òŸO\^[ÿY…⁄X[\⁄‹ù›]	Œâ€X[ùX[	Œÿ€€ú›õ›œ]”ÿÿ[[ú]
-
-K›\ù\^[ÿYÀú›\ù›”ÿÿ[[ú]
-^[ÿYú›\ù
-Nù”ÿÿ[[ú]
-ô]»]J]Kõõ› 
-KN
-åÕå
-Kù“T”‘›ö[ô 
-JK[ô\^[ÿYÀô[ô›”ÿÿ[[ú]
-^[ÿYô[ô
-Nõõ›Àô\Ÿ\ùôOH\^[ÿY€‹[êòX⁄Ÿõ‹
-^[ÿY…‘ô]ö\ÿ\à€€õ»[\‹ùY…Œâ‘ôY⁄\›ò\à€€õ…À	Ÿ]QöY[
-	‹€Y\›\ù	À	—‹õZ]H0Ë…À›\ù‹⁄›”õ›Œôò[ŸKô\Ÿ\ùôSõ›Œúô\Ÿ\ùô_J_IŸ]QöY[
-	‹€Y\[ô	À	–X€‹ô›H0Ë…À[ô‹⁄›”õ›Œà\^[ÿYô\Ÿ\ùôSõ›Œúô\Ÿ\ùô_J_O]à€\‹œWôöY[èèXô[î]X[YYH\òŸXöYO€Xô[â‹]X[]TŸ[X›‹ä^[ÿYÀú]X[]_
-_OŸ]èè]à€\‹œWôöY[èèXô[õ‹èWú€Y\õ›WèìÿúŸ\ùòpÈÌY\»‹⁄[€òZ\œ€Xô[è^\ôXHYWú€Y\õ›Wàõ›‹œWçà›[OWõ›ô\ôõ›ŒöY[é‹ô\⁄^ôNõõ€ôWà€ôõÿ›\œWù\Àú›[KöZY⁄Iÿ]]…Œ›\Àú›[KöZY⁄]\Àúÿ‹õ€ZY⁄
-…‹	◊à€ö[ú]Wù\Àú›[KöZY⁄Iÿ]]…Œ›\Àú›[KöZY⁄]\Àúÿ‹õ€ZY⁄
-…‹	◊àXŸZ€\èWë^éàX€‹ôZHX\»ô^ô\À]ôH\ÿY[‹¯†)óèâŸ\ÿ ^[ÿYÀõõ›_	… _O›^\ôXOèŸ]èè€\‹œWö[\óèì»‹∞Ë\ö[»H‹õZ\à€€YpÈÿH[H]∞Ë\»\[ò\»€€[»›YŸ\›0Ë€»Hù[òÿHôXŸXôHHY»8†'Y€‹òx†'Kè‹âŸõ‹õPù]€ú ^[ÿY…‘ÿ[ò\à[\‹ùpÈË€…Œâ‘ÿ[ò\â _Xÿ]ôQõ‹õJNÿ›\úô[ù\OI‹€Y\	Œ›⁄\ôT]X[]TŸ[X›‹ä
-_Wóôù[ò›[€àŸ]\õ⁄XŸJ
-^ÿ€€ú›ù]€èYÿ›[Y[ùôŸ][[Y[ùûRY
-	›õ⁄XŸPùâ K›]\œYÿ›[Y[ùôŸ][[Y[ùûRY
-	›õ⁄XŸT›]\… N⁄Yä[ò]öYÿ]‹ãõYYXQ]öXŸ\œÀôŸ]\Ÿ\ìYYX_\[ŸàYYXTôX€‹ô\èOOI›[ôYö[ôY	 ^ÿù]€ãô\ÿXõY]ùYN‹›]\Àù^€€ù[ùI’\ŸH»]Y»»X€Y»\òHò[úŸõ‹õX\àõﬁà[H^ÀâŒ‹ô]\õüXù]€ãõ€ò€X⁄œX\ﬁ[ò 
-OOû›û^⁄YäYYXTôX€‹ô\èÀú›]OOOI‹ôX€‹ô[ô… ^€YYXTôX€‹ô\ãú›‹
-
-N‹ô]\õüX€€ú››ôX[OX]ÿZ]ò]öYÿ]‹ãõYYXQ]öXŸ\ÀôŸ]\Ÿ\ìYYXJÿ]Y[ŒùùY_JNÿ]Y[–⁄[ö‹œV◊N€YYXTôX€‹ô\è[ô]»YYXTôX€‹ô\ä›ôX[JN€YYXTôX€‹ô\ãõ€ô]X]òZ[XõOYOOû⁄YäKô]Kú⁄^ôJX]Y[–⁄[ö‹Àú\⁄
-Kô]J_N€YYXTôX€‹ô\ãõ€ú›‹J
-OOû‹[ô[ô–]Y[œ[ô]»õÿä]Y[–⁄[ö‹À›\NõYYXTôX€‹ô\ãõZ[YU\_	ÿ]Y[À›ŸXõIﬂJN‹›ôX[KôŸ]òX⁄‹ 
-Kôõ‹ëXX⁄
-Oùú›‹
-
-JNÿù]€ãò€\‹”\›úô[[›ôJ	‹ôX€‹ô[ô… Nÿù]€ãù^€€ù[ùI¯ß$»õﬁà‹ò]òYIŒ‹›]\Àù^€€ù[ùI‡]Y[»õ€ù»\òHÿ[ò\ãâﬂN€YYXTôX€‹ô\ãú›\ù
-
-Nÿù]€ãò€\‹”\›òY
-	‹ôX€‹ô[ô… Nÿù]€ãù^€€ù[ùI¯•®\ò\âŒ‹›]\Àù^€€ù[ùI—‹ò]ò[ô¯†)âﬂXÿ]⁄‹›]\Àù^€€ù[ùI”∞Ë€»õ⁄H‹‹Î]ô[XŸ\‹ÿ\à»ZX‹õŸõ€ôKà\ŸH»]Y»»X€YÀâﬂ__Wóò\ﬁ[ò»ù[ò›[€àÿ]ôQõ‹õJ]ä^Ÿ]ãúô]ô[ùYò][
-
-Nÿ€€ú›Y]ZY
-›\úô[ù\JN€]ôX€‹ô⁄Yä›\úô[ù\OOOI€õ›I ^ÿ€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›U^	 Kùò[YKùö[J
-N⁄Yä]^	âà\[ô[ô–]Y[ \ô]\õàÿ\›
-	—\ÿ‹ô]òH›H‹ò]ôH[XH[õ›pÈË€Àâ N‹ôX€‹ô^⁄Y\Nâ€õ›IÀ[Y\›[\õô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôX€‹ô[YI Kùò[YJKù“T”‘›ö[ô 
-K^YŒôÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›UY… Kùò[YKùö[J
-K\–]Y[Œêõ€€X[ä[ô[ô–]Y[ K]Y[”€õNêõ€€X[ä[ô[ô–]Y[…âà]^
-K[[Œôò[Ÿ__Y[ŸHYä›\úô[ù\OOOI€YYXÿ][€â ^ÿ€€ú›ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYò[YI Kùò[YKùö[J
-N⁄Yä[ò[YJ\ô]\õàÿ\›
-	“[ôõ‹õYH»YYXÿ[Y[ùÀâ Nÿ€€ú›[ŸOYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]KY‹ŸK[[ŸWKúŸ[X›Y	 OÀô]\Ÿ]ô‹ŸS[Ÿ_	‹\ï[ö]	À[ö]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ‹ŸU[ö]	 OÀùò[Y_	€Y…Œ€]›[‹ŸUò[YK[ö]’ZŸ[èLK[ö]‹ŸUò[YO[ù[⁄Yä[ŸOOOI››[	 ^››[‹ŸUò[YOSù[Xô\ä›ö[ô ÿ›[Y[ùôŸ][[Y[ùûRY
-	››[‹ŸUò[YI Kùò[YJKúô\XŸJ	À	À	Àâ JN⁄YäSù[Xô\ãö\—ö[ö]J›[‹ŸUò[YJJ\ô]\õàÿ\›
-	“[ôõ‹õYHH‹ŸH›[â _Y[Ÿ^›[ö]‹ŸUò[YOSù[Xô\ä›ö[ô ÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ö]‹ŸUò[YI Kùò[YJKúô\XŸJ	À	À	Àâ JN›[ö]’ZŸ[èSù[Xô\ä›ö[ô ÿ›[Y[ùôŸ][[Y[ùûRY
-	›[ö]’ZŸ[â Kùò[Y_JKúô\XŸJ	À	À	Àâ J_N⁄YäSù[Xô\ãö\—ö[ö]J[ö]‹ŸUò[YJJ\ô]\õàÿ\›
-	“[ôõ‹õYHH‹ŸHHÿYH[öYYKâ N››[‹ŸUò[YO][ö]‹ŸUò[YJù[ö]’ZŸ[ü\ôX€‹ô^⁄Y\Nâ€YYXÿ][€âÀ[Y\›[\õô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôX€‹ô[YI Kùò[YJKù“T”‘›ö[ô 
-KYYXÿ][€éõò[YKYYXÿ][€íYúŸ[X›YYYXÿ][€íYô\Ÿ[ù][€íYúŸ[X›Yô\Ÿ[ù][€íY‹ŸS[ŸNõ[ŸK[ö]‹ŸUò[YK›[‹ŸUò[YK‹ŸU[ö]ù[ö][ö]’ZŸ[ã‹ŸNò	››[‹ŸUò[YKù”ÿÿ[T›ö[ô 	‹Pîâ _H	›[ö]X]X[ù]Nù[ö]’ZŸ[èOOLO…ÃH[öYYIŒò	›[ö]’ZŸ[üH[öYY\ÿõ›Nôÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYõ›I Kùò[YKùö[J
-K[[Œôò[Ÿ__Y[ŸHYä›\úô[ù\OOOI‹\ò⁄\ŸI ^ÿ€€ú›ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸSYY	 Kùò[YKùö[J
-N⁄Yä[ò[YJ\ô]\õàÿ\›
-	“[ôõ‹õYH»YYXÿ[Y[ùÀâ Nÿ€€ú›X⁄ÿYŸ\œSX]õX^
-Kù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTX⁄ÿYŸ\… Kùò[YJ_JKYYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOO\Ÿ[X›YYYXÿ][€íY
-KYö[ôô\Ÿ[ù][€äKŸ[X›Yô\Ÿ[ù][€íY
-K\Sù[Xô\äÀù[ö]‘\îX⁄ÿYŸJ_‹ôX€‹ô^⁄Y\Nâ‹\ò⁄\ŸIÀ[Y\›[\õô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôX€‹ô[YI Kùò[YJKù“T”‘›ö[ô 
-KYYXÿ][€éõò[YKYYXÿ][€íYúŸ[X›YYYXÿ][€íYô\Ÿ[ù][€íYúŸ[X›Yô\Ÿ[ù][€íYX⁄ÿYŸ\À›[[ö]Œù\‹X⁄ÿYŸ\ ù\õù[[ö]‘\îX⁄ÿYŸNù\ù[öXŸNôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTöXŸI Kùò[YKùö[J
-KXŸNôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTXŸI Kùò[YKùö[J
-K[[Œôò[Ÿ__Y[ŸHYä›\úô[ù\OOOI‹€Y\	 ^ÿ€€ú››\ù[ô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\›\ù	 Kùò[YJK[ô[ô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ô	 Kùò[YJN⁄YäJ›\ù[ô
-J\ô]\õàÿ\›
-	”»‹∞Ë\ö[»HX€‹ô\àôX⁄\ÿHŸ\à‹›\ö[‹à[»‹∞Ë\ö[»H‹õZ\ãâ N‹ôX€‹ô^⁄Y\Nâ‹€Y\	À[Y\›[\ô[ôù“T”‘›ö[ô 
-K›\ù[YNú›\ùù“T”‘›ö[ô 
-K[ô[YNô[ôù“T”‘›ö[ô 
-K]X[]Nìù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\]X[]Uò[YI Kùò[YJ_õ›Nôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\õ›I Kùò[YKùö[J
-K€›\òŸNú[ô[ô‘€Y\€›\òŸK[[Œôò[Ÿ__Y[ŸHô]\õéÿ]ÿZ]]]ô[ù
-ôX€‹ô
-N⁄Yä[ô[ô–]Y[ X]ÿZ]ÿ]ôP]Y[ Y[ô[ô–]Y[ N⁄YäôX€‹ôù\OOOI‹€Y\	…âúôX€‹ôú€›\òŸOOOI⁄X[\⁄‹ù›]	 [ÿÿ[›‹òYŸKúŸ]][JT’“PS“ST‘ï“—VKô]»]J
-Kù“T”‘›ö[ô 
-JNÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	‘ôY⁄\›õ»ÿ[õÀâ _Wóò\ﬁ[ò»ù[ò›[€à‹[ë]ô[ùY[ùJY
-^ÿ€€ú›OJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-N⁄YäYJ\ô]\õé€‹[êòX⁄Ÿõ‹
-	”‹0ÈÌY\»»ôY⁄\›õ…À]à€\‹œWú⁄Y][‹[€ú◊èèù]€à\OWòù]€óà€\‹œWú⁄Y][‹[€óàYWô]Z[ùóèïô\à][\œÿù]€èèù]€à\OWòù]€óà€\‹œWú⁄Y][‹[€à[ôŸ\óàYWô[]Pùóèë^€Z\àôY⁄\›õœÿù]€èèŸ]èâŸõ‹õPù]€ú 	—ôX⁄\â _X
-]äOOûŸ]ãúô]ô[ùYò][
-
-Nÿ€‹ŸT⁄Y]
-
-_JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ]Z[ùâ Kõ€ò€X⁄œJ
-OOùÿ\›
-⁄[ô[ôõ JKù]JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[]Pùâ Kõ€ò€X⁄œX\ﬁ[ò 
-OOû⁄Yä€€ôö\õJ	—^€Z\à\›HôY⁄\›õœ… J^ÿ]ÿZ][]Q]ô[ù
-Y
-Nÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	‘ôY⁄\›õ»^€pÎYÀâ ___Wóò\ﬁ[ò»ù[ò›[€à‹[ìYYXÿ][€îôY⁄\›ûJ
-^ÿ€€ú›YYœJ]ÿZ][YYXÿ][€ú 
-JKú€‹ù
-
-KäOOòKòX›]ôR[ô‹ôYY[ùõÿÿ[P€€\\ôJãòX›]ôR[ô‹ôYY[ù	‹Pîâ JN€‹[êòX⁄Ÿõ‹
-	”YYXÿ[Y[ù‹…À]à€\‹œWúôY⁄\›ûK]€€ò\óèèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€óàYWòYYYXÿ][€êùóèä»õ›õœÿù]€èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óà]KXÿ[òŸ[ëôX⁄\èÿù]€èèŸ]èè]à€\‹œWúôY⁄\›ûK[\›èâ€YYÀõ[ô›€YYÀõX\
-OOòù]€à\OWòù]€óà€\‹œWúôY⁄\›ûKXÿ\ôà]K[‹[ã[YYWâ€KöYWèè‹[èè›õ€ôœâŸ\ÿ YYXÿ][€ë\‹^JJJ_O‹›õ€ôœè€X[âŸ\ÿ 
-Kúô\Ÿ[ù][€úﬂ◊JKõX\
-Oúô\Ÿ[ù][€ë\‹^J
-JKöõ⁄[ä	»0≠»	 _	‘Ÿ[H\ô\Ÿ[ùpÈÌY\… _O‹€X[è‹‹[èè‹[à€\‹œWúôY⁄\›ûK[Y]Wèâ Kõõ›\ﬂ◊JKõ[ô›Hõ›J O‹‹[èèÿù]€èò
-Köõ⁄[ä	… Nâœ]à€\‹œWúôY⁄\›ûKY[\Wèìô[ö[HYYXÿ[Y[ù»ÿY\›òY»Z[ôKèŸ]èâﬂOŸ]èò
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿYYYXÿ][€êùâ Kõ€ò€X⁄œJ
-OOõ‹[ìYYXÿ][€ëY]‹ä
-NŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K[‹[ã[YYI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOõ‹[ìYYXÿ][€ë]Z[
-ãô]\Ÿ]õ‹[ìYY
-J_WàéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÕÀöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hôù[ò›[€àYYXÿ][€ëY]‹íS
-O^ﬂJ^ÿ€€ú›JKúô\Ÿ[ù][€úﬂ◊JVÃ_ﬂN‹ô]\õò]à€\‹œWôöY[èèXô[îö[òÎ\[»]]õœ€Xô[è[ú]YWúôY–X›]ôWàò[YOWâŸ\ÿ KòX›]ôR[ô‹ôYY[ù	… _WàXŸZ€\èWë^éà\Ÿ^[ôô][Z[òWèèŸ]èè]à€\‹œWôöY[èèXô[ìX\òÿK‹ôYô\∞Íõò⁄XH‹⁄[€ò[€Xô[è[ú]YWúôY‘ôYô\ô[òŸWàò[YOWâŸ\ÿ KúôYô\ô[òŸSò[Y_	… _WàXŸZ€\èWë^éàô[ùò[úŸWèèŸ]èè]à€\‹œWôöY[èèXô[ìXõ‹ò]0Ï‹ö[»‹⁄[€ò[€Xô[è[ú]YWúôY”Xóàò[YOWâŸ\ÿ KõXü	… _WèèŸ]èè€\‹œWúŸX›[€ã[Z[öK]]Wèîö[YZ\òH\ô\Ÿ[ùpÈË€œ‹è]à€\‹œWôöY[Y‹öYèè]à€\‹œWôöY[èèXô[ë‹ÿYŸ[O€Xô[è[ú]YWúôY‘›ô[ô›à[ú][ŸOWôX⁄[X[àò[YOWâŸ\ÿ ú›ô[ô›ò[Y_	… _WèèŸ]èè]à€\‹œWôöY[èèXô[ï[öYYO€Xô[èŸ[X›YWúôY‘›ô[ô›[ö]èè‹[€èõYœ€‹[€èè‹[€èõXŸœ€‹[€èè‹[€èôœ€‹[€èè‹[€èõS€‹[€èè‹Ÿ[X›èŸ]èèŸ]èè]à€\‹œWôöY[èèXô[ëõ‹õXO€Xô[è[ú]YWúôY—õ‹õWàò[YOWâŸ\ÿ ôõ‹õ_	… _WàXŸZ€\èWòË\›[K€€\ö[ZY¯†)óèèŸ]èè]à€\‹œWôöY[Y‹öYèè]à€\‹œWôöY[èèXô[ï[öYY\»‹àÿZ^O€Xô[è[ú]YWúôY’[ö]◊à[ú][ŸOWõù[Y\öX◊àò[YOWâŸ\ÿ ù[ö]‘\îX⁄ÿYŸ_	… _WèèŸ]èè]à€\‹œWôöY[èèXô[ï[öYY\»‹àÿ\ù[O€Xô[è[ú]YWúôY–õ\›\óà[ú][ŸOWõù[Y\öX◊àò[YOWâŸ\ÿ ù[ö]‘\êõ\›\ü	… _WèèŸ]èèŸ]èâŸõ‹õPù]€ú KöY…‘ÿ[ò\âŒâ–ÿY\›ò\â _XWôù[ò›[€à‹[ìYYXÿ][€ëY]‹äO[ù[
-^€‹[êòX⁄Ÿõ‹
-O…—Y]\àYYXÿ[Y[ù…Œâ”õ›õ»YYXÿ[Y[ù…ÀYYXÿ][€ëY]‹íS
-_ﬂJK\ﬁ[ò»]èOûŸ]ãúô]ô[ùYò][
-
-Nÿ€€ú›X›]ôOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY–X›]ôI Kùò[YKùö[J
-N⁄YäXX›]ôJ\ô]\õàÿ\›
-	“[ôõ‹õYH»ö[òÎ\[»]]õÀâ Nÿ€€ú››ô[ô›Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY‘›ô[ô›	 Kùò[YKùö[J
-K^\›[ôœ^Àããä_ﬂJ_NŸ^\›[ôÀöYY^\›[ôÀöYZY
-	€YY	 NŸ^\›[ôÀòX›]ôR[ô‹ôYY[ùXX›]ôNŸ^\›[ôÀúôYô\ô[òŸSò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY‘ôYô\ô[òŸI Kùò[YKùö[J
-NŸ^\›[ôÀõXèYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY”Xâ Kùò[YKùö[J
-NŸ^\›[ôÀõõ›\œY^\›[ôÀõõ›\ﬂ◊NŸ^\›[ôÀúô\Ÿ[ù][€úœY^\›[ôÀúô\Ÿ[ù][€úﬂ◊N⁄Yä›ô[ô›
-^ÿ€€ú›€Y^\›[ôÀúô\Ÿ[ù][€ú÷Ã_⁄YùZY
-	‹ô\Ÿ[ù][€â _NŸ^\›[ôÀúô\Ÿ[ù][€ú÷ÃO^Àããõ€›ô[ô›ò[YNìù[Xô\ä›ö[ô ›ô[ô›
-Kúô\XŸJ	À	À	Àâ J_›ô[ô››ô[ô›[ö]ôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY‘›ô[ô›[ö]	 Kùò[YKõ‹õNôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY—õ‹õI Kùò[YKùö[J
-K[ö]‘\îX⁄ÿYŸNìù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY’[ö]… Kùò[YJ_	…À[ö]‘\êõ\›\éìù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôY–õ\›\â Kùò[YJ_	…Àúò[ôô^\›[ôÀúôYô\ô[òŸSò[YKXéô^\›[ôÀõXü_X]ÿZ]]YYXÿ][€ä^\›[ô N›ÿ\›
-	”YYXÿ[Y[ù»ÿ[õÀâ N€‹[ìYYXÿ][€ë]Z[
-^\›[ôÀöY
-_J_Wò\ﬁ[ò»ù[ò›[€à‹[ìYYXÿ][€ë]Z[
-Y
-^ÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOZY
-N⁄Yä[J\ô]\õéÿ€€ú›]ô[ùœX]ÿZ][]ô[ù 
-K€‹›[YYXÿ][€ê€‹››[[X\ûJK]ô[ù K›YŸŸ\›[€úœ[YYXÿ][€ìõ›T›YŸŸ\›[€ú K]ô[ù N€‹[êòX⁄Ÿõ‹
-KòX›]ôR[ô‹ôYY[ù]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœâŸ\ÿ YYXÿ][€ë\‹^JJJ_O‹›õ€ôœè‹[èâŸ\ÿ €KõXã
-Kúô\Ÿ[ù][€úﬂ◊JKõ[ô›ÿ	€Kúô\Ÿ[ù][€úÀõ[ô›H\ô\Ÿ[ùpÈË€ 0ÌY\ Xõù[Kôö[\äõ€€X[äKöõ⁄[ä	»0≠»	 _	–ÿY\›õ»∞Ë\⁄X€… _O‹‹[èèŸ]èè]à€\‹œWúôY⁄\›ûK]€€ò\óèèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWôY]YYùóèëY]\èÿù]€èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWòYô\Ÿ[ù][€êùóèä»\ô\Ÿ[ùpÈË€œÿù]€èèŸ]èè€\‹œWúŸX›[€ã[Z[öK]]Wèê\ô\Ÿ[ùpÈÌY\œ‹è]à€\‹œWúô\Ÿ[ù][€ã[\›èâ Kúô\Ÿ[ù][€úﬂ◊JKõ[ô› Kúô\Ÿ[ù][€úﬂ◊JKõX\
-Oò]à€\‹œWúô\Ÿ[ù][€ã\õ›◊èè›õ€ôœâŸ\ÿ ô\Ÿ[ù][€ë\‹^J
-J_O‹›õ€ôœè‹[èâŸ\ÿ ‹ôõ‹õKù[ö]‘\îX⁄ÿYŸOÿ	‹ù[ö]‘\îX⁄ÿYŸ_H[ããÿÿZ^Xõù[ù[ö]‘\êõ\›\èÿ	‹ù[ö]‘\êõ\›\üH[ããÿÿ\ù[Xõù[Kôö[\äõ€€X[äKöõ⁄[ä	»0≠»	 J_O‹‹[èèŸ]èò
-Köõ⁄[ä	… Nâœ]à€\‹œWúôY⁄\›ûKY[\Wèìô[ö[XH\ô\Ÿ[ùpÈË€ÀèŸ]èâﬂOŸ]èè€\‹œWúŸX›[€ã[Z[öK]]Wèê›\›»H\òpÈË€œ‹è]à€\‹œWúX⁄ÿYŸK]\ÿYŸK[\›èâÿ€‹›‹X⁄ÿYŸU\ÿYŸRS
-€‹›JNâœ]à€\‹œWúôY⁄\›ûKY[\WèêYX⁄[€ôH[öYY\»‹àÿZ^HHôY⁄\›ôH€€\ò\ÀÿYZ[ö\›òpÈÌY\»\òHÿ[›[\ãèŸ]èâﬂOŸ]èè€\‹œWúŸX›[€ã[Z[öK]]Wèê[õ›pÈÌY\»€ÿúôH»YYXÿ[Y[ùœ‹è]à€\‹œWõYY[õ›K[\›èâ Kõõ›\ﬂ◊JKõ[ô› Kõõ›\ﬂ◊JKú€XŸJ
-Kú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JKõX\
-èOò]à€\‹œWõYY[õ›K\õ›◊èè›õ€ôœâ€ô]»]Jãù[Y\›[\
-Kù”ÿÿ[Q]T›ö[ô 	‹Pîâ _O‹›õ€ôœè‹[èâŸ\ÿ ãù^
-_O‹‹[èèŸ]èò
-Köõ⁄[ä	… Nâœ]à€\‹œWúôY⁄\›ûKY[\Wèìô[ö[XH[õ›pÈË€»\‹XÎYöXÿHZ[ôKèŸ]èâﬂOŸ]èè]à€\‹œWôöY[èèXô[ìõ›òH[õ›pÈË€œ€Xô[è^\ôXHYWõYYõŸö[Sõ›WàXŸZ€\èWëYôZ]»‹⁄]]õÀ[òÌ[ŸÀ[ôõ‹õXpÈË€»\òH∞Ïﬁ[XH€€ú›[x†)óèè›^\ôXOèŸ]èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€àù[Xù]€óàYWòYYYõ›PùóèêYX⁄[€ò\à[õ›pÈË€œÿù]€èâ‹›YŸŸ\›[€úÀõ[ô›ÿ€\‹œWúŸX›[€ã[Z[öK]]Wèï[ô^àõÿÍà]YZ\òHôY⁄\›ò\è‹è]à€\‹œWú›YŸŸ\›Y[õ›K[\›èâ‹›YŸŸ\›[€úÀõX\
-œOò]à€\‹œWú›YŸŸ\›Y[õ›Wèè∏†'	Ÿ\ÿ Àõõ›Kù^
-_x†'O‹è€X[âŸ\ÿ 	”X]úõ›[ô
-ÀôYôãÕå
-_HZ[à\0Ï‹»	‹ÀòYZ[ãõYYXÿ][€üI‹ÀòYZ[ãô‹ŸOÿ	‹ÀòYZ[ãô‹Ÿ_Xâ…ﬂX
-_O‹€X[èù]€à\OWòù]€óà]KXXÿŸ\\›YŸŸ\›[€èWâ‹Àõõ›KöYWà]KXYZ[ãZYWâ‹ÀòYZ[ãöYWèêYX⁄[€ò\à0Ë»[õ›pÈÌY\œÿù]€èèŸ]èò
-Köõ⁄[ä	… _OŸ]èòâ…ﬂO]à€\‹œWúôY⁄\›ûK]€€ò\óèèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óà]KXÿ[òŸ[ëôX⁄\èÿù]€èèù]€à\OWòù]€óà€\‹œWô[ôŸ\ã\õ›»ŸX€€ô\ûKXù]€óàYWô[]SYYùóèë^€Z\àÿY\›õœÿù]€èèŸ]èò
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ŸY]YYùâ Kõ€ò€X⁄œJ
-OOõ‹[ìYYXÿ][€ëY]‹äJNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿYô\Ÿ[ù][€êùâ Kõ€ò€X⁄œJ
-OOõ‹[îô\Ÿ[ù][€ëY]‹äJNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿYYYõ›Pùâ Kõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYõŸö[Sõ›I Kùò[YKùö[J
-N⁄Yä]^
-\ô]\õé€Kõõ›\œVÀããäKõõ›\ﬂ◊JK⁄YùZY
-	€YYõ›I K[Y\›[\õô]»]J
-Kù“T”‘›ö[ô 
-K^€›\òŸNâ€X[ùX[	ﬂWNÿ]ÿZ]]YYXÿ][€äJN›ÿ\›
-	–[õ›pÈË€»YX⁄[€òYKâ N€‹[ìYYXÿ][€ë]Z[
-KöY
-_NŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KXXÿŸ\\›YŸŸ\›[€óI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú›õ›OY]ô[ùÀôö[ô
-OOôKöYOOXãô]\Ÿ]òXÿŸ\›YŸŸ\›[€äKYZ[èY]ô[ùÀôö[ô
-OOôKöYOOXãô]\Ÿ]òYZ[íY
-N⁄Yä[õ›J\ô]\õé€Kõõ›\œVÀããäKõõ›\ﬂ◊JK⁄YùZY
-	€YYõ›I K[Y\›[\õõ›Kù[Y\›[\^õõ›Kù^€›\òŸNâ‹›YŸŸ\›Y	À€›\òŸQ]ô[ùYõõ›KöY€›\òŸPYZ[ö\›ò][€íYòYZ[èÀöYWNÿ]ÿZ]]YYXÿ][€äJN›ÿ\›
-	‘ô[]»YX⁄[€òY»Ÿ[H]öXùZ\àÿ]\ÿ[YYKâ N€‹[ìYYXÿ][€ë]Z[
-KöY
-_JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[]SYYùâ Kõ€ò€X⁄œX\ﬁ[ò 
-OOû⁄Yä€€ôö\õJ	—^€Z\à\[ò\»»ÿY\›õœ»‹»ôY⁄\›õ‹»\›0Ï‹öX€‹»€€ù[ùX[H^\›[ôÀâ J^ÿ]ÿZ][]SYYXÿ][€äKöY
-N›ÿ\›
-	–ÿY\›õ»^€pÎYÀâ N€‹[ìYYXÿ][€îôY⁄\›ûJ
-___Wôù[ò›[€àX⁄ÿYŸU\ÿYŸRS
-€‹›J^ÿ€€ú›õ›‹œX€‹›õ›Àú€XŸJ
-Kú€‹ù
-
-KäOOòãú›\ùXKú›\ù
-Kú€XŸJ
-N‹ô]\õàõ›‹ÀõX\
-
-›JOOûÿ€€ú›ô\œYö[ôô\Ÿ[ù][€äK›úô\Ÿ[ù][€íY
-K^\œJ
-›ôö[ö\⁄Y]]Kõõ› 
-JK[›ú›\ù
-KŒç›]\œ[›úô[XZ[ö[ôœL…—ö[ò[^òYIŒò	”X]úõ›[ô
-›úô[XZ[ö[ô _HH	€›ù[ö]ﬂH[ãàô\›[ù\ÿ[ö][›úöXŸOO[ù[€ù[õ›úöXŸK€›ù[ö]Àõ\›\è][ö]O[ù[	âìù[Xô\äô\œÀù[ö]‘\êõ\›\äO›[ö]
-ìù[Xô\äô\Àù[ö]‘\êõ\›\äNõù[‹ô]\õò]à€\‹œWúX⁄ÿYŸK\õ›◊èè›õ€ôœêÿZ^H	‹õ›‹Àõ[ô›Z_H0≠»	Ÿ\ÿ ô\œ‹ô\Ÿ[ù][€ë\‹^Jô\ Nâÿ\ô\Ÿ[ùpÈË€»∞Ë€»ö[ò›[YI _O‹›õ€ôœè‹[èâ‹›]\ﬂH0≠»\òpÈË€»	Ÿ^\Àù—ö^Y
-JKúô\XŸJ	ÀâÀ	À	 _H	”X]òXú ^\ÀLJOåO…ŸXIŒâŸX\…ﬂI›[ö]O[ù[ÿ0≠»	€[€ô^J[ö]
-_K›[ãòâ…ﬂIÿõ\›\àO[ù[ÿ0≠»	€[€ô^Jõ\›\ä_Kÿÿ\ù[Xâ…ﬂO‹‹[èèŸ]èòJKöõ⁄[ä	… Jÿ	ÿ€‹›õ[€ùHO[ù[ÿ]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœê›\›»‹»0Óõ[[‹»ÃX\œ‹›õ€ôœè‹[èâ€[€ô^J€‹›õ[€ùJ_H€€Hò\ŸHò\»[öYY\»YZ[ö\›òY\»ôY⁄\›òY\»Hõ»0Óõ[[»›\›»‹à[öYYH€€öX⁄YÀè‹‹[èèŸ]èòâ…ﬂXWôù[ò›[€àYYXÿ][€ìõ›T›YŸŸ\›[€ú K]ô[ù ^ÿ€€ú›YZ[úœY]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â…âõYYX]⁄\—]ô[ù
-KJJKõ›\œY]ô[ùÀôö[\äOOôKù\OOOI€õ›I…âôKù^
-K[öŸY[ô]»Ÿ]
-
-Kõõ›\ﬂ◊JKõX\
-èOõãú€›\òŸQ]ô[ùY
-Kôö[\äõ€€X[äJK›]V◊NŸõ‹ä€€ú›HŸàYZ[ú ^ÿ€€ú››[ô]»]JKù[Y\›[\
-KôŸ][YJ
-NŸõ‹ä€€ú›àŸàõ›\ ^ÿ€€ú›[ô]»]Jãù[Y\›[\
-KôŸ][YJ
-KYôè]\›⁄YäYôèèL	âôYôèMäåÕå	âà[[öŸYö\ ãöY
-J[›]ú\⁄
-ÿYZ[éòKõ›NõãYôüJ__X€€ú›ŸY[è[ô]»Ÿ]
-
-N‹ô]\õà›]ú€‹ù
-
-KäOOòKôYôãXãôYôäKôö[\äOà\ŸY[ãö\ õõ›KöY
-IâúŸY[ãòY
-õõ›KöY
-JKú€XŸJä_WàéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåŒöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hôù[ò›[€à‹[îô\Ÿ[ù][€ëY]‹äJ^€‹[êòX⁄Ÿõ‹
-	”õ›òH\ô\Ÿ[ùpÈË€…À]à€\‹œWôöY[Y‹öYèè]à€\‹œWôöY[èèXô[ë‹ÿYŸ[O€Xô[è[ú]YWú›ô[ô›à[ú][ŸOWôX⁄[X[èèŸ]èè]à€\‹œWôöY[èèXô[ï[öYYO€Xô[èŸ[X›YWú[ö]èè‹[€èõYœ€‹[€èè‹[€èõXŸœ€‹[€èè‹[€èôœ€‹[€èè‹[€èõS€‹[€èè‹Ÿ[X›èŸ]èèŸ]èè]à€\‹œWôöY[èèXô[ëõ‹õXO€Xô[è[ú]YWúõ‹õWàXŸZ€\èWòË\›[K€€\ö[ZY¯†)óèèŸ]èè]à€\‹œWôöY[èèXô[ìX\òÿH‹⁄[€ò[€Xô[è[ú]YWúúò[ôàò[YOWâŸ\ÿ KúôYô\ô[òŸSò[Y_	… _WèèŸ]èè]à€\‹œWôöY[èèXô[ìXõ‹ò]0Ï‹ö[»‹⁄[€ò[€Xô[è[ú]YWúXóàò[YOWâŸ\ÿ KõXü	… _WèèŸ]èè]à€\‹œWôöY[Y‹öYèè]à€\‹œWôöY[èèXô[ï[öYY\»‹àÿZ^O€Xô[è[ú]YWú[ö]◊à[ú][ŸOWõù[Y\öX◊èèŸ]èè]à€\‹œWôöY[èèXô[ï[öYY\»‹àÿ\ù[O€Xô[è[ú]YWúõ\›\óà[ú][ŸOWõù[Y\öX◊èèŸ]èèŸ]èâŸõ‹õPù]€ú 	–YX⁄[€ò\â _X\ﬁ[ò»]èOûŸ]ãúô]ô[ùYò][
-
-Nÿ€€ú››ô[ô›Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹›ô[ô›	 Kùò[YKùö[J
-N⁄Yä\›ô[ô›
-\ô]\õàÿ\›
-	“[ôõ‹õYHH‹ÿYŸ[Kâ N€Kúô\Ÿ[ù][€úœVÀããäKúô\Ÿ[ù][€úﬂ◊JK⁄YùZY
-	‹ô\Ÿ[ù][€â K›ô[ô›ò[YNìù[Xô\ä›ö[ô ›ô[ô›
-Kúô\XŸJ	À	À	Àâ J_›ô[ô››ô[ô›[ö]ôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹[ö]	 Kùò[YKõ‹õNôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õ‹õI Kùò[YKùö[J
-Kúò[ôôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹úò[ô	 Kùò[YKùö[J
-KXéôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹Xâ Kùò[YKùö[J
-K[ö]‘\îX⁄ÿYŸNìù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹[ö]… Kùò[YJ_	…À[ö]‘\êõ\›\éìù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õ\›\â Kùò[YJ_	…ﬂWNÿ]ÿZ]]YYXÿ][€äJN›ÿ\›
-	–\ô\Ÿ[ùpÈË€»YX⁄[€òYKâ N€‹[ìYYXÿ][€ë]Z[
-KöY
-_J_Wóôù[ò›[€à‹[ê›\›€RX€€ú 
-^ÿ€€ú›Ÿ^\œSÿöôX›öŸ^\ ò\ŸRX€€ú N€‹[êòX⁄Ÿõ‹
-	‘›Xú›]Z\à0ÎX€€ô\…À€\‹œWö[\óèë\ÿ€€H[H0ÎX€€ôH»\àõÿÍàŸH\€ù0ËK[»\òH›]õ»ÏŸY€»»ò[ò€»[ù\õõ»›H[\‹ù\à[H’ëÀà’ë»0ÍH^»SH[ùòHõ»òX⁄›\î””ãè‹è]à€\‹œWöX€€ãYY]‹ãY‹öYèâ⁄Ÿ^\ÀõX\
-œOòù]€à\OWòù]€óà€\‹œWöX€€ãX⁄⁄XŸWà]KZX€€ãYY]Wâ⁄ﬂWèè‹[à€\‹œWúô]öY]◊èâ‹›ô  _O‹‹[èè‹[èâ⁄ﬂO‹‹[èèÿù]€èò
-Köõ⁄[ä	… _OŸ]èâŸõ‹õPù]€ú 	—ôX⁄\â _X
-NŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KZX€€ãYY]I Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOõ‹[íX€€ëY]‹äãô]\Ÿ]öX€€ëY]
-J_Wôù[ò›[€à‹[íX€€ëY]‹äŸ^J^⁄X€€ëY]‹ï\ôŸ]ZŸ^Nÿ€€ú››\úô[ùYŸ]Ÿ][ô‹ 
-KöX€€ì›ô\úöY\œÀñ⁄Ÿ^WN€‹[êòX⁄Ÿõ‹
-0„X€€ôNà	⁄Ÿ^_X]à€\‹œWú›ôÀYY]‹ã\ô]öY]◊àYWöX€€îô]öY]◊èâ‹›ô Ÿ^J_OŸ]èè]à€\‹œWôöY[èèXô[êÏŸY€»»ò[ò€»[ù\õõœ€Xô[è[ú]YWòò[ö“X€€ê€ŸWàXŸZ€\èWë^éà[€€ã[€YWàò[YOWâŸ\ÿ ›\úô[ùÀù\OOOIÿò[ö…œÿ›\úô[ùùò[YNâ… _WèèŸ]èè€\‹œWö[\óèêÏŸY€‹»\‹€∞Î]ôZ\Œà	”ÿöôX›öŸ^\ ò\ŸRX€€ú Köõ⁄[ä	À	 _Kè‹è]à€\‹œWôöY[èèXô[ì›H€€ùpÓô»’ëœ€Xô[è^\ôXHYWú›ô“X€€ï^àXŸZ€\èWê€€H»	õ‹›ô…ô›¯†)âõÀ‹›ô…ô›»›H\[ò\»‹»]◊èâŸ\ÿ ›\úô[ùÀù\OOOI‹›ô…œÿ›\úô[ùùò[YNâ… _O›^\ôXOèŸ]èè]à€\‹œWúôY⁄\›ûK]€€ò\óèèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWò⁄€‹ŸT›ô—ö[Wèë\ÿ€€\à\ú]Z]õ»’ëœÿù]€èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWúô\Ÿ]X€€êùóèîô\›]\ò\èÿù]€èèŸ]èâŸõ‹õPù]€ú 	‘ÿ[ò\à0ÎX€€ôI _X]èOûŸ]ãúô]ô[ùYò][
-
-Nÿ€€ú›ò[öœYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿò[ö“X€€ê€ŸI Kùò[YKùö[J
-Kò]œYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹›ô“X€€ï^	 Kùò[YKùö[J
-KœYŸ]Ÿ][ô‹ 
-N‹ÀöX€€ì›ô\úöY\œ^ÀããäÀöX€€ì›ô\úöY\ﬂﬂJ_N⁄Yäò] \ÀöX€€ì›ô\úöY\÷⁄Ÿ^WO^›\Nâ‹›ô…Àò[YNúò]ﬂNŸ[ŸHYäò[ö…âòò\ŸRX€€ú÷ÿò[ö◊J\ÀöX€€ì›ô\úöY\÷⁄Ÿ^WO^›\Nâÿò[ö…Àò[YNòò[öﬂNŸ[ŸHYäò[ö \ô]\õàÿ\›
-	–ÏŸY€»H0ÎX€€ôH\ÿ€€öX⁄YÀâ NŸ[ŸH[]HÀöX€€ì›ô\úöY\÷⁄Ÿ^WN‹ÿ]ôTŸ][ô‹  N›ÿ\›
-	„X€€ôH]X[^òYÀâ N€‹[ê›\›€RX€€ú 
-_JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ⁄€‹ŸT›ô—ö[I Kõ€ò€X⁄œJ
-OOôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹›ô“[\‹ùö[I Kò€X⁄ 
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ô\Ÿ]X€€êùâ Kõ€ò€X⁄œJ
-OOûÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹ÀöX€€ì›ô\úöY\œ^ÀããäÀöX€€ì›ô\úöY\ﬂﬂJ_NŸ[]HÀöX€€ì›ô\úöY\÷⁄Ÿ^WN‹ÿ]ôTŸ][ô‹  N›ÿ\›
-	„X€€ôHô\›]\òYÀâ N€‹[ê›\›€RX€€ú 
-__Wóôù[ò›[€àô[ô\êòX⁄›\›]J
-^ÿ€€ú›\›[ÿÿ[›‹òYŸKôŸ]][JT’–êP“’T“—VJK›]\œYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄›\›]\’^	 Kÿ\õö[ôœYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄›\ÿ\õö[ô… K^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄›\ÿ\õö[ô’^	 N⁄Yä\›]\ﬂ]ÿ\õö[ô \ô]\õé⁄Yä[\›
-^‹›]\Àù^€€ù[ùI”ô[ö[HòX⁄›\^\õõ»‹öXY…Œ›ÿ\õö[ôÀò€\‹”\›úô[[›ôJ	⁄Y[â N›^ù^€€ù[ùI’õÿÍàZ[ôH∞Ë€»‹ö[›H[HòX⁄›\^\õõÀâŒ‹ô]\õüX€€ú›^\œJ]Kõõ› 
-K[ô]»]J\›
-JKŒç‹›]\Àù^€€ù[ùX0Êõ[[»òX⁄›\	⁄[X[êY€ \›
-_X›ÿ\õö[ôÀò€\‹”\›ùŸŸ€J	⁄Y[âÀ^\œêP“’T’–Tìó—VT N⁄Yä^\œèPêP“’T’–Tìó—VT ]^ù^€€ù[ùX»0Óõ[[»òX⁄›\õ⁄H‹öXY»0ËH	”X]ôõ€‹ä^\ _HX\ÀòWôù[ò›[€àô[ô\íX[›]J
-^ÿ€€ú›\›[ÿÿ[›‹òYŸKôŸ]][JT’“PS“ST‘ï“—VJK[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[›]\’^	 N⁄Yä[
-Y[ù^€€ù[ù[\›ÿ0Êõ[XH[\‹ùpÈË€»	⁄[X[êY€ \›
-_Xâ”∞Ë€»€€ôöY›\òY»ô\›H\\ô[…ﬂWò\ﬁ[ò»ù[ò›[€à^‹ù]J
-^ÿ€€ú›^[ÿY^ÿ\â‘ôY⁄\›õ…Àô\ú⁄[€éêT’ëTî“S”ã^‹ùY]õô]»]J
-Kù“T”‘›ö[ô 
-K]ô[ùŒò]ÿZ][]ô[ù 
-KYYXÿ][€úŒò]ÿZ][YYXÿ][€ú 
-KŸ][ô‹ŒôŸ]Ÿ][ô‹ 
-_Kõÿè[ô]»õÿä“î””ãú›ö[ô⁄YûJ^[ÿYù[äWK›\Nâÿ\Xÿ][€ã⁄ú€€âﬂJKOYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	ÿI NÿKöôYèUTìò‹ôX]SÿöôX›Tì
-õÿäNÿKô›€õÿYXôY⁄\›õÀXòX⁄›\I€ÿÿ[]Jô]»]J
-J_Köú€€òŸÿ›[Y[ùòõŸKò\[ô⁄[
-JNÿKò€X⁄ 
-NÿKúô[[›ôJ
-N€ÿÿ[›‹òYŸKúŸ]][JT’–êP“’T“—VKô]»]J
-Kù“T”‘›ö[ô 
-JN‹Ÿ][Y[›]
-
-
-OOïTìúô]õ⁄ŸSÿöôX›Tì
-KöôYäKL
-N‹ô[ô\êòX⁄›\›]J
-N›ÿ\›
-	–òX⁄›\‹öXYÀâ _Wò\ﬁ[ò»ù[ò›[€à[\‹ù]Jö[J^›û^ÿ€€ú›]ORî””ãú\úŸJ]ÿZ]ö[Kù^
-
-JK]ô[ùœP\úò^Kö\–\úò^J]JOŸ]Nô]Kô]ô[ùŒ⁄Yä\úò^Kö\–\úò^J]ô[ù JYõ‹ä€€ú›HŸà]ô[ù ^⁄YäOÀöY	âñ…€õ›IÀ	€YYXÿ][€âÀ	‹€Y\	À	‹\ò⁄\ŸI◊Kö[ò€Y\ Kù\JIâôKù[Y\›[\
-X]ÿZ]]]ô[ù
-J_ZYä\úò^Kö\–\úò^J]KõYYXÿ][€ú JYõ‹ä€€ú›HŸà]KõYYXÿ][€ú ZYäOÀöY	âõKòX›]ôR[ô‹ôYY[ù
-X]ÿZ]]YYXÿ][€äJN⁄Yä]KúŸ][ô‹…âù\[Ÿà]KúŸ][ô‹œOOI€ÿöôX›	 \ÿ]ôTŸ][ô‹ ÀããôŸ]Ÿ][ô‹ 
-Kããô]KúŸ][ô‹ﬂJNÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	–òX⁄›\[\‹ùYÀâ _Xÿ]⁄›ÿ\›
-	–\ú]Z]õ»HòX⁄›\[ù∞Ë[YÀâ __Wò\ﬁ[ò»ù[ò›[€àô\›‹ôQ[[ 
-^⁄YäX€€ôö\õJ	‘›Xú›]Z\àŸ‹»‹»ôY⁄\›õ‹»[‹»Y‹»öX›0ÎX⁄[‹œ… J\ô]\õéŸõ‹ä€€ú›HŸà]ÿZ][]ô[ù 
-JX]ÿZ][]Q]ô[ù
-KöY
-NŸõ‹ä€€ú›HŸà[[—]ô[ù 
-JX]ÿZ]]]ô[ù
-JN€ÿÿ[›‹òYŸKúŸ]][J	‹ôY⁄\›õÀXô]KY[[À\ŸYYY	À	ﬁY\… Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	—Y‹»öX›0ÎX⁄[‹»ô\›]\òY‹Àâ _Wò\ﬁ[ò»ù[ò›[€à€X\ë]J
-^⁄YäX€€ôö\õJ	–\Yÿ\àŸ‹»‹»ôY⁄\›õ‹»HÿY\›õ‹»\›H\\ô[œ… J\ô]\õéÿ]ÿZ]ô\J›‹ôJUëSïÀ	‹ôXY‹ö]I Kò€X\ä
-JNÿ]ÿZ]ô\J›‹ôJUQSÀ	‹ôXY‹ö]I Kò€X\ä
-JNÿ]ÿZ]ô\J›‹ôJQQP–US”îÀ	‹ôXY‹ö]I Kò€X\ä
-JN€ÿÿ[›‹òYŸKúŸ]][J	‹ôY⁄\›õÀXô]KY[[À\ŸYYY	À	ﬁY\… Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	—Y‹»ÿÿZ\»\YÿY‹Àâ _Wóôù[ò›[€àX[[\‹ù[ôõ 
-^€‹[êòX⁄Ÿõ‹
-	‘€€õ»»\ÿpÓôIÀ]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœê][»€€[»€ùO‹›õ€ôœè‹[èì»][»0Íà»€€õ»õ»\ÿpÓôHHXúôH\›H–H€€H‹»‹∞Ë\ö[‹Àà8†'ô]ö\ÿ\∏†'H€€ù[ùXHŸ[ô»»[Ÿ»ôX€€Y[ôYÀè‹‹[èèŸ]èè€\‹œWö[\óèì»õ›0Ë€»
-»€€õ»\õX[ôXŸH\‹€∞Î]ô[H‹»Y‹»[\‹ùY‹»Ÿ[HŸ\à€‹úöY⁄Y‹Àè‹âŸõ‹õPù]€ú 	—ôX⁄\â _X
-_Wóã àYpÈË€»HôY⁄\›õ‹»Hõ›pÈË€»€€ùòHÿ[ò[Y[ù»X⁄Y[ù[[»[ù\à
-ã◊ôù[ò›[€àY]Ÿ]ò[YJYò[YK]ô[ùœ]ùYJ^ÿ€€ú›[Yÿ›[Y[ùôŸ][[Y[ùûRY
-Y
-N⁄YäY[
-\ô]\õéŸ[ùò[YO]ò[YOœ……Œ⁄Yä]ô[ù ^Ÿ[ô\‹]⁄]ô[ù
-ô]»]ô[ù
-	⁄[ú]	ÀÿùXòõ\ŒùùY_JJNŸ[ô\‹]⁄]ô[ù
-ô]»]ô[ù
-	ÿ⁄[ôŸIÀÿùXòõ\ŒùùY_JJ__Wôù[ò›[€àY]\€—úõ€QöY[
-Y
-^ÿ€€ú›ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-Y
-OÀùò[YN⁄Yä]ò[YJ\ô]\õàù[ÿ€€ú›[ô]»]Jò[YJN‹ô]\õàù[Xô\ãö\”òSäôŸ][YJ
-JO€ù[ôù“T”‘›ö[ô 
-_Wôù[ò›[€àY]ù[Xô\äY
-^ÿ€€ú›ò]œT›ö[ô ÿ›[Y[ùôŸ][[Y[ùûRY
-Y
-OÀùò[YOœ…… Kùö[J
-N⁄Yä\ò] \ô]\õàù[ÿ€€ú›èSù[Xô\äò]Àúô\XŸJ	À	À	Àâ JN‹ô]\õàù[Xô\ãö\—ö[ö]JäO€éõù[Wôù[ò›[€àY]]J\J^‹ô]\õà\OOOI€õ›Iœ…—Y]\à[õ›pÈË€…Œù\OOOI€YYXÿ][€âœ…—Y]\àYYXÿ[Y[ù…Œù\OOOI‹€Y\	œ…—Y]\à€€õ…Œâ—Y]\à€€\òIﬂWôù[ò›[€àö[ö\⁄]ô[ùY]‹ä^\›[ô ^ÿ€€ú›õ‹õOYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹⁄Y]]I Kù^€€ù[ùYY]]J^\›[ôÀù\JNÿ€€ú››XõZ]Yõ‹õKú]Y\ûTŸ[X›‹ä	ÿù]€ñ›\OWú›XõZ]óI N⁄Yä›XõZ]
-\›XõZ]ù^€€ù[ùI‘ÿ[ò\à[\òpÈÌY\…ŒŸõ‹õKõ€ú›XõZ]Y]èOúÿ]ôQY]Y]ô[ù
-]ã^\›[ô _Wóò\ﬁ[ò»ù[ò›[€à‹[ë]ô[ùY]‹äY
-^ÿ€€ú›^\›[ôœJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-N⁄YäY^\›[ô \ô]\õé◊àYä^\›[ôÀù\OOOI€õ›I ^◊à]ÿZ]‹[ìõ›T⁄Y]
-
-N◊àY]Ÿ]ò[YJ	€õ›U^	À^\›[ôÀù^	…Àò[ŸJNŸY]Ÿ]ò[YJ	€õ›UY…À^\›[ôÀùYﬂ	…Àò[ŸJNŸY]Ÿ]ò[YJ	‹ôX€‹ô[YIÀ”ÿÿ[[ú]
-^\›[ôÀù[Y\›[\
-JN◊àY[ŸHYä^\›[ôÀù\OOOI€YYXÿ][€â ^◊à]ÿZ]‹[ìYYXÿ][€î⁄Y]
-
-N◊àY]Ÿ]ò[YJ	€YYò[YIÀ^\›[ôÀõYYXÿ][€ü	…Àò[ŸJNŸY]Ÿ]ò[YJ	€YYõ›IÀ^\›[ôÀõõ›_	…Àò[ŸJNŸY]Ÿ]ò[YJ	‹ôX€‹ô[YIÀ”ÿÿ[[ú]
-^\›[ôÀù[Y\›[\
-JN◊à€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOY^\›[ôÀõYYXÿ][€íY
-_ö[ôõŸö[PûQ]ô[ù
-^\›[ôÀYY N◊àYäJ^‹Ÿ[X›YYYXÿ][€íY[KöYÿ€€ú›öY[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ô\Ÿ[ù][€ëöY[	 KŸ[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ô\Ÿ[ù][€îŸ[X›	 NŸöY[Àò€\‹”\›úô[[›ôJ	⁄Y[â N⁄YäŸ[
-^‹Ÿ[ö[õô\íS\ô\Ÿ[ù][€ì‹[€ú JN‹Ÿ[ùò[YOY^\›[ôÀúô\Ÿ[ù][€íY	…Œ‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_ù[‹Ÿ[õ€ò⁄[ôŸOX\ﬁ[ò 
-OOû‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_ù[ÿ€€ú›X›]ôS[ŸOYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]KY‹ŸK[[ŸWKúŸ[X›Y	 OÀô]\Ÿ]ô‹ŸS[Ÿ_	‹\ï[ö]	Œÿ]ÿZ]ô[ô\ë‹ŸQöY[ X›]ôS[ŸJ___Wà€€ú›[ŸOY^\›[ôÀô‹ŸS[Ÿ_
-^\›[ôÀù[ö]‹ŸUò[YHO[ù[…‹\ï[ö]	Œâ››[	 K[ŸPùèYÿ›[Y[ùú]Y\ûTŸ[X›‹äŸ]KY‹ŸK[[ŸOWâ€[Ÿ_WóX
-N⁄Yä[ŸPùä^€[ŸPùãò€X⁄ 
-Nÿ]ÿZ]ô]»õ€Z\ŸJèOúô\]Y\›[ö[X][€ëúò[YJ
-
-OOúä
-JJ_Y[ŸH]ÿZ]ô[ô\ë‹ŸQöY[ [ŸJN◊àY]Ÿ]ò[YJ	Ÿ‹ŸU[ö]	À^\›[ôÀô‹ŸU[ö]	€Y… N◊àYä[ŸOOOI››[	 YY]Ÿ]ò[YJ	››[‹ŸUò[YIÀ^\›[ôÀù›[‹ŸUò[YOœ \úŸQõÿ]
-^\›[ôÀô‹ŸJ_	… JNŸ[Ÿ^ÿ€€ú›[ö]œSù[Xô\ä^\›[ôÀù[ö]’ZŸ[ä_Nÿ€€ú›[ö]‹ŸOY^\›[ôÀù[ö]‹ŸUò[YHO[ù[Ÿ^\›[ôÀù[ö]‹ŸUò[YNä^\›[ôÀù›[‹ŸUò[YHO[ù[”ù[Xô\ä^\›[ôÀù›[‹ŸUò[YJK›[ö]Œâ… NŸY]Ÿ]ò[YJ	›[ö]‹ŸUò[YIÀ[ö]‹ŸJNŸY]Ÿ]ò[YJ	›[ö]’ZŸ[âÀ[ö] _WàY[ŸHYä^\›[ôÀù\OOOI‹\ò⁄\ŸI ^◊à]ÿZ]‹[î\ò⁄\ŸT⁄Y]
-
-N◊àY]Ÿ]ò[YJ	‹\ò⁄\ŸSYY	À^\›[ôÀõYYXÿ][€ü	…Àò[ŸJNŸY]Ÿ]ò[YJ	‹\ò⁄\ŸTX⁄ÿYŸ\…À^\›[ôÀúX⁄ÿYŸ\ﬂJNŸY]Ÿ]ò[YJ	‹\ò⁄\ŸTöXŸIÀ^\›[ôÀúöXŸ_	… NŸY]Ÿ]ò[YJ	‹\ò⁄\ŸTXŸIÀ^\›[ôÀúXŸ_	…Àò[ŸJNŸY]Ÿ]ò[YJ	‹ôX€‹ô[YIÀ”ÿÿ[[ú]
-^\›[ôÀù[Y\›[\
-JN◊à€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOY^\›[ôÀõYYXÿ][€íY
-_ö[ôõŸö[PûQ]ô[ù
-^\›[ôÀYY N◊àYäJ^‹Ÿ[X›YYYXÿ][€íY[KöYÿ€€ú›öY[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTô\Ÿ[ù][€ëöY[	 KŸ[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTô\Ÿ[ù][€â NŸöY[Àò€\‹”\›úô[[›ôJ	⁄Y[â N⁄YäŸ[
-^‹Ÿ[ö[õô\íS\ô\Ÿ[ù][€ì‹[€ú JN‹Ÿ[ùò[YOY^\›[ôÀúô\Ÿ[ù][€íY	…Œ‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_ù[‹Ÿ[õ€ò⁄[ôŸOJ
-OOû‹Ÿ[X›Yô\Ÿ[ù][€íY\Ÿ[ùò[Y_ù[›\]T\ò⁄\ŸTô]öY] 
-___Wà]ÿZ]\]T\ò⁄\ŸTô]öY] 
-N◊àY[ŸHYä^\›[ôÀù\OOOI‹€Y\	 ^◊à‹[î€Y\⁄Y]
-
-NŸY]Ÿ]ò[YJ	‹€Y\›\ù	À”ÿÿ[[ú]
-^\›[ôÀú›\ù[YJJNŸY]Ÿ]ò[YJ	‹€Y\[ô	À”ÿÿ[[ú]
-^\›[ôÀô[ô[YJJNŸY]Ÿ]ò[YJ	‹€Y\õ›IÀ^\›[ôÀõõ›_	…Àò[ŸJNÿ€€ú›OSù[Xô\ä^\›[ôÀú]X[]J_Ÿÿ›[Y[ùú]Y\ûTŸ[X›‹ä‹€Y\]X[]HŸ]K\]X[]OWâ‹_WóX
-OÀò€X⁄ 
-N◊àY[ŸHô]\õé◊àö[ö\⁄]ô[ùY]‹ä^\›[ô WüWóò\ﬁ[ò»ù[ò›[€àÿ]ôQY]Y]ô[ù
-]ã^\›[ô ^Ÿ]ãúô]ô[ùYò][
-
-N€]ôX€‹ô^Àããô^\›[ôﬂN◊àYä^\›[ôÀù\OOOI€õ›I ^◊à€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›U^	 Kùò[YKùö[J
-K[Y\›[\YY]\€—úõ€QöY[
-	‹ôX€‹ô[YI N⁄Yä]^	âà\[ô[ô–]Y[…âàY^\›[ôÀö\–]Y[ \ô]\õàÿ\›
-	—\ÿ‹ô]òH›H‹ò]ôH[XH[õ›pÈË€Àâ N⁄Yä][Y\›[\
-\ô]\õàÿ\›
-	“[ôõ‹õYH[XH]HH‹∞Ë\ö[»∞Ë[Y‹Àâ Nÿ€€ú›\–]Y[œPõ€€X[ä^\›[ôÀö\–]Y[ﬂ[ô[ô–]Y[ N‹ôX€‹ô^Àããô^\›[ôÀ[Y\›[\^YŒôÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›UY… Kùò[YKùö[J
-K\–]Y[À]Y[”€õNêõ€€X[ä\–]Y[…âà]^
-_N◊àY[ŸHYä^\›[ôÀù\OOOI€YYXÿ][€â ^◊à€€ú›ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYò[YI Kùò[YKùö[J
-K[Y\›[\YY]\€—úõ€QöY[
-	‹ôX€‹ô[YI N⁄Yä[ò[YJ\ô]\õàÿ\›
-	“[ôõ‹õYH»YYXÿ[Y[ùÀâ N⁄Yä][Y\›[\
-\ô]\õàÿ\›
-	“[ôõ‹õYH[XH]HH‹∞Ë\ö[»∞Ë[Y‹Àâ Nÿ€€ú›[ŸOYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]KY‹ŸK[[ŸWKúŸ[X›Y	 OÀô]\Ÿ]ô‹ŸS[Ÿ_	‹\ï[ö]	À[ö]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ‹ŸU[ö]	 OÀùò[Y_	€Y…Œ€]›[‹ŸUò[YK[ö]’ZŸ[èLK[ö]‹ŸUò[YO[ù[⁄Yä[ŸOOOI››[	 ^››[‹ŸUò[YOYY]ù[Xô\ä	››[‹ŸUò[YI N⁄Yä›[‹ŸUò[YOO[ù[
-\ô]\õàÿ\›
-	“[ôõ‹õYHH‹ŸH›[â _Y[Ÿ^›[ö]‹ŸUò[YOYY]ù[Xô\ä	›[ö]‹ŸUò[YI N›[ö]’ZŸ[èYY]ù[Xô\ä	›[ö]’ZŸ[â OœÃN⁄Yä[ö]‹ŸUò[YOO[ù[
-\ô]\õàÿ\›
-	“[ôõ‹õYHH‹ŸHHÿYH[öYYKâ N››[‹ŸUò[YO][ö]‹ŸUò[YJù[ö]’ZŸ[ü\ôX€‹ô^Àããô^\›[ôÀ[Y\›[\YYXÿ][€éõò[YKYYXÿ][€íYúŸ[X›YYYXÿ][€íYù[ô\Ÿ[ù][€íYúŸ[X›Yô\Ÿ[ù][€íYù[‹ŸS[ŸNõ[ŸK[ö]‹ŸUò[YK›[‹ŸUò[YK‹ŸU[ö]ù[ö][ö]’ZŸ[ã‹ŸNò	››[‹ŸUò[YKù”ÿÿ[T›ö[ô 	‹Pîâ _H	›[ö]X]X[ù]Nù[ö]’ZŸ[èOOLO…ÃH[öYYIŒò	›[ö]’ZŸ[üH[öYY\ÿõ›Nôÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYõ›I Kùò[YKùö[J
-_N◊àY[ŸHYä^\›[ôÀù\OOOI‹\ò⁄\ŸI ^◊à€€ú›ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸSYY	 Kùò[YKùö[J
-K[Y\›[\YY]\€—úõ€QöY[
-	‹ôX€‹ô[YI N⁄Yä[ò[YJ\ô]\õàÿ\›
-	“[ôõ‹õYH»YYXÿ[Y[ùÀâ N⁄Yä][Y\›[\
-\ô]\õàÿ\›
-	“[ôõ‹õYH[XH]HH‹∞Ë\ö[»∞Ë[Y‹Àâ Nÿ€€ú›X⁄ÿYŸ\œSX]õX^
-KY]ù[Xô\ä	‹\ò⁄\ŸTX⁄ÿYŸ\… OœÃJKYYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOO\Ÿ[X›YYYXÿ][€íY
-KYö[ôô\Ÿ[ù][€äKŸ[X›Yô\Ÿ[ù][€íY
-Kÿ[YTô\Ÿ[ù][€è\Ÿ[X›Yô\Ÿ[ù][€íYOOY^\›[ôÀúô\Ÿ[ù][€íY\Sù[Xô\äÀù[ö]‘\îX⁄ÿYŸJ_
-ÿ[YTô\Ÿ[ù][€è”ù[Xô\ä^\›[ôÀù[ö]‘\îX⁄ÿYŸJNå
-N‹ôX€‹ô^Àããô^\›[ôÀ[Y\›[\YYXÿ][€éõò[YKYYXÿ][€íYúŸ[X›YYYXÿ][€íYù[ô\Ÿ[ù][€íYúŸ[X›Yô\Ÿ[ù][€íYù[X⁄ÿYŸ\À›[[ö]Œù\‹X⁄ÿYŸ\ ù\õù[[ö]‘\îX⁄ÿYŸNù\ù[öXŸNôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTöXŸI Kùò[YKùö[J
-KXŸNôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTXŸI Kùò[YKùö[J
-_N◊àY[ŸHYä^\›[ôÀù\OOOI‹€Y\	 ^◊à€€ú››\ù[ô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\›\ù	 Kùò[YJK[ô[ô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ô	 Kùò[YJN⁄YäJ›\ù[ô
-J\ô]\õàÿ\›
-	”»‹∞Ë\ö[»HX€‹ô\àôX⁄\ÿHŸ\à‹›\ö[‹à[»‹∞Ë\ö[»H‹õZ\ãâ N‹ôX€‹ô^Àããô^\›[ôÀ[Y\›[\ô[ôù“T”‘›ö[ô 
-K›\ù[YNú›\ùù“T”‘›ö[ô 
-K[ô[YNô[ôù“T”‘›ö[ô 
-K]X[]Nìù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\]X[]Uò[YI Kùò[YJ_õ›Nôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\õ›I Kùò[YKùö[J
-_N◊àWà]ÿZ]]]ô[ù
-ôX€‹ô
-N⁄Yä^\›[ôÀù\OOOI€õ›I…âú[ô[ô–]Y[ X]ÿZ]ÿ]ôP]Y[ ^\›[ôÀöY[ô[ô–]Y[ Nÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	–[\òpÈÌY\»ÿ[ò\Àâ WüWóõ‹[ë]ô[ùY[ùOX\ﬁ[ò»ù[ò›[€äY
-^ÿ€€ú›^\›[ôœJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-N⁄YäY^\›[ô \ô]\õé€‹[êòX⁄Ÿõ‹
-	”‹0ÈÌY\»»ôY⁄\›õ…À]à€\‹œWú⁄Y][‹[€ú◊èèù]€à\OWòù]€óà€\‹œWú⁄Y][‹[€óàYWôY]]ô[ùùóèëY]\àôY⁄\›õœÿù]€èèù]€à\OWòù]€óà€\‹œWú⁄Y][‹[€à[ôŸ\óàYWô[]Pùóèë^€Z\àôY⁄\›õœÿù]€èèŸ]èâŸõ‹õPù]€ú 	—ôX⁄\â _X
-]äOOûŸ]ãúô]ô[ùYò][
-
-Nÿ€‹ŸT⁄Y]
-
-_JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ŸY]]ô[ùùâ Kõ€ò€X⁄œJ
-OOõ‹[ë]ô[ùY]‹äY
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[]Pùâ Kõ€ò€X⁄œX\ﬁ[ò 
-OOû⁄Yä€€ôö\õJ	—^€Z\à\›HôY⁄\›õœ… J^ÿ]ÿZ][]Q]ô[ù
-Y
-Nÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	‘ôY⁄\›õ»^€pÎYÀâ ___Wóò€€ú›ôY⁄\›õ—õ‹õOYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI N‹ôY⁄\›õ—õ‹õOÀòY]ô[ù\›[ô\ä	⁄Ÿ^Y›€âÀOOû⁄YäKöŸ^HOOI—[ù\âﬂKö\–€€\‹⁄[ô \ô]\õéÿ€€ú›\ôŸ]YKù\ôŸ]⁄Yä\ôŸ][ú›[òŸ[ŸàS^\ôXQ[[Y[ù
-\ô]\õé⁄Yä\ôŸ][ú›[òŸ[ŸàS[ú][[Y[ù\ôŸ][ú›[òŸ[ŸàSŸ[X›[[Y[ù
-^ŸKúô]ô[ùYò][
-
-NŸKú›‹õ‹Yÿ][€ä
-N›\ôŸ]òõ\ä
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	€YY]]ÿ€€\]I OÀò€\‹”\›òY
-	⁄Y[â __KùYJN◊óôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOû⁄YäKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K[Y[ùWKù]€ã]Y[À[ú]^\ôXKŸ[X›I J\ô]\õéÿ€€ú›ÿ\ôYKù\ôŸ]ò€‹Ÿ\›
-	Àù[Y[[ôKZ][I N⁄YäXÿ\ô
-\ô]\õéÿ€€ú›YXÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]K[Y[ùWI OÀô]\Ÿ]õY[ùN⁄YäY
-[‹[ë]ô[ùY]‹äY
-_JN◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåŒKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^HãÀ»—àﬁ[Xõ€»Y\Y‹»\òHH[ù\ôòXŸH»\óãÀ»X[ù0Í[H»\Ÿ[ö»‹öY⁄[ò[\ÿH›\úô[ù€€‹àHŸ[ùò[^òHÿYHöY]–õﬁ[ùõ»»ÿ[ùò\»ççóòò\ŸRX€€úÀõõ›OIœ»ò[úŸõ‹õOWùò[ú€]JKåŒNN
-Hÿÿ[JçÕÃŒNNJWàö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWà›õ⁄ŸOWõõ€ôWèè]WìLåKéÕHÀçŒLçSåKéÕHMKåLÃÕMÀçŒN»NKéNåêÃMÀçÃLÕHNKéLé»MÀçåLMHNKéNMÀçHNKéNKçLååHNKéNŒKåMçNKéNéLåNHååMéLåNHåçéŒéLåNHåçŒLàKåMçåKååÕKçLååHåKååÕMãéLåÕåKååÕLãçLNçãåçÃÕåLMÃåHçãåçÃÕÕãåLMÃåHçãåçÃÕKåLMNçKåçHKåLMNåÀååÕKåLMNÀçŒLçPÕKåLMNKçÕçMåàãåLMÃåHçÕåNHåLMÃåHçÕåNSNéçÃàçÕåNPÃåéçÃàçÕåNHåKéÕHKçÕçMåàåKéÕHÀçŒLçVìNKçLååHMãåéLêŒKåMçMãåéLàéLåNHMãçLåÕéLåNHMãéÕNPŒéLåNHMÀåMMåàKåMçMÀçåàKçLååHMÀçåìMÀçHMÀçåêÃMÀéå»MÀçåàNååçHMÀåMMåàNååçHMãéÕNPÃNååçHMãçLåÕMÀéå»MãåéLàMÀçHMãåéLñìNKçLååHLãççŒM–ŒKåMçLãççŒM»éLåNHLãéLåNHéLåNHLÀååÕŒéLåNHLÀçMéHKåMçLÀçŒMéHKçLååHLÀçŒMéSMÀçHLÀçŒMéPÃMÀéå»LÀçŒMéHNååçHLÀçMéHNååçHLÀååÕÃNååçHLãéLåNHMÀéå»LãççŒM»MÀçHLãççŒM÷ìNKçLååHKååçPŒKåMçKååçHéLåNHKåÃéHéLåNHKçåMÃNPŒéLåNHKéLéMéHKåMçLåMŒM»KçLååHLåMŒM”MÀçHLåMŒM–ÃMÀéå»LåMŒM»NååçHKéLéMéHNååçHKçåMÃNPÃNååçHKåÃéHMÀéå»KååçHMÀçHKååçVóãœè]WìLMééééÕNSççéML»MÀåMåÀåŒMKçÃççìLÀåNÕHçÀçåìLãçÕÕHéKçMåçPÃLãåÕçÃàéKçŒLàLãçåMÃåŒLãéå»éKéNìLçKçéM»MãåéMéSçãåçÃÕHMKåÃLçPÃçãçÃÃHMé»çãççŒM»MåÃLçHçãååççàLÀéLåNSçKéLéM»LÀççÃNPÃçKçÕçàLÀåéMéHçéNLÀåŒéççMåçHLÀéÕSåÀçÃNMéNMóãœèŸœâŒ◊òò\ŸRX€€úÀú[Iœ»ò[úŸõ‹õOWùò[ú€]JååçMJHÿÿ[JKååŒLJWàö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWà›õ⁄ŸOWõõ€ôWèè]WìMKçŒŒL»ãçÃåSKçÕÃå»LçÃéMPÀLçLÃåŒHLÀåÕãLçMMNå»MKéM»KçLçéNåÕêÃÀçMÕéNHååMç»ãçLLHååÃÃ»éÕMHMÀçÕåLãéNLàLÀçÃÕÃ÷óãœè]WìLNååå»KçLéM–ÃMKéMLãLçMNML»LÀåÃKLçLééLçÃçMKçÕÕçSãçÃNKçŒLå”LÀçÕLHLãéåÃ”MÀçÕMç»éÕçêÃååéLàãçMLMàååLçàÀçNLHNååå»KçLéM÷óãœèŸœâŒ◊òò\ŸRX€€úÀõ[€€èIœ»ò[úŸõ‹õOWùò[ú€]JåLçLŒJHÿÿ[JKåMÃéMéJWàö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWà›õ⁄ŸOWõõ€ôWèè]WìLLçéååNåPÃMéå»ååNåHNåŒLàMÀçMMÃHNKéMLÃHMåLÕLêÃååçåàLÀçLÃÕ»NKéçÃàLÀåLNKåçÃÕLÀåéNL–ÃNçMéHLÀçMMÃHMÀåéLHLÀéåàMãåŒLHLÀéåêŒKéMLÃLàLÀéåàãçLåNHLåŒLàãçLåNHåéNLÃPÕãçLåNHÀåMàãçÕHKéåNHÀåMéLŒNNPÕÀçåçHååMMåHãéMåMLåNLçãåÃÕNMåÕÃÕ–ÃãéMLÃLàKçLçN»KåLLNHKçÃMMêÃMKçéçéMLÃHååNåHLçéååNåVóãœèŸœâŒ◊òò\ŸRX€€úÀòòYœIœ»ö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWèè]WìMçàKåçRNKçÃåKçMHKåçHå»ãçÃàå»éUåNéPÃå»åKçMHåKçHåÀåHNçÕHåÀåRKåçPÃãçMHåÀåHHåKçMHHNéUééPÃHãçÃàãçHKåçHçàKåçVóà›õ⁄ŸOWõõ€ôWãœè]WìMÀçHKåçPÕÀçHãçHKåNéHLàéPÃMéàéHMãçMHãçHMãçMHKåçWàö[Wõõ€ôWà›õ⁄ŸOWò›\úô[ù€€‹óà›õ⁄ŸK[‹X⁄]OWãéWà›õ⁄ŸK]⁄YWåãåÕWà›õ⁄ŸK[[ôXÿ\Wòù]ãœèŸœâŒ◊òò\ŸRX€€úÀö€YOIœ»ò[úŸõ‹õOWùò[ú€]JKçLMç
-Hÿÿ[JKåMÕäWàö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWà›õ⁄ŸOWõõ€ôWèè]WìNKåéNKçMŒSKåéLÀçLŒLPŒKåéLÀåLMàKåÃÕNMLãéå»KçÕÃÕLãéå”LÀé»Lãéå–ÃMåçåàLãéå»MçLåÕLÀåLMàMçLåÕLÀçLŒLSMçLåÕNKçMŒVìLãéNŒNéLMêÃãéNŒååMŒM»ÀçŒLçHåéMåHKåLçHåéMåSNçL»åéMåPÃNKçŒLHåéMåHåçNNHååMŒM»åçNNHNéLMìåçNNHLçL”LãåŒNÀçMŒLêÃLàÀååÕŒLKçMéHÀåçHLKåMçHÀçMŒLìãéNŒLçéM÷ìLçÕåNLçMPÃéMÕçMåàLçMHKåMÃNLåéLHKåÕÕÕHLåMìLKçåàKçéMLÃPÃLKçLåÕKçNLÕÕHLKççMåàKçMéLKçŒLàKçMéÃLKéLMHKçMéLãåéHKçNLÕÕHLãåMçHKçéMLÃSåãååççàLåMêÃåãåŒNLåéLHåãçNNHLçMHåãééHLçMPÃåÀåéLHLçMHåÀçMÃ»LåŒHåÀçMÃ»KçÃÕŒÃåÀçMÃ»KçLåÕåÀçKåÃåÃHåÀåéLHKåMMåçSLãéLMHçLÃLçPÃLãçMM»åMŒLãåMÃNHLKçŒLàÃLKåŒNLKåMMàåMŒLççMåàçLÃLçSåéLçHKåMMåçPÃåNLÕÕHKåÃåÃHKçLåÕKçÃÕŒÃLåŒHåçÃÕŒLçMHçÕåNLçMVìLNçL»KçLåÕåçÕåàÀçåMåçÕåàÀåMMåêÃåçÕåàãçåçHåçãåÕÕHååLŒãåÕÕSNKåLMàãåÕÕPÃNçÃLHãåÕÕHNçL»ãçåçHNçL»ÀåMMåñóãœèŸœâŒ◊òò\ŸRX€€úÀö\›‹ûOIœ»ö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWà›õ⁄ŸOWõõ€ôWèè]WìLåÀçŒM»LÀåÕçåÀçåM»LãéLÃåKåÕNHKççåéMÕ»KååNåçMMHKåÃéNåMçLãéLL»MÀéMÕ»LÀåÕ»Nåå»LÀçÃéHNåÕLÀéMÕHååŒHMåçàNKçNàMKçMàNéLMMãéŒNåŒHNåHMãçéNKåÃNHMKååLHåååLHLÀççåçÕàLãçåHåéLMàLKåå»åéLHKéNLàåççÃçŒHåååÕàÀçŒHNKçéL»ãéç»NKåL»ãåå»NåNHKåMHMÀåàçÕÃ»MãéåHçåàMãéå»MãéNLHÀééMÀåÃMÀçŒHMÀéççMNé»KçåHååM»ãé»åKåMHåçàåKéLàKçåçHåãç»LKåŒåãççÕHLãçåãçÃHMåŒHåãçMKåçNåãåLMMãåMÃàåKçÃàMÀçŒåéLÃ»NçéHååNKçéNçÃÃ»åçåàMÀåéåKåéHMKçÕàåKçÃÕMåçàåÀçåàLÀéMÕHåÀçÃç»LÀçÕå»óãœè]WìLLKçŒHKéåàLKåÕç»ãåMLHLKåNMHãçNLKååNHLãéMàLKçåàLÀåÃÃLÀéLàMãçŒ»MååNHMÀåÕàMçÃ»MÀåLLMKååLHMãçÃéMKåéHMãåàMKåLçHMKçÃçHLãçŒHLãåÃLLãçŒHãçMàLãççHãåNHLãçåàKéMçLãåLÃ»KéHóãœè]WìLååMKéMÃàNKåçLçÃÃàNåLçHÀçåàMãéNãçéL»MKçLMàKéMÃHMåLÃ»KçLLàLãçÃNHKåé»LKåççàKåé»KéKçLLàçMŒKéLåÀåŒLHãçNãåÕÕHÀåMéHKçLÀéNHåéHKåçÕàÀçMãçåÕHãçÃç»åNHãåçNKéMçMåàKéNNHåçLLååéHåNMHLçåÕàåŒNLKåMHãçåÃ»MçLLÀåMàMçÕM»ÀçŒMççàKééLKååHãåLççHKéMéHLåçMKççÃàLåÀéML»KéMåŒ»çLÃKåÀåç”KéMéHKéLÀåÃåçåŒSçÃ»ÀçŒNLåÃHÀååÕ”LKçLŒHÀåNLãçŒHÀåLÀéNÀåçŒSMKåMÃàÀçÃåSMãåMMàåçMÀåMéLÕìMÀéML»KçÕÕ”NéÕHãéMNNKåNÀåMSNKçåM»ÀåML”ååÃHãéSåååLHãçÕóãœèŸœâŒ◊òò\ŸRX€€úÀúŸ][ô‹œIœ»ö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWà›õ⁄ŸOWõõ€ôWèèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWãœèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWàò[úŸõ‹õOWúõ›]JHLàLäWãœèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWàò[úŸõ‹õOWúõ›]JLLàLäWãœèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWàò[úŸõ‹õOWúõ›]JLÕHLàLäWãœèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWàò[úŸõ‹õOWúõ›]JNLàLäWãœèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWàò[úŸõ‹õOWúõ›]JåçHLàLäWãœèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWàò[úŸõ‹õOWúõ›]JçÃLàLäWãœèôX›WåLåMWàOWãå◊à⁄YWåÀç◊àZY⁄Wçãå◊àûWåKçWàò[úŸõ‹õOWúõ›]JÃMHLàLäWãœè⁄\ò€HﬁWåLóàﬁOWåLóàèWçãåçWàö[Wõõ€ôWà›õ⁄ŸOWò›\úô[ù€€‹óà›õ⁄ŸK[‹X⁄]OWãéWà›õ⁄ŸK]⁄YWçåóãœè⁄\ò€HﬁWåLóàﬁOWåLóàèWåãççWàö[Wõõ€ôWà›õ⁄ŸOWò›\úô[ù€€‹óà›õ⁄ŸK[‹X⁄]OWãéWà›õ⁄ŸK]⁄YWåKéWãœèŸœâŒ◊óò\ﬁ[ò»ù[ò›[€à[ôT⁄‹ù›][\‹ù
-
-^ÿ€€ú›[ô]»TìŸX\ò⁄\ò[\ ÿÿ][€ãúŸX\ò⁄
-N⁄Yä\ö\ 	‹€Y\›\ù	 _\ö\ 	‹€Y\[ô	 J\ô]\õéÿ€€ú››\ù[ô]»]JôŸ]
-	‹€Y\›\ù	 JK[ô[ô]»]JôŸ]
-	‹€Y\[ô	 JN⁄YäJ›\ù[ô
-J\ô]\õéÿ€€ú›^[ÿY^‹›\ùú›\ùù“T”‘›ö[ô 
-K[ôô[ôù“T”‘›ö[ô 
-K]X[]Nìù[Xô\äôŸ]
-	‹€Y\]X[]I _
-Kõ›NúôŸ]
-	‹€Y\õ›I _	…ﬂK^\›[ôœJ]ÿZ][]ô[ù 
-JKú€€YJOOôKù\OOOI‹€Y\	…âôKú›\ù[YOOO\^[ÿYú›\ù	âôKô[ô[YOOO\^[ÿYô[ô
-N⁄\›‹ûKúô\XŸT›]JﬂK	…Àÿÿ][€ãú]ò[YJN⁄Yä^\›[ô \ô]\õàÿ\›
-	—\‹ŸH\∞Î[Ÿ»H€€õ»∞ËH\›0ËHôY⁄\›òYÀâ Nÿ€€ú›[ŸOYŸ]Ÿ][ô‹ 
-KöX[[\‹ù[ŸN⁄Yä[ŸOOOIÿ]]… ^ÿ]ÿZ]]]ô[ù
-⁄YùZY
-	‹€Y\ZX[	 K\Nâ‹€Y\	À[Y\›[\ú^[ÿYô[ô›\ù[YNú^[ÿYú›\ù[ô[YNú^[ÿYô[ô]X[]Nú^[ÿYú]X[]Kõ›Nú^[ÿYõõ›K€›\òŸNâ⁄X[\⁄‹ù›]	À[[Œôò[Ÿ_JN€ÿÿ[›‹òYŸKúŸ]][JT’“PS“ST‘ï“—VKô]»]J
-Kù“T”‘›ö[ô 
-JN›ÿ\›
-	‘€€õ»[\‹ùYÀâ _Y[ŸHYä[ŸOOOIÿ\⁄… ^⁄Yä€€ôö\õJ	‘ÿ[ò\à»€€õ»ôXŸXöY»]]€X]Xÿ[Y[ùO»‹]YH[Hÿ[òŸ[\à\òHô]ö\ÿ\ãâ J^ÿ]ÿZ]]]ô[ù
-⁄YùZY
-	‹€Y\ZX[	 K\Nâ‹€Y\	À[Y\›[\ú^[ÿYô[ô›\ù[YNú^[ÿYú›\ù[ô[YNú^[ÿYô[ô]X[]Nú^[ÿYú]X[]Kõ›Nú^[ÿYõõ›K€›\òŸNâ⁄X[\⁄‹ù›]	À[[Œôò[Ÿ_JN€ÿÿ[›‹òYŸKúŸ]][JT’“PS“ST‘ï“—VKô]»]J
-Kù“T”‘›ö[ô 
-JN›ÿ\›
-	‘€€õ»[\‹ùYÀâ _Y[ŸH‹[î€Y\⁄Y]
-^[ÿY
-_Y[ŸH‹[î€Y\⁄Y]
-^[ÿY
-_Wóôù[ò›[€à›⁄]⁄Xäò[YJ^Ÿÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	ÀùöY]… Kôõ‹ëXX⁄
-èOùãò€\‹”\›ùŸŸ€J	ÿX›]ôIÀãô]\Ÿ]ùöY]œOO[ò[YJJNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	ÀùXãZ][I Kôõ‹ëXX⁄
-èOòãò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	Àãô]\Ÿ]ùXèOO[ò[YJJN›\]UXêùXòõJ
-N›⁄[ô›Àúÿ‹õ€ ›‹åôZ]ö[‹éâ⁄[ú›[ù	ﬂJ_Wôù[ò›[€àÿ\›
-\Ÿ ^ÿ€€ú›Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ÿ\›	 N›ù^€€ù[ù[\ŸŒ›ò€\‹”\›òY
-	‹⁄›… Nÿ€X\ï[Y[›]
-ÿ\›ù[Y\äN›ÿ\›ù[Y\è\Ÿ][Y[›]
-
-
-OOùò€\‹”\›úô[[›ôJ	‹⁄›… KåÃ
-_Wôù[ò›[€à‹[ï\J\J^⁄Yä\OOOI€õ›I [‹[ìõ›T⁄Y]
-
-NŸ[ŸHYä\OOOI€YYXÿ][€â [‹[ìYYXÿ][€î⁄Y]
-
-NŸ[ŸHYä\OOOI‹\ò⁄\ŸI [‹[î\ò⁄\ŸT⁄Y]
-
-NŸ[ŸHYä\OOOI‹€Y\	 [‹[î€Y\⁄Y]
-
-_Wôù[ò›[€àÿYöX⁄[[‘ÿ‹ö\
-
-^⁄Yä\[Ÿà[ú›\ôTöX⁄[[—]OOOIŸù[ò›[€â \ô]\õàõ€Z\ŸKúô\€€ôJ
-N‹ô]\õàô]»õ€Z\ŸJ
-ô\€€ôKôZôX›
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àú‹òœXã›å[[Àöúœ›èI–T’ëTî“S”üX‹Àõ€õÿY\ô\€€ôN‹Àõ€ô\úõ‹è\ôZôX›Ÿÿ›[Y[ùöXYò\[ô⁄[
- _J_Wôù[ò›[€àÿYXêò\îù[ù[YTÿ‹ö\
-
-^⁄Yä\[Ÿà\TôY⁄\›õ’Xêò\èOOIŸù[ò›[€â \ô]\õàõ€Z\ŸKúô\€€ôJ
-N‹ô]\õàô]»õ€Z\ŸJ
-ô\€€ôKôZôX›
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àú‹òœXã›åXòò\ãöúœ›èI–T’ëTî“S”üX‹Àõ€õÿY\ô\€€ôN‹Àõ€ô\úõ‹è\ôZôX›Ÿÿ›[Y[ùöXYò\[ô⁄[
- _J_Wóôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOûÿ€€ú›X›[€èYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K]\WI N⁄YäX›[€ä[‹[ï\JX›[€ãô]\Ÿ]ù\JNÿ€€ú›Y[ùOYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K[Y[ùWI N⁄YäY[ùJ[‹[ë]ô[ùY[ùJY[ùKô]\Ÿ]õY[ùJNÿ€€ú›XèYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K]XóI N⁄YäXä\›⁄]⁄XäXãô]\Ÿ]ùXäNÿ€€ú›€œYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KY€◊I N⁄Yä€ \›⁄]⁄Xä€Àô]\Ÿ]ô€ Nÿ€€ú›ö[\èYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KYö[\óI N⁄Yäö[\ä^⁄\›‹ûQö[\èYö[\ãô]\Ÿ]ôö[\éŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KYö[\óI Kôõ‹ëXX⁄
-èOòãò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	ÀèOOYö[\äJN‹ô[ô\ê[
-
-_X€€ú›[YOYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K][YK]ò[YWI N⁄Yä[YJ\Ÿ]Ÿ][ô 	›[YIÀ[YKô]\Ÿ]ù[YUò[YJNÿ€€ú›XÿŸ[ùYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KXXÿŸ[ùI N⁄YäXÿŸ[ù
-\Ÿ]Ÿ][ô 	ÿXÿŸ[ù	ÀXÿŸ[ùô]\Ÿ]òXÿŸ[ù
-Nÿ€€ú›⁄^ôOYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KZX€€ã\⁄^ôWI N⁄Yä⁄^ôJ\Ÿ]Ÿ][ô 	⁄X€€î⁄^ôIÀ⁄^ôKô]\Ÿ]öX€€î⁄^ôJNÿ€€ú›]œYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KZX€€ã]ŸZY⁄I N⁄Yä] \Ÿ]Ÿ][ô 	⁄X€€ïŸZY⁄	À]Àô]\Ÿ]öX€€ïŸZY⁄
-Nÿ€€ú›ôèYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KYõ€ùYò[Z[WI N⁄Yäôä\Ÿ]Ÿ][ô 	Ÿõ€ùò[Z[IÀôãô]\Ÿ]ôõ€ùò[Z[JNÿ€€ú›ùœYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KYõ€ù]ŸZY⁄I N⁄Yäù \Ÿ]Ÿ][ô 	Ÿõ€ùŸZY⁄	ÀùÀô]\Ÿ]ôõ€ùŸZY⁄
-Nÿ€€ú›OYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]KZX[[[ŸWI N⁄YäJ\Ÿ]Ÿ][ô 	⁄X[[\‹ù[ŸIÀKô]\Ÿ]öX[[ŸJ_JN◊óôÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€‹ŸPùâ Kõ€ò€X⁄œX€‹ŸT⁄Y]Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿòX⁄Ÿõ‹	 Kõ€ò€X⁄œYOOû⁄YäKù\ôŸ]öYOOIÿòX⁄Ÿõ‹	 X€‹ŸT⁄Y]
-
-_NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄€YS‹[€ú–ùâ Kõ€ò€X⁄œJ
-OOú›⁄]⁄Xä	‹Ÿ][ô‹… NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ^‹ùùâ Kõ€ò€X⁄œY^‹ù]NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄[\‹ùùâ Kõ€ò€X⁄œJ
-OOôÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄[\‹ùö[I Kò€X⁄ 
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄[\‹ùö[I Kõ€ò⁄[ôŸOYOOûÿ€€ú›èYKù\ôŸ]ôö[\œÀñÃN⁄YääZ[\‹ù]JäNŸKù\ôŸ]ùò[YOI…ﬂNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹›ô“[\‹ùö[I Kõ€ò⁄[ôŸOX\ﬁ[ò»OOûÿ€€ú›èYKù\ôŸ]ôö[\œÀñÃN⁄YäââöX€€ëY]‹ï\ôŸ]
-^ÿ€€ú›^X]ÿZ]ãù^
-
-N€‹[íX€€ëY]‹äX€€ëY]‹ï\ôŸ]
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹›ô“X€€ï^	 Kùò[YO]^Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿò[ö“X€€ê€ŸI Kùò[YOI…ŒŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X€€îô]öY]… Kö[õô\íSX›ô»€\‹œWú›ôÀZX€€óàöY]–õﬁWåççèâ‹ÿ[ö]^ôT›ô”X\ö›\
-^
-_O‹›ôœòYKù\ôŸ]ùò[YOI…ﬂNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[[\‹ù[ôõ–ùâ Kõ€ò€X⁄œZX[[\‹ù[ôõŒŸÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYXÿ][€îôY⁄\›ûPùâ Kõ€ò€X⁄œ[‹[ìYYXÿ][€îôY⁄\›ûNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ›\›€RX€€ú–ùâ Kõ€ò€X⁄œ[‹[ê›\›€RX€€úŒŸÿ›[Y[ùôŸ][[Y[ùûRY
-	›Xòò\ìXêùâ Kõ€ò€X⁄œJ
-OOõÿÿ][€ãöôYèIÀã›Xòò\ãYY]‹ãö[	ŒŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ô\›‹ôQ[[–ùâ Kõ€ò€X⁄œJ
-OOúô\›‹ôQ[[ 
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€X\êùâ Kõ€ò€X⁄œX€X\ë]NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹⁄›’ô\ú⁄[€ïŸŸ€I Kõ€ò€X⁄œJ
-OOúŸ]Ÿ][ô 	‹⁄›’ô\ú⁄[€âÀYŸ]Ÿ][ô‹ 
-Kú⁄›’ô\ú⁄[€äNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄YUXìXô[’ŸŸ€I Kõ€ò€X⁄œJ
-OOûÿ€€ú›œYŸ]Ÿ][ô‹ 
-K[YO]\[ŸàYôôX›]ôTôY⁄\›õ’[YOOOIŸù[ò›[€âœŸYôôX›]ôTôY⁄\›õ’[YJ NäÀù[YOOOIŸ\ö…œ…Ÿ\ö…Œâ€Y⁄	 K›[\œ\ÀùXêò\î›[\ﬂﬂK›\úô[ù\›[\÷›[YW_ﬂKô^HPõ€€X[ä›\úô[ùöYSXô[œœ‹ÀöYUXìXô[ N‹ÀöYUXìXô[œ[ô^‹ÀùXêò\î›[\œ^Àããú›[\À›[YWNûÀããò›\úô[ùYSXô[Œõô^_N‹ÿ]ôTŸ][ô‹  _NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â Kù^€€ù[ùXâ–T’ëTî“S”üXŸÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 Kù^€€ù[ùPT’ëTî“S”é◊óä\ﬁ[ò 
-OOû›û^ÿ]ÿZ]ÿYXêò\îù[ù[YTÿ‹ö\
-
-_Xÿ]⁄
-\úä^ÿ€€ú€€Kô\úõ‹ä	—ò[H[»ÿ\úôYÿ\à\ú€€ò[^òpÈË€»Hò\úòH[ôô\ö[‹âÀ\úä_X\TŸ][ô‹ 
-NŸèX]ÿZ]‹[ëä
-N›û^ÿ]ÿZ]ÿYöX⁄[[‘ÿ‹ö\
-
-Nÿ]ÿZ][ú›\ôTöX⁄[[—]J
-_Xÿ]⁄
-\úä^ÿ€€ú€€Kô\úõ‹ä	—ò[H[»ÿ\úôYÿ\àY‹»H\Ÿ[ùõ€ö[Y[ù…À\úäNÿ]ÿZ]ŸYY[[ 
-_X]ÿZ]ŸYY[[ 
-Nÿ]ÿZ][ú›\ôTõŸö[\ 
-Nÿ]ÿZ][ôT⁄‹ù›][\‹ù
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N⁄Yä	‹Ÿ\ùöXŸU€‹öŸ\â⁄[àò]öYÿ]‹ä]⁄[ô›Àó◊‘ìW—T–PìQ‘’◊‘ëQ“T’Täã‹›Àöúœ›èI–T’ëTî“S”üX
-Kòÿ]⁄
-€€ú€€Kô\úõ‹ä_JJ
-N»éŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃLöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àö\›X[^òpÈË€»ŸY›\òH‹»ôY⁄\›õ‹Œàÿÿ\àXúôH][\Œ»Y]\à^YŸH[XHŸY›[ôHpÈË€»^0ÎX⁄]Kà
-ã◊ôù[ò›[€àôY⁄\›õ—]Z[]Jò[YJ^⁄Yä]ò[YJ\ô]\õà	¯†%	Œÿ€€ú›[ô]»]Jò[YJN⁄Yäù[Xô\ãö\”òSäôŸ][YJ
-JJ\ô]\õà	¯†%	Œ‹ô]\õàù”ÿÿ[T›ö[ô 	‹PîâÀŸ^NâÃãYY⁄]	À[€ùâÃãYY⁄]	ÀYX\éâ€ù[Y\öX…À›\éâÃãYY⁄]	ÀZ[ù]NâÃãYY⁄]	ﬂJ_Wôù[ò›[€àôY⁄\›õ—]Z[õ› Xô[ò[YJ^⁄Yäò[YOOO[ù[ò[YOOO][ôYö[ôY›ö[ô ò[YJKùö[J
-OOOI… \ô]\õâ…Œ‹ô]\õò]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœâŸ\ÿ Xô[
-_O‹›õ€ôœè‹[èâŸ\ÿ ›ö[ô ò[YJJ_O‹‹[èèŸ]èòWò\ﬁ[ò»ù[ò›[€à‹[ë]ô[ùöY]Ÿ\äY
-^ÿ€€ú›OJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-N⁄YäYJ\ô]\õé€]]OI—][\»»ôY⁄\›õ…Àõ›‹œV◊Nÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOYKõYYXÿ][€íY
-_ö[ôõŸö[PûQ]ô[ù
-KYY KYö[ôô\Ÿ[ù][€äKKúô\Ÿ[ù][€íY
-Kô\Ÿ[ù][€è\‹ô\Ÿ[ù][€ë\‹^J
-Nâ…Œ◊öYäKù\OOOI€õ›I ^›]OI–[õ›pÈË€…Œ‹õ›‹œV‹ôY⁄\›õ—]Z[õ› 	–[õ›pÈË€…ÀKù^	–[õ›pÈË€»Hõﬁâ KôY⁄\›õ—]Z[õ› 	’Y…ÀKùY KôY⁄\›õ—]Z[õ› 	—]HH‹∞Ë\ö[…ÀôY⁄\›õ—]Z[]JKù[Y\›[\
-JW_Wô[ŸHYäKù\OOOI€YYXÿ][€â ^›]OI”YYXÿ[Y[ù…Œ‹õ›‹œV‹ôY⁄\›õ—]Z[õ› 	”YYXÿ[Y[ù…ÀKõYYXÿ][€ü	”YYXÿ[Y[ù… KôY⁄\›õ—]Z[õ› 	–\ô\Ÿ[ùpÈË€…Àô\Ÿ[ù][€äKôY⁄\›õ—]Z[õ› 	—‹ŸIÀKô‹Ÿ_
-Kù›[‹ŸUò[YHO[ù[ÿ	ŸKù›[‹ŸUò[Y_H	ŸKô‹ŸU[ö]	…ﬂXùö[J
-Nâ… JKôY⁄\›õ—]Z[õ› 	‘]X[ùYYIÀKù[ö]’ZŸ[èÿ	ŸKù[ö]’ZŸ[üH[öYYJ XôKú]X[ù]JKôY⁄\›õ—]Z[õ› 	”ÿúŸ\ùòpÈË€…ÀKõõ›JKôY⁄\›õ—]Z[õ› 	—]HH‹∞Ë\ö[…ÀôY⁄\›õ—]Z[]JKù[Y\›[\
-JW_Wô[ŸHYäKù\OOOI‹€Y\	 ^›]OI‘€€õ…Œ‹õ›‹œV‹ôY⁄\›õ—]Z[õ› 	—‹õZ]H0Ë…ÀôY⁄\›õ—]Z[]JKú›\ù[YJJKôY⁄\›õ—]Z[õ› 	–X€‹ô›H0Ë…ÀôY⁄\›õ—]Z[]JKô[ô[YJJKôY⁄\›õ—]Z[õ› 	—\òpÈË€…À\ò][€ìXô[
-\ò][€í›\ú Kú›\ù[YKKô[ô[YJJJKôY⁄\›õ—]Z[õ› 	‘]X[YYH\òŸXöYIÀKú]X[]Oÿ	ŸKú]X[]_HHXâ… KôY⁄\›õ—]Z[õ› 	”ÿúŸ\ùòpÈÌY\…ÀKõõ›JKôY⁄\›õ—]Z[õ› 	”‹öYŸ[IÀKú€›\òŸOOOI⁄X[\⁄‹ù›]	œ…“[\‹ùY»»\ÿpÓôIŒâ”X[ùX[	 W_Wô[ŸHYäKù\OOOI‹\ò⁄\ŸI ^›]OI–€€\òIŒ‹õ›‹œV‹ôY⁄\›õ—]Z[õ› 	”YYXÿ[Y[ù…ÀKõYYXÿ][€ü	”YYXÿ[Y[ù… KôY⁄\›õ—]Z[õ› 	–\ô\Ÿ[ùpÈË€…Àô\Ÿ[ù][€äKôY⁄\›õ—]Z[õ› 	–ÿZ^\…ÀKúX⁄ÿYŸ\ KôY⁄\›õ—]Z[õ› 	’›[H[öYY\…ÀKù›[[ö] KôY⁄\›õ—]Z[õ› 	’ò[‹àY€…ÀKúöXŸJKôY⁄\›õ—]Z[õ› 	”€ôH€€\õ›IÀKúXŸJKôY⁄\›õ—]Z[õ› 	—]HH‹∞Ë\ö[…ÀôY⁄\›õ—]Z[]JKù[Y\›[\
-JW_Wô[ŸHô]\õé◊ò€€ú›]Y[œYKö\–]Y[œÿ]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœ∞‡]Y[œ‹›õ€ôœè‹[à]KX]Y[œWâŸKöYWèè‹‹[èèŸ]èòâ…Œ◊õ‹[êòX⁄Ÿõ‹
-]K]à€\‹œWò[ò[\⁄\À\›X⁄◊èâ‹õ›‹Àöõ⁄[ä	… _Iÿ]Y[ﬂOŸ]èè]à€\‹œWôõ‹õKXX›[€ú◊èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWùöY]Ÿ\ê€‹ŸPùóèëôX⁄\èÿù]€èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€óàYWùöY]Ÿ\ëY]ùóèëY]\èÿù]€èèŸ]èò]èOô]ãúô]ô[ùYò][
-
-JN◊ôÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ê€‹ŸPùâ Kõ€ò€X⁄œX€‹ŸT⁄Y]Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ëY]ùâ Kõ€ò€X⁄œJ
-OOõ‹[ë]ô[ùY]‹äY
-N⁄YäKö\–]Y[ X]ÿZ]Yò]P]Y[ ÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI J_Wóôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOû⁄YäKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K[Y[ùWKù]€ã]Y[À[ú]^\ôXKŸ[X›I J\ô]\õéÿ€€ú›ÿ\ôYKù\ôŸ]ò€‹Ÿ\›
-	Àù[Y[[ôKZ][I N⁄YäXÿ\ô
-\ô]\õéÿ€€ú›YXÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]K[Y[ùWI OÀô]\Ÿ]õY[ùN⁄YäZY
-\ô]\õéŸKúô]ô[ùYò][
-
-NŸKú›‹[[YYX]Tõ‹Yÿ][€ä
-N€‹[ë]ô[ùöY]Ÿ\äY
-_KùYJN◊óã à€‹ô\»Ÿ[pËõùXÿ\Œà»Y\€[»\»HôY⁄\›õ»X[ù0Í[HHY\€XHY[ùYYH[HŸ\»\»[\Àà
-ã◊äù[ò›[€à[ú›\ôTŸ[X[ùX“X€€ê€€‹ú 
-^⁄Yäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹Ÿ[X[ùXÀZX€€ãX€€‹ú… J\ô]\õéÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹Ÿ[X[ùXÀZX€€ãX€€‹ú…Œ‹›ù^€€ù[ùXñŸ]KZX€€èWõõ›Wó^ÿ€€‹éùò\äKXXÿŸ[ù
-HZ[\‹ù[ùWñŸ]KZX€€èWú[ó^ÿ€€‹éùò\äK[YY
-HZ[\‹ù[ùWñŸ]KZX€€èWõ[€€óó^ÿ€€‹éùò\äK\€Y\
-HZ[\‹ù[ùWñŸ]KZX€€èWòòY◊ó^ÿ€€‹éùò\äKXù^JHZ[\‹ù[ùWòŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_JJ
-N◊óã àõ›pÈË€»H[öX⁄X[^òpÈË€Œà[ù\»Y\€[»‹»[›‹ô\»^ò\»⁄Yÿ\ô[KÏ»HXòHö\Î]ô[0ÍHô[ô\ö^òYKà
-ã◊äù[ò›[€à[ú›[X\õT\ôõ‹õX[òŸQ›X\ô
-
-^◊àYä\[Ÿàô[ô\ê[OOIŸù[ò›[€â \ô[ô\ê[X\ﬁ[ò»ù[ò›[€ä
-^◊àYäYä\ô]\õéÿ€€ú›]ô[ùœJ]ÿZ][]ô[ù 
-JKú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JNÿ€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	ÀùöY]ÀòX›]ôI OÀô]\Ÿ]ùöY]ﬂ	⁄€YIŒ◊àYäöY]œOOI⁄\›‹ûI X]ÿZ]ô[ô\í\›‹ûJ]ô[ù NŸ[ŸHYäöY]œOOIÿ[ò[\⁄\… X]ÿZ]ô[ô\ê[ò[\⁄\ ]ô[ù NŸ[ŸHYäöY]œOOI⁄€YI X]ÿZ]ô[ô\í€YJ]ô[ù N◊àô[ô\êòX⁄›\›]J
-N‹ô[ô\íX[›]J
-N◊àN◊àYä\[Ÿà›⁄]⁄XèOOIŸù[ò›[€â…âà\›⁄]⁄Xãó◊‹õQX\õT\ôõ‹õX[òŸIâà\›⁄]⁄Xãó◊‹õT\ôõ‹õX[òŸJ^ÿ€€ú›ô]ö[›\œ\›⁄]⁄Xéÿ€€ú›‹ò\YYù[ò›[€äò[YJ^‹ô]ö[›\ ò[YJN‹ô\]Y\›[ö[X][€ëúò[YJ
-
-OOû⁄Yä\[Ÿàô[ô\ê[OOIŸù[ò›[€â \ô[ô\ê[
-
-Kòÿ]⁄Àä€€ú€€Kô\úõ‹ä_J_N›‹ò\Yó◊‹õQX\õT\ôõ‹õX[òŸO]ùYN›‹ò\Yó◊‹õTô]ö[›\œ\ô]ö[›\Œ‹›⁄]⁄Xè]‹ò\YWóà àY‹»öX›0ÎX⁄[‹»Ï»Ë€»òZ^Y‹»]X[ô»»ò[ò€»ôX[Y[ùH\›0ËHò^ö[Àà
-ã◊àYä\[ŸàÿYöX⁄[[‘ÿ‹ö\OOIŸù[ò›[€â…âà[ÿYöX⁄[[‘ÿ‹ö\ó◊‹õS‹[Z^ôY
-^ÿ€€ú›ô]ö[›\—[[”ÿY\è[ÿYöX⁄[[‘ÿ‹ö\ÿ€€ú›‹[Z^ôYX\ﬁ[ò»ù[ò›[€ä
-^›û^⁄Yäââä]ÿZ][]ô[ù 
-JKõ[ô›
-^Ÿ€ÿò[\Àô[ú›\ôTöX⁄[[—]OY€ÿò[\Àô[ú›\ôTöX⁄[[—]_
-\ﬁ[ò 
-OOûﬂJN‹ô]\õü_Xÿ]⁄ﬂ\ô]\õàô]ö[›\—[[”ÿY\ä
-_N€‹[Z^ôYó◊‹õS‹[Z^ôY]ùYN€ÿYöX⁄[[‘ÿ‹ö\[‹[Z^ôYWüJJ
-N◊óã àÿ\úôYÿ[Y[ù»›[Z^òYŒàYö[ôHö[YZ\õ»»\ôö[ö\›X[]ôHHÏ»\⁄\»[€ùH‹»[›‹ô\»‹∞ËYöX€‹Àà
-ã◊äù[ò›[€àÿY‹[Z^ôY[ô⁄[ô\ 
-^◊à€€ú›ÿYJ‹òÀŸ^JOOõô]»õ€Z\ŸJ
-ô\€€ôKôZôX›
-OOû⁄Yäÿ›[Y[ùú]Y\ûTŸ[X›‹äÿ‹ö\Ÿ]KY[ô⁄[ôKZŸ^OWâ⁄Ÿ^_WóX
-J\ô]\õàô\€€ôJ
-Nÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àô]\Ÿ]ô[ô⁄[ôRŸ^OZŸ^N‹Àú‹òœ\‹òŒ‹Àõ€õÿYJ
-OOû›û^⁄Yä\[ŸàõR[ú›[\ôõ‹õX[òŸTù[ù[YOOOIŸù[ò›[€â \õR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-_Xÿ]⁄ﬂ\ô\€€ôJ
-_N‹Àõ€ô\úõ‹èJ
-OOûÿ€€ú€€Kô\úõ‹äò[H[»ÿ\úôYÿ\à	⁄Ÿ^_X
-N‹ôZôX›
-ô]»\úõ‹äŸ^JJ_NŸÿ›[Y[ùöXYò\[ô⁄[
- _JN◊à€€ú›YOJ
-OOõô]»õ€Z\ŸJô\€€ôOOû⁄Yä	‹ô\]Y\›YPÿ[òX⁄…⁄[à⁄[ô› \ô\]Y\›YPÿ[òX⁄ 
-
-OOúô\€€ôJ
-K›[Y[›]åLåJNŸ[ŸHŸ][Y[›]
-ô\€€ôKÕL
-_JN◊à€€ú››\ùX\ﬁ[ò 
-OOû◊à à»Y∞Ë€»ö\›X[0ÍHX⁄YY»[ù\»Hõ\ã€›»H‹∞ËYöX€‹»[ùò\ô[Hõ»”Kà
-ã◊àû^ÿ]ÿZ]ÿY
-	Àã›åÃçKöúœ›èLçåçIÀ	€‹[Z^ôYYYò][	 _Xÿ]⁄ﬂWàû^ÿ]ÿZ]ÿY
-	Àã›åÃNKöúœ›èLçåçIÀ	‹\ôõ‹õX[òŸI _Xÿ]⁄ﬂWà€€ú›[[›[€è[ÿY
-	Àã›åÃLãöúœ›èLçåçIÀ	Ÿ[[›[€â N◊à€€ú›[]O[ÿY
-	Àã›åÃMKöúœ›èLçåçIÀ	‹Ÿ[X[ùXÀ\[]I N◊à€€ú›X€€úœ[ÿY
-	Àã›åÃMãöúœ›èLçåçIÀ	‹ôX€‹ôZX€€ú… N◊à]ÿZ]õ€Z\ŸKò[Ÿ]Y
-Ÿ[[›[€ã[]KX€€ú◊JN◊àû^⁄Yä\[ŸàõR[ú›[\ôõ‹õX[òŸTù[ù[YOOOIŸù[ò›[€â \õR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-_Xÿ]⁄ﬂWà]ÿZ]õ€Z\ŸKúô\€€ôJ[[›[€äKù[ä
-
-OOõÿY
-	Àã›åÃNöúœ›èLçåçIÀ	›ö\›X[	 JKòÿ]⁄
-
-
-OOûﬂJN◊àû^⁄Yä\[ŸàõR[ú›[\ôõ‹õX[òŸTù[ù[YOOOIŸù[ò›[€â \õR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-_Xÿ]⁄ﬂWàû^ÿ]ÿZ]ÿY
-	Àã›åÃåöúœ›èLçåçIÀ	›ö\›X[[[ŸI _Xÿ]⁄ﬂWàû^ÿ]ÿZ]ÿY
-	Àã›åÃåKöúœ›èLçåçIÀ	‹Ÿ][ô‹À[^[›]	 _Xÿ]⁄ﬂWàû^⁄Yä\[ŸàõUåçQö[ò[^ôUö\›X[[ŸOOOIŸù[ò›[€â \õUåçQö[ò[^ôUö\›X[[ŸJ
-_Xÿ]⁄ﬂWàû^⁄Yä\[ŸàõR[ú›[\ôõ‹õX[òŸTù[ù[YOOOIŸù[ò›[€â \õR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-_Xÿ]⁄ﬂWóà]ÿZ]YJ
-N◊à€€ú›X\õö[ôœ[ÿY
-	Àã›åÃLKöúœ›èLçåçIÀ	€X\õö[ô… N◊à]ÿZ]õ€Z\ŸKò[Ÿ]Y
-€X\õö[ô◊JN◊àû^⁄Yä\[ŸàõR[ú›[\ôõ‹õX[òŸTù[ù[YOOOIŸù[ò›[€â \õR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-_Xÿ]⁄ﬂWà€€ú›€€ù[ùZ]OTõ€Z\ŸKúô\€€ôJX\õö[ô Kù[ä
-
-OOõÿY
-	Àã›åÃLÀöúœ›èLçåçIÀ	ÿ€€ù[ùZ]I JN◊à]ÿZ]õ€Z\ŸKò[Ÿ]Y
-ÿ€€ù[ùZ]WJN◊àû^ÿ]ÿZ]ÿY
-	Àã›åÃåãöúœ›èLçåçIÀ	⁄X[ZXâ _Xÿ]⁄ﬂWàû^⁄Yä\[ŸàõR[ú›[\ôõ‹õX[òŸTù[ù[YOOOIŸù[ò›[€â \õR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-_Xÿ]⁄ﬂWà]ÿZ]õ€Z\ŸKúô\€€ôJ€€ù[ùZ]JKù[ä
-
-OOõÿY
-	Àã›åÃMöúœ›èLçåçIÀ	⁄[ù\ùöY]… JKòÿ]⁄
-
-
-OOûﬂJN◊àû^ÿ]ÿZ]ÿY
-	Àã›åÃåÀöúœ›èLçåçIÀ	ÿ[ò[\⁄\À\ô]öY]… _Xÿ]⁄ﬂWàû^ÿ]ÿZ]ÿY
-	Àã›åÃçöúœ›èLçåçIÀ	›åçYö^\… _Xÿ]⁄ﬂWàû^ÿ]ÿZ]ÿY
-	Àã›åÃçãöúœ›èLçåçâÀ	›Xòò\ã[XãYö^	 _Xÿ]⁄ﬂWàû^⁄Yä\[ŸàõUåçQö[ò[^ôUö\›X[[ŸOOOIŸù[ò›[€â \õUåçQö[ò[^ôUö\›X[[ŸJ
-_Xÿ]⁄ﬂWàû^⁄Yä\[ŸàõR[ú›[\ôõ‹õX[òŸTù[ù[YOOOIŸù[ò›[€â \õR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-_Xÿ]⁄ﬂWàû^ÿ]ÿZ]ÿY
-	Àã›åÃçÀöúœ›èLçåç…À	ÿò]⁄\ô]ö\⁄[€â _Xÿ]⁄ﬂWàû^⁄Yä\[ŸàõUåç—ö[ò[^ôOOOIŸù[ò›[€â \õUåç—ö[ò[^ôJ
-_Xÿ]⁄ﬂWàN◊à›\ù
-
-N◊üJJ
-N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃçKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåçH8†%›[Z^òY»\‹ÿHHŸ\à»ö\›X[Y∞Ë€Àà[òH€€ù[ùXH‹⁄[€ò[à
-ã◊ò€€ú›ìW’åçW‘ëSPT—OIÃKåãåXô]Kç	Œ◊ò€€ú›ìW’åçW‘—USë‘◊“—VOI‹ôY⁄\›õÀXô]K\Ÿ][ô‹À]åIŒ◊óôù[ò›[€àõUåçT›‹ôY[ŸJ
-^◊àû^◊à€€ú›ò]œRî””ãú\úŸJÿÿ[›‹òYŸKôŸ]][JìW’åçW‘—USë‘◊“—VJ_	ﬁﬂI N◊àYäò]Àùö\›X[[ŸOOOI›[òIﬂò]Àùö\›X[[ŸOOOI€‹[Z^ôY	 \ô]\õàò]Àùö\›X[[ŸN◊àò]Àùö\›X[[ŸOI€‹[Z^ôY	Œ◊àÿÿ[›‹òYŸKúŸ]][JìW’åçW‘—USë‘◊“—VKî””ãú›ö[ô⁄YûJò] JN◊àô]\õà	€‹[Z^ôY	Œ◊àXÿ]⁄‹ô]\õà	€‹[Z^ôY	ﬂWüWóã à^X›]H[ù\»»[›‹àö\›X[\ÿYŒà[ú›[pÈÌY\»Ÿ[H\ÿ€€H^0ÎX⁄]H∞ËH€€YpÈÿ[H]ô\Àà
-ã◊ôÿ›[Y[ùôÿ›[Y[ù[[Y[ùô]\Ÿ]ùö\›X[[ŸO\õUåçT›‹ôY[ŸJ
-N◊óôù[ò›[€àõUåçQ[ú›\ôT›[\ 
-^◊à]›Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åçK[‹[Z^ôY\›[I N◊àYä\›
-^‹›Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹õK]åçK[‹[Z^ôY\›[IﬂWà›ù^€€ù[ùXã à’SRVêQŒàY[ùYYK€‹àHY\ò\ú]ZXH\õX[ôXŸ[N»YôZ]‹»ÿ\õ‹»Z^[HHŸ\àY∞Ë€Àà
-ã◊ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõŸ^ÿòX⁄Ÿ‹õ›[ôùò\äKXôÀŸçŸéò HZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùWö[Ÿ]K][YOWô\ö◊óVŸ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõŸ^ÿòX⁄Ÿ‹õ›[ôàÃLZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùWêYYXJôYô\úÀX€€‹ã\ÿ⁄[YNô\ö ^⁄[Ÿ]K][YOWúﬁ\›[WóVŸ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõŸ^ÿòX⁄Ÿ‹õ›[ôàÃLZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ù_Wóö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHú›[[X\ûKXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHò[ò[\⁄\ÀXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúŸ][ô‹ÀXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõõ›XŸKXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHù[Y[[ôKZ][Kö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHô[\K\›]Kö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúôY⁄\›ûKXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõX\õö[ôÀ\]Y\›[€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúô\Ÿ[ù][€ã\õ›Àö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõYY[õ›K\õ›Àö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúX⁄ÿYŸK\õ›Àö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHò]]ÿ€€\]K\ô\›[ﬁ◊àòX⁄Ÿ‹õ›[ôùò\äK\›\ôòXŸKŸôôäHZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ù◊àòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ù◊àõﬁ\⁄Y›Œåú\ôÿòJŒÀÃåMJHZ[\‹ù[ù◊üWö[Ÿ]K][YOWô\ö◊óVŸ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHú›[[X\ûKXÿ\ôö[Ÿ]K][YOWô\ö◊óVŸ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHò[ò[\⁄\ÀXÿ\ôö[Ÿ]K][YOWô\ö◊óVŸ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúŸ][ô‹ÀXÿ\ôö[Ÿ]K][YOWô\ö◊óVŸ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõõ›XŸKXÿ\ôö[Ÿ]K][YOWô\ö◊óVŸ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHù[Y[[ôKZ][^◊àõﬁ\⁄Y›Œåú\ôÿòJåå
-HZ[\‹ù[ù◊üWóã àpÈÌY\»€€ù[ùX[HY[ùYöXË]ôZ\»‹à€‹ãŸ[H[»€€ù0Î[ù[»ô[HY‹òY0Íãà
-ã◊ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHòX›[€ãXÿ\ô◊àòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\õKXÿ\ôXXÿŸ[ùò\äKXXÿŸ[ù
-JHIKò\äK\›\ôòXŸKŸôôäJHZ[\‹ù[ù◊àòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùÿòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ù◊àõﬁ\⁄Y›ŒåúôÿòJŒÀÃåMJHZ[\‹ù[ù◊üWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHòX›[€ãZX€€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHò[ò[\⁄\À]]Oú‹[ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõõ›XŸKZX€€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúŸ][ô‹À\õ›ÀZX€€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõKZ[ú⁄Y⁄ZX€€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõKX⁄\ù]]KZX€€ûŸö[\éõõ€ôHZ[\‹ù[ù›^\⁄Y›Œõõ€ôHZ[\‹ù[ùWóö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHú⁄Y]ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHú⁄Y]ZXY\ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùXãXò\ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHòÿ\›[K]Xòò\û◊àòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ù◊üWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHú⁄Y]ÿòX⁄Ÿ‹õ›[ôùò\äK\›\ôòXŸKŸôôäHZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùÿõﬁ\⁄Y›ŒåNçôÿòJåL HZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùXãXò\ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHòÿ\›[K]Xòò\ûÿõﬁ\⁄Y›ŒåMôÿòJåJHZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùXãXùXòõ^ÿõﬁ\⁄Y›Œåú‹ôÿòJå
-HZ[\‹ù[ùWóã à€€ùõ€\»€€][ú»]X\ŸH[õ‹Àà
-ã◊ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõ›[ôXù]€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHú⁄Y]X€‹ŸKö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôö[\ãX⁄\ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúŸX€€ô\ûKXù]€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHù[ûKX€X\ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHò⁄\ù\ô]öY]ÀXùãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúŸY€Y[ùYÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ùÿòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúö[X\ûKXù]€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôù[Xù]€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôö[\ãX⁄\úŸ[X›Yÿõﬁ\⁄Y›Œåú€€‹ã[Z^
-[à‹ôÿãò\äKXXÿŸ[ù
-HL	Kò[ú‹\ô[ù
-HZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôöY[[ú]ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôöY[^\ôXKö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôöY[Ÿ[X›ÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ùÿòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôöY[[ú]ôõÿ›\Àö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôöY[^\ôXNôõÿ›\Àö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHôöY[Ÿ[X›ôõÿ›\ﬁÿõﬁ\⁄Y›Œåú€€‹ã[Z^
-[à‹ôÿãò\äKXXÿŸ[ù
-HM	Kò[ú‹\ô[ù
-HZ[\‹ù[ùWóã à[∞Ë[\Ÿ\Œà€‹à€€ù[ùXH[ôõ‹õX]]òKX\»‹àõ‹ôK0ÎX€€ôHH\Ÿ‹òYöXH8†%∞Ë€»‹àÿ[XY\»[Z[õ‹ÿ\Àà
-ã◊ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôY◊àòX⁄Ÿ‹õ›[ôùò\äK\›\ôòXŸKŸôôäHZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ù◊àõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JHåâKò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ù◊àõﬁ\⁄Y›Œåú\ôÿòJŒÀÃåJHZ[\‹ù[ù◊üWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄\õ›ﬁ◊àòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHIKò\äK\›\ôòXŸKLãò\äK\›\ôòXŸKŸôôäJJHZ[\‹ù[ù◊àòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHM…Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ù◊àõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ù◊üWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄ZX€€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHŸ]K]öY]œWò[ò[\⁄\◊óHúõKX⁄\ù]]KZX€€ûÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóH‹€Y\[ò[\⁄\»õY]öXﬁ◊àòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JH…Kò\äK\›\ôòXŸKŸôôäJHZ[\‹ù[ù◊àòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ù◊üWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóH‹€Y\[ò[\⁄\»õY]öX»›õ€ôﬁ›^\⁄Y›Œõõ€ôHZ[\‹ù[ùWóã à‹∞ËYöX€‹»X[ù0ÍõH\»€‹ô\»‹»Y‹Àà\[ò\»ö[õ‹À⁄[‹»ÿ\õ‹»ÿY[Kà
-ã◊ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõKY[[›[€ãX⁄\ùŸö[\óKö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõK[[€ŸXò\ú»Ÿö[\óKö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõK[[€Ÿ\ÿÿ]\àŸö[\ó^Ÿö[\éõõ€ôHZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõKY[[›[€ãX⁄\ù]€X\⁄◊^€‹X⁄]NãåLZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHô\⁄õÿ\ôX⁄\ù›⁄[X⁄[ôŸNò]]»Z[\‹ù[ùWóã à€›»öXÿH\[ò\»€ôH€€][öXÿHŸ[pÈË€ÀŸ\›Y»[\‹ù[ùKà
-ã◊ö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõ[€Ÿ\ÿ€‹ô^ÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõ[€Ÿ\ÿ€‹ôKúŸ[X›Y◊àõﬁ\⁄Y›Œåú€€‹ã[Z^
-[à‹ôÿãò\äK[[€ŸXõ‹ô\äHåâK⁄]HŒ	JKò\äK[[€ŸY€› HZ[\‹ù[ù◊àò[úŸõ‹õNúÿÿ[JKåJHò[ú€]VJL\
-HZ[\‹ù[ùüWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHô[[›[€ã\ÿÿ[Hù]€ûÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHô[[›[€ã\ÿÿ[Hù]€ãúŸ[X›Yÿõﬁ\⁄Y›Œåú€€‹ã[Z^
-[à‹ôÿãò\äKY[Y[ú⁄[€ãX€€‹äHN	Kò[ú‹\ô[ù
-HZ[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõK\‹⁄]]ôK]^›^\⁄Y›Œõõ€ôHZ[\‹ù[ùWóö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHù]€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHòX›[€ãZX€€ãö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHõ[€Ÿ\ÿ€‹ôKö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùXãXùXòõ^›ò[ú⁄][€ãY\ò][€éãåM»Z[\‹ù[ùWö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùöY]ÀòX›]ôHú›[[X\ûKXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùöY]ÀòX›]ôHò[ò[\⁄\ÀXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùöY]ÀòX›]ôHúŸ][ô‹ÀXÿ\ôö[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHùöY]ÀòX›]ôHòX›[€ãXÿ\ôÿ[ö[X][€ãY\ò][€éãåM»Z[\‹ù[ùWò◊àÿ›[Y[ùöXYò\[ô⁄[
-›
-N» àôX€€ÿÿHõ»ö[H\òHô[òŸ\à\›[‹»[òHÿ\úôYÿY‹»\⁄\»
-ã◊üWóôù[ò›[€àõUåçQö[ò[^ôUö\›X[[ŸJ
-^◊à€€ú›[ŸO\õUåçT›‹ôY[ŸJ
-NŸÿ›[Y[ùôÿ›[Y[ù[[Y[ùô]\Ÿ]ùö\›X[[ŸO[[ŸN◊à€€ú›€€ùõ€Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ö\›X[[ŸP€€ùõ€	 N◊àYä€€ùõ€
-^◊à€€ú›‹[Z^ôYX€€ùõ€ú]Y\ûTŸ[X›‹ä	÷Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóI K[òOX€€ùõ€ú]Y\ûTŸ[X›‹ä	÷Ÿ]K]ö\›X[[[ŸOWù[òWóI N◊àYä‹[Z^ôY	âù[òJ^€‹[Z^ôYù^€€ù[ùI”›[Z^òY…Œ›[òKù^€€ù[ùI’[òIŒÿ€€ùõ€ö[úŸ\ùôYõ‹ôJ‹[Z^ôY[òJ_WàYä\[Ÿà\]TŸY€Y[ù[ôXÿ]‹èOOIŸù[ò›[€â ]\]TŸY€Y[ù[ôXÿ]‹ä€€ùõ€	›ö\›X[[ŸIÀ[ŸJN◊àWà€€ú›[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ö\›X[[ŸR[	 N◊àYä[
-Z[ù^€€ù[ù[[ŸOOOI€‹[Z^ôY	œ…‘Y∞Ë€ÀàX[ù0Í[H€‹ô\»HY[ùYYH€€H›X€‹»YôZ]‹»\òHpË^[XHõZY^ãâŒâ—YôZ]‹»€€\]‹ŒàY‹òY0ÍúÀ€›Àõ\àHXZ[‹àõŸù[ôYYHö\›X[âŒ◊àõUåçQ[ú›\ôT›[\ 
-N◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â KXõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åçW‘ëSPT—_X⁄YäXõ›]
-XXõ›]ù^€€ù[ùTìW’åçW‘ëSPT—N◊üWóã àŸH»\›pË\ö[»õÿÿ\àH‹0ÈË€ÀX[ù0Í[HHôYô\∞Íõò⁄XH^0ÎX⁄]HHôX\XÿHHô\úË€»]ôK’[òHŸ[HôX€€ú›ùZ\àH[Kà
-ã◊ôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOû◊à€€ú›èYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K]ö\›X[[[ŸWI N⁄YäXä\ô]\õé◊àŸ][Y[›]
-
-
-OOû‹õUåçQö[ò[^ôUö\›X[[ŸJ
-_K
-WüKùYJN◊óúõUåçQ[ú›\ôT›[\ 
-N◊úŸ][Y[›]
-õUåçQö[ò[^ôUö\›X[[ŸK
-N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃNKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àù[ù[YHH\Ÿ[\[öŒàô[ô\ö^òH\[ò\»HXòHö\Î]ô[Y[[‹ö^òH[\»õ€ù\»H]ö]HôX€€ú›ùpÈÌY\»\€ôXŸ\‹Ë\öX\Àà
-ã◊ò€€ú›ìW‘Tëì‘ìPSê—W’ëTî“S”èIÃKåãåXô]Kç	Œ◊ò€€ú›ìW–T‘ëSPT—OIÃçåç	Œ◊õ]õTô[ô\î]Y]YYYò[ŸKõT]Y]YYöY]œ[ù[õTô[ô\îŸ\öX[LõQ]Tô]ö\⁄[€èLõR\›‹ûS[Z]NõR\›‹ûQö[\îŸY[è[ù[õS\›[Ÿ[T⁄Y€ò]\ôOI…Œ◊ò€€ú›õUöY]–ÿX⁄O[ô]»X\
-
-N◊ò€€ú›ìW’íQU◊’^⁄€YNåÃ\›‹ûNåÃ[ò[\⁄\ŒåÃX\õö[ôŒåÃŸ][ô‹ŒçåN◊óôù[ò›[€àõPX›]ôUöY]”ò[YJ^X⁄][ù[
-^⁄Yä^X⁄]
-\ô]\õà^X⁄]‹ô]\õàÿ›[Y[ùú]Y\ûTŸ[X›‹ä	ÀùöY]ÀòX›]ôI OÀô]\Ÿ]ùöY]ﬂÿ›[Y[ùú]Y\ûTŸ[X›‹ä	ÀùXãZ][KúŸ[X›Y	 OÀô]\Ÿ]ùXü	⁄€YIﬂWôù[ò›[€àõT€‹ùY]ô[ù ]ô[ù ^‹ô]\õàÀããô]ô[ù◊Kú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-J_Wôù[ò›[€àõR[ùò[Y]JããùöY]‹ ^⁄Yä]öY]‹Àõ[ô›
-^‹õUöY]–ÿX⁄Kò€X\ä
-N‹ô]\õü]öY]‹Àôõ‹ëXX⁄
-èOúõUöY]–ÿX⁄Kô[]JäJ_Wôù[ò›[€àõR\—úô\⁄
-öY] ^ÿ€€ú›œ\õUöY]–ÿX⁄KôŸ]
-öY] KTìW’íQU◊’›öY]◊OœÕå‹ô]\õàõ€€X[ä…âòÀúô]ö\⁄[€èOO\õQ]Tô]ö\⁄[€ââë]Kõõ› 
-KXÀò]
-_Wôù[ò›[€àõSX\ö—úô\⁄
-öY] ^‹õUöY]–ÿX⁄KúŸ]
-öY]À‹ô]ö\⁄[€éúõQ]Tô]ö\⁄[€ã]ë]Kõõ› 
-_J_Wóò\ﬁ[ò»ù[ò›[€àõTô[ô\í\›‹ûQò\›
-]ô[ù ^◊àYäõR\›‹ûQö[\îŸY[àOOZ\›‹ûQö[\ä^‹õR\›‹ûQö[\îŸY[èZ\›‹ûQö[\é‹õR\›‹ûS[Z]NWà€€ú›ö[\ôYY]ô[ùÀôö[\äOOö\›‹ûQö[\èOOIÿ[	ﬂKù\OOOZ\›‹ûQö[\äN◊à€€ú›⁄›€èYö[\ôYú€XŸJõR\›‹ûS[Z]
-K€€ùZ[ô\èYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄\›‹ûS\›	 N◊àYäX€€ùZ[ô\ä\ô]\õé◊à]›\úô[ùI…À[I…Œ◊àõ‹ä€€ú›HŸà⁄›€ä^ÿ€€ú›Y]ô[ù^JJN⁄YäOOX›\úô[ù
-^ÿ›\úô[ùY⁄[
-œX]à€\‹œWö\›‹ûKY^WèâŸ^SXô[
-
-_OŸ]èòZ[
-œY]ô[ùÿ\ô
-J_WàYäö[\ôYõ[ô›ú⁄›€ãõ[ô›
-Z[
-œXù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€àù[Xù]€àõKZ\›‹ûK[[‹ôWà]K\õKZ\›‹ûK[[‹ôOì[‹›ò\àXZ\»	”X]õZ[äö[\ôYõ[ô›\⁄›€ãõ[ô›
-_HôY⁄\›õ‹œÿù]€èò◊à€€ùZ[ô\ãö[õô\íSZ[◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄\›‹ûQ[\I OÀò€\‹”\›ùŸŸ€J	⁄Y[âÀö[\ôYõ[ô›å
-N◊à]ÿZ]Yò]P]Y[ €€ùZ[ô\äN◊üWóò\ﬁ[ò»ù[ò›[€àõTô[ô\êX›]ôJöY]œ[ù[Ÿõ‹òŸOYò[Ÿ_O^ﬂJ^◊àYäYä\ô]\õé◊àöY]œ\õPX›]ôUöY]”ò[YJöY] N◊àYäYõ‹òŸIâúõR\—úô\⁄
-öY] J\ô]\õé◊à€€ú›Ÿ\öX[J ‹õTô[ô\îŸ\öX[◊à€€ú›]ô[ùœ\õT€‹ùY]ô[ù ]ÿZ][]ô[ù 
-JN◊àYäŸ\öX[OO\õTô[ô\îŸ\öX[
-\ô]\õé◊à]YYœ[ù[◊à€€ú›ôYYYYœ]öY]œOOI⁄€YIﬂöY]œOOIÿ[ò[\⁄\…ﬂöY]œOOI€X\õö[ô…Œ◊àYäôYYYY [YYœX]ÿZ][YYXÿ][€ú 
-N◊àYäŸ\öX[OO\õTô[ô\îŸ\öX[
-\ô]\õé◊óàYäöY]œOOI⁄€YI ^◊à]ÿZ]ô[ô\í€YJ]ô[ù N◊àYä\[Ÿàô[ô\ê€€ù[ùZ]R€YOOOIŸù[ò›[€â X]ÿZ]ô[ô\ê€€ù[ùZ]R€YJ]ô[ùÀYYﬂ◊JN◊àY[ŸHYäöY]œOOI⁄\›‹ûI ^◊à]ÿZ]õTô[ô\í\›‹ûQò\›
-]ô[ù N◊àY[ŸHYäöY]œOOIÿ[ò[\⁄\… ^◊à]ÿZ]ô[ô\ê[ò[\⁄\ ]ô[ù N◊àYä\[Ÿàô[ô\î]X[ù]]]ôQ\⁄õÿ\ôOOIŸù[ò›[€â X]ÿZ]ô[ô\î]X[ù]]]ôQ\⁄õÿ\ô
-]ô[ù N◊àYä\[Ÿàô[ô\ê€€ù[ùZ]P[ò[\⁄\œOOIŸù[ò›[€â X]ÿZ]ô[ô\ê€€ù[ùZ]P[ò[\⁄\ ]ô[ùÀYYﬂ◊JN◊àYä\[Ÿàô[ô\î\ú€€ò[[ù\ùöY]–[ò[\⁄\–€€ù^OOIŸù[ò›[€â \ô[ô\î\ú€€ò[[ù\ùöY]–[ò[\⁄\–€€ù^
-
-N◊àYä\[ŸàõQö^[ò[\⁄\–€‹OOOIŸù[ò›[€â \õQö^[ò[\⁄\–€‹J
-N◊àYä\[ŸàõUåç€€‹ö^ôP[ò[\⁄\œOOIŸù[ò›[€â \õUåç€€‹ö^ôP[ò[\⁄\ 
-N◊àY[ŸHYäöY]œOOI€X\õö[ô… ^◊àYä\[Ÿàô[ô\ìX\õö[ôœOOIŸù[ò›[€â X]ÿZ]ô[ô\ìX\õö[ô 
-N◊àYä\[Ÿàô[ô\ê€€ù[ùZ]SX\õö[ôœOOIŸù[ò›[€â X]ÿZ]ô[ô\ê€€ù[ùZ]SX\õö[ô ]ô[ùÀYYﬂ◊JN◊àYä\[Ÿàô[ô\î\ú€€ò[[ù\ùöY]œOOIŸù[ò›[€â X]ÿZ]ô[ô\î\ú€€ò[[ù\ùöY] ]ô[ùÀYYﬂ◊JN◊àY[ŸHYäöY]œOOI‹Ÿ][ô‹… ^◊àYä\[Ÿà[ú›\ôP€€ù[ùZ]TŸ][ô‹’ROOOIŸù[ò›[€â Y[ú›\ôP€€ù[ùZ]TŸ][ô‹’RJ
-N◊àYä\[ŸàõUåç€€ú€€Y]RX[Ÿ][ô‹œOOIŸù[ò›[€â \õUåç€€ú€€Y]RX[Ÿ][ô‹ 
-N◊àô[ô\êòX⁄›\›]J
-N‹ô[ô\íX[›]J
-N◊àWàYä\[ŸàõP\Q[Y[ú⁄[€ê€€‹úœOOIŸù[ò›[€â \õP\Q[Y[ú⁄[€ê€€‹ú ÿ›[Y[ùú]Y\ûTŸ[X›‹äùöY]÷Ÿ]K]öY]œWâ›öY]ﬂWóX
-_ÿ›[Y[ù
-N◊àYäŸ\öX[OO\õTô[ô\îŸ\öX[
-\õSX\ö—úô\⁄
-öY] N◊üWôù[ò›[€àõTÿ⁄Y[Tô[ô\äöY]œ[ù[õ‹òŸOYò[ŸJ^◊àõT]Y]YYöY]œ]öY]ﬂõT]Y]YYöY]Œ◊àYäõ‹òŸIâúõT]Y]YYöY] \õR[ùò[Y]JõT]Y]YYöY] N◊àYäõTô[ô\î]Y]YY
-\ô]\õé◊àõTô[ô\î]Y]YY]ùYN◊àô\]Y\›[ö[X][€ëúò[YJ
-
-OOû‹õTô[ô\î]Y]YYYò[ŸNÿ€€ú›ô^\õT]Y]YYöY]Œ‹õT]Y]YYöY]œ[ù[‹õTô[ô\êX›]ôJô^Ÿõ‹òŸ_JKòÿ]⁄
-\úèOò€€ú€€Kô\úõ‹ä	—ò[H[»ô[ô\ö^ò\àXòIÀ\úäJ_JN◊üWôù[ò›[€àõU‹ò\]S]]][€äò[YJ^◊àû^ÿ€€ú›õèY€ÿò[\÷€ò[YWN⁄Yä\[ŸàõàOOIŸù[ò›[€âﬂõãó◊‹õT\ôõ‹õX[òŸU‹ò\Y
-\ô]\õéÿ€€ú›‹ò\YX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú›ô\›[X]ÿZ]õäããò\ô‹ N‹õQ]Tô]ö\⁄[€ä Œ‹õR[ùò[Y]J
-N‹ô]\õàô\›[N›‹ò\Yó◊‹õT\ôõ‹õX[òŸU‹ò\Y]ùYNŸ€ÿò[\÷€ò[YWO]‹ò\YXÿ]⁄ﬂWüWôù[ò›[€àõU‹ò\Ÿ][ô‹”]]][€ä
-^◊àû^⁄Yä\[Ÿàÿ]ôTŸ][ô‹»OOIŸù[ò›[€âﬂÿ]ôTŸ][ô‹Àó◊‹õT\ôõ‹õX[òŸU‹ò\Y
-\ô]\õéÿ€€ú›õè\ÿ]ôTŸ][ô‹À‹ò\YYù[ò›[€äããò\ô‹ ^ÿ€€ú›ô\›[Yõäããò\ô‹ N‹õQ]Tô]ö\⁄[€ä Œ‹õR[ùò[Y]J
-N‹ô]\õàô\›[N›‹ò\Yó◊‹õT\ôõ‹õX[òŸU‹ò\Y]ùYN‹ÿ]ôTŸ][ô‹œ]‹ò\YXÿ]⁄ﬂWüWôù[ò›[€àõR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-^◊àYä\[Ÿàô[ô\ê[OOIŸù[ò›[€â \ô[ô\ê[X\ﬁ[ò»ù[ò›[€ä
-^‹ô]\õàõTô[ô\êX›]ôJù[Ÿõ‹òŸNùùY_J_N◊àYä\[Ÿà›⁄]⁄XèOOIŸù[ò›[€â…âà\›⁄]⁄Xãó◊‹õT\ôõ‹õX[òŸJ^◊à€€ú›ô]ö[›\œ\›⁄]⁄Xãó◊‹õQX\õT\ôõ‹õX[òŸIâú›⁄]⁄Xãó◊‹õTô]ö[›\œ‹›⁄]⁄Xãó◊‹õTô]ö[›\Œú›⁄]⁄Xé◊à€€ú›‹ò\YYù[ò›[€äò[YJ^‹ô]ö[›\ ò[YJN‹õTÿ⁄Y[Tô[ô\äò[YJ_N◊à‹ò\Yó◊‹õT\ôõ‹õX[òŸO]ùYN›‹ò\Yó◊‹õTô]ö[›\œ\ô]ö[›\Œ‹›⁄]⁄Xè]‹ò\Y◊àWà…‹]]ô[ù	À	Ÿ[]Q]ô[ù	À	‹]YYXÿ][€âÀ	Ÿ[]SYYXÿ][€â◊Kôõ‹ëXX⁄
-õU‹ò\]S]]][€äN‹õU‹ò\Ÿ][ô‹”]]][€ä
-N◊àû^⁄Yä\[ŸàõSÿúŸ\ùô\àOOI›[ôYö[ôY	 \õSÿúŸ\ùô\ãô\ÿ€€õôX›
-
-_Xÿ]⁄ﬂWà€€ú›⁄Y€ò]\ôOV›\[Ÿàô[ô\î]X[ù]]]ôQ\⁄õÿ\ô\[Ÿàô[ô\ìX\õö[ôÀ\[Ÿàô[ô\ê€€ù[ùZ]R€YK\[Ÿàô[ô\î\ú€€ò[[ù\ùöY]À\[ŸàõUåç€€‹ö^ôP[ò[\⁄\◊Köõ⁄[ä	ﬂ	 N◊àYä⁄Y€ò]\ôHOO\õS\›[Ÿ[T⁄Y€ò]\ôJ^‹õS\›[Ÿ[T⁄Y€ò]\ôO\⁄Y€ò]\ôN‹õR[ùò[Y]J
-_Wà€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â KXõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW–T‘ëSPT—_X⁄YäXõ›]
-XXõ›]ù^€€ù[ùTìW–T‘ëSPT—N◊àÿ›[Y[ùôÿ›[Y[ù[[Y[ùô]\Ÿ]úõT\ôõ‹õX[òŸOIÃIŒ◊üWúõR[ú›[\ôõ‹õX[òŸTù[ù[YJ
-N◊óôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOûÿ€€ú›[‹ôOYKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K\õKZ\›‹ûK[[‹ôWI N⁄Yä[[‹ôJ\ô]\õéŸKúô]ô[ùYò][
-
-N‹õR\›‹ûS[Z]
-œN‹õR[ùò[Y]J	⁄\›‹ûI N‹õTÿ⁄Y[Tô[ô\ä	⁄\›‹ûIÀùYJ_JN◊óã à[[Y[ù‹»õ‹òHH[HZ^[HH€€ú›[Z\à[ù\òN»õ\à0ÍHX[ùY»€€H›\›»Y[õ‹àõ»T€ôKà
-ã◊äù[ò›[€àõT\ôõ‹õX[òŸT›[\ 
-^⁄Yäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK\\ôõ‹õX[òŸK\›[I J\ô]\õéÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹õK\\ôõ‹õX[òŸK\›[IŒ‹›ù^€€ù[ùXãùöY]Œõõ›
-òX›]ôJ^Ÿ\‹^Nõõ€ôHZ[\‹ù[ùWñŸ]K]öY]œWö\›‹ûWóHù[Y[[ôKZ][KŸ]K]öY]œWõX\õö[ô◊óHõX\õö[ôÀ\]Y\›[€ãŸ]K]öY]œWò[ò[\⁄\◊óHò[ò[\⁄\ÀXÿ\ôÿ€€ù[ù]ö\⁄Xö[]Nò]]Œÿ€€ùZ[ãZ[ùö[ú⁄XÀ\⁄^ôNåLLWñŸ]K]öY]œWò[ò[\⁄\◊óHô\⁄õÿ\ôX⁄\ùÿ€€ù[ù]ö\⁄Xö[]Nò]]Œÿ€€ùZ[ãZ[ùö[ú⁄XÀ\⁄^ôNåÕåWãúõKZ\›‹ûK[[‹ô^€X\ô⁄[éåMé›⁄YåL	_WêYYXH
-X^]⁄Yçå
-^Àú›[[X\ûKXÿ\ôò[ò[\⁄\ÀXÿ\ôúŸ][ô‹ÀXÿ\ôõõ›XŸKXÿ\ôòX›[€ãXÿ\ôÿòX⁄Ÿõ‹Yö[\éòõ\äL
-Hÿ]\ò]JLÃâJNÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éòõ\äL
-Hÿ]\ò]JLÃâJ_Kú⁄Y]ÿòX⁄Ÿõ‹Yö[\éòõ\äMú
-Hÿ]\ò]JLŒ	JNÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éòõ\äMú
-Hÿ]\ò]JLŒ	J__WòŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_JJ
-N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃLãöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã à⁄X⁄ÀZ[ú»[[ÿ⁄[€òZ\À‹∞ËYöX€‹»ÿÿZ\»Hô]ö\Ë€»ô]ô\úÎ]ô[HXòH[∞Ë[\Ÿ\Àà
-ã◊ò€€ú›SS’S”ó—Së“SëW’ëTî“S”èIÃKåãåXô]Kç	Œ◊ò€€ú›SS’S”ó—QêUS—SQSî“S”îœV◊à⁄Yâÿ[ûY]IÀXô[â–[ú⁄YYYIÀ›Œâ€ô[ö[XIÀY⁄â€]Z]»[ù[úÿIÀX›]ôNùùY_Kà⁄Yâ⁄\[ô\‹…ÀXô[â—ô[X⁄YYIÀ›Œâ€ô[ö[XIÀY⁄â€]Z]»[ù[úÿIÀX›]ôNùùY_Kà⁄YâŸ[ô\ôﬁIÀXô[â—[ô\ô⁄XIÀ›Œâ€ô[ö[XIÀY⁄â€]Z]»[IÀX›]ôNùùY_Kà⁄Yâ⁄\úö]Xö[]IÀXô[â“\úö]Xö[YYIÀ›Œâ€ô[ö[XIÀY⁄â€]Z]»[ù[úÿIÀX›]ôNùùY_Kà⁄YâÿX›]ò][€âÀXô[â–Y⁄]pÈË€»»]]òpÈË€…À›Œâ€ô[ö[XIÀY⁄â€]Z]»[ù[úÿIÀX›]ôNùùY_Kà⁄Yâ‹ÿYô\‹…ÀXô[â’ö\›^òIÀ›Œâ€ô[ö[XIÀY⁄â€]Z]»[ù[úÿIÀX›]ôNùùY_Kà⁄Yâÿ€€òŸ[ùò][€âÀXô[â–€€òŸ[ùòpÈË€…À›Œâ€]Z]»òZ^IÀY⁄â€]Z]»[IÀX›]ôNùùY_Kà⁄Yâ‹€Y\[ô\‹…ÀXô[â‘€€õ€0Íõò⁄XIÀ›Œâ€ô[ö[XIÀY⁄â€]Z]»[ù[úÿIÀX›]ôNùùY_WóN◊ò€€ú›SêST“T◊‘ëUíQU◊—Qîœ^◊à	ÿ[ò[\⁄\ÀX›\úô[ù	Œâ–[∞Ë[\ŸH]X[	Àà	ÿ[ò[\⁄\ÀX\‹€ÿ⁄X][€ú…Œâ–\‹€ÿ⁄XpÈÌY\»[\‹òZ\…Àà	ÿ[ò[\⁄\À\€Y\\›[[X\ûIŒâ‘ô\›[[»H€€õ…Àà	ÿ[ò[\⁄\À[YYXÿ][€ú…Œâ”YYXÿ[Y[ù‹…Àà	ÿ[ò[\⁄\À\\ò⁄\Ÿ\…Œâ–€€\ò\…Àà	ÿ⁄\ù[[€Ÿ[[ôIŒâ“[[‹à[»€ô€»»[\…Àà	ÿ⁄\ù[[€ŸY\›öXù][€âŒâ—\›öXùZpÈË€»\»õ›\»H[[‹âÀà	ÿ⁄\ùY[Y[ú⁄[€ã[[ôIŒâ—[Y[úÌY\»[[ÿ⁄[€òZ\…Àà	ÿ⁄\ù\€Y\[[ôIŒâ—\òpÈË€»»€€õ…Àà	ÿ⁄\ù\€Y\[[€Ÿ	Œâ‘€€õ»0Â»[[‹àŸY›Z[ùIÀà	ÿ⁄\ù[YYY[IŒâ”]Y[∞ÈÿHH[[‹à\0Ï‹»YYXÿ[Y[ù‹…Àà	ÿ⁄\ù[YYX€€òŸ\…Œâ‘ô[]‹»\0Ï‹»YYXÿ[Y[ù‹…◊üN◊óôù[ò›[€à[[›[€ë[Y[ú⁄[€ú 
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-Kÿ]ôYP\úò^Kö\–\úò^JÀô[[›[€ë[Y[ú⁄[€ú O‹Àô[[›[€ë[Y[ú⁄[€úŒñ◊Nÿ€€ú›ûRY[ô]»X\
-ÿ]ôYõX\
-OñﬁöYJJNÿ€€ú›Yò][œQSS’S”ó—QêUS—SQSî“S”îÀõX\
-OäÀããôããäûRYôŸ]
-öY
-_ﬂJ_JJNÿ€€ú››\›€O\ÿ]ôYôö[\äOàQSS’S”ó—QêUS—SQSî“S”îÀú€€YJOôöYOO^öY
-JN‹ô]\õñÀããôYò][Àããò›\›€W_Wôù[ò›[€à[[›[€îÿ]ôQ[Y[ú⁄[€ú \›
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹Àô[[›[€ë[Y[ú⁄[€úœ[\›‹ÿ]ôTŸ][ô‹  _Wôù[ò›[€à[[›[€ì[€Ÿÿ€‹ôJ
-^ÿ€€ú›Ÿ[X›YYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K[[€Ÿ\ÿ€‹ôWKúŸ[X›Y	 N‹ô]\õàŸ[X›Y”ù[Xô\äŸ[X›Yô]\Ÿ]õ[€Ÿÿ€‹ôJNõù[Wôù[ò›[€à[[›[€îÿ€‹ô\—úõ€Qõ‹õJ
-^ÿ€€ú››]^ﬂNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY[[›[€ãY[Y[ú⁄[€óI Kôõ‹ëXX⁄
-õ›œOûÿ€€ú›⁄‹Ÿ[è\õ›Àú]Y\ûTŸ[X›‹ä	÷Ÿ]KY[[›[€ã\ÿ€‹ôWKúŸ[X›Y	 N⁄Yä⁄‹Ÿ[ä[›]‹õ›Àô]\Ÿ]ô[[›[€ë[Y[ú⁄[€óOSù[Xô\ä⁄‹Ÿ[ãô]\Ÿ]ô[[›[€îÿ€‹ôJ_JN‹ô]\õà›]Wôù[ò›[€à[[›[€ìXô[‘€ò\⁄›
-ÿ€‹ô\ ^ÿ€€ú›[\œY[[›[€ë[Y[ú⁄[€ú 
-K›]^ﬂN”ÿöôX›öŸ^\ ÿ€‹ô\ Kôõ‹ëXX⁄
-YOû€›]⁄YOY[\Àôö[ô
-OôöYOOZY
-OÀõXô[YJN‹ô]\õà›]Wôù[ò›[€à[[›[€îŸ[X›[€Ÿ
-ò[YJ^Ÿÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K[[€Ÿ\ÿ€‹ôWI Kôõ‹ëXX⁄
-èOòãò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	Àò[YHOO[ù[	âùò[YHOO][ôYö[ôY	âìù[Xô\äãô]\Ÿ]õ[€Ÿÿ€‹ôJOOOSù[Xô\äò[YJJJ_Wôù[ò›[€à[[›[€îŸ[X›[Y[ú⁄[€äYò[YJ^ÿ€€ú›õ›œYÿ›[Y[ùú]Y\ûTŸ[X›‹äŸ]KY[[›[€ãY[Y[ú⁄[€èWâ–‘‘Àô\ÿÿ\JY
-_WóX
-N‹õ›œÀú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY[[›[€ã\ÿ€‹ôWI Kôõ‹ëXX⁄
-èOòãò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	Àù[Xô\äãô]\Ÿ]ô[[›[€îÿ€‹ôJOOOSù[Xô\äò[YJJJ_Wôù[ò›[€à[[›[€ì[€ŸŸ[X›‹íS
-ò[YO[ù[
-^‹ô]\õò]à€\‹œWõ[€ŸXõÿ⁄◊èè]à€\‹œWõ[€Ÿ\ÿÿ[K[Xô[◊èè‹[èå0≠»]Z]»X[‹‹[èè‹[èçH0≠»ô]]õœ‹‹[èè‹[èåL0≠»]Z]»ô[O‹‹[èèŸ]èè]à€\‹œWõ[€Ÿ\ÿÿ[Wèâ–\úò^Kôúõ€J€[ô›åL_K
-ÀäOOòù]€à\OWòù]€óà€\‹œWõ[€Ÿ\ÿ€‹ôH	›ò[YHOO[ù[	âùò[YHOO][ôYö[ôY	âìù[Xô\äò[YJOOO[è…‹Ÿ[X›Y	Œâ…ﬂWà]K[[€Ÿ\ÿ€‹ôOWâ€üWà›[OWãK[[€ŸZâ€äåLüWèâ€üOÿù]€èò
-Köõ⁄[ä	… _OŸ]èèù]€à\OWòù]€óà€\‹œWù[ûKX€X\óàYWò€X\ì[€Ÿÿ€‹ôWèì[\\àõ›Oÿù]€èèŸ]èòWôù[ò›[€à[[›[€ë[Y[ú⁄[€íS
-ò[YO[ù[
-^‹ô]\õò]à€\‹œWô[[›[€ãY[Y[ú⁄[€óà]KY[[›[€ãY[Y[ú⁄[€èWâŸ\ÿ öY
-_Wèè]à€\‹œWô[[›[€ãY[Y[ú⁄[€ãZXYèè›õ€ôœâŸ\ÿ õXô[
-_O‹›õ€ôœèù]€à\OWòù]€óà€\‹œWù[ûKX€X\óà]KX€X\ãY[Y[ú⁄[€èWâŸ\ÿ öY
-_Wèì[\\èÿù]€èèŸ]èè]à€\‹œWô[[›[€ã\ÿÿ[Wèâ÷ÃKãÀWKõX\
-èOòù]€à\OWòù]€óà]KY[[›[€ã\ÿ€‹ôOWâ€üWà€\‹œWâ›ò[YHOO[ù[	âùò[YHOO][ôYö[ôY	âìù[Xô\äò[YJOOO[è…‹Ÿ[X›Y	Œâ…ﬂWèâ€üOÿù]€èò
-Köõ⁄[ä	… _OŸ]èè]à€\‹œWô[[›[€ã\ÿÿ[KXÿ\[€óèè‹[èå0≠»	Ÿ\ÿ õ›ﬂ	€ô[ö[XI _O‹‹[èè‹[èçH0≠»	Ÿ\ÿ öY⁄	€]Z]»[ù[úÿI _O‹‹[èèŸ]èèŸ]èòWôù[ò›[€à[[›[€êYò[òŸYS
-ò[Y\œ^ﬂJ^ÿ€€ú›[\œY[[›[€ë[Y[ú⁄[€ú 
-Kôö[\äOôòX›]ôHOOYò[ŸJN‹ô]\õò]Z[»€\‹œWô[[›[€ãXYò[òŸYàYWô[[›[€êYò[òŸYèè›[[X\ûOë][\à[[ÈÌY\œ‹›[[X\ûOè€\‹œWö[\óèì‹⁄[€ò[àô[ö[XH[Y[úË€»ôXŸXôHò[‹à]]€X]Xÿ[Y[ùKè‹è]àYWô[[›[€ë[Y[ú⁄[€ú”\›èâŸ[\ÀõX\
-Oô[[›[€ë[Y[ú⁄[€íS
-ò[Y\÷ŸöYJJKöõ⁄[ä	… _OŸ]èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€àù[Xù]€óàYWòY[[›[€ë[Y[ú⁄[€êùóèä»‹öX\àõ›òH[Y[úË€œÿù]€èè]à€\‹œWô[[›[€ã[ô]ÀY[Y[ú⁄[€àY[óàYWô[[›[€ìô]—[Y[ú⁄[€óèè]à€\‹œWôöY[èèXô[ìõ€YHH[Y[úË€œ€Xô[è[ú]YWô[[›[€ë[Y[ú⁄[€ìò[YWàXŸZ€\èWë^éà\‹\ú€€ò[^òpÈË€◊èèŸ]èè]à€\‹œWôöY[Y‹öYèè]à€\‹œWôöY[èèXô[å⁄Y€öYöXÿO€Xô[è[ú]YWô[[›[€ë[Y[ú⁄[€ì›◊àXŸZ€\èWõô[ö[XWèèŸ]èè]à€\‹œWôöY[èèXô[çH⁄Y€öYöXÿO€Xô[è[ú]YWô[[›[€ë[Y[ú⁄[€íY⁄àXŸZ€\èWõ]Z]»[ù[úÿWèèŸ]èèŸ]èè]à€\‹œWõX\õö[ôÀXX›[€ú◊èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€óàYWúÿ]ôQ[[›[€ë[Y[ú⁄[€êùóèêYX⁄[€ò\èÿù]€èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWòÿ[òŸ[[[›[€ë[Y[ú⁄[€êùóèêÿ[òŸ[\èÿù]€èèŸ]èèŸ]èèŸ]Z[œòWôù[ò›[€à⁄\ôQ[[›[€ê€€ùõ€ 
-^Ÿÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K[[€Ÿ\ÿ€‹ôWI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOô[[›[€îŸ[X›[€Ÿ
-ãô]\Ÿ]õ[€Ÿÿ€‹ôJJNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€X\ì[€Ÿÿ€‹ôI OÀòY]ô[ù\›[ô\ä	ÿ€X⁄…À
-
-OOô[[›[€îŸ[X›[€Ÿ
-ù[
-JNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY[[›[€ãY[Y[ú⁄[€óI Kôõ‹ëXX⁄
-õ›œOúõ›Àú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY[[›[€ã\ÿ€‹ôWI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOû‹õ›Àú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY[[›[€ã\ÿ€‹ôWI Kôõ‹ëXX⁄
-Oûò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	ÀOOXäJ_JJNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KX€X\ãY[Y[ú⁄[€óI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOûÿ€€ú›õ›œXãò€‹Ÿ\›
-	÷Ÿ]KY[[›[€ãY[Y[ú⁄[€óI N‹õ›œÀú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY[[›[€ã\ÿ€‹ôWI Kôõ‹ëXX⁄
-Oûò€\‹”\›úô[[›ôJ	‹Ÿ[X›Y	 J_JNÿ€€ú›YYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿY[[›[€ë[Y[ú⁄[€êùâ K[ô[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€ìô]—[Y[ú⁄[€â N⁄YäY	âú[ô[
-XYõ€ò€X⁄œJ
-OOû‹[ô[ò€\‹”\›úô[[›ôJ	⁄Y[â NÿYò€\‹”\›òY
-	⁄Y[â NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€ë[Y[ú⁄[€ìò[YI OÀôõÿ›\ 
-_NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿÿ[òŸ[[[›[€ë[Y[ú⁄[€êùâ OÀòY]ô[ù\›[ô\ä	ÿ€X⁄…À
-
-OOû‹[ô[Àò€\‹”\›òY
-	⁄Y[â NÿYÀò€\‹”\›úô[[›ôJ	⁄Y[â _JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ÿ]ôQ[[›[€ë[Y[ú⁄[€êùâ OÀòY]ô[ù\›[ô\ä	ÿ€X⁄…À
-
-OOûÿ€€ú›ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€ë[Y[ú⁄[€ìò[YI OÀùò[YKùö[J
-N⁄Yä[ò[YJ\ô]\õàÿ\›
-	—0Íà[Hõ€YH0Ë[Y[úË€Àâ Nÿ€€ú››œYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€ë[Y[ú⁄[€ì›… OÀùò[YKùö[J
-_	€ô[ö[XIÀY⁄Yÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€ë[Y[ú⁄[€íY⁄	 OÀùò[YKùö[J
-_	€]Z]»[ù[úÿIÀYX›\›€KI€õ‹õX[^ôU^
-ò[YJKúô\XŸJ◊ ÀŸÀ	ÀI _KI—]Kõõ› 
-Kù‘›ö[ô Õä_X\›Y[[›[€ë[Y[ú⁄[€ú 
-Nÿ€€ú›^⁄YXô[õò[YK›ÀY⁄X›]ôNùùYK›\›€NùùY_N€\›ú\⁄
-
-NŸ[[›[€îÿ]ôQ[Y[ú⁄[€ú \›
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€ë[Y[ú⁄[€ú”\›	 OÀö[úŸ\ùYòXŸ[ùS
-	ÿôYõ‹ôY[ô	À[[›[€ë[Y[ú⁄[€íS
-
-JN‹[ô[Àò€\‹”\›òY
-	⁄Y[â NÿYÀò€\‹”\›úô[[›ôJ	⁄Y[â N›⁄\ôQ[[›[€ê€€ùõ€ 
-N›ÿ\›
-	—[Y[úË€»YX⁄[€òYKâ _J_Wóò€€ú›[[›[€îô]ö[›\”‹[ìõ›T⁄Y][‹[ìõ›T⁄Y]◊õ‹[ìõ›T⁄Y]X\ﬁ[ò»ù[ò›[€ä
-^ÿ›\úô[ù\OI€õ›IŒ‹[ô[ô–]Y[œ[ù[ÿ€€ú›õ›œ]”ÿÿ[[ú]
-
-N€‹[êòX⁄Ÿõ‹
-	”õ›òH[õ›pÈË€…À]à€\‹œWôöY[èèXô[ê€€[»õÿÍà\›0ËHŸHŸ[ù[ô»Y€‹òOœ€Xô[âŸ[[›[€ì[€ŸŸ[X›‹íS
-
-_OŸ]èâŸ[[›[€êYò[òŸYS
-
-_O]à€\‹œWôöY[èèXô[õ‹èWõõ›U^èê[õ›pÈË€»‹⁄[€ò[€Xô[è^\ôXHYWõõ›U^àõ›‹œWçà]KX]]Ÿ‹õ›»XŸZ€\èWë\ÿ‹ô]òH»]X[ù»ôX⁄\ÿ\à8†%›HZ^H[Húò[ò€»Hÿ[ôH\[ò\»›XHõ›H[[ÿ⁄[€ò[óèè›^\ôXOèŸ]èè]à€\‹œWùõ⁄XŸK\õ›◊èèù]€à\OWòù]€óà€\‹œWùõ⁄XŸKXù]€óàYWùõ⁄XŸPùóèº'„¶H‹ò]ò\àõﬁèÿù]€èè‹[à€\‹œWùõ⁄XŸK\›]\◊àYWùõ⁄XŸT›]\◊èì‹⁄[€ò[à»0Ë]Y[»öXÿHô\›H\\ô[Àè‹‹[èèŸ]èè]à€\‹œWôöY[èèXô[õ‹èWõõ›UY◊èïY»‹⁄[€ò[€Xô[è[ú]YWõõ›UY◊àXŸZ€\èWë^éà[ú⁄YYYKÿ[XK€€õ◊èèŸ]èâŸ]QöY[
-	‹ôX€‹ô[YIÀ	—]HH‹∞Ë\ö[…Àõ›À‹⁄›”õ›ŒùùYKô\Ÿ\ùôSõ›ŒùùY_J_O€\‹œWö[\óè∏†'Y€‹òx†'H\ÿ\\ôXŸHŸHõÿÍà[\ò\àH]H›H»‹∞Ë\ö[Àè‹âŸõ‹õPù]€ú 
-_Xÿ]ôQõ‹õJNÿ›\úô[ù\OI€õ›IŒ‹Ÿ]\õ⁄XŸJ
-N›⁄\ôQ[[›[€ê€€ùõ€ 
-N⁄Yä\[Ÿà⁄\ôP]]—‹õ›’^\ôX\œOOIŸù[ò›[€â ]⁄\ôP]]—‹õ›’^\ôX\ ÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI J_Wóò€€ú›[[›[€îô]ö[›\‘ÿ]ôQõ‹õO\ÿ]ôQõ‹õN◊úÿ]ôQõ‹õOX\ﬁ[ò»ù[ò›[€ä]ä^⁄Yä›\úô[ù\HOOI€õ›I \ô]\õà[[›[€îô]ö[›\‘ÿ]ôQõ‹õJ]äNŸ]ãúô]ô[ùYò][
-
-Nÿ€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›U^	 OÀùò[YKùö[J
-_	…À[€Ÿÿ€‹ôOY[[›[€ì[€Ÿÿ€‹ôJ
-K[[›[€îÿ€‹ô\œY[[›[€îÿ€‹ô\—úõ€Qõ‹õJ
-K[Y\›[\ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôX€‹ô[YI OÀùò[YN⁄Yä]^	âà\[ô[ô–]Y[…âõ[€Ÿÿ€‹ôOO[ù[	âàSÿöôX›öŸ^\ [[›[€îÿ€‹ô\ Kõ[ô›
-\ô]\õàÿ\›
-	—\ÿ‹ô]òK‹ò]ôH›HôY⁄\›ôH[»Y[õ‹»[XHõ›H[[ÿ⁄[€ò[â Nÿ€€ú›[Y\›[\[ô]»]J[Y\›[\ò[YJN⁄Yäù[Xô\ãö\”òSä[Y\›[\ôŸ][YJ
-JJ\ô]\õàÿ\›
-	“[ôõ‹õYH[XH]HH‹∞Ë\ö[»∞Ë[Y‹Àâ Nÿ€€ú›Y]ZY
-	€õ›I KôX€‹ô^⁄Y\Nâ€õ›IÀ[Y\›[\ù[Y\›[\ù“T”‘›ö[ô 
-K^YŒôÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›UY… OÀùò[YKùö[J
-_	…À\–]Y[Œêõ€€X[ä[ô[ô–]Y[ K]Y[”€õNêõ€€X[ä[ô[ô–]Y[…âà]^
-K[€Ÿÿ€‹ôK[[›[€îÿ€‹ô\À[[›[€ìXô[Œô[[›[€ìXô[‘€ò\⁄›
-[[›[€îÿ€‹ô\ K[[Œôò[Ÿ_Nÿ]ÿZ]]]ô[ù
-ôX€‹ô
-N⁄Yä[ô[ô–]Y[ X]ÿZ]ÿ]ôP]Y[ Y[ô[ô–]Y[ Nÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	‘ôY⁄\›õ»ÿ[õÀâ _Wóò€€ú›[[›[€îô]ö[›\‘ÿ]ôQY]Y]ô[ù\ÿ]ôQY]Y]ô[ù◊úÿ]ôQY]Y]ô[ùX\ﬁ[ò»ù[ò›[€ä]ã^\›[ô ^⁄Yä^\›[ôœÀù\HOOI€õ›I \ô]\õà[[›[€îô]ö[›\‘ÿ]ôQY]Y]ô[ù
-]ã^\›[ô NŸ]ãúô]ô[ùYò][
-
-Nÿ€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›U^	 OÀùò[YKùö[J
-_	…À[€Ÿÿ€‹ôOY[[›[€ì[€Ÿÿ€‹ôJ
-K[[›[€îÿ€‹ô\œY[[›[€îÿ€‹ô\—úõ€Qõ‹õJ
-K[Y\›[\ò[YOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôX€‹ô[YI OÀùò[YN⁄Yä]^	âà\[ô[ô–]Y[…âàY^\›[ôÀö\–]Y[…âõ[€Ÿÿ€‹ôOO[ù[	âàSÿöôX›öŸ^\ [[›[€îÿ€‹ô\ Kõ[ô›
-\ô]\õàÿ\›
-	—\ÿ‹ô]òK‹ò]ôH›HôY⁄\›ôH[»Y[õ‹»[XHõ›H[[ÿ⁄[€ò[â Nÿ€€ú›[Y\›[\[ô]»]J[Y\›[\ò[YJN⁄Yäù[Xô\ãö\”òSä[Y\›[\ôŸ][YJ
-JJ\ô]\õàÿ\›
-	“[ôõ‹õYH[XH]HH‹∞Ë\ö[»∞Ë[Y‹Àâ Nÿ€€ú›\–]Y[œPõ€€X[ä^\›[ôÀö\–]Y[ﬂ[ô[ô–]Y[ KôX€‹ô^Àããô^\›[ôÀ[Y\›[\ù[Y\›[\ù“T”‘›ö[ô 
-K^YŒôÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›UY… OÀùò[YKùö[J
-_	…À\–]Y[À]Y[”€õNêõ€€X[ä\–]Y[…âà]^
-K[€Ÿÿ€‹ôK[[›[€îÿ€‹ô\À[[›[€ìXô[Œô[[›[€ìXô[‘€ò\⁄›
-[[›[€îÿ€‹ô\ _Nÿ]ÿZ]]]ô[ù
-ôX€‹ô
-N⁄Yä[ô[ô–]Y[ X]ÿZ]ÿ]ôP]Y[ ^\›[ôÀöY[ô[ô–]Y[ Nÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	–[\òpÈÌY\»ÿ[ò\Àâ _Wóò€€ú›[[›[€îô]ö[›\”‹[ë]ô[ùY]‹è[‹[ë]ô[ùY]‹é◊õ‹[ë]ô[ùY]‹èX\ﬁ[ò»ù[ò›[€äY
-^ÿ€€ú›^\›[ôœJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-Nÿ]ÿZ][[›[€îô]ö[›\”‹[ë]ô[ùY]‹äY
-N⁄Yä^\›[ôœÀù\HOOI€õ›I \ô]\õé⁄Yä^\›[ôÀõ[€Ÿÿ€‹ôHO[ù[
-Y[[›[€îŸ[X›[€Ÿ
-^\›[ôÀõ[€Ÿÿ€‹ôJN”ÿöôX›ô[ùöY\ ^\›[ôÀô[[›[€îÿ€‹ô\ﬂﬂJKôõ‹ëXX⁄
-
-⁄ÀóJOOô[[›[€îŸ[X›[Y[ú⁄[€äÀäJN⁄YäÿöôX›öŸ^\ ^\›[ôÀô[[›[€îÿ€‹ô\ﬂﬂJKõ[ô›
-Yÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€êYò[òŸY	 OÀúŸ]]öXù]J	€‹[âÀ	… _Wóò€€ú›[[›[€îô]ö[›\“⁄[ô[ôõœZ⁄[ô[ôõŒ◊ö⁄[ô[ôõœYù[ò›[€äJ^⁄YäOÀù\HOOI€õ›I \ô]\õà[[›[€îô]ö[›\“⁄[ô[ôõ JNÿ€€ú›Y]OV◊N⁄YäKõ[€Ÿÿ€‹ôHO[ù[
-[Y]Kú\⁄
-\›Y»	ŸKõ[€Ÿÿ€‹ô_KÃL
-N⁄YäKùY [Y]Kú\⁄
-KùY Nÿ€€ú›ÿ€‹ô\œSÿöôX›ô[ùöY\ Kô[[›[€îÿ€‹ô\ﬂﬂJKú€XŸJäNŸõ‹ä€€ú›⁄YóHŸàÿ€‹ô\ [Y]Kú\⁄
-	ŸKô[[›[€ìXô[œÀñ⁄Y_[[›[€ë[Y[ú⁄[€ú 
-Kôö[ô
-OôöYOOZY
-OÀõXô[YH	›üKÕ
-N‹ô]\õû⁄⁄[ôôKò]Y[”€õO…–Sì’p·‡”»Hì÷âŒäYKù^	âôKõ[€Ÿÿ€‹ôHO[ù[…–“P“ÀRSâŒâ–Sì’p·‡”… K€\‹”ò[YNâ€õ›IÀ]NôKù^
-Kõ[€Ÿÿ€‹ôHO[ù[ÿ\›Y»[[ÿ⁄[€ò[	ŸKõ[€Ÿÿ€‹ô_KÃLâ—‹ò]òpÈË€»Hõﬁâ KY]__Wóò€€ú›[[›[€îô]ö[›\”‹[ë]ô[ùöY]Ÿ\è[‹[ë]ô[ùöY]Ÿ\é◊õ‹[ë]ô[ùöY]Ÿ\èX\ﬁ[ò»ù[ò›[€äY
-^ÿ€€ú›OJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-N⁄YäOÀù\HOOI€õ›I \ô]\õà[[›[€îô]ö[›\”‹[ë]ô[ùöY]Ÿ\äY
-Nÿ€€ú›õ›‹œV‹ôY⁄\›õ—]Z[õ› 	—\›Y»[[ÿ⁄[€ò[	ÀKõ[€Ÿÿ€‹ôHO[ù[ÿ	ŸKõ[€Ÿÿ€‹ô_HHLâ… KôY⁄\›õ—]Z[õ› 	–[õ›pÈË€…ÀKù^	… KôY⁄\›õ—]Z[õ› 	’Y…ÀKùY WNŸõ‹ä€€ú›⁄Ÿ^Kò[YWHŸàÿöôX›ô[ùöY\ Kô[[›[€îÿ€‹ô\ﬂﬂJJ\õ›‹Àú\⁄
-ôY⁄\›õ—]Z[õ› Kô[[›[€ìXô[œÀñ⁄Ÿ^W_[[›[€ë[Y[ú⁄[€ú 
-Kôö[ô
-OôöYOOZŸ^JOÀõXô[Ÿ^K	›ò[Y_HH
-JN‹õ›‹Àú\⁄
-ôY⁄\›õ—]Z[õ› 	—]HH‹∞Ë\ö[…ÀôY⁄\›õ—]Z[]JKù[Y\›[\
-JJNÿ€€ú›]Y[œYKö\–]Y[œÿ]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœ∞‡]Y[œ‹›õ€ôœè‹[à]KX]Y[œWâŸKöYWèè‹‹[èèŸ]èòâ…Œ€‹[êòX⁄Ÿõ‹
-Kù^…–[õ›pÈË€…Œâ–⁄X⁄ÀZ[à[[ÿ⁄[€ò[	À]à€\‹œWò[ò[\⁄\À\›X⁄◊èâ‹õ›‹Àöõ⁄[ä	… _Iÿ]Y[ﬂOŸ]èè]à€\‹œWôõ‹õKXX›[€ú◊èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWùöY]Ÿ\ê€‹ŸPùóèëôX⁄\èÿù]€èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€óàYWùöY]Ÿ\ëY]ùóèëY]\èÿù]€èèŸ]èò]èOô]ãúô]ô[ùYò][
-
-JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ê€‹ŸPùâ Kõ€ò€X⁄œX€‹ŸT⁄Y]Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ëY]ùâ Kõ€ò€X⁄œJ
-OOõ‹[ë]ô[ùY]‹äY
-N⁄YäKö\–]Y[ X]ÿZ]Yò]P]Y[ ÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI J_Wóôù[ò›[€à⁄\ù[\J^
-^‹ô]\õò]à€\‹œWò⁄\ùY[\WèâŸ\ÿ ^
-_OŸ]èòWôù[ò›[€à⁄\ùõ›[ô ò[Y\ÀZ[ëò[òX⁄ÀX^ò[òX⁄ ^ÿ€€ú›ù[\œ]ò[Y\Àôö[\äù[Xô\ãö\—ö[ö]JN⁄Yä[ù[\Àõ[ô›
-\ô]\õñ€Z[ëò[òX⁄ÀX^ò[òX⁄◊N€]Z[èSX]õZ[äããõù[\ KX^SX]õX^
-ããõù[\ N⁄YäZ[èOO[X^
-^€Z[ãOLN€X^
-œL_\ô]\õñ€Z[ãX^_Wôù[ò›[€àÿÿ[[ôP⁄\ù
-⁄[ùÀ€Z[ñOLX^OLLSXô[I…Àõ‹õX]O]èOî›ö[ô äKXô[\OúõXô[	…ÀX\öŸ\úœV◊_O^ﬂJ^⁄Yä⁄[ùÀõ[ô›ä\ô]\õà⁄\ù[\J	–Z[ôH0ËH›X€‹»€ù‹»\òH\Ÿ[ö\à[XH[öKâ Nÿ€€ú›œMÃåLçÃY^€çãéåMãåNéåÕ_K]œUÀ\Yõ\YúãZR\Yù\YòãSX]õZ[äããú⁄[ùÀõX\
-Oúû
-JKOSX]õX^
-ããú⁄[ùÀõX\
-Oúû
-JK‹[èSX]õX^
-KK^
-K]èOúYõ
- ã^
-K‹‹[äö]ÀO]èOúYù
- X^K]äK X^K[Z[ñJJöZ]\⁄[ùÀõX\
-
-JOOò	⁄O…”	Œâ”IﬂIﬁ
-û
-Kù—ö^Y
-J_K	ﬁJûJKù—ö^Y
-J_X
-Köõ⁄[ä	»	 KX⁄‹œV€Z[ñK
-Z[ñJ€X^JKÃãX^WKö\ú›\⁄[ù÷ÃK\›\⁄[ù÷‹⁄[ùÀõ[ô›LWN‹ô]\õò›ô»€\‹œWõÿÿ[X⁄\ù\›ô◊àöY]–õﬁWå	’ﬂH	“Wàõ€OWö[Y◊à\öXK[Xô[WâŸ\ÿ SXô[
-_Wèè»€\‹œWò⁄\ùY‹öYèâ›X⁄‹ÀõX\
-Oò[ôHOWâ‹YõWàLOWâﬁJ
-_WàèWâ’À\YúüWàLèWâﬁJ
-_Wãœè^Wâ‹YõNWàOWâﬁJ
-JÕWà^X[ò⁄‹èWô[ôèâŸ\ÿ õ‹õX]J
-J_O›^ò
-Köõ⁄[ä	… _OŸœâ€X\öŸ\úÀõX\
-OOò[ôH€\‹œWò⁄\ù[X\öŸ\à	Ÿ\ÿ Kö⁄[ô	… _WàOWâﬁ
-Kû
-_WàLOWâ‹YùWàèWâﬁ
-Kû
-_WàLèWâ“\YòüWèè]OâŸ\ÿ Kù]_	… _O›]Oè€[ôOò
-Köõ⁄[ä	… _O]€\‹œWò⁄\ù[[ôWàWâ‹]Wàö[Wõõ€ôWãœèœâ‹⁄[ùÀõX\
-Oò⁄\ò€H€\‹œWò⁄\ùY›àﬁWâﬁ
-û
-_WàﬁOWâﬁJûJ_WàèWçèè]OâŸ\ÿ 	ﬁXô[
-
-_H0≠»	Ÿõ‹õX]JûJ_X
-_O›]Oèÿ⁄\ò€Oò
-Köõ⁄[ä	… _OŸœè^€\‹œWò⁄\ùX^\À[Xô[àWâ‹YõWàOWâ“LLWèâŸ\ÿ Xô[
-ö\ú›
-J_O›^è^€\‹œWò⁄\ùX^\À[Xô[àWâ’À\YúüWàOWâ“LLWà^X[ò⁄‹èWô[ôèâŸ\ÿ Xô[
-\›
-J_O›^è‹›ôœòWôù[ò›[€àÿÿ[ò\ê⁄\ù
-õ›‹À€Z[ñOLX^O[ù[õ‹õX]O]èOî›ö[ô äKò[YSXô[\èOôõ‹õX]Jãùò[YJ_O^ﬂJ^⁄Yä\õ›‹Àõ[ô›
-\ô]\õà⁄\ù[\J	–Z[ôH∞Ë€»0ËHY‹»›YöX⁄Y[ù\Àâ Nÿ€€ú›œMÃåLéY^€çéåMãåNéçMK]œUÀ\Yõ\YúãZR\Yù\YòãX^[X^Oœ”X]õX^
-Kããúõ›‹ÀõX\
-èOìX]õX^
-X]òXú ãùò[YJJJJKZ[èSX]õZ[äZ[ñKããúõ›‹ÀõX\
-èOúãùò[YO‹ãùò[YNõZ[ñJJK‹[èSX]õX^
-åKX^[Z[äKO]èOúYù
- X^]äK‹‹[äöZô\õœ^J
-KùœSX]õX^
-Lã]À‹õ›‹Àõ[ô›
-ãçåäN‹ô]\õò›ô»€\‹œWõÿÿ[X⁄\ù\›ô◊àöY]–õﬁWå	’ﬂH	“Wàõ€OWö[Y◊èè[ôH€\‹œWò⁄\ù^ô\õ◊àOWâ‹YõWàLOWâﬁô\õﬂWàèWâ’À\YúüWàLèWâﬁô\õﬂWãœâ‹õ›‹ÀõX\
-
-ãJOOûÿ€€ú›ﬁ\Yõ
- JÀçJJö]À‹õ›‹Àõ[ô›^O^Jãùò[YJKSX]òXú ô\õÀ^^JK‹SX]õZ[äô\õÀ^JN‹ô]\õòôX›€\‹œWò⁄\ùXò\à	‹ãùò[YO…€ôYÿ]]ôIŒâ…ﬂWàWâÿﬁXùÀÃüWàOWâ›‹Wà⁄YWâÿùﬂWàZY⁄Wâ”X]õX^
-ã
-_WàûWçóèè]OâŸ\ÿ 	‹ãõXô[Nà	›ò[YSXô[
-ä_X
-_O›]Oè‹ôX›è^€\‹œWò⁄\ùXò\ã[Xô[àWâÿﬁWàOWâ“LÃ_Wà^X[ò⁄‹èWõZYWèâŸ\ÿ ãú⁄‹ùãõXô[
-_O›^è^€\‹œWò⁄\ùXò\ã]ò[YWàWâÿﬁWàOWâ‹ãùò[YOèL”X]õX^
-Lã‹MJNìX]õZ[ä\YòäÃMã‹
-⁄
-ÃM
-_Wà^X[ò⁄‹èWõZYWèâŸ\ÿ ò[YSXô[
-äJ_O›^òJKöõ⁄[ä	… _O‹›ôœòWôù[ò›[€àÿÿ[ÿÿ]\ê⁄\ù
-⁄[ùÀﬁZ[è[ù[X^[ù[SZ[èLSX^LLõ‹õX]]èOî›ö[ô äKQõ‹õX]]èOî›ö[ô ä_O^ﬂJ^⁄Yä⁄[ùÀõ[ô› \ô]\õà⁄\ù[\J	‘Ë€»ôXŸ\‹Ë\ö[‹»[»Y[õ‹»»\ô\»HY‹»\òH\‹ŸH‹∞ËYöX€Àâ Nÿ€€ú›œMÃåLéY^€çãéåMãåNéçüK]œUÀ\Yõ\YúãZR\Yù\Yòãÿ]]”Z[ã]]”X^OX⁄\ùõ›[ô ⁄[ùÀõX\
-Oúû
-KJKZ[ñ^Z[èœÿ]]”Z[ãX^^X^œÿ]]”X^]èOúYõ
- ã[Z[ñ
-K”X]õX^
-åKX^[Z[ñ
-Jö]ÀO]èOúYù
- SX^]äK”X]õX^
-åKSX^^SZ[äJöZ‹ô]\õò›ô»€\‹œWõÿÿ[X⁄\ù\›ô◊àöY]–õﬁWå	’ﬂH	“Wàõ€OWö[Y◊èè»€\‹œWò⁄\ùY‹öYèâ÷ﬁSZ[ã
-SZ[äﬁSX^
-KÃãSX^KõX\
-Oò[ôHOWâ‹YõWàLOWâﬁJ
-_WàèWâ’À\YúüWàLèWâﬁJ
-_Wãœè^Wâ‹YõNWàOWâﬁJ
-JÕWà^X[ò⁄‹èWô[ôèâŸ\ÿ Qõ‹õX]
-
-J_O›^ò
-Köõ⁄[ä	… _OŸœâ‹⁄[ùÀõX\
-Oò⁄\ò€H€\‹œWò⁄\ù\ÿÿ]\óàﬁWâﬁ
-û
-_WàﬁOWâﬁJûJ_WàèWçóèè]OâŸ\ÿ 	‹õXô[	…ﬂH0≠»	ﬁõ‹õX]
-û
-_H0≠»	ﬁQõ‹õX]
-ûJ_X
-_O›]Oèÿ⁄\ò€Oò
-Köõ⁄[ä	… _O^€\‹œWò⁄\ùX^\À[Xô[àWâ‹YõWàOWâ“LLüWèâŸ\ÿ õ‹õX]
-Z[ñ
-J_O›^è^€\‹œWò⁄\ùX^\À[Xô[àWâ’À\YúüWàOWâ“LLüWà^X[ò⁄‹èWô[ôèâŸ\ÿ õ‹õX]
-X^
-J_O›^è‹›ôœòWôù[ò›[€à⁄\ù]SXô[
-\€ ^‹ô]\õàô]»]J\€ Kù”ÿÿ[Q]T›ö[ô 	‹PîâÀŸ^NâÃãYY⁄]	À[€ùâÃãYY⁄]	ﬂJ_Wôù[ò›[€à[ò[\⁄\”[€Ÿõ›\ ]ô[ù ^‹ô]\õà]ô[ùÀôö[\äOOôKù\OOOI€õ›I…âìù[Xô\ãö\—ö[ö]Jù[Xô\äKõ[€Ÿÿ€‹ôJJJKõX\
-OOäÀããôK[€Ÿÿ€‹ôNìù[Xô\äKõ[€Ÿÿ€‹ôJ_JJKú€‹ù
-
-KäOOõô]»]JKù[Y\›[\
-K[ô]»]Jãù[Y\›[\
-J_Wôù[ò›[€à⁄\ùô]öY]–ù]€äŸ^J^‹ô]\õòù]€à\OWòù]€óà€\‹œWò⁄\ù\ô]öY]ÀXùóà]KX[ò[\⁄\À\ô]öY]œWâŸ\ÿ Ÿ^J_Wà\öXK[Xô[Wê]ò[X\à\›H][Wèê]ò[X\èÿù]€èòWôù[ò›[€à⁄\ùÿ\ô
-Ÿ^K]K›Xù]KõŸK^òOI… ^‹ô]\õòŸX›[€à€\‹œWò[ò[\⁄\ÀXÿ\ô[ò[\⁄\À\ô]öY]ÀZ][H\⁄õÿ\ôX⁄\ùà]KX[ò[\⁄\ÀZ][OWâŸ\ÿ Ÿ^J_Wèè‹[à€\‹œWò[ò[\⁄\ÀX[ò⁄‹óà]KX[ò[\⁄\ÀX[ò⁄‹èWâŸ\ÿ Ÿ^J_Wèè‹‹[èè]à€\‹œWò⁄\ùXÿ\ôZXYèè]èè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèïíT’PSVêp·‡”œ‹èèâŸ\ÿ ]J_O⁄èâ‹›Xù]OÿâŸ\ÿ ›Xù]J_O‹òâ…ﬂOŸ]èâÿ⁄\ùô]öY]–ù]€äŸ^J_OŸ]èâŸ^ò_IÿõŸ_O‹ŸX›[€èòWôù[ò›[€à[Y[ú⁄[€ê⁄\ù]J]ô[ù ^ÿ€€ú›[\œY[[›[€ë[Y[ú⁄[€ú 
-Kõ›\œY]ô[ùÀôö[\äOOôKù\OOOI€õ›I…âôKô[[›[€îÿ€‹ô\…âìÿöôX›öŸ^\ Kô[[›[€îÿ€‹ô\ Kõ[ô›
-K]òZ[XõOY[\Àôö[\äOõõ›\Àú€€YJèOìù[Xô\ãö\—ö[ö]Jù[Xô\äãô[[›[€îÿ€‹ô\œÀñŸöYJJJJN‹ô]\õû€õ›\À]òZ[Xõ__Wôù[ò›[€àŸ[X›Y[Y[ú⁄[€íY
-]òZ[XõJ^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-Kÿ]ôY\Àò[ò[\⁄\—[Y[ú⁄[€ê⁄\ù‹ô]\õà]òZ[XõKú€€YJOôöYOO\ÿ]ôY
-O‹ÿ]ôYò]òZ[XõVÃOÀöYWôù[ò›[€àŸ]Ÿ[X›Y[Y[ú⁄[€äY
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹Àò[ò[\⁄\—[Y[ú⁄[€ê⁄\ùZY‹ÿ]ôTŸ][ô‹  N‹ô[ô\ê[
-
-_Wóôù[ò›[€à[ò[\⁄\‘ô]öY]‘›]J
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹ô]\õû‹ŒúÀò[ò[\⁄\‘ô]öY]ﬂﬂKŸ[ô\ò[úÀò[ò[\⁄\‘ô]öY]—Ÿ[ô\ò[	…ﬂ_Wôù[ò›[€àÿ]ôP[ò[\⁄\‘ô]öY]‘›]J›]KŸ[ô\ò[[ù[
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹Àò[ò[\⁄\‘ô]öY]œ\›]N⁄YäŸ[ô\ò[OO[ù[
-\Àò[ò[\⁄\‘ô]öY]—Ÿ[ô\ò[YŸ[ô\ò[‹ÿ]ôTŸ][ô‹  _Wôù[ò›[€à[ò[\⁄\‘ô]öY]—[ùûJŸ^J^‹ô]\õà[ò[\⁄\‘ô]öY]‘›]J
-Kú÷⁄Ÿ^W_‹›]\ŒâÿX›]ôIÀõ›Nâ…ﬂ_Wôù[ò›[€à[ò[\⁄\—ôYYòX⁄’^
-
-^ÿ€€ú›‹ÀŸ[ô\ò[OX[ò[\⁄\‘ô]öY]‘›]J
-K[ô\œV…‘ëUíT‡”»HPêHS∞‡ST—T»»‘∞‡QíP”‘…◊Nÿ€€ú›⁄[ôŸYSÿöôX›ô[ùöY\  Kôö[\ä
-ÀóJOOùèÀú›]\œOOIÿ⁄[ôŸIﬂèÀú›]\œOOI‹ôZôX›Y	ﬂ›ö[ô èÀõõ›_	… Kùö[J
-JN⁄YäX⁄[ôŸYõ[ô›	âàT›ö[ô Ÿ[ô\ò[	… Kùö[J
-J[[ô\Àú\⁄
-	”ô[ö[XH[\òpÈË€»\‹XÎYöXÿHôY⁄\›òYHZ[ôKâ NŸõ‹ä€€ú›⁄Ÿ^KóHŸà⁄[ôŸY
-^ÿ€€ú›]OPSêST“T◊‘ëUíQU◊—Qî÷⁄Ÿ^W_Ÿ^K›]\œ]ãú›]\œOOI‹ôZôX›Y	œ…—V”RTã”–’STâŒùãú›]\œOOIÿ⁄[ôŸIœ…–STêTâŒâ”–î—Tïêp·‡”…Œ€[ô\Àú\⁄
-â‹›]\ﬂNà	›]_X
-N⁄Yäãõõ›J[[ô\Àú\⁄
-YYŒà	›ãõõ›_X
-_ZYä›ö[ô Ÿ[ô\ò[	… Kùö[J
-J[[ô\Àú\⁄
-ì–î—Tïêp·‡”»—TêSóâŸŸ[ô\ò[ùö[J
-_X
-N€[ô\Àú\⁄
-	◊ìÿúŸ\ùòpÈË€Œà][ú»X\òÿY‹»\òH^€Z\à€€ù[ùX[H\ú]Z]òY‹»õ»∞Ï‹ö[»\HŸ[HŸ\àô\›]\òY‹Àâ N‹ô]\õà[ô\Àöõ⁄[ä	◊â _Wôù[ò›[€à[ú›\ôP[ò[\⁄\—\⁄õÿ\ôRJ
-^ÿ€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWò[ò[\⁄\◊óI N⁄Yä]öY] \ô]\õàù[€]\⁄õÿ\ôYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹]X[ù]]]ôQ\⁄õÿ\ô	 N⁄YäY\⁄õÿ\ô
-^Ÿ\⁄õÿ\ôYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	Ÿ]â NŸ\⁄õÿ\ôöYI‹]X[ù]]]ôQ\⁄õÿ\ô	Œÿ€€ú›\ò⁄\ŸOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸP[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 N‹\ò⁄\ŸOÀòYù\ä\⁄õÿ\ô
-_[]ôYYòX⁄œYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ[ò[\⁄\—ôYYòX⁄‘[ô[	 N⁄YäYôYYòX⁄ ^ŸôYYòX⁄œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â NŸôYYòX⁄ÀöYIÿ[ò[\⁄\—ôYYòX⁄‘[ô[	ŒŸôYYòX⁄Àò€\‹”ò[YOIÿ[ò[\⁄\ÀXÿ\ô[ò[\⁄\ÀYôYYòX⁄À\[ô[	ŒŸôYYòX⁄Àö[õô\íSX€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèîëUíT‡”»HSïTëêP—O‹èèìZ[öH‹[öpË€»€ÿúôH\›HXòO⁄èè€\‹œWö[\óèï\ŸH8†']ò[X\∏†'H[H]X[]Y\à‹∞ËYöX€»›Hù[∞ÈË€Àà»\ò[úŸõ‹õXH›X\»X⁄\ÌY\»[H[H^»\òHõÿÍà€‹X\àHYH[ùöX\ãè‹è]à€\‹œWôöY[èèXô[ìÿúŸ\ùòpÈË€»Ÿ\ò[‹⁄[€ò[€Xô[è^\ôXHYWò[ò[\⁄\—Ÿ[ô\ò[ôYYòX⁄◊à]KX]]Ÿ‹õ›»XŸZ€\èWë^éà]Y\õ»‹∞ËYöX€‹»XZ\»€€\X›‹Œ»ôYö\õ»[ö\»XZ\»ö[ò\¯†)óèè›^\ôXOèŸ]èè]à€\‹œWôöY[èèXô[ï^»Ÿ\òYœ€Xô[è^\ôXHYWò[ò[\⁄\—ôYYòX⁄’^à€\‹œWôôYYòX⁄À[›]]àôXY€õOè›^\ôXOèŸ]èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€àù[Xù]€óàYWò€‹P[ò[\⁄\—ôYYòX⁄◊èê€‹X\à^œÿù]€èòŸ\⁄õÿ\ôòYù\äôYYòX⁄ _[]ôZôX›YYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ[ò[\⁄\‘ôZôX›Y][\… N⁄Yä\ôZôX›Y
-^‹ôZôX›YYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â N‹ôZôX›YöYIÿ[ò[\⁄\‘ôZôX›Y][\…Œ‹ôZôX›Yò€\‹”ò[YOIÿ[ò[\⁄\À\ôZôX›Y\ŸX›[€âŒ‹ôZôX›Yö[õô\íSX]à€\‹œWúŸX›[€ã]]K\õ›◊èè]èè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèêTîURUì»ëUëTî„UëS‹èèí][ú»ôZôZ]Y‹œ⁄èèŸ]èèŸ]èè€\‹œWö[\óèë[\»€€ù[ùX[H]X[^òY‹»Hö\Î]ôZ\»\]ZKàŸH]Y\àHYZXKò\›Hô\›]\ò\ãè‹è]àYWò[ò[\⁄\‘ôZôX›Y\›èèŸ]èòŸôYYòX⁄ÀòYù\äôZôX›Y
-_\ô]\õû›öY]À\⁄õÿ\ôôYYòX⁄ÀôZôX›Y_Wôù[ò›[€àô\\ôQ^\›[ô–[ò[\⁄\“][\ 
-^ÿ€€ú›X\V÷…ÿ[ò[\⁄\ÀX›\úô[ù	À	ÿ›\úô[ù[ò[\⁄\…◊K…ÿ[ò[\⁄\ÀX\‹€ÿ⁄X][€ú…À	ÿ\‹€ÿ⁄X][€ê[ò[\⁄\…◊K…ÿ[ò[\⁄\À\€Y\\›[[X\ûIÀ	‹€Y\[ò[\⁄\…◊K…ÿ[ò[\⁄\À[YYXÿ][€ú…À	€YYXÿ][€ê[ò[\⁄\…◊K…ÿ[ò[\⁄\À\\ò⁄\Ÿ\…À	‹\ò⁄\ŸP[ò[\⁄\…◊WNŸõ‹ä€€ú›⁄Ÿ^KYHŸàX\
-^ÿ€€ú›ÿ\ôYÿ›[Y[ùôŸ][[Y[ùûRY
-Y
-OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 N⁄YäXÿ\ô
-X€€ù[ùYNÿÿ\ôò€\‹”\›òY
-	ÿ[ò[\⁄\À\ô]öY]ÀZ][I Nÿÿ\ôô]\Ÿ]ò[ò[\⁄\“][OZŸ^N⁄YäYÿ›[Y[ùú]Y\ûTŸ[X›‹äŸ]KX[ò[\⁄\ÀZ€YKX[ò⁄‹èWâ–‘‘Àô\ÿÿ\JŸ^J_WóX
-J^ÿ€€ú›[ò⁄‹èYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹‹[â Nÿ[ò⁄‹ãöY[è]ùYNÿ[ò⁄‹ãô]\Ÿ]ò[ò[\⁄\“€YP[ò⁄‹èZŸ^Nÿÿ\ôòôYõ‹ôJ[ò⁄‹ä_ZYäXÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]KX[ò[\⁄\À\ô]öY]◊I J^ÿ€€ú›èYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	ÿù]€â Nÿãù\OIÿù]€âŒÿãò€\‹”ò[YOIÿ⁄\ù\ô]öY]ÀXùàõÿ][ôÀ\ô]öY]…Œÿãô]\Ÿ]ò[ò[\⁄\‘ô]öY]œZŸ^Nÿãù^€€ù[ùI–]ò[X\âŒÿÿ\ôò\[ô⁄[
-ä___Wôù[ò›[€à⁄\ôP[ò[\⁄\—ôYYòX⁄ 
-^ÿ€€ú›Ÿ[ô\ò[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ[ò[\⁄\—Ÿ[ô\ò[ôYYòX⁄… K›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ[ò[\⁄\—ôYYòX⁄’^	 K€‹OYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€‹P[ò[\⁄\—ôYYòX⁄… K›]OX[ò[\⁄\‘ô]öY]‘›]J
-N⁄YäŸ[ô\ò[
-^⁄YäŸ[ô\ò[ùò[YHOO\›]KôŸ[ô\ò[
-YŸ[ô\ò[ùò[YO\›]KôŸ[ô\ò[ŸŸ[ô\ò[õ€ö[ú]J
-OOûÿ€€ú››X[ò[\⁄\‘ô]öY]‘›]J
-N‹ÿ]ôP[ò[\⁄\‘ô]öY]‘›]J›úÀŸ[ô\ò[ùò[YJN⁄Yä›]
-[›]ùò[YOX[ò[\⁄\—ôYYòX⁄’^
-
-N⁄Yä\[Ÿà]]—‹õ›’^\ôXOOOIŸù[ò›[€â X]]—‹õ›’^\ôXJŸ[ô\ò[
-__ZYä›]
-^€›]ùò[YOX[ò[\⁄\—ôYYòX⁄’^
-
-N⁄Yä\[Ÿà]]—‹õ›’^\ôXOOOIŸù[ò›[€â X]]—‹õ›’^\ôXJ›]
-_ZYä€‹JX€‹Kõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú›^X[ò[\⁄\—ôYYòX⁄’^
-
-N›û^ÿ]ÿZ]ò]öYÿ]‹ãò€\õÿ\ôù‹ö]U^
-^
-N›ÿ\›
-	’^»€‹XYÀâ _Xÿ]⁄€›]Àôõÿ›\ 
-N€›]ÀúŸ[X›
-
-NŸÿ›[Y[ùô^X–€€[X[ôÀä	ÿ€‹I N›ÿ\›
-	’^»Ÿ[X⁄[€òY»\òH€‹X\ãâ ___Wôù[ò›[€à‹[ê[ò[\⁄\‘ô]öY]“][JŸ^J^ÿ€€ú›]OPSêST“T◊‘ëUíQU◊—Qî÷⁄Ÿ^W_	“][HH[∞Ë[\ŸIÀ[ùûOX[ò[\⁄\‘ô]öY]—[ùûJŸ^JN€‹[êòX⁄Ÿõ‹
-]ò[X\éà	›]_X€\‹œWö[\óèìX\òÿ\à€€[»8†'^€Z\∏†'H\[ò\»\òH\›H][HH0Ë\ôXHö[ò⁄\[à[H€€ù[ùXHö\Î]ô[[H8†'][ú»ôZôZ]Y‹¯†'HHŸHŸ\àô\›]\òYÀè‹è]à€\‹œWôöY[èèXô[ì»]YHõÿÍà]Y\à]Y\èœ€Xô[è^\ôXHYWò[ò[\⁄\“][Sõ›Wàõ›‹œWçWà]KX]]Ÿ‹õ›»XŸZ€\èWë\ÿ‹ô]òHH[\òpÈË€À»]YH[ò€€[ŸH›H‹à]YH]Y\àô[[›ô\ãóèâŸ\ÿ [ùûKõõ›_	… _O›^\ôXOèŸ]èè]à€\‹œWò[ò[\⁄\À\ô]öY]À\›]\◊èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óà]K\ô]öY]À\›]\œWòX›]ôWèìX[ù\èÿù]€èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óà]K\ô]öY]À\›]\œWò⁄[ôŸWèî]Y\õ»[\ò\èÿù]€èèù]€à\OWòù]€óà€\‹œWô[ôŸ\ã\õ›»ŸX€€ô\ûKXù]€óà]K\ô]öY]À\›]\œWúôZôX›Yèë^€Z\à\›HXòOÿù]€èèŸ]èâŸõ‹õPù]€ú 	—ôX⁄\â _X]èOûŸ]ãúô]ô[ùYò][
-
-Nÿ€‹ŸT⁄Y]
-
-_JNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K\ô]öY]À\›]\◊I Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú››]OX[ò[\⁄\‘ô]öY]‘›]J
-Kõ›OYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ[ò[\⁄\“][Sõ›I OÀùò[YKùö[J
-_	…À›]\œXãô]\Ÿ]úô]öY]‘›]\Œ‹›]Kú÷⁄Ÿ^WO^‹›]\Àõ›K\]Y]õô]»]J
-Kù“T”‘›ö[ô 
-_N‹ÿ]ôP[ò[\⁄\‘ô]öY]‘›]J›]KúÀ›]KôŸ[ô\ò[
-Nÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-›]\œOOI‹ôZôX›Y	œ…“][H[›öY»\òHôZôZ]Y‹ÀâŒú›]\œOOIÿ⁄[ôŸIœ…‘YY»H[\òpÈË€»ÿ[õÀâŒâ“][HX[ùYÀâ _JN⁄Yä\[Ÿà⁄\ôP]]—‹õ›’^\ôX\œOOIŸù[ò›[€â ]⁄\ôP]]—‹õ›’^\ôX\ ÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI J_Wôù[ò›[€à\P[ò[\⁄\‘ô]öY]‘XŸ[Y[ù
-
-^ÿ€€ú›ZOY[ú›\ôP[ò[\⁄\—\⁄õÿ\ôRJ
-N⁄Yä]ZJ\ô]\õéÿ€€ú›ôZôX›Y\›Yÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ[ò[\⁄\‘ôZôX›Y\›	 N⁄Yä\ôZôX›Y\›
-\ô]\õéŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KX[ò[\⁄\ÀZ][WI Kôõ‹ëXX⁄
-ÿ\ôOûÿ€€ú›Ÿ^OXÿ\ôô]\Ÿ]ò[ò[\⁄\“][K[ùûOX[ò[\⁄\‘ô]öY]—[ùûJŸ^JK€YP[ò⁄‹èYÿ›[Y[ùú]Y\ûTŸ[X›‹äŸ]KX[ò[\⁄\ÀZ€YKX[ò⁄‹èWâ–‘‘Àô\ÿÿ\JŸ^J_WóX
-K⁄\ù[ò⁄‹èYÿ›[Y[ùú]Y\ûTŸ[X›‹äŸ]KX[ò[\⁄\ÀX⁄\ùX[ò⁄‹èWâ–‘‘Àô\ÿÿ\JŸ^J_WóX
-Nÿÿ\ôò€\‹”\›ùŸŸ€J	ÿ[ò[\⁄\ÀZ][K\ôZôX›Y	À[ùûKú›]\œOOI‹ôZôX›Y	 Nÿÿ\ôò€\‹”\›ùŸŸ€J	ÿ[ò[\⁄\ÀZ][KX⁄[ôŸIÀ[ùûKú›]\œOOIÿ⁄[ôŸI N⁄Yä[ùûKú›]\œOOI‹ôZôX›Y	 ^‹ôZôX›Y\›ò\[ô⁄[
-ÿ\ô
-N⁄YäXÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]K\ô\›‹ôKX[ò[\⁄\◊I J^ÿ€€ú›ô\›‹ôOYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	ÿù]€â N‹ô\›‹ôKù\OIÿù]€âŒ‹ô\›‹ôKò€\‹”ò[YOI‹ö[X\ûKXù]€àù[Xù]€à[ò[\⁄\À\ô\›‹ôIŒ‹ô\›‹ôKô]\Ÿ]úô\›‹ôP[ò[\⁄\œZŸ^N‹ô\›‹ôKù^€€ù[ùI‘ô\›]\ò\à\›H][IŒÿÿ\ôò\[ô⁄[
-ô\›‹ôJ__Y[Ÿ^ÿÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]K\ô\›‹ôKX[ò[\⁄\◊I OÀúô[[›ôJ
-N⁄Yä€YP[ò⁄‹äZ€YP[ò⁄‹ãòYù\äÿ\ô
-NŸ[ŸHYä⁄\ù[ò⁄‹äX⁄\ù[ò⁄‹ãòYù\äÿ\ô
-__JN‹ôZôX›Y\›ú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K\ô\›‹ôKX[ò[\⁄\◊I Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú››]OX[ò[\⁄\‘ô]öY]‘›]J
-N‹›]Kú÷ÿãô]\Ÿ]úô\›‹ôP[ò[\⁄\◊O^Àããä›]Kú÷ÿãô]\Ÿ]úô\›‹ôP[ò[\⁄\◊_ﬂJK›]\ŒâÿX›]ôIÀ\]Y]õô]»]J
-Kù“T”‘›ö[ô 
-_N‹ÿ]ôP[ò[\⁄\‘ô]öY]‘›]J›]KúÀ›]KôŸ[ô\ò[
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	“][Hô\›]\òYÀâ _JN›ZKúôZôX›Yò€\‹”\›ùŸŸ€J	⁄Y[âÀ\ôZôX›Y\›ò⁄[ô[ãõ[ô›
-_Wóò\ﬁ[ò»ù[ò›[€àô[ô\î]X[ù]]]ôQ\⁄õÿ\ô
-]ô[ù ^ÿ€€ú›ZOY[ú›\ôP[ò[\⁄\—\⁄õÿ\ôRJ
-N⁄Yä]ZJ\ô]\õé‹ô\\ôQ^\›[ô–[ò[\⁄\“][\ 
-Nÿ€€ú›[€ŸX[ò[\⁄\”[€Ÿõ›\ ]ô[ù Kõ›œQ]Kõõ› 
-K⁄[òŸO[õ›ÀLÃ
-éç[€ŸÃ[[€Ÿôö[\äOOõô]»]JKù[Y\›[\
-KôŸ][YJ
-Oè\⁄[òŸJKYY]ô[ùœY]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â K€Y\]ô[ùœY]ô[ùÀôö[\äOOôKù\OOOI‹€Y\	 Kú€‹ù
-
-KäOOõô]»]JKô[ô[Y_Kù[Y\›[\
-K[ô]»]Jãô[ô[Y_ãù[Y\›[\
-JNŸÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	Àô\⁄õÿ\ôX⁄\ù	 Kôõ‹ëXX⁄
-[Oô[úô[[›ôJ
-JNÿ€€ú›õÿ⁄‹œV◊N◊à€€ú›[€ŸX\öŸ\úœ[YY]ô[ùÀôö[\äOOõô]»]JKù[Y\›[\
-KôŸ][YJ
-Oè\⁄[òŸJKõX\
-OOäﬁõô]»]JKù[Y\›[\
-KôŸ][YJ
-K⁄[ôâ€YY	À]Nò	ŸKõYYXÿ][€ü	”YYXÿ[Y[ù…ﬂH	ŸKô‹Ÿ_	…ﬂXùö[J
-_JJNÿõÿ⁄‹Àú\⁄
-⁄Ÿ^Nâÿ⁄\ù[[€Ÿ[[ôIÀ[ò⁄\ùÿ\ô
-	ÿ⁄\ù[[€Ÿ[[ôIÀ	“[[‹à[»€ô€»»[\…À	”õ›\»[[ÿ⁄[€òZ\»HHLõ‹»0Óõ[[‹»ÃX\ÀâÀÿÿ[[ôP⁄\ù
-[€ŸÃõX\
-OOäﬁõô]»]JKù[Y\›[\
-KôŸ][YJ
-KNôKõ[€Ÿÿ€‹ôKXô[ò⁄\ù]SXô[
-Kù[Y\›[\
-_JJK€Z[ñNåX^NåLSXô[â“[[‹âÀõ‹õX]NùèOò	”ù[Xô\ääKù—ö^Y
-
-_KÃLXô[úOúõXô[X\öŸ\úŒõ[€ŸX\öŸ\úﬂJJ_JN◊à€€ú›\›P\úò^Kôúõ€J€[ô›åL_K
-ÀäOOä€Xô[î›ö[ô äK⁄‹ùî›ö[ô äKò[YNõ[€ŸÃôö[\äOOôKõ[€Ÿÿ€‹ôOOO[äKõ[ô›JJNÿõÿ⁄‹Àú\⁄
-⁄Ÿ^Nâÿ⁄\ù[[€ŸY\›öXù][€âÀ[ò⁄\ùÿ\ô
-	ÿ⁄\ù[[€ŸY\›öXù][€âÀ	—\›öXùZpÈË€»\»õ›\»H[[‹âÀ	‘]X[ù\»ô^ô\»ÿYHõ›Hõ⁄HôY⁄\›òYHõ‹»0Óõ[[‹»ÃX\ÀâÀ[€ŸÃõ[ô›€ÿÿ[ò\ê⁄\ù
-\›€Z[ñNåõ‹õX]NùèOî›ö[ô X]úõ›[ô
-äJKò[YSXô[úèOî›ö[ô ãùò[YJ_JNò⁄\ù[\J	‘ôY⁄\›ôHõ›\»H[[‹à\òHô\àH\›öXùZpÈË€Àâ J_JN◊à€€ú›ÿ]òZ[Xõ_OY[Y[ú⁄[€ê⁄\ù]J]ô[ù KŸ[X›Y\Ÿ[X›Y[Y[ú⁄[€íY
-]òZ[XõJKŸ[X›Y[OX]òZ[XõKôö[ô
-OôöYOO\Ÿ[X›Y
-K[T⁄[ùœ\Ÿ[X›Y[OŸ]ô[ùÀôö[\äOOôKù\OOOI€õ›I…âìù[Xô\ãö\—ö[ö]Jù[Xô\äKô[[›[€îÿ€‹ô\œÀñ‹Ÿ[X›YJJJKú€‹ù
-
-KäOOõô]»]JKù[Y\›[\
-K[ô]»]Jãù[Y\›[\
-JKú€XŸJMå
-KõX\
-OOäﬁõô]»]JKù[Y\›[\
-KôŸ][YJ
-KNìù[Xô\äKô[[›[€îÿ€‹ô\÷‹Ÿ[X›YJKXô[ò⁄\ù]SXô[
-Kù[Y\›[\
-_JJNñ◊Nÿ€€ú›[UXúœX]òZ[XõKõ[ô›ÿ]à€\‹œWô[Y[ú⁄[€ã]Xú◊èâÿ]òZ[XõKõX\
-Oòù]€à\OWòù]€óà]KY[Y[ú⁄[€ãX⁄\ùWâŸ\ÿ öY
-_Wà€\‹œWâŸöYOO\Ÿ[X›Y…‹Ÿ[X›Y	Œâ…ﬂWèâŸ\ÿ õXô[
-_Oÿù]€èò
-Köõ⁄[ä	… _OŸ]èòâ…Œÿõÿ⁄‹Àú\⁄
-⁄Ÿ^Nâÿ⁄\ùY[Y[ú⁄[€ã[[ôIÀ[ò⁄\ùÿ\ô
-	ÿ⁄\ùY[Y[ú⁄[€ã[[ôIÀ	—[Y[úÌY\»[[ÿ⁄[€òZ\…À	—\ÿ€€H[XH[Y[úË€»\òHX€€\[ö\à›XH]õ€pÈË€»[H\ÿÿ[HHHâÀŸ[X›Y[O€ÿÿ[[ôP⁄\ù
-[T⁄[ùÀ€Z[ñNåX^NçSXô[úŸ[X›Y[KõXô[õ‹õX]NùèOò	”ù[Xô\ääKù—ö^Y
-
-_KÕXô[úOúõXô[JNò⁄\ù[\J	‘ôY[ò⁄H8†'][\à[[ÈÌY\¯†'H[H[›[X\»[õ›pÈÌY\»\òH‹öX\à\›H‹∞ËYöX€Àâ K[UXú _JN◊à€€ú›ôXŸ[ù€Y\œ\€Y\]ô[ùÀú€XŸJLM
-K€Y\⁄[ùœ\ôXŸ[ù€Y\ÀõX\
-OOäﬁõô]»]JKô[ô[Y_Kù[Y\›[\
-KôŸ][YJ
-KNô\ò][€í›\ú Kú›\ù[YKKô[ô[YJKXô[ò⁄\ù]SXô[
-Kô[ô[Y_Kù[Y\›[\
-_JJK€Y\ò[ôŸOX⁄\ùõ›[ô €Y\⁄[ùÀõX\
-OúûJKL
-Nÿõÿ⁄‹Àú\⁄
-⁄Ÿ^Nâÿ⁄\ù\€Y\[[ôIÀ[ò⁄\ùÿ\ô
-	ÿ⁄\ù\€Y\[[ôIÀ	—\òpÈË€»»€€õ…À	Êõ[[‹»MôY⁄\›õ‹»H€€õÀâÀ€Y\⁄[ùÀõ[ô›èLè€ÿÿ[[ôP⁄\ù
-€Y\⁄[ùÀ€Z[ñNìX]õX^
-X]ôõ€‹ä€Y\ò[ôŸVÃKLJJKX^NìX]òŸZ[
-€Y\ò[ôŸVÃWJÃJKSXô[â“‹ò\»H€€õ…Àõ‹õX]NùèOò	”ù[Xô\ääKù—ö^Y
-J_ZXô[úOúõXô[JNò⁄\ù[\J	‘ôY⁄\›ôH[»Y[õ‹»X\»õ⁄]\»\òHõ‹õX\àH[öKâ J_JN◊à€€ú›Z\úœV◊NŸõ‹ä€€ú›»Ÿà€Y\]ô[ù ^ÿ€€ú›ÿZŸO[ô]»]JÀô[ô[YJKôŸ][YJ
-Kô^[[€Ÿôö[ô
-èOûÿ€€ú›[ô]»]Jãù[Y\›[\
-KôŸ][YJ
-N‹ô]\õàè]ÿZŸIâù]ÿZŸJÃMäåÕåJN⁄Yäô^
-\Z\úÀú\⁄
-ﬁô\ò][€í›\ú Àú›\ù[YKÀô[ô[YJKNõô^õ[€Ÿÿ€‹ôKXô[ò⁄\ù]SXô[
-Àô[ô[YJ_J_Xõÿ⁄‹Àú\⁄
-⁄Ÿ^Nâÿ⁄\ù\€Y\[[€Ÿ	À[ò⁄\ùÿ\ô
-	ÿ⁄\ù\€Y\[[€Ÿ	À	‘€€õ»0Â»[[‹àŸY›Z[ùIÀ	–ÿYH€ù»€€\\òHH\òpÈË€»H[XHõ⁄]H€€H»ö[YZ\õ»⁄X⁄ÀZ[à[[ÿ⁄[€ò[ò\»MöŸY›Z[ù\ÀâÀÿÿ[ÿÿ]\ê⁄\ù
-Z\úÀú€XŸJMå
-KﬁSZ[éåSX^åLõ‹õX]ùèOò	”ù[Xô\ääKù—ö^Y
-J_ZQõ‹õX]ùèOò	”ù[Xô\ääKù—ö^Y
-
-_KÃLJJ_JN◊à€€ú›ûSYY^ﬂNŸõ‹ä€€ú›HŸàYY]ô[ù ^ÿ€€ú›[ô]»]JKù[Y\›[\
-KôŸ][YJ
-KôYõ‹ôOVÀããõ[€ŸKúô]ô\úŸJ
-Kôö[ô
-èOûÿ€€ú›[ô]»]Jãù[Y\›[\
-KôŸ][YJ
-N‹ô]\õà]	âûè]M
-åÕåJKYù\è[[€Ÿôö[ô
-èOûÿ€€ú›[ô]»]Jãù[Y\›[\
-KôŸ][YJ
-N‹ô]\õàè]
-ÃÃ
-çå	âû]
-Œ
-åÕåJN⁄YäXôYõ‹ô_XYù\äX€€ù[ùYNÿ€€ú›Ÿ^OXKõYYXÿ][€ü	”YYXÿ[Y[ù…Œ ûSYY⁄Ÿ^WOœœV◊JKú\⁄
-Yù\ãõ[€Ÿÿ€‹ôKXôYõ‹ôKõ[€Ÿÿ€‹ôJ_X€€ú›YYõ›‹œSÿöôX›ô[ùöY\ ûSYY
-KõX\
-
-€Xô[ò[◊JOOä€Xô[⁄‹ùõXô[õ[ô›åLO€Xô[ú€XŸJL
-J…¯†)âŒõXô[ò[YNùò[ÀúôYXŸJ
-KäOOòJÿã
-K›ò[Àõ[ô›éùò[Àõ[ô›JJKôö[\äèOúãõèèLäKú€‹ù
-
-KäOOìX]òXú ãùò[YJKSX]òXú Kùò[YJJKú€XŸJ Nÿõÿ⁄‹Àú\⁄
-⁄Ÿ^Nâÿ⁄\ù[YYY[IÀ[ò⁄\ùÿ\ô
-	ÿ⁄\ù[YYY[IÀ	”]Y[∞ÈÿHH[[‹à\0Ï‹»YYXÿ[Y[ù‹…À	—Yô\ô[∞ÈÿHpÍYXH[ùôH[H⁄X⁄ÀZ[à]0ÍH[ù\»H›]õ»[ùôHÃZ[àH\⁄\Àà\‹€ÿ⁄XpÈË€À∞Ë€»ÿ]\ÿ[YYKâÀYYõ›‹Àõ[ô›€ÿÿ[ò\ê⁄\ù
-YYõ›‹À€Z[ñNìX]õZ[äLKããõYYõ›‹ÀõX\
-èOúãùò[YJJKX^NìX]õX^
-KããõYYõ›‹ÀõX\
-èOúãùò[YJJKõ‹õX]NùèOò	›èå… …Œâ…ﬂI”ù[Xô\ääKù—ö^Y
-J_Xò[YSXô[úèOò	‹ãùò[YOå… …Œâ…ﬂI‹ãùò[YKù—ö^Y
-J_H
-	‹ãõüJXJNò⁄\ù[\J	–Z[ôH∞Ë€»0ËH\ô\»›YöX⁄Y[ù\»H⁄X⁄ÀZ[ú»[ù\»H\⁄\»\»YZ[ö\›òpÈÌY\Àâ J_JN◊à]€€òŸ\õ›‹œV◊N⁄Yä\[ŸàX\õö[ô–€€X›ÿúŸ\ùò][€úœOOIŸù[ò›[€â…âù\[ŸàX\õö[ô–€€òŸ\“[ï^OOIŸù[ò›[€â ^ÿ€€ú›ÿúœX]ÿZ]X\õö[ô–€€X›ÿúŸ\ùò][€ú ]ô[ùÀ]ÿZ][YYXÿ][€ú 
-JK€›[ùœ^ﬂNŸõ‹ä€€ú›HŸàYY]ô[ù ^ÿ€€ú››[ô]»]JKù[Y\›[\
-KôŸ][YJ
-K[è\›
-Œ
-åÕåŸõ‹ä€€ú›»Ÿàÿú ^ÿ€€ú›[ô]»]JÀù[Y\›[\
-KôŸ][YJ
-N⁄Yä›ô[äX€€ù[ùYNŸõ‹ä€€ú›»ŸàX\õö[ô–€€òŸ\“[ï^
-Àù^
-JX€›[ù÷ÿÀò€€òŸ\OJ€›[ù÷ÿÀò€€òŸ\_
-JÃ__X€€òŸ\õ›‹œSÿöôX›ô[ùöY\ €›[ù KõX\
-
-ÿ€€òŸ\ò[YWJOOä€Xô[ù\[ŸàX\õö[ô–€€òŸ\Xô[OOIŸù[ò›[€âœ€X\õö[ô–€€òŸ\Xô[
-€€òŸ\
-Nò€€òŸ\⁄‹ùä\[ŸàX\õö[ô–€€òŸ\Xô[OOIŸù[ò›[€âœ€X\õö[ô–€€òŸ\Xô[
-€€òŸ\
-Nò€€òŸ\
-Kú€XŸJLäKò[Y_JJKú€‹ù
-
-KäOOòãùò[YKXKùò[YJKú€XŸJ
-_Xõÿ⁄‹Àú\⁄
-⁄Ÿ^Nâÿ⁄\ù[YYX€€òŸ\…À[ò⁄\ùÿ\ô
-	ÿ⁄\ù[YYX€€òŸ\…À	‘ô[]‹»\0Ï‹»YYXÿ[Y[ù‹…À	–€€òŸZ]‹»[ò€€ùòY‹»[H^‹»ôY⁄\›òY‹»]0ÍH\0Ï‹»YZ[ö\›òpÈÌY\ÀâÀ€€òŸ\õ›‹Àõ[ô›€ÿÿ[ò\ê⁄\ù
-€€òŸ\õ›‹À€Z[ñNåõ‹õX]NùèOî›ö[ô X]úõ›[ô
-äJKò[YSXô[úèOî›ö[ô ãùò[YJ_JNò⁄\ù[\J	”»[›‹àH\ô[ô^òY»Z[ôH∞Ë€»[ò€€ùõ›H€€òŸZ]‹»›YöX⁄Y[ù\»ô\‹ŸH€€ù^Àâ J_JN◊àZKô\⁄õÿ\ôö[õô\íSX]à€\‹œWú]X[ùY\⁄õÿ\ôZXYèè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèìSíH»ST»UPSïUUUêO‹èèïö\›X[^òpÈÌY\œ⁄èèïŸ‹»‹»Ë[›[‹»Ë€»ÿÿZ\Àà‹∞ËYöX€‹»HYYXÿ[Y[ù‹»[‹›ò[H\‹€ÿ⁄XpÈÌY\»õ‹»Ÿ]\»ôY⁄\›õ‹À∞Ë€»ÿ]\ÿHpÍYXÿKè‹èŸ]èâÿõÿ⁄‹ÀõX\
-èOò‹[àY[à]KX[ò[\⁄\ÀX⁄\ùX[ò⁄‹èWâŸ\ÿ ãöŸ^J_Wèè‹‹[èâÿãö[X
-Köõ⁄[ä	… _X◊àZKô\⁄õÿ\ôú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KY[Y[ú⁄[€ãX⁄\ùI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOúŸ]Ÿ[X›Y[Y[ú⁄[€äãô]\Ÿ]ô[Y[ú⁄[€ê⁄\ù
-JN›⁄\ôP[ò[\⁄\—ôYYòX⁄ 
-Nÿ\P[ò[\⁄\‘ô]öY]‘XŸ[Y[ù
-
-N⁄Yä\[Ÿà⁄\ôP]]—‹õ›’^\ôX\œOOIŸù[ò›[€â ]⁄\ôP]]—‹õ›’^\ôX\ ZKôôYYòX⁄ WüWóôù[ò›[€à[ú›\ôQ[[›[€î›[\ 
-^⁄Yäÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿ[[›[€ãX[ò[\⁄\À\›[I J\ô]\õéÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYIŸ[[›[€ãX[ò[\⁄\À\›[IŒ‹›ù^€€ù[ùXãõ[€Ÿ\ÿÿ[^Ÿ\‹^Nô‹öYŸ‹öY][\]KX€€[[úŒúô\X]
-LKYúäNŸÿ\ç€X\ô⁄[ééKõ[€Ÿ\ÿ€‹ô^€Z[ã]⁄Yå⁄ZY⁄åÕÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿã€
-ò\äK[[€ŸZ
-HÃ	H	JHÕIKò[ú‹\ô[ù
-Nÿõ‹ô\ã\òY]\Œé\ÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿã€
-ò\äK[[€ŸZ
-HÃ	HLâJHLâKò[ú‹\ô[ù
-Nÿ€€‹éö[ö\ö]Ÿõ€ù]ŸZY⁄çÃ‹Y[ôŒåKõ[€Ÿ\ÿ€‹ôKúŸ[X›YÿòX⁄Ÿ‹õ›[ôö€
-ò\äK[[€ŸZ
-HÃ	H	JNÿ€€‹éù⁄]N›ò[úŸõ‹õNúÿÿ[JKåä_Kõ[€Ÿ\ÿÿ[K[Xô[Àô[[›[€ã\ÿÿ[KXÿ\[€ûŸ\‹^Nôõ^⁄ù\›YûKX€€ù[ùú‹XŸKXô]ŸY[éŸÿ\åLŸõ€ù\⁄^ôNåL€‹X⁄]NãçåüKù[ûKX€X\ûÿõ‹ô\éåÿòX⁄Ÿ‹õ›[ôùò[ú‹\ô[ùÿ€€‹éö[ö\ö]€‹X⁄]NãççNŸõ€ù\⁄^ôNåL\‹Y[ôŒçKô[[›[€ãXYò[òŸY€X\ô⁄[ééMúKô[[›[€ãXYò[òŸYú›[[X\û^Ÿõ€ù]ŸZY⁄çÃ‹Y[ôŒåLÿ›\ú€‹éú⁄[ù\üKô[[›[€ãY[Y[ú⁄[€û‹Y[ôŒåLúÿõ‹ô\ãXõ›€Nå\€€YôÿòJLåLåLéåLä_Kô[[›[€ãY[Y[ú⁄[€ãZXYŸ\‹^Nôõ^ÿ[Y€ãZ][\ŒòŸ[ù\é⁄ù\›YûKX€€ù[ùú‹XŸKXô]ŸY[üKô[[›[€ã\ÿÿ[^Ÿ\‹^Nô‹öYŸ‹öY][\]KX€€[[úŒúô\X]
-ãYúäNŸÿ\çú€X\ô⁄[ééKô[[›[€ã\ÿÿ[Hù]€ûÿõ‹ô\éåÿõ‹ô\ã\òY]\ŒåL‹Y[ôŒé\ÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéåJNÿ€€‹éö[ö\ö]Ÿõ€ù]ŸZY⁄çÃKô[[›[€ã\ÿÿ[Hù]€ãúŸ[X›YÿòX⁄Ÿ‹õ›[ôùò\äKXXÿŸ[ùX€€‹ãÕÕMŸN
-Nÿ€€‹éù⁄]_Kô[[›[€ã[ô]ÀY[Y[ú⁄[€û‹Y[ôŒåLú€X\ô⁄[ã]‹åLÿõ‹ô\ã\òY]\ŒåMúÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéå _Kú]X[ùY\⁄õÿ\ôZXY€X\ô⁄[éåçúúLúKú]X[ùY\⁄õÿ\ôZXYû€X\ô⁄[éåúKú]X[ùY\⁄õÿ\ôZXYõ\›X⁄[Ÿõ€ù\⁄^ôNåLú€‹X⁄]NãççN€X\ô⁄[éåKô\⁄õÿ\ôX⁄\ù‹‹⁄][€éúô[]]ô_Kò⁄\ùXÿ\ôZXYŸ\‹^Nôõ^ÿ[Y€ãZ][\Œôõ^\›\ù⁄ù\›YûKX€€ù[ùú‹XŸKXô]ŸY[éŸÿ\åLú€X\ô⁄[ãXõ›€NéKò⁄\ùXÿ\ôZXYû€X\ô⁄[éåúúKò⁄\ùXÿ\ôZXYõ\›X⁄[Ÿõ€ù\⁄^ôNåLú€‹X⁄]Nãçç€X\ô⁄[éå€[ôKZZY⁄åKçKò⁄\ù\ô]öY]ÀXùûÿõ‹ô\éåÿõ‹ô\ã\òY]\ŒéNN\ÿòX⁄Ÿ‹õ›[ôúôÿòJLMãMçÀçMKåLäNÿ€€‹éö[ö\ö]Ÿõ€ù\⁄^ôNåL\Ÿõ€ù]ŸZY⁄çÃ‹Y[ôŒç‹LŸõ^å]]ﬂKôõÿ][ôÀ\ô]öY]ﬁ‹‹⁄][€éòXú€€]N‹öY⁄åM›‹åMKõÿÿ[X⁄\ù\›ôﬁ›⁄YåL	N⁄ZY⁄ò]]ŒŸ\‹^Nòõÿ⁄Œ€›ô\ôõ›Œùö\⁄XõN€X\ô⁄[ã]‹çúKò⁄\ùY‹öY[ô^‹›õ⁄ŸNúôÿòJLåLåLéåN
-N‹›õ⁄ŸK]⁄Yå_Kò⁄\ùY‹öY^ò⁄\ùX^\À[Xô[ò⁄\ùXò\ã[Xô[ò⁄\ùXò\ã]ò[Y^Ÿö[ò›\úô[ù€€‹éŸõ€ù\⁄^ôNåL\€‹X⁄]NãçNKò⁄\ù[[ô^‹›õ⁄ŸNùò\äKXXÿŸ[ùX€€‹ãÕÕMŸN
-N‹›õ⁄ŸK]⁄Yç‹›õ⁄ŸK[[ôXÿ\úõ›[ô‹›õ⁄ŸK[[ôZõ⁄[éúõ›[ôKò⁄\ùY›ò⁄\ù\ÿÿ]\ûŸö[ùò\äKXXÿŸ[ùX€€‹ãÕÕMŸN
-N‹›õ⁄ŸNùò\äKXÿ\ôXôÀŸôôäN‹›õ⁄ŸK]⁄YåüKò⁄\ù[X\öŸ\û‹›õ⁄ŸNúôÿòJLåLåLéååäN‹›õ⁄ŸK]⁄Yå_Kò⁄\ù[X\öŸ\ã∂Á~ˆ∂âûÀk∫wµÁY][ô‹’öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWúŸ][ô‹◊óI K€€ù[ùYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ù	 N⁄YäX€€ù[ù\Ÿ][ô‹’öY] \ô]\õéÿ€€ú›öY]œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â N›öY]Àò€\‹”ò[YOI›öY]…Œ›öY]Àô]\Ÿ]ùöY]œI€X\õö[ô…Œ›öY]Àö[õô\íSXXY\à€\‹œWúYŸKZXY\óèè]èè€\‹œWô^YXúõ›◊èë[ú⁄[ôH€€[»õÿÍàŸH^ô\‹ÿO‹èOê\ô[ô^òYœ⁄OèŸ]èè⁄XY\èè]à€\‹œWõõ›XŸKXÿ\ôX\õö[ôÀ[õ›XŸWèè‹[à€\‹œWõõ›XŸKZX€€óà]KZX€€èWú‹\ö◊èè‹‹[èè]èè›õ€ôœê\ô[ô^òY»ÿÿ[‹›õ€ôœèì»\0Íà‹»^‹»‹»Ÿ]\»ôY⁄\›õ‹À‹öXH\0Ï›\Ÿ\»H\ô›[ùH]X[ô»[H0ÓùöYKà›X\»ô\‹‹›\»öXÿ[Hô\›H\\ô[»HZùY[H\»∞Ïﬁ[X\»[∞Ë[\Ÿ\Àè‹èŸ]èèŸ]èèŸX›[€à€\‹œWò[ò[\⁄\ÀXÿ\ôèè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèìS’‘à––S‹èèì»]YH[H\›0ËH\ô[ô[ôœ⁄èè]à€\‹œWõY]öXÀY‹öYàYWõX\õö[ô”Y]öX‹◊èèŸ]èè‹ŸX›[€èèŸX›[€à€\‹œWõX\õö[ôÀ\ŸX›[€óèè]à€\‹œWúŸX›[€ã]]K\õ›◊èè]èè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèîTë’SïTœ‹èèêZùYH»\H[ù[ô\àõÿÍè⁄èèŸ]èèŸ]èè]àYWõX\õö[ô‘]Y\›[€ú◊èèŸ]èè‹ŸX›[€èèŸX›[€à€\‹œWõX\õö[ôÀ\ŸX›[€óèè]à€\‹œWúŸX›[€ã]]K\õ›◊èè]èè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèìQSp‰‘íPO‹èèïõÿÿXù[0Ë\ö[»\‹€ÿ[⁄èèŸ]èèŸ]èè]à€\‹œWò[ò[\⁄\ÀXÿ\ôàYWõX\õö[ô’õÿÿXù[\ûWèèŸ]èè‹ŸX›[€èèŸX›[€à€\‹œWò[ò[\⁄\ÀXÿ\ôX\õö[ôÀY^Z[óèèèê€€[»\‹€»ù[ò⁄[€òO⁄èèì»\∞Ë€»[ùô[ùHXY€∞Ï‹›X€‹Àà[HôX€€öXŸH€€òŸZ]‹Àô\‹Z]HôYÿpÈÌY\»⁄[\\ÀÿúŸ\ùòH]X[ô»^ô\‹ÌY\»\\ôXŸ[H∞Ïﬁ[X\»H‹ù^òH\‹€»€€H‹∞Ë\ö[‹»HYYXÿ[Y[ù‹»H€€õÀà]X[ô»∞Ë€»[H€€ôöX[∞ÈÿK\ô›[ùKè‹è‹ŸX›[€èòÿ€€ù[ùö[úŸ\ùôYõ‹ôJöY]ÀŸ][ô‹’öY] N◊à€€ú›ò\èYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	ÀùXãXò\â KŸ][ô‹’XèXò\èÀú]Y\ûTŸ[X›‹ä	÷Ÿ]K]XèWúŸ][ô‹◊óI N⁄Yäò\ââúŸ][ô‹’Xä^ÿ€€ú›ù]€èYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	ÿù]€â Nÿù]€ãò€\‹”ò[YOI›XãZ][IŒÿù]€ãô]\Ÿ]ùXèI€X\õö[ô…Œÿù]€ãö[õô\íSIœ‹[à]KZX€€èWú‹\ö◊èè‹‹[èè€X[ê\ô[ô^òYœ‹€X[âŒÿò\ãö[úŸ\ùôYõ‹ôJù]€ãŸ][ô‹’Xä_WàYäYÿ›[Y[ùôŸ][[Y[ùûRY
-	€X\õö[ôÀ\›[I J^ÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI€X\õö[ôÀ\›[IŒ‹›ù^€€ù[ùIÀõX\õö[ôÀ\ŸX›[€û€X\ô⁄[éååúKõX\õö[ôÀ[õ›XŸ^€X\ô⁄[ãXõ›€NåNKõX\õö[ôÀ\]Y\›[€ûÿòX⁄Ÿ‹õ›[ôùò\äKXÿ\ôXôÀŸôôäNÿõ‹ô\éå\€€Yò\äK[[ôKŸMôMôXJNÿõ‹ô\ã\òY]\Œååú‹Y[ôŒåMú€X\ô⁄[éåLÿõﬁ\⁄Y›ŒåçôÿòJå
-_KõX\õö[ôÀ\]Y\›[€àﬁŸõ€ù\⁄^ôNåMú€[ôKZZY⁄åKåÕN€X\ô⁄[ééúKõX\õö[ôÀ\]Y\›[€èúŸõ€ù\⁄^ôNåL‹€‹X⁄]NãçŒ€X\ô⁄[éåLKõX\õö[ôÀX€€ôöY[òŸ^Ÿ\‹^Nö[õ[ôKYõ^Ÿõ€ù\⁄^ôNé\Ÿõ€ù]ŸZY⁄çÕL€]\ã\‹X⁄[ôŒãå[N‹Y[ôŒç\ÿõ‹ô\ã\òY]\ŒéNN\ÿòX⁄Ÿ‹õ›[ôúôÿòJLMãMçÀçMKåMJ_KõX\õö[ôÀX€€ôöY[òŸKõYY][^ÿòX⁄Ÿ‹õ›[ôúôÿòJçMKMÕçãåMJ_KõX\õö[ôÀX€€ôöY[òŸKõ›ﬁÿòX⁄Ÿ‹õ›[ôúôÿòJMMMKåLä_KõX\õö[ôÀX€€ù^‹Y[ôŒåLLúÿõ‹ô\ã\òY]\ŒåMÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéå
-N€X\ô⁄[éåLKõX\õö[ôÀX€€ù^€X[Ÿõ€ù\⁄^ôNåLŸõ€ù]ŸZY⁄çÃ€‹X⁄]NãçüKõX\õö[ôÀX€€ù^Ÿõ€ù\⁄^ôNåL‹€[ôKZZY⁄åKçN€X\ô⁄[éçKõX\õö[ôÀXX›[€úﬁŸ\‹^Nôõ^Ÿÿ\éŸõ^]‹ò\ù‹ò\€X\ô⁄[ã]‹åLúKõX\õö[ôÀXX›[€ú»ù]€ûŸõ^åN€Z[ã]⁄YéúKõX\õö[ôÀX€€òŸ\ﬁŸ\‹^Nôõ^Ÿÿ\ç‹Ÿõ^]‹ò\ù‹ò\€X\ô⁄[éåLúKõX\õö[ôÀX⁄\ÿõ‹ô\éåÿõ‹ô\ã\òY]\ŒéNN\‹Y[ôŒéLÿòX⁄Ÿ‹õ›[ôúôÿòJLMãMçÀçMKåL Nÿ€€‹éö[ö\ö]Ÿõ€ùö[ö\ö]Ÿõ€ù\⁄^ôNåLúŸõ€ù]ŸZY⁄ççLKõX\õö[ôÀX⁄\õ]]YÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéåJ_KõX\õö[ôÀ[›\û€X\ô⁄[ã]‹åLKõX\õö[ôÀ[›\à›[[X\û^Ÿõ€ù\⁄^ôNåLúŸõ€ù]ŸZY⁄ççLÿ›\ú€‹éú⁄[ù\üKõX\õö[ôÀ]õÿÿXã\õ›ﬁŸ\‹^Nôõ^ÿ[Y€ãZ][\ŒòŸ[ù\é⁄ù\›YûKX€€ù[ùú‹XŸKXô]ŸY[éŸÿ\åLú‹Y[ôŒåL\ÿõ‹ô\ãXõ›€Nå\€€YôÿòJLåLåLéåLä_KõX\õö[ôÀ]õÿÿXã\õ›Œõ\›X⁄[ÿõ‹ô\ãXõ›€NåKõX\õö[ôÀ]õÿÿXã\õ›»‹[ûŸ\‹^Nôõ^Ÿõ^Y\ôX›[€éò€€[[éŸÿ\å‹KõX\õö[ôÀ]õÿÿXã\õ›»€X[€‹X⁄]NãçüKõX\õö[ôÀ\ô[[›ô^ÿõ‹ô\éåÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéåJNÿõ‹ô\ã\òY]\ŒéNN\‹Y[ôŒç‹Lÿ€€‹éö[ö\ö]KõX\õö[ôÀY[\^Ÿõ€ù\⁄^ôNåL‹€‹X⁄]NãççN‹Y[ôŒéKõX\õö[ôÀY^Z[àŸõ€ù\⁄^ôNåL‹€[ôKZZY⁄åKçMN€‹X⁄]NãçÕ_IŒŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_WàYò]RX€€ú öY] N⁄Yò]RX€€ú ò\äN⁄Yä\[Ÿà\TôY⁄\›õ’Xêò\èOOIŸù[ò›[€â X\TôY⁄\›õ’Xêò\ä
-WüWóò\ﬁ[ò»ù[ò›[€àô[ô\ìX\õö[ô 
-^€X\õö[ô—[ú›\ôURJ
-N⁄YäYä\ô]\õéÿ€€ú›]ô[ùœX]ÿZ][]ô[ù 
-KYYœX]ÿZ][YYXÿ][€ú 
-K€ÿúŸ\ùò][€úÀ]Y\›[€úﬂOX]ÿZ]X\õö[ô–ùZ[]Y\›[€ú ]ô[ùÀYY K›]O[X\õö[ô‘›]J
-KY]öX‹œYÿ›[Y[ùôŸ][[Y[ùûRY
-	€X\õö[ô”Y]öX‹… KõﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	€X\õö[ô‘]Y\›[€ú… KõÿÿXèYÿ›[Y[ùôŸ][[Y[ùûRY
-	€X\õö[ô’õÿÿXù[\ûI N⁄Yä[Y]öX‹ﬂXõﬁ]õÿÿXä\ô]\õé◊àY]öX‹Àö[õô\íSV€Y]öX ›ö[ô ÿúŸ\ùò][€úÀõ[ô›
-K	’ôX⁄‹»[ò[\ÿY‹… KY]öX ›ö[ô ÿöôX›öŸ^\ ›]Kù\õ\ Kõ[ô›
-K	’\õ[‹»\ô[ôY‹… KY]öX ›ö[ô ]Y\›[€úÀõ[ô›
-K	‘\ô›[ù\»[ô[ù\… KY]öX 	”ÿÿ[	À	‘õÿŸ\‹ÿ[Y[ù… WKöõ⁄[ä	… N◊àõﬁö[õô\íS\]Y\›[€úÀõ[ô›‹]Y\›[€úÀõX\
-X\õö[ô‘]Y\›[€íS
-Köõ⁄[ä	… Nâœ]à€\‹œWò[ò[\⁄\ÀXÿ\ôèè]à€\‹œWõX\õö[ôÀY[\Wèìô[ö[XH0ÓùöYH[\‹ù[ùHY€‹òKà»\€€ù[ùX\∞ËHÿúŸ\ùò[ô»õ›õ‹»^‹»H\ô›[ù\∞ËH]X[ô»[ò€€ùò\à[€»]YHò[H€€ôö\õX\ãèŸ]èèŸ]èâŒ◊à€€ú›[ùöY\œSÿöôX›ô[ùöY\ ›]Kù\õ\ Kú€‹ù
-
-KäOOäñÃWKù\]Y]	… Kõÿÿ[P€€\\ôJVÃWKù\]Y]	… JN›õÿÿXãö[õô\íSY[ùöY\Àõ[ô›Ÿ[ùöY\ÀõX\
-
-›\õK]WJOOò]à€\‹œWõX\õö[ôÀ]õÿÿXã\õ›◊èè‹[èè›õ€ôœâŸ\ÿ ]Kô\‹^_\õJ_O‹›õ€ôœè€X[âŸ\ÿ X\õö[ô–€€òŸ\Xô[
-]Kò€€òŸ\
-J_H0≠»	Ÿ]Kú€›\òŸOOOIÿ€€ôö\õYY	œ…ÿ€€ôö\õXY»‹àõÿÍâŒâÿ\ô[ôY»€€HõÿÍâﬂO‹€X[è‹‹[èèù]€à\OWòù]€óà€\‹œWõX\õö[ôÀ\ô[[›ôWà]K[X\õö[ôÀXX›[€èWúô[[›ôWà]K[X\õö[ôÀ]\õOWâŸ\ÿ \õJ_Wèîô[[›ô\èÿù]€èèŸ]èò
-Köõ⁄[ä	… Nò]à€\‹œWõX\õö[ôÀY[\WèêZ[ôH∞Ë€»0ËH\õ[‹»\‹€ÿZ\»\ô[ôY‹Àà\»€€ôö\õXpÈÌY\»]YHõÿÍàö^ô\à\\ôXŸ\∞Ë€»\]ZKèŸ]èò◊àõﬁú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K[X\õö[ôÀXX›[€óI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOõX\õö[ô“[ôPX›[€ääJN›õÿÿXãú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]K[X\õö[ôÀXX›[€óI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOõX\õö[ô“[ôPX›[€ääJWüWóò\ﬁ[ò»ù[ò›[€àX\õö[ô“[ôPX›[€äù]€ä^ÿ€€ú›X›[€èXù]€ãô]\Ÿ]õX\õö[ô–X›[€ã\õO[õ‹õX[^ôU^
-ù]€ãô]\Ÿ]õX\õö[ô’\õ_	… K€€òŸ\Xù]€ãô]\Ÿ]õX\õö[ô–€€òŸ\Ÿ^OXù]€ãô]\Ÿ]õX\õö[ô“Ÿ^_\õ_	›\õ_X›]O[X\õö[ô‘›]J
-N⁄Yä]\õJ\ô]\õé◊àYäX›[€èOOIﬁY\…ﬂX›[€èOOI€X\	 ^‹›]Kù\õ\÷›\õWO^Ÿ\‹^Nòù]€ãô]\Ÿ]õX\õö[ô’\õ_\õK€€òŸ\€›\òŸNòX›[€èOOIﬁY\……âìPTìíSë◊–êT—W””“’T›\õWO…ÿ€€ôö\õYY	Œâ€X\õôY	À\]Y]õô]»]J
-Kù“T”‘›ö[ô 
-_NŸ[]H›]KöY€õ‹ôY›\õWNŸ[]H›]KúôZôX›Yÿ	›\õ__	ÿ€€òŸ\XNŸ[]H›]Kú‹›€ôY⁄Ÿ^W_Wà[ŸHYäX›[€èOOI€õ… ^‹›]KúôZôX›Yÿ	›\õ__	ÿ€€òŸ\XO^›\]Y]õô]»]J
-Kù“T”‘›ö[ô 
-_NŸ[]H›]Kú‹›€ôY⁄Ÿ^W_Wà[ŸHYäX›[€èOOI€]\â ^‹›]Kú‹›€ôY⁄Ÿ^WOQ]Kõõ› 
-JÕ éçWà[ŸHYäX›[€èOOI⁄Y€õ‹ôI ^‹›]KöY€õ‹ôY›\õWO^Ÿ\‹^Nòù]€ãô]\Ÿ]õX\õö[ô’\õ_\õK\]Y]õô]»]J
-Kù“T”‘›ö[ô 
-_NŸ[]H›]Kù\õ\÷›\õWNŸ[]H›]Kú‹›€ôY⁄Ÿ^W_Wà[ŸHYäX›[€èOOI‹ô[[›ôI ^Ÿ[]H›]Kù\õ\÷›\õW_WàX\õö[ô‘ÿ]ôT›]J›]JNÿ]ÿZ]ô[ô\ê[
-
-N⁄YäX›[€èOOI€]\â ]ÿ\›
-	‘\ô›[ùHYXYKâ NŸ[ŸHYäX›[€èOOI€õ… ]ÿ\›
-	—[ù[ôYÀà∞Ë€»õ›H\ÿ\à\‹ÿH\‹€ÿ⁄XpÈË€Àâ NŸ[ŸHYäX›[€èOOI⁄Y€õ‹ôI ]ÿ\›
-	’\õ[»X\òÿY»€€[»∞Ë€»ô[]ò[ùKâ NŸ[ŸHYäX›[€èOOI‹ô[[›ôI ]ÿ\›
-	’\õ[»ô[[›öY»»õÿÿXù[0Ë\ö[»\‹€ÿ[â NŸ[ŸHÿ\›
-	–\ô[ô^òY»ÿ[õÀâ WüWóã àHXòH[∞Ë[\Ÿ\»\‹ÿHH€€ú⁄Y\ò\àŸ‹»‹»^‹»ÿúŸ\ùòX⁄[€òZ\»ô[]ò[ù\Àà
-ã◊úô[ô\ê[ò[\⁄\œX\ﬁ[ò»ù[ò›[€ä]ô[ù ^ÿ€€ú›€‹ùYVÀããô]ô[ù◊Kú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JKYYœX]ÿZ][YYXÿ][€ú 
-KÿúŸ\ùò][€úœX]ÿZ]X\õö[ô–€€X›ÿúŸ\ùò][€ú €‹ùYYY KﬁX€OX›\úô[ùﬁX€J€‹ùY
-K]\›ÿúœ[ÿúŸ\ùò][€ú÷ÃKﬁX€SYYœ\€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â…âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OèXﬁX€Kú›\ù
-K€€ù^›\ùXﬁX€Kú›\ùLç
-åÕå€€ù^YYœXﬁX€Kõ\›€Y\‹€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â…âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OﬁX€Kú›\ù	âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OèX€€ù^›\ù
-Nñ◊K\›€Y\XﬁX€Kõ\›€Y\€‹ùYôö[ô
-OOôKù\OOOI‹€Y\	 NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ›\úô[ù[ò[\⁄\… Kö[õô\íSVÿ[ò[\⁄\‘õ› 	‘\∞Î[Ÿ»€€ú⁄Y\òY…ÀﬁX€KõXô[
-K[ò[\⁄\‘õ› 	Êõ[[»ô[]…À]\›ÿúœÿ8†'	€]\›ÿúÀù^õ[ô›åLå€]\›ÿúÀù^ú€XŸJLM J…¯†)âŒõ]\›ÿúÀù^x†'H0≠»	€]\›ÿúÀú€›\òŸ_H0≠»	⁄[X[êY€ ]\›ÿúÀù[Y\›[\
-_Xâ–Z[ôH∞Ë€»0ËH^‹»ÿúŸ\ùòX⁄[€òZ\Àâ K[ò[\⁄\‘õ› ﬁX€Kõ\›€Y\…”YYXÿ[Y[ù‹»\ŸH]YHX€‹ô›IŒâ”YYXÿ[Y[ù‹»ôXŸ[ù\…ÀﬁX€SYYÀõ[ô›ÿﬁX€SYYÀõX\
-YYXÿ][€ë]ô[ùXô[
-Köõ⁄[ä	»0≠»	 Nâ”ô[ö[HôY⁄\›õ»ô\‹ŸH\∞Î[ŸÀâ Kããä€€ù^YYÀõ[ô›÷ÿ[ò[\⁄\‘õ› 	–€€ù^»[ù\»»0Óõ[[»€€õ…À€€ù^YYÀõX\
-YYXÿ][€ë]ô[ùXô[
-Köõ⁄[ä	»0≠»	 JWNñ◊JK[ò[\⁄\‘õ› 	‘€€õ»XZ\»ôXŸ[ùIÀ\›€Y\ÿ	Ÿ\ò][€ìXô[
-\ò][€í›\ú \›€Y\ú›\ù[YK\›€Y\ô[ô[YJJ_I€\›€Y\ú]X[]Oÿ0≠»]X[YYH	€\›€Y\ú]X[]_Xâ…ﬂXâ–Z[ôH∞Ë€»0ËHôY⁄\›õ‹»H€€õÀâ WKöõ⁄[ä	… N◊à€€ú›YZ[úœ\€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â K‹õ›\Y^ﬂNŸõ‹ä€€ú›HŸàYZ[ú ^ÿ€€ú›Ÿ^OXKõYYXÿ][€ü	”YYXÿ[Y[ù…Œ⁄YäY‹õ›\Y⁄Ÿ^WJY‹õ›\Y⁄Ÿ^WO^ÿ€›[ùå€€òŸ\Œñ◊K€›\òŸ\Œûﬂ_Nÿ€€ú››[ô]»]JKù[Y\›[\
-KôŸ][YJ
-K[è\›
-Œ
-åÕåôX\òûO[ÿúŸ\ùò][€úÀôö[\äœOûÿ€€ú›[ô]»]JÀù[Y\›[\
-KôŸ][YJ
-N‹ô]\õàè\›	âùY[üJNŸ‹õ›\Y⁄Ÿ^WKò€›[ù
-œ[ôX\òûKõ[ô›Ÿõ‹ä€€ú›»ŸàôX\òûJ^Ÿ‹õ›\Y⁄Ÿ^WKú€›\òŸ\÷€Àú€›\òŸWOJ‹õ›\Y⁄Ÿ^WKú€›\òŸ\÷€Àú€›\òŸW_
-JÃNŸõ‹ä€€ú›»ŸàX\õö[ô–€€òŸ\“[ï^
-Àù^
-JY‹õ›\Y⁄Ÿ^WKò€€òŸ\Àú\⁄
-Àò€€òŸ\
-__X€€ú›\‹€ÿœSÿöôX›ô[ùöY\ ‹õ›\Y
-Kú€‹ù
-
-KäOOòñÃWKò€›[ùXVÃWKò€›[ù
-Kú€XŸJ
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ\‹€ÿ⁄X][€ê[ò[\⁄\… Kö[õô\íSX\‹€ÿÀõ[ô›ÿ\‹€ÿÀõX\
-
-€ò[YK]WJOOûÿ€€ú›œ^ﬂNŸ]Kò€€òŸ\Àôõ‹ëXX⁄
-Oò÷›OJ÷›_
-JÃJNÿ€€ú›€€[[€èSÿöôX›ô[ùöY\  Kú€‹ù
-
-KäOOòñÃWKXVÃWJKú€XŸJ KõX\
-
-›óJOOò	€X\õö[ô–€€òŸ\Xô[
-
-_H
-	€üJX
-Köõ⁄[ä	À	 Nÿ€€ú›‹òœSÿöôX›ô[ùöY\ ]Kú€›\òŸ\ Kú€‹ù
-
-KäOOòñÃWKXVÃWJKú€XŸJäKõX\
-
-‹ÀóJOOò	‹ﬂNà	€üX
-Köõ⁄[ä	»0≠»	 N‹ô]\õà[ò[\⁄\‘õ› ò[YK	Ÿ]Kò€›[ùHô[]  H]0ÍH\⁄\»\»YZ[ö\›òpÈÌY\…ÿ€€[[€èÿà€€òŸZ]‹»ôX€‹úô[ù\Œà	ÿ€€[[€üXâ…ﬂI‹‹òœÿàõ€ù\Œà	‹‹òﬂXâ…ﬂKò
-HJKöõ⁄[ä	… Nò[ò[\⁄\‘õ› 	–Z[ôHŸ[HY∞Ë€…À	‘ôY⁄\›ôHYZ[ö\›òpÈÌY\»H^‹»[»€ô€»»[\Àâ N◊à€€ú›€Y\œ\€‹ùYôö[\äOOôKù\OOOI‹€Y\	 K]ôœ\€Y\Àõ[ô›‹€Y\ÀúôYXŸJ
-ÀJOOú Ÿ\ò][€í›\ú Kú›\ù[YKKô[ô[YJK
-K‹€Y\Àõ[ô›õù[\œ\€Y\Àôö[\äOOìù[Xô\äKú]X[]JJK]ô‘O\\Àõ[ô›‹\ÀúôYXŸJ
-ÀJOOú ”ù[Xô\äKú]X[]JK
-K‹\Àõ[ô›õù[Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ò[\⁄\… Kö[õô\íSV€Y]öX ]ôœO[ù[…¯†%	Œô\ò][€ìXô[
-]ô K	”pÍYXHH\òpÈË€… KY]öX ]ô‘OO[ù[…¯†%	Œò]ô‘Kù—ö^Y
-JK	‘]X[YYHpÍYXI KY]öX ›ö[ô €Y\Àõ[ô›
-K	”õ⁄]\»ôY⁄\›òY\… KY]öX €Y\÷ÃOŸ\ò][€ìXô[
-\ò][€í›\ú €Y\÷ÃKú›\ù[YK€Y\÷ÃKô[ô[YJJNâ¯†%	À	Êõ[[»€€õ… WKöõ⁄[ä	… N◊à€€ú›YYõ›‹œV◊NŸõ‹ä€€ú›HŸàYY ^ÿ€€ú›œ[YYXÿ][€ê€‹››[[X\ûJK€‹ùY
-N⁄Yä [YYõ›‹Àú\⁄
-[ò[\⁄\‘õ› KòX›]ôR[ô‹ôYY[ù0Êõ[[»›\›Œà	ÿÀù[ö]O[ù[ÿ	€[€ô^JÀù[ö]
-_K›[öYYXâ‹Ÿ[H[öYY\»Yö[öY\…ﬂIÿÀõ[€ùHO[ù[ÿ0≠»ÿ\›»ôY⁄\›òY»õ‹»0Óõ[[‹»ÃX\»8¢b	€[€ô^JÀõ[€ùJ_Xâ…ﬂX
-J_Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYXÿ][€ê[ò[\⁄\… Kö[õô\íS[YYõ›‹Àõ[ô›€YYõ›‹Àú€XŸJäKöõ⁄[ä	… Nò[ò[\⁄\‘õ› 	–ÿY\›ôH\ô\Ÿ[ùpÈÌY\…À	–€€H[öYY\»‹àÿZ^K€€\ò\»HYZ[ö\›òpÈÌY\»»\ÿ[›[H›\›»H\òpÈË€Àâ N◊à€€ú›ù^\œ\€‹ùYôö[\äOOôKù\OOOI‹\ò⁄\ŸI K‹õ›\œ^ﬂNŸõ‹ä€€ú›Ÿàù^\ ^ÿ€€ú›è\\úŸS[€ô^JúöXŸJN⁄YäèO[ù[
-X€€ù[ùYN ‹õ›\÷‹õYYXÿ][€ü	”YYXÿ[Y[ù…◊OœœV◊JKú\⁄
-ä_X€€ú›öXŸTõ›‹œSÿöôX›ô[ùöY\ ‹õ›\ Kú€XŸJJNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸP[ò[\⁄\… Kö[õô\íS\öXŸTõ›‹Àõ[ô›‹öXŸTõ›‹ÀõX\
-
-€ò[YKò[◊JOOò[ò[\⁄\‘õ› ò[YK	›ò[Àõ[ô›H€€\òJ H0≠»pÍYXH	€[€ô^Jò[ÀúôYXŸJ
-KäOOòJÿã
-K›ò[Àõ[ô›
-_H0≠»Y[õ‹à	€[€ô^JX]õZ[äããùò[ J_H0≠»XZ[‹à	€[€ô^JX]õX^
-ããùò[ J_X
-JKöõ⁄[ä	… Nò[ò[\⁄\‘õ› 	–Z[ôHŸ[H\›0Ï‹öX€»HôpÈ€…À	‘ôY⁄\›ôH€€\ò\»€€Hò[‹à\òH€€\\ò\àôpÈ€‹Àâ WüN◊óò€€ú›X\õö[ô”‹öY⁄[ò[ô[ô\ê[\ô[ô\ê[‹ô[ô\ê[X\ﬁ[ò»ù[ò›[€ä
-^ÿ]ÿZ]X\õö[ô”‹öY⁄[ò[ô[ô\ê[
-
-Nÿ]ÿZ]ô[ô\ìX\õö[ô 
-_N◊ôù[ò›[€àX\õö[ô–õ€›
-
-^€X\õö[ô—[ú›\ôURJ
-N⁄Yò]RX€€ú 
-N⁄Yä\[Ÿà\TôY⁄\›õ’Xêò\èOOIŸù[ò›[€â X\TôY⁄\›õ’Xêò\ä
-N⁄Yää\ô[ô\ê[
-
-NŸ[ŸHŸ][Y[›]
-X\õö[ô–õ€›N
-_WõX\õö[ô–õ€›
-
-N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃLÀöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã à[\ù\»‹à]\Íõò⁄XH
-»€€ù[ùZYYH€€[»€€ù^»òX›X[\òH[∞Ë[\Ÿ\À–\ô[ô^òYÀà
-ã◊ò€€ú›””ïSïRUW—Së“SëW’ëTî“S”èIÃKååIŒ◊ò€€ú›QêUS—–T’ëT“”œ^›^åÀ[€Ÿåã\ò⁄\ŸNçKYYXÿ][€éåÀ€Y\åüN◊ò€€ú›–T”PëSœ^›^â–[õ›pÈË€…À[€Ÿâ⁄[[‹âÀ\ò⁄\ŸNâÿ€€\òIÀYYXÿ][€éâ€YYXÿ[Y[ù…À€Y\â‹€€õ…ﬂN◊óôù[ò›[€à€€ù[ùZ]TŸ][ô‹ 
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹ô]\õûÀããëQêUS—–T’ëT“”ÀããäÀö[òX›]ö]Uô\⁄€ﬂﬂJ__Wôù[ò›[€àÿ]ôP€€ù[ùZ]TŸ][ô‹ ô^
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹Àö[òX›]ö]Uô\⁄€œ[ô^‹ÿ]ôTŸ][ô‹  _Wôù[ò›[€à€€ù[ùZ]Qö\ú›ŸY[ä
-^€]ò]œ[ÿÿ[›‹òYŸKôŸ]][J	‹ôY⁄\›õÀYö\ú›\ŸY[â N⁄Yä\ò] ^‹ò]œ[ô]»]J
-Kù“T”‘›ö[ô 
-N€ÿÿ[›‹òYŸKúŸ]][J	‹ôY⁄\›õÀYö\ú›\ŸY[âÀò] _\ô]\õàô]»]Jò] KôŸ][YJ
-_Wôù[ò›[€à€€ù[ùZ]Q^\ \ ^‹ô]\õàX]õX^
-\ÀŒç
-_Wôù[ò›[€à€€ù[ùZ]Q^U^
-ò[YKX⁄[X[œ[ù[
-^ÿ€€ú›èSù[Xô\äò[YJ_⁄›€èYX⁄[X[œOO[ù[‘›ö[ô X]ôõ€‹ääJNõãù—ö^Y
-X⁄[X[ Kúô\XŸJ	ÀâÀ	À	 N‹ô]\õà	‹⁄›€üH	”X]òXú ãLJOåO…ŸXIŒâŸX\…ﬂXWôù[ò›[€à€€ù[ùZ]Q]Jä^‹ô]\õàô]»]JäKù”ÿÿ[Q]T›ö[ô 	‹PîâÀŸ^NâÃãYY⁄]	À[€ùâÃãYY⁄]	ÀYX\éâÃãYY⁄]	ﬂJ_Wôù[ò›[€à]\›[Y\›[\
-\›
-^‹ô]\õà\›õ[ô›”X]õX^
-ããõ\›õX\
-Oõô]»]Jù[Y\›[\
-KôŸ][YJ
-JJNõù[Wôù[ò›[€à€€ù[ùZ]S[€Ÿ]ô[ù ]ô[ù ^‹ô]\õà]ô[ùÀôö[\äOOôKù\OOOI€õ›I…âôKõ[€Ÿÿ€‹ôHOO[ù[	âôKõ[€Ÿÿ€‹ôHOO][ôYö[ôY	âôKõ[€Ÿÿ€‹ôHOOI……âìù[Xô\ãö\—ö[ö]Jù[Xô\äKõ[€Ÿÿ€‹ôJJJ_Wóò\ﬁ[ò»ù[ò›[€à€€ù[ùZ]Sò\úò]]ô\ ]ô[ùÀYY ^ÿ€€ú›ÿúœ]\[ŸàX\õö[ô–€€X›ÿúŸ\ùò][€úœOOIŸù[ò›[€âœÿ]ÿZ]X\õö[ô–€€X›ÿúŸ\ùò][€ú ]ô[ùÀYY Nñ◊N‹ô]\õàÿúÀôö[\äœOõÀú€›\òŸHOOI’Y»H[õ›pÈË€……âî›ö[ô Àù^	… Kùö[J
-J_Wò\ﬁ[ò»ù[ò›[€à€€ù[ùZ]S\›[Y\ ]ô[ùÀYY ^ÿ€€ú›ò\úò]]ô\œX]ÿZ]€€ù[ùZ]Sò\úò]]ô\ ]ô[ùÀYY K[€ŸœX€€ù[ùZ]S[€Ÿ]ô[ù ]ô[ù N‹ô]\õû◊à^õ]\›[Y\›[\
-ò\úò]]ô\ Kà[€Ÿõ]\›[Y\›[\
-[€Ÿ Kà\ò⁄\ŸNõ]\›[Y\›[\
-]ô[ùÀôö[\äOOôKù\OOOI‹\ò⁄\ŸI JKàYYXÿ][€éõ]\›[Y\›[\
-]ô[ùÀôö[\äOOôKù\OOOI€YYXÿ][€â JKà€Y\õ]\›[Y\›[\
-]ô[ùÀôö[\äOOôKù\OOOI‹€Y\	 JWü_Wò\ﬁ[ò»ù[ò›[€à€€ù[ùZ]S›ô\ôYJ]ô[ùÀYY ^ÿ€€ú›ô\⁄€œX€€ù[ùZ]TŸ][ô‹ 
-K\›X]ÿZ]€€ù[ùZ]S\›[Y\ ]ô[ùÀYY Kö\ú›X€€ù[ùZ]Qö\ú›ŸY[ä
-Kõ›œQ]Kõõ› 
-K›]V◊NŸõ‹ä€€ú›Ÿ^HŸàÿöôX›öŸ^\ –T”PëS J^ÿ€€ú›ô\⁄€Sù[Xô\äô\⁄€÷⁄Ÿ^WJN⁄YäSù[Xô\ãö\—ö[ö]Jô\⁄€
-_ô\⁄€L
-X€€ù[ùYNÿ€€ú›ò\ŸO[\›⁄Ÿ^WOœŸö\ú›ÿ\X€€ù[ùZ]Q^\ õ›ÀXò\ŸJN⁄Yäÿ\è]ô\⁄€
-[›]ú\⁄
-⁄Ÿ^Kô\⁄€ÿ\\›õ\›⁄Ÿ^W_J_\ô]\õà›]ú€‹ù
-
-KäOOäãôÿ\ÿãùô\⁄€
-KJKôÿ\ÿKùô\⁄€
-J_Wóôù[ò›[€à[ú›\ôP€€ù[ùZ]R€YPÿ\ô
-
-^ÿ€€ú›€YOYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWö€YWóI K›[[X\ûOZ€YOÀú]Y\ûTŸ[X›‹ä	Àú›[[X\ûKXÿ\ô	 N⁄YäZ€Y_\›[[X\û_ÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[\ùÿ\ô	 J\ô]\õéÿ€€ú›ÿ\ôYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â Nÿÿ\ôöYIÿ€€ù[ùZ]P[\ùÿ\ô	Œÿÿ\ôò€\‹”ò[YOIÿ[ò[\⁄\ÀXÿ\ô€€ù[ùZ]KX[\ùY[âŒ‹›[[X\ûKòYù\äÿ\ô
-_Wò\ﬁ[ò»ù[ò›[€àô[ô\ê€€ù[ùZ]R€YJ]ô[ùÀYY ^Ÿ[ú›\ôP€€ù[ùZ]R€YPÿ\ô
-
-Nÿ€€ú›ÿ\ôYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[\ùÿ\ô	 K][\œX]ÿZ]€€ù[ùZ]S›ô\ôYJ]ô[ùÀYY N⁄YäXÿ\ô
-\ô]\õéÿÿ\ôò€\‹”\›ùŸŸ€J	⁄Y[âÀZ][\Àõ[ô›
-N⁄YäZ][\Àõ[ô›
-^ÿÿ\ôö[õô\íSI…Œ‹ô]\õüXÿ\ôö[õô\íSX]à€\‹œWò€€ù[ùZ]KX[\ùZXYèè]à€\‹œWò€€ù[ùZ]KX[\ù]][[ôWèè‹[à€\‹œWõõ›XŸKZX€€óà]KZX€€èWò€ÿ⁄◊èè‹‹[èè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèìSPîëUHH””ïSïRQQO‹èŸ]èèèïõÿÍà∞Ë€»ôY⁄\›òH\‹€»[H[H[\Œè⁄èèŸ]èè€\‹œWò€€ù[ùZ]KY\ÿ€Z[Y\óèì»\Ï»\›0ËHÿúŸ\ùò[ô»Húô\]pÍõò⁄XH‹»ôY⁄\›õ‹Àà[H[ù\ùò[»∞Ë€»⁄Y€öYöXÿK‹à⁄HÏÀ[‹òHH[[‹ãÿ[úÿpÈ€»›H]X[]Y\à›]õ»\›YÀè‹è]à€\‹œWò€€ù[ùZ]KX[\ù[\›èâ⁄][\ÀõX\
-OOòù]€à\OWòù]€óà€\‹œWò€€ù[ùZ]KX[\ù\õ›◊à]KYÿ\XX›[€èWâ⁄KöŸ^_Wèè‹[èè›õ€ôœâŸ\ÿ –T”PëS÷⁄KöŸ^WJ_O‹›õ€ôœè€X[â⁄Kõ\›ÿ0Óõ[[»ôY⁄\›õ»0ËH	ÿ€€ù[ùZ]Q^U^
-Kôÿ\
-_XâÿZ[ôHŸ[HôY⁄\›õ…ﬂO‹€X[è‹‹[èè‹[èîôY⁄\›ò\à8†.è‹‹[èèÿù]€èò
-Köõ⁄[ä	… _OŸ]èò⁄Yò]RX€€ú ÿ\ô
-Nÿÿ\ôú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KYÿ\XX›[€óI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOûÿ€€ú›Ÿ^OXãô]\Ÿ]ôÿ\X›[€é⁄YäŸ^OOOI›^	ﬂŸ^OOOI€[€Ÿ	 [‹[ìõ›T⁄Y]
-
-NŸ[ŸHYäŸ^OOOI‹\ò⁄\ŸI [‹[î\ò⁄\ŸT⁄Y]
-
-NŸ[ŸHYäŸ^OOOI€YYXÿ][€â [‹[ìYYXÿ][€î⁄Y]
-
-NŸ[ŸHYäŸ^OOOI‹€Y\	 [‹[î€Y\⁄Y]
-
-_J_Wóôù[ò›[€à‹[ê€€ù[ùZ]TŸ][ô‹ 
-^ÿ€€ú›œX€€ù[ùZ]TŸ][ô‹ 
-N€‹[êòX⁄Ÿõ‹
-	–[\ù\»‹à]\Íõò⁄XIÀ€\‹œWö[\óèëYö[òH]X[ù‹»X\»Ÿ[HÿYH\»HôY⁄\›õ»ò^ô[H»ÿ\ù0Ë€»\\ôXŸ\àòH[H[öX⁄X[à\ŸH\òH\ÿ]]ò\à[H[\ùKè‹â”ÿöôX›ô[ùöY\ –T”PëS KõX\
-
-⁄Ÿ^KXô[JOOò]à€\‹œWôöY[èèXô[õ‹èWôÿ\I⁄Ÿ^_WèâŸ\ÿ Xô[
-_O€Xô[è]à€\‹œWö[õ[ôK][ö]èè[ú]YWôÿ\I⁄Ÿ^_Wà\OWõù[Xô\óàZ[èWåà›\WåWà[ú][ŸOWõù[Y\öX◊àò[YOWâ”ù[Xô\ä÷⁄Ÿ^WJ_Wèè‹[à€\‹œWò€€ù[ùZ]K][ö]èôX\œ‹‹[èèŸ]èèŸ]èò
-Köõ⁄[ä	… _O€\‹œWö[\óèë\‹Ÿ\»ò^õ‹»Yô][H\[ò\»‹»[Xúô]\»H\»[∞Ë[\Ÿ\»H€€ù[ùZYYN»ù[òÿHŸ\ò[H[HXY€∞Ï‹›X€Àè‹âŸõ‹õPù]€ú 	‘ÿ[ò\â _X]èOûŸ]ãúô]ô[ùYò][
-
-Nÿ€€ú›ô^^ﬂNŸõ‹ä€€ú›Ÿ^HŸàÿöôX›öŸ^\ –T”PëS J[ô^⁄Ÿ^WOSX]õX^
-ù[Xô\äÿ›[Y[ùôŸ][[Y[ùûRY
-ÿ\I⁄Ÿ^_X
-OÀùò[YJ_
-N‹ÿ]ôP€€ù[ùZ]TŸ][ô‹ ô^
-Nÿ€‹ŸT⁄Y]
-
-N‹ô[ô\ê[
-
-N›ÿ\›
-	‘ò^õ‹»]X[^òY‹Àâ _J_Wôù[ò›[€à[ú›\ôP€€ù[ùZ]TŸ][ô‹’RJ
-^ÿ€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWúŸ][ô‹◊óI N⁄Yä]öY]ﬂÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]TŸ][ô‹—‹õ›\	 J\ô]\õéÿ€€ú›‹õ›\œVÀããùöY]Àú]Y\ûTŸ[X›‹ê[
-	ÀúŸ][ô‹ÀY‹õ›\	 WKX[Y‹õ›\Àôö[ô
-œOôÀú]Y\ûTŸ[X›‹ä	⁄â OÀù^€€ù[ùö[ò€Y\ 	‘ÿpÓôHH€€õ… JK‹õ›\Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â NŸ‹õ›\öYIÿ€€ù[ùZ]TŸ][ô‹—‹õ›\	ŒŸ‹õ›\ò€\‹”ò[YOI‹Ÿ][ô‹ÀY‹õ›\	ŒŸ‹õ›\ö[õô\íSXèê€€ù[ùZYYH‹»ôY⁄\›õ‹œ⁄èè]à€\‹œWúŸ][ô‹ÀXÿ\ô\›Xÿ\ôèèù]€à€\‹œWúŸ][ô‹À\õ›◊àYWò€€ù[ùZ]TŸ][ô‹–ùóèè‹[à€\‹œWúŸ][ô‹À\õ›ÀZX€€óà]KZX€€èWò€ÿ⁄◊èè‹‹[èè‹[èè›õ€ôœê[\ù\»‹à]\Íõò⁄XO‹›õ€ôœè€X[îò^õ‹»[ô\[ô[ù\»\òH^À[[‹ã€€\ò\ÀYYXÿ[Y[ù‹»H€€õœ‹€X[è‹‹[èè‹[à€\‹œWò⁄]úõ€óè∏†.è‹‹[èèÿù]€èèŸ]èè€\‹œWô‹õ›\Yõ€›õ›Wèì»ÿ\ù0Ë€»Ï»\\ôXŸH]X[ô»[›[Hò^õ»€€ôöY›\òY»0ÍH[ò\\‹ÿYÀè‹ò X[‹õ›\÷ÃJOÀòYù\ä‹õ›\
-N⁄Yò]RX€€ú ‹õ›\
-NŸÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]TŸ][ô‹–ùâ Kõ€ò€X⁄œ[‹[ê€€ù[ùZ]TŸ][ô‹ﬂWóôù[ò›[€à€€ù[ùZ]S\ôŸ\›ÿ\
-][\ ^ÿ€€ú›[Y\œVÀããö][\◊KõX\
-Oõô]»]Jù[Y\›[\
-KôŸ][YJ
-JKôö[\äù[Xô\ãö\—ö[ö]JKú€‹ù
-
-KäOOòKXäN€]ô\›[ù[Ÿõ‹ä]OLN⁄O[Y\Àõ[ô›⁄J  ^ÿ€€ú›ÿ\X€€ù[ùZ]Q^\ [Y\÷⁄WK][Y\÷⁄KLWJN⁄YäXô\›ÿ\òô\›ôÿ\
-Xô\›^Ÿÿ\›\ùù[Y\÷⁄KLWK[ôù[Y\÷⁄W__\ô]\õàô\›Wôù[ò›[€à€€ù[ùZ]T]X[YûZ[ô—ÿ\ ][\Àô\⁄€
-^ÿ€€ú›€‹ùYVÀããö][\◊Kú€‹ù
-
-KäOOõô]»]JKù[Y\›[\
-K[ô]»]Jãù[Y\›[\
-JK›]V◊NŸõ‹ä]OLN⁄O€‹ùYõ[ô›⁄J  ^ÿ€€ú›ÿ\X€€ù[ùZ]Q^\ ô]»]J€‹ùY⁄WKù[Y\›[\
-K[ô]»]J€‹ùY⁄KLWKù[Y\›[\
-JN⁄Yäÿ\è]ô\⁄€
-[›]ú\⁄
-Ÿÿ\ôYõ‹ôNú€‹ùY⁄KLWKYù\éú€‹ùY⁄W_J_\ô]\õà›]Wôù[ò›[€à€€ù[ùZ]P€€òŸ\Xô[ ^
-^⁄Yä\[ŸàX\õö[ô–€€òŸ\“[ï^OOIŸù[ò›[€â \ô]\õñ◊N‹ô]\õàX\õö[ô–€€òŸ\“[ï^
-^
-KõX\
-œOõX\õö[ô–€€òŸ\Xô[
-Àò€€òŸ\
-J_Wôù[ò›[€à[ú›\ôP€€ù[ùZ]P[ò[\⁄\–ÿ\ô
-
-^ÿ€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWò[ò[\⁄\◊óI N⁄Yä]öY]ﬂÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[ò[\⁄\–ÿ\ô	 J\ô]\õéÿ€€ú›[ò⁄‹èYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹‹[â Nÿ[ò⁄‹ãöY[è]ùYNÿ[ò⁄‹ãô]\Ÿ]ò[ò[\⁄\“€YP[ò⁄‹èIÿ[ò[\⁄\ÀX€€ù[ùZ]IŒÿ€€ú›ÿ\ôYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â Nÿÿ\ôöYIÿ€€ù[ùZ]P[ò[\⁄\–ÿ\ô	Œÿÿ\ôò€\‹”ò[YOIÿ[ò[\⁄\ÀXÿ\ô[ò[\⁄\À\ô]öY]ÀZ][IŒÿÿ\ôô]\Ÿ]ò[ò[\⁄\“][OIÿ[ò[\⁄\ÀX€€ù[ùZ]IŒÿÿ\ôö[õô\íSX]à€\‹œWò[ò[\⁄\À]]Wèè‹[à]KZX€€èWò€ÿ⁄◊èè‹‹[èèèê€€ù[ùZYYH‹»ôY⁄\›õ‹œ⁄èèŸ]èè]àYWò€€ù[ùZ]P[ò[\⁄\◊à€\‹œWò[ò[\⁄\À\›X⁄◊èèŸ]èòÿ€€ú›€Y\Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 N⁄Yä€Y\
-^‹€Y\òYù\ä[ò⁄‹äNÿ[ò⁄‹ãòYù\äÿ\ô
-_Y[Ÿ^›öY]Àò\[ô
-[ò⁄‹ãÿ\ô
-_ZYä\[ŸàSêST“T◊‘ëUíQU◊—Qî»OOI›[ôYö[ôY	 PSêST“T◊‘ëUíQU◊—Qî÷…ÿ[ò[\⁄\ÀX€€ù[ùZ]I◊OI–€€ù[ùZYYH‹»ôY⁄\›õ‹…Œ⁄YäXÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]KX[ò[\⁄\À\ô]öY]◊I J^ÿ€€ú›èYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	ÿù]€â Nÿãù\OIÿù]€âŒÿãò€\‹”ò[YOIÿ⁄\ù\ô]öY]ÀXùàõÿ][ôÀ\ô]öY]…Œÿãô]\Ÿ]ò[ò[\⁄\‘ô]öY]œIÿ[ò[\⁄\ÀX€€ù[ùZ]IŒÿãù^€€ù[ùI–]ò[X\âŒÿÿ\ôò\[ô⁄[
-ä_ZYò]RX€€ú ÿ\ô
-_Wò\ﬁ[ò»ù[ò›[€àô[ô\ê€€ù[ùZ]P[ò[\⁄\ ]ô[ùÀYY ^Ÿ[ú›\ôP€€ù[ùZ]P[ò[\⁄\–ÿ\ô
-
-Nÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[ò[\⁄\… N⁄YäXõﬁ
-\ô]\õéÿ€€ú›ò\úò]]ô\œX]ÿZ]€€ù[ùZ]Sò\úò]]ô\ ]ô[ùÀYY K[€ŸœX€€ù[ùZ]S[€Ÿ]ô[ù ]ô[ù K›ô\ôYOX]ÿZ]€€ù[ùZ]S›ô\ôYJ]ô[ùÀYY KŸ][ô‹œX€€ù[ùZ]TŸ][ô‹ 
-K\ôŸ\›^X€€ù[ùZ]S\ôŸ\›ÿ\
-ò\úò]]ô\ K\ôŸ\›[€ŸX€€ù[ùZ]S\ôŸ\›ÿ\
-[€Ÿ Kõ›‹œV◊N⁄Yä›ô\ôYKõ[ô›
-\õ›‹Àú\⁄
-[ò[\⁄\‘õ› 	“[ù\ùò[‹»]XZ\…À›ô\ôYKõX\
-OOò	—–T”PëS÷⁄KöŸ^W_Nà	ÿ€€ù[ùZ]Q^U^
-Kôÿ\
-_X
-Köõ⁄[ä	»0≠»	 JJNŸ[ŸHõ›‹Àú\⁄
-[ò[\⁄\‘õ› 	“[ù\ùò[‹»]XZ\…À	”ô[ö[H‹»ò^õ‹»€€ôöY›\òY‹»õ⁄H[ò\\‹ÿYÀâ JN⁄Yä\ôŸ\›^
-\õ›‹Àú\⁄
-[ò[\⁄\‘õ› 	”XZ[‹à[ù\ùò[»[ùôH^‹…À	ÿ€€ù[ùZ]Q^U^
-\ôŸ\›^ôÿ\J_KH	ÿ€€ù[ùZ]Q]J\ôŸ\›^ú›\ù
-_HH	ÿ€€ù[ùZ]Q]J\ôŸ\›^ô[ô
-_X
-JN⁄Yä\ôŸ\›[€Ÿ
-\õ›‹Àú\⁄
-[ò[\⁄\‘õ› 	”XZ[‹à[ù\ùò[»[ùôHõ›\»H[[‹âÀ	ÿ€€ù[ùZ]Q^U^
-\ôŸ\›[€Ÿôÿ\J_KH	ÿ€€ù[ùZ]Q]J\ôŸ\›[€Ÿú›\ù
-_HH	ÿ€€ù[ùZ]Q]J\ôŸ\›[€Ÿô[ô
-_X
-JNÿ€€ú›^ô\⁄€Sù[Xô\äŸ][ô‹Àù^
-_ÿ\œ]^ô\⁄€åÿ€€ù[ùZ]T]X[YûZ[ô—ÿ\ ò\úò]]ô\À^ô\⁄€
-Nñ◊K€€òŸ\€›[ùœ^ﬂK^[\\œV◊NŸõ‹ä€€ú›»Ÿàÿ\ ^ÿ€€ú›€€òŸ\œX€€ù[ùZ]P€€òŸ\Xô[ ÀòYù\ãù^
-NŸõ‹ä€€ú›»Ÿà€€òŸ\ X€€òŸ\€›[ù÷ÿ◊OJ€€òŸ\€›[ù÷ÿ◊_
-JÃN⁄Yä€€òŸ\Àõ[ô›	âô^[\\Àõ[ô›äY^[\\Àú\⁄
-Ÿÿ\ôÀôÿ\€€òŸ\À^ôÀòYù\ãù^J_X€€ú›ôX›\úô[ùSÿöôX›ô[ùöY\ €€òŸ\€›[ù Kú€‹ù
-
-KäOOòñÃWKXVÃWJKôö[\ä
-ÀóJOOõèèLäKú€XŸJ N⁄Yäÿ\Àõ[ô›	âúôX›\úô[ùõ[ô›
-\õ›‹Àú\⁄
-[ò[\⁄\‘õ› 	‘Y∞Ë€»ò\»ô]€XY\…À\0Ï‹»	Ÿÿ\Àõ[ô›H[ù\ùò[  HH[»Y[õ‹»	ÿ€€ù[ùZ]Q^U^
-Ÿ][ô‹Àù^
-_K‹»ö[YZ\õ‹»ô[]‹»ô\]\ò[H\õ[‹»YÿY‹»H	‹ôX›\úô[ùõX\
-
-ÿÀóJOOò	ÿﬂH
-	€üJX
-Köõ⁄[ä	À	 _Kà\‹€»\ÿ‹ô]ôH‹»ô[]‹»\0Ï‹»‹»[ù\ùò[‹Œ»∞Ë€»^XÿH‹à]YHõÿÍà\õ›HHôY⁄\›ò\ãò
-JNŸ[ŸHYä^[\\Àõ[ô›
-\õ›‹Àú\⁄
-[ò[\⁄\‘õ› 	–€€ù^»\0Ï‹»[H[ù\ùò[…À\⁄\»H[H[ù\ùò[»H	ÿ€€ù[ùZ]Q^U^
-^[\\÷ÃKôÿ\J_K»ö[YZ\õ»^»€€ù[öH\õ[‹»YÿY‹»H	Ÿ^[\\÷ÃKò€€òŸ\Àú€XŸJ Köõ⁄[ä	À	 _Kà»\ò]H\‹€»\[ò\»€€[»€€ù^»[\‹ò[ò
-JNÿõﬁö[õô\íS\õ›‹Àöõ⁄[ä	… N⁄Yä\[Ÿà\P[ò[\⁄\‘ô]öY]‘XŸ[Y[ùOOIŸù[ò›[€â X\P[ò[\⁄\‘ô]öY]‘XŸ[Y[ù
-
-_Wóôù[ò›[€à[ú›\ôP€€ù[ùZ]SX\õö[ô–ÿ\ô
-
-^ÿ€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWõX\õö[ô◊óI N⁄Yä]öY]ﬂÿ›[Y[ùôŸ][[Y[ùûRY
-	€X\õö[ô–€€ù[ùZ]Pÿ\ô	 J\ô]\õéÿ€€ú›ÿ\ôYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â Nÿÿ\ôöYI€X\õö[ô–€€ù[ùZ]Pÿ\ô	Œÿÿ\ôò€\‹”ò[YOIÿ[ò[\⁄\ÀXÿ\ô	Œÿÿ\ôö[õô\íSX€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèê””ïV»ST‘êS‹èèí[ù\ùò[‹»Ÿ[HôY⁄\›ò\à[X∞Í[H€€ù[O⁄èè]àYWõX\õö[ô–€€ù[ùZ]U^à€\‹œWò[ò[\⁄\À\›X⁄◊èèŸ]èòÿ€€ú›^Z[è]öY]Àú]Y\ûTŸ[X›‹ä	ÀõX\õö[ôÀY^Z[â N ^Z[üöY]Àõ\›[[Y[ù⁄[
-OÀòôYõ‹ôJÿ\ô
-_Wò\ﬁ[ò»ù[ò›[€àô[ô\ê€€ù[ùZ]SX\õö[ô ]ô[ùÀYY ^Ÿ[ú›\ôP€€ù[ùZ]SX\õö[ô–ÿ\ô
-
-Nÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	€X\õö[ô–€€ù[ùZ]U^	 N⁄YäXõﬁ
-\ô]\õéÿ€€ú›][\œX]ÿZ]€€ù[ùZ]S›ô\ôYJ]ô[ùÀYY KŸ][ô‹œX€€ù[ùZ]TŸ][ô‹ 
-Nÿõﬁö[õô\íSVÿ[ò[\⁄\‘õ› 	”»]YH»\ÿúŸ\ùòIÀ	—[HYYH]X[ù»[\»\‹ÿH[ùôHôY⁄\›õ‹»H\ÿH\‹€»€€[»€€ù^ÀŸ[Hò[úŸõ‹õX\à]\Íõò⁄XH[H⁄[ù€XKâ K[ò[\⁄\‘õ› 	‘ò^õ‹»]XZ\…ÀÿöôX›ô[ùöY\ Ÿ][ô‹ KõX\
-
-⁄ÀóJOOò	—–T”PëS÷⁄◊_Nà	›èOOL…Ÿ\ÿ]]òY…Œò€€ù[ùZ]Q^U^
-ä_X
-Köõ⁄[ä	»0≠»	 JK[ò[\⁄\‘õ› 	–Y€‹òIÀ][\Àõ[ô›⁄][\ÀõX\
-OOò	—–T”PëS÷⁄KöŸ^W_H0ËH	ÿ€€ù[ùZ]Q^U^
-Kôÿ\
-_X
-Köõ⁄[ä	»0≠»	 Nâ”ô[ö[Hò^õ»[ò\\‹ÿYÀâ WKöõ⁄[ä	… _Wóôù[ò›[€à[ú›\ôP€€ù[ùZ]T›[\ 
-^⁄Yäÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]K\›[I J\ô]\õéÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYIÿ€€ù[ùZ]K\›[IŒ‹›ù^€€ù[ùXò€€ù[ùZ]KX[\ù€X\ô⁄[éåMÿõ‹ô\éå\€€YôÿòJçMKMNKLååä_Kò€€ù[ùZ]KX[\ùZXYŸ\‹^Nôõ^Ÿÿ\åLÿ[Y€ãZ][\Œôõ^\›\ùKò€€ù[ùZ]KY\ÿ€Z[Y\ûŸõ€ù\⁄^ôNåLú€[ôKZZY⁄åKçN€‹X⁄]Nãççé€X\ô⁄[ééLúKò€€ù[ùZ]KX[\ù[\›Ÿ\‹^Nô‹öYŸÿ\éKò€€ù[ùZ]KX[\ù\õ›ﬁ›⁄YåL	NŸ\‹^Nôõ^ÿ[Y€ãZ][\ŒòŸ[ù\é⁄ù\›YûKX€€ù[ùú‹XŸKXô]ŸY[éŸÿ\åLú›^X[Y€éõYùÿõ‹ô\éåÿõ‹ô\ã\òY]\ŒåM‹Y[ôŒåL\LúÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéå
-Nÿ€€‹éö[ö\ö]Kò€€ù[ùZ]KX[\ù\õ›»‹[éôö\ú›X⁄[Ÿ\‹^Nôõ^Ÿõ^Y\ôX›[€éò€€[[éŸÿ\åúKò€€ù[ùZ]KX[\ù\õ›»€X[Ÿõ€ù\⁄^ôNåL\€‹X⁄]NãçåüKò€€ù[ùZ]K][ö]‹Y[ôŒå€‹X⁄]Nãçç_Kò[ò[\⁄\À\ô]öY]ÀZ][^‹‹⁄][€éúô[]]ô_XŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_Wóã à€‹úöYŸHHZ]\òH]X[ù]]]òNà]\Íõò⁄XHHõ›H∞Ë€»ò[HÃLà
-ã◊öYä\[Ÿà[ò[\⁄\”[€Ÿõ›\œOOIŸù[ò›[€â X[ò[\⁄\”[€Ÿõ›\œYù[ò›[€ä]ô[ù ^‹ô]\õà]ô[ùÀôö[\äOOôKù\OOOI€õ›I…âôKõ[€Ÿÿ€‹ôHOO[ù[	âôKõ[€Ÿÿ€‹ôHOO][ôYö[ôY	âôKõ[€Ÿÿ€‹ôHOOI……âìù[Xô\ãö\—ö[ö]Jù[Xô\äKõ[€Ÿÿ€‹ôJJJKõX\
-OOäÀããôK[€Ÿÿ€‹ôNìù[Xô\äKõ[€Ÿÿ€‹ôJ_JJKú€‹ù
-
-KäOOõô]»]JKù[Y\›[\
-K[ô]»]Jãù[Y\›[\
-J_N◊óò€€ú›€€ù[ùZ]Tô]ö[›\‘ô[ô\ê[\ô[ô\ê[◊úô[ô\ê[X\ﬁ[ò»ù[ò›[€ä
-^ÿ]ÿZ]€€ù[ùZ]Tô]ö[›\‘ô[ô\ê[
-
-Nÿ€€ú›]ô[ùœX]ÿZ][]ô[ù 
-KYYœX]ÿZ][YYXÿ][€ú 
-NŸ[ú›\ôP€€ù[ùZ]TŸ][ô‹’RJ
-Nÿ]ÿZ]ô[ô\ê€€ù[ùZ]R€YJ]ô[ùÀYY Nÿ]ÿZ]ô[ô\ê€€ù[ùZ]P[ò[\⁄\ ]ô[ùÀYY Nÿ]ÿZ]ô[ô\ê€€ù[ùZ]SX\õö[ô ]ô[ùÀYY _N◊ôù[ò›[€à€€ù[ùZ]Põ€›
-
-^Ÿ[ú›\ôP€€ù[ùZ]T›[\ 
-NŸ[ú›\ôP€€ù[ùZ]R€YPÿ\ô
-
-NŸ[ú›\ôP€€ù[ùZ]TŸ][ô‹’RJ
-NŸ[ú›\ôP€€ù[ùZ]P[ò[\⁄\–ÿ\ô
-
-NŸ[ú›\ôP€€ù[ùZ]SX\õö[ô–ÿ\ô
-
-N⁄Yää\ô[ô\ê[
-
-NŸ[ŸHŸ][Y[›]
-€€ù[ùZ]Põ€›ç
-_Wò€€ù[ùZ]Põ€›
-
-N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃåãöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àZù\›\»HÿpÓôHçååéàôpÓõôHYYXÿ[Y[ù‹À[\‹ùpÈË€»H€€õ»H€€ù[ùZYYH[H[H0ÓõöX€»ÿ\ù0Ë€Àà
-ã◊ò€€ú›ìW“PS“Pó‘ëSPT—OIÃçååâŒ◊óôù[ò›[€àõRX[[ŸP€‹J[ŸJ^◊àYä[ŸOOOIÿ]]… \ô]\õà	‘ÿ[òH»€€õ»[\‹ùY»\ô][Y[ùKŸ[HXúö\àHöX⁄HHô]ö\Ë€ÀâŒ◊àYä[ŸOOOIÿ\⁄… \ô]\õà	‘\ô›[ùH[ù\»Hÿ[ò\àÿYH\∞Î[Ÿ»H€€õ»ôXŸXöY»»][ÀâŒ◊àô]\õà	–XúôHHöX⁄H€€H‹∞Ë\ö[‹»H][\»[ù\»Hÿ[ò\ãà0‚H»[Ÿ»XZ\»ŸY›\õ»\òH€‹úöY⁄\à»]YH»ô[0ÏŸ⁄[»∞Ë€»ôY⁄\›õ›Hô[KâŒ◊üWóôù[ò›[€àõTôYúô\⁄X[[\‹ù[ŸJ
-^◊à€€ú›€€ùõ€Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õRX[[\‹ù[ŸP€€ùõ€	 N◊àYäX€€ùõ€
-\ô]\õé◊à€€ú›[ŸOYŸ]Ÿ][ô‹ 
-OÀöX[[\‹ù[Ÿ_	‹ô]öY]…Œ◊àYä\[Ÿà\]TŸY€Y[ù[ôXÿ]‹èOOIŸù[ò›[€â ]\]TŸY€Y[ù[ôXÿ]‹ä€€ùõ€	⁄X[[ŸIÀ[ŸJN◊à€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õRX[[ŸQ\ÿ‹ö\[€â N⁄Yä^
-]^ù^€€ù[ù\õRX[[ŸP€‹J[ŸJN◊üWóôù[ò›[€àõRX[[\‹ù⁄Y]
-
-^◊à€€ú›\›[ÿÿ[›‹òYŸKôŸ]][JT’“PS“ST‘ï“—VJN◊à‹[êòX⁄Ÿõ‹
-	“[\‹ù\à€€õ»»\ÿpÓôIÀà]à€\‹œWúõKZX[\€›\òŸKXÿ\ôèóà‹[à€\‹œWúõKZX[X\ZX€€óà\öXKZY[èWùùYWèè‹[è∏¶iO‹‹[èè‹‹[èóà]èè›õ€ôœê\HÿpÓôO‹›õ€ôœè€X[ì»][»ù[ò⁄[€òH€€[»€ùH[ùôH‹»Y‹»H€€õ»»\ÿpÓôHH\›HôY⁄\›õÀè‹€X[èŸ]èóàŸ]èóà]à€\‹œWò[ò[\⁄\À\õ›»õKZX[Z›◊èè›õ€ôœê€€[»ù[ò⁄[€òO‹›õ€ôœè‹[èì»][»0Íà‹»\∞Î[Ÿ‹»H€€õ»ôY⁄\›òY‹»õ»\ÿpÓôHHXúôH\›H–H€€H‹»‹∞Ë\ö[‹ÀàõÿÍà€€ù[ùXH]úôH\òH€‹úöY⁄\à›H€€\]\à[ôõ‹õXpÈÌY\»X[ùX[Y[ùKè‹‹[èèŸ]èóà]à€\‹œWúŸ][ôÀXõÿ⁄»õKZX[[[ŸKXõÿ⁄◊èóà]à€\‹œWúŸ][ôÀ[Xô[èè›õ€ôœê[»ôXŸXô\à[H€€õ»»][œ‹›õ€ôœèŸ]èóà]à€\‹œWúŸY€Y[ùY[ö[X]Y\ŸY€Y[ùYôYK]⁄YWàYWúõRX[[\‹ù[ŸP€€ùõ€èóàù]€à\OWòù]€óà]KZX[[[ŸOWò]]◊èê]]œÿù]€èóàù]€à\OWòù]€óà]KZX[[[ŸOWúô]öY]◊èîô]ö\ÿ\èÿù]€èóàù]€à\OWòù]€óà]KZX[[[ŸOWò\⁄◊èî\ô›[ù\èÿù]€èóàŸ]èóà€\‹œWö[\àõKZX[[[ŸKY\ÿ‹ö\[€óàYWúõRX[[ŸQ\ÿ‹ö\[€óèè‹óàŸ]èóà]à€\‹œWò[ò[\⁄\À\õ›◊èè›õ€ôœî›]\œ‹›õ€ôœè‹[èâ€\›ÿ0Êõ[XH[\‹ùpÈË€»	⁄[X[êY€ \›
-_Xâ”ô[ö[XH[\‹ùpÈË€»ôY⁄\›òYHô\›H\\ô[ÀâﬂO‹‹[èèŸ]èóà€\‹œWö[\óèì»õ›0Ë€»8†'€€õ¯†'HH[H[öX⁄X[€€ù[ùXH\‹€∞Î]ô[\òH[ò€Z\à›H€‹úöY⁄\àôY⁄\›õ‹»X[ùX[Y[ùKè‹óà	Ÿõ‹õPù]€ú 	—ôX⁄\â _Wà]èOûŸ]ãúô]ô[ùYò][
-
-Nÿ€‹ŸT⁄Y]
-
-_JN◊àõTôYúô\⁄X[[\‹ù[ŸJ
-N◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õRX[[\‹ù[ŸP€€ùõ€	 OÀú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KZX[[[ŸWI Kôõ‹ëXX⁄
-ù]€èOû◊àù]€ãòY]ô[ù\›[ô\ä	ÿ€X⁄…À
-
-OOúô\]Y\›[ö[X][€ëúò[YJõTôYúô\⁄X[[\‹ù[ŸJJN◊àJN◊üWóôù[ò›[€àõTô[[›ôTŸ][ô—‹õ›\
-‹õ›\
-^⁄Yä‹õ›\	âô‹õ›\ú\ô[ùõŸJY‹õ›\úô[[›ôJ
-_Wôù[ò›[€àõQ‹õ›\€€ùZ[ö[ô [
-^‹ô]\õà[Àò€‹Ÿ\›
-	ÀúŸ][ô‹ÀY‹õ›\	 _ù[Wôù[ò›[€àõQ]X⁄õ› [
-^◊àYäY[
-\ô]\õàù[◊à€€ú›õ›œY[ò€‹Ÿ\›
-	ÀúŸ][ô‹À\õ›ÀúŸ][ôÀXõÿ⁄ÀúŸ][ôÀZ[õ[ôI N⁄Yä\õ› \ô]\õàù[◊à€€ú›ô]è\õ›Àúô]ö[›\—[[Y[ù⁄Xõ[ôŒ⁄Yäô]èÀò€\‹”\›ò€€ùZ[ú 	‹Ÿ][ôÀ\Ÿ\\ò]‹â J\ô]ãúô[[›ôJ
-N◊à€€ú›ô^\õ›Àõô^[[Y[ù⁄Xõ[ôŒ⁄Yäô^Àò€\‹”\›ò€€ùZ[ú 	‹Ÿ][ôÀ\Ÿ\\ò]‹â J[ô^úô[[›ôJ
-N◊àõ›Àúô[[›ôJ
-N‹ô]\õàõ›Œ◊üWôù[ò›[€àõTŸ\\ò]‹ä[úŸ]]ùYJ^ÿ€€ú›Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	Ÿ]â Nﬁò€\‹”ò[YOXŸ][ôÀ\Ÿ\\ò]‹â⁄[úŸ]…»[úŸ]	Œâ…ﬂX‹ô]\õàWóôù[ò›[€àõS‹ôÿ[ö^ôRX[Ÿ][ô‹ 
-^◊à€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWúŸ][ô‹◊óI N⁄Yä]öY] \ô]\õàò[ŸN◊à€€ú›YYùèYÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYXÿ][€îôY⁄\›ûPùâ N◊à€€ú›X[ùèYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[[\‹ù[ôõ–ùâ N◊à€€ú›€€ù[ùZ]PùèYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]TŸ][ô‹–ùâ N◊àYä[YYùüZX[ùüX€€ù[ùZ]Pùä\ô]\õàò[ŸN◊óà€€ú›YY‹õ›\\õQ‹õ›\€€ùZ[ö[ô YYùäK€X[‹õ›\\õQ‹õ›\€€ùZ[ö[ô X[ùäK€€ù[ùZ]Q‹õ›\\õQ‹õ›\€€ùZ[ö[ô €€ù[ùZ]PùäN◊àYä[YY‹õ›\
-\ô]\õàò[ŸN◊àYY‹õ›\öYI⁄X[Ÿ][ô‹—‹õ›\	Œ◊à€€ú›XY[ôœ[YY‹õ›\ú]Y\ûTŸ[X›‹ä	Œúÿ€‹Oöâ N⁄YäXY[ô ZXY[ôÀù^€€ù[ùI‘ÿpÓôIŒ◊à€€ú›ÿ\ô[YY‹õ›\ú]Y\ûTŸ[X›‹ä	ÀúŸ][ô‹ÀXÿ\ô	 N⁄YäXÿ\ô
-\ô]\õàò[ŸN◊àÿ\ôò€\‹”\›òY
-	€\›Xÿ\ô	À	‹õKZX[\Ÿ][ô‹ÀXÿ\ô	 N◊óà à[\‹ùpÈË€»Z^HHÿ›\\à\‹pÈ€»òH[Hö[ò⁄\[H\‹ÿHHXúö\àH∞Ï‹öXH€€ôöY›\òpÈË€Àà
-ã◊à€€ú›X[[ŸSXZ[èYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[[\‹ù[ŸP€€ùõ€	 OÀò€‹Ÿ\›
-	ÀúŸ][ôÀXõÿ⁄… N◊àYäX[[ŸSXZ[ä^ÿ€€ú›Ÿ\ZX[[ŸSXZ[ãúô]ö[›\—[[Y[ù⁄Xõ[ôŒ⁄X[[ŸSXZ[ãúô[[›ôJ
-N⁄YäŸ\Àò€\‹”\›ò€€ùZ[ú 	‹Ÿ][ôÀ\Ÿ\\ò]‹â J\Ÿ\úô[[›ôJ
-_Wóà€€ú›X[õ›œ\õQ]X⁄õ› X[ùäN◊à€€ú›€€ù[ùZ]Tõ›œ\õQ]X⁄õ› €€ù[ùZ]PùäN◊àYäX[õ› ^◊à€€ú›X€€èZX[õ›Àú]Y\ûTŸ[X›‹ä	ÀúŸ][ô‹À\õ›ÀZX€€â N⁄YäX€€ä^⁄X€€ãò€\‹”\›úô[[›ôJ	⁄X[ZX€€â N⁄X€€ãô]\Ÿ]öX€€èI€[€€âﬂWà€€ú›]OZX[õ›Àú]Y\ûTŸ[X›‹ä	‹›õ€ô… N⁄Yä]J]]Kù^€€ù[ùI“[\‹ù\à€€õ»»\ÿpÓôIŒ◊àÿ\ôò\[ô
-õTŸ\\ò]‹äùYJKX[õ› N◊àWàYä€€ù[ùZ]Tõ› Xÿ\ôò\[ô
-õTŸ\\ò]‹äùYJK€€ù[ùZ]Tõ› N◊óàYä€X[‹õ›\	âõ€X[‹õ›\OO[YY‹õ›\
-\õTô[[›ôTŸ][ô—‹õ›\
-€X[‹õ›\
-N◊àYä€€ù[ùZ]Q‹õ›\	âò€€ù[ùZ]Q‹õ›\OO[YY‹õ›\
-\õTô[[›ôTŸ][ô—‹õ›\
-€€ù[ùZ]Q‹õ›\
-N◊óà€€ú›€õ€›VÀããùöY]Àú]Y\ûTŸ[X›‹ê[
-	Àô‹õ›\Yõ€›õ›I WKôö[ô
-Oúù^€€ù[ùö[ò€Y\ 	ÿÿ\ù0Ë€»Ï»\\ôXŸI JN◊à€õ€›Àúô[[›ôJ
-N◊óàX[ùãõ€ò€X⁄œ\õRX[[\‹ù⁄Y]◊àYä\[ŸàYò]RX€€úœOOIŸù[ò›[€â ZYò]RX€€ú YY‹õ›\
-N◊àYä\[Ÿàô[ô\íX[›]OOOIŸù[ò›[€â \ô[ô\íX[›]J
-N◊àô]\õàùYN◊üWóäù[ò›[€àõRX[Xî›[\ 
-^◊àYäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õKZX[ZXã\›[I J\ô]\õé◊à€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹õKZX[ZXã\›[IŒ‹›ù^€€ù[ùXà⁄X[Ÿ][ô‹—‹õ›\ãúŸ][ô‹ÀXÿ\ô€›ô\ôõ›ŒöY[üWà⁄X[Ÿ][ô‹—‹õ›\úŸ][ô‹À\õ›ÀZX€€ñŸ]KZX€€èWõ[€€óó^ÿ€€‹éùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHZ[\‹ù[ùWàúõKZX[\€›\òŸKXÿ\ôŸ\‹^Nô‹öYŸ‹öY][\]KX€€[[úŒçúZ[õX^
-YúäNŸÿ\åLúÿ[Y€ãZ][\ŒòŸ[ù\é‹Y[ôŒåL‹M€X\ô⁄[éçúLúÿõ‹ô\ã\òY]\ŒåMúÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\›\ôòXŸKLäH	Kò[ú‹\ô[ù
-Nÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\Ÿ\\ò]‹äHÃ	Kò[ú‹\ô[ù
-_WàúõKZX[\€›\òŸKXÿ\ô›õ€ôﬁŸ\‹^Nòõÿ⁄ŒŸõ€ù\⁄^ôNåMKúõKZX[\€›\òŸKXÿ\ô€X[Ÿ\‹^Nòõÿ⁄Œ€X\ô⁄[ã]‹åúÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåL\€[ôKZZY⁄åKçWàúõKZX[X\ZX€€û›⁄Yçú⁄ZY⁄çúÿõ‹ô\ã\òY]\ŒåL\ÿòX⁄Ÿ‹õ›[ôàŸôôéŸ\‹^Nô‹öY‹XŸKZ][\ŒòŸ[ù\éÿõﬁ\⁄Y›Œå\MôÿòJåJK[úŸ]\ôÿòJå
-_WàúõKZX[X\ZX€€à‹[ûŸõ€ù\⁄^ôNåç\€[ôKZZY⁄åNÿ€€‹éàŸôåÕÕYé›^\⁄Y›Œå\ôÿòJçMKMKMKåN
-N›ò[úŸõ‹õNùò[ú€]VJL\
-_WàúõKZX[Z›ﬁ€X\ô⁄[ãXõ›€NåLúKúõKZX[[[ŸKXõÿ⁄ﬁ‹Y[ôŒåMúKúõKZX[[[ŸKXõÿ⁄»úŸ][ôÀ[Xô[›^X[Y€éòŸ[ù\éÿ[Y€ãZ][\ŒòŸ[ù\é€X\ô⁄[ãXõ›€NåLKúõKZX[[[ŸKY\ÿ‹ö\[€û›^X[Y€éòŸ[ù\é€X\ô⁄[éé\\Z[\‹ù[ù€Z[ãZZY⁄åÃ\Wà‹õRX[[\‹ù[ŸP€€ùõ€Ÿ‹öY][\]KX€€[[úŒúô\X]
-ÀZ[õX^
-YúäJ_WàŸÿ›[Y[ùöXYò\[ô⁄[
-›
-WüJJ
-N◊óôù[ò›[€àõPõ€›X[Xä
-^◊àYäõS‹ôÿ[ö^ôRX[Ÿ][ô‹ 
-J\ô]\õé◊à]][\œLÿ€€ú›[Y\è\Ÿ][ù\ùò[
-
-
-OOûÿ][\  Œ⁄YäõS‹ôÿ[ö^ôRX[Ÿ][ô‹ 
-_][\œåå
-X€X\í[ù\ùò[
-[Y\ä_KLå
-N◊üWúõPõ€›X[Xä
-N◊óò€€ú›ô[X\ŸU‹X[XèYÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â Kô[X\ŸPXõ›]X[XèYÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊öYäô[X\ŸU‹X[Xä\ô[X\ŸU‹X[Xãù^€€ù[ùXâ‘ìW“PS“Pó‘ëSPT—_X⁄Yäô[X\ŸPXõ›]X[Xä\ô[X\ŸPXõ›]X[Xãù^€€ù[ùTìW“PS“Pó‘ëSPT—N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃMöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã à[ùô]ö\›H\‹€ÿ[»[›‹à
-»∞Í]öX\»€€\X›\»õ»\›0Ï‹öX€Àà
-ã◊ò€€ú›Tî””êS“SïTïíQU◊’ëTî“S”èIÃKååIŒ◊ò€€ú›Tî””êS“SïTïíQU◊—–T—VTœLMN◊ò€€ú›Tî””êS“SïTïíQU◊‘ëPT””îœV◊à…Ÿõ‹ô€›	À	—\‹]YX⁄HH[õ›\â◊Kà…Ÿ\ÿ€›\òYŸY	À	—\›]òH\ÿ[ö[XY…◊Kà…‹ÿY	À	—\›]òHö\›I◊Kà…⁄\Wÿù\ﬁIÀ	—\›]òHô[^àH[ùõ€öY»€€H›]ò\»€⁄\ÿ\…◊Kà…ÿù\ﬁIÀ	—\›]òH]Z]»ÿ›\Y…◊Kà…›\ôY	À	—\›]òHÿ[úÿY»»Ÿ[H[ô\ô⁄XI◊Kà…Ÿ\›òX›Y	À	—\›]òH\›òpÎY»»\ÿ][ù…◊Kà…Ÿ€ù⁄€õ›…À	”∞Ë€»ŸZH»∞Ë€»[Xúõ…◊WóN◊óôù[ò›[€à\ú€€ò[[ù\ùöY]‘›]J
-^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹ô]\õû‹ô\‹€úŸ\ŒûÀããäÀú\ú€€ò[[ù\ùöY]œÀúô\‹€úŸ\ﬂﬂJ_K\€Z\‹ŸYûÀããäÀú\ú€€ò[[ù\ùöY]œÀô\€Z\‹ŸYﬂJ___Wôù[ò›[€à\ú€€ò[[ù\ùöY]‘ÿ]ôJ›]J^ÿ€€ú›œYŸ]Ÿ][ô‹ 
-N‹Àú\ú€€ò[[ù\ùöY]œ^›ô\ú⁄[€éåKô\‹€úŸ\Œú›]Kúô\‹€úŸ\À\€Z\‹ŸYú›]Kô\€Z\‹ŸYN‹ÿ]ôTŸ][ô‹  _Wôù[ò›[€à\ú€€ò[[ù\ùöY]—]Jä^‹ô]\õàô]»]JäKù”ÿÿ[Q]T›ö[ô 	‹PîâÀŸ^NâÃãYY⁄]	À[€ùâÃãYY⁄]	ÀYX\éâ€ù[Y\öX…ﬂJ_Wôù[ò›[€à\ú€€ò[[ù\ùöY]‘›\ùŸ^J[Y\›[\
-^‹ô]\õà›ö[ô ô]»]J[Y\›[\
-KôŸ][YJ
-J_Wóò\ﬁ[ò»ù[ò›[€à\ú€€ò[[ù\ùöY]’^]ô[ù ]ô[ùÀYY ^ÿ€€ú›ò\úò]]ô\œ]\[Ÿà€€ù[ùZ]Sò\úò]]ô\œOOIŸù[ò›[€âœÿ]ÿZ]€€ù[ùZ]Sò\úò]]ô\ ]ô[ùÀYY Nò]ÿZ]X\õö[ô–€€X›ÿúŸ\ùò][€ú ]ô[ùÀYY N‹ô]\õàò\úò]]ô\Àôö[\äœOî›ö[ô Àù^	… Kùö[J
-JKú€‹ù
-
-KäOOõô]»]JKù[Y\›[\
-K[ô]»]Jãù[Y\›[\
-J_Wò\ﬁ[ò»ù[ò›[€à\ú€€ò[[ù\ùöY]‘]Y\›[€ú ]ô[ùÀYY ^ÿ€€ú›^œX]ÿZ]\ú€€ò[[ù\ùöY]’^]ô[ù ]ô[ùÀYY K›]O\\ú€€ò[[ù\ùöY]‘›]J
-K[ú›Ÿ\ôY›\ùœ[ô]»Ÿ]
-ÿöôX›ùò[Y\ ›]Kúô\‹€úŸ\ KõX\
-èOúãú›\ùŸ^JKôö[\äõ€€X[äJK\€Z\‹ŸY›\ùœ[ô]»Ÿ]
-ÿöôX›ùò[Y\ ›]Kô\€Z\‹ŸY
-KõX\
-èOúãú›\ùŸ^JKôö[\äõ€€X[äJK]Y\›[€úœV◊N◊àõ‹ä]OLN⁄O^Àõ[ô›⁄J  ^◊à€€ú›ôYõ‹ôO]^÷⁄KLWKYù\è]^÷⁄WKÿ\Jô]»]JYù\ãù[Y\›[\
-K[ô]»]JôYõ‹ôKù[Y\›[\
-JKŒç›\ùŸ^O\\ú€€ò[[ù\ùöY]‘›\ùŸ^JôYõ‹ôKù[Y\›[\
-N⁄Yäÿ\Tî””êS“SïTïíQU◊—–T—VTﬂ[ú›Ÿ\ôY›\ùÀö\ ›\ùŸ^J_\€Z\‹ŸY›\ùÀö\ ›\ùŸ^JJX€€ù[ùYNÿ€€ú›Ÿ^OX^Yÿ\	‹›\ùŸ^__	€ô]»]JYù\ãù[Y\›[\
-KôŸ][YJ
-_X‹]Y\›[€úÀú\⁄
-⁄Ÿ^K›\ùŸ^Kÿ\ôYõ‹ôKYù\ã‹[éôò[Ÿ_JWàWàYä^Àõ[ô›
-^ÿ€€ú›ôYõ‹ôO]^÷›^Àõ[ô›LWKÿ\J]Kõõ› 
-K[ô]»]JôYõ‹ôKù[Y\›[\
-KôŸ][YJ
-JKŒç›\ùŸ^O\\ú€€ò[[ù\ùöY]‘›\ùŸ^JôYõ‹ôKù[Y\›[\
-N⁄Yäÿ\èTTî””êS“SïTïíQU◊—–T—VT…âàX[ú›Ÿ\ôY›\ùÀö\ ›\ùŸ^JIâàY\€Z\‹ŸY›\ùÀö\ ›\ùŸ^JJ\]Y\›[€úÀú\⁄
-⁄Ÿ^Nò^Yÿ\	‹›\ùŸ^__‹[ò›\ùŸ^Kÿ\ôYõ‹ôKYù\éõù[‹[éùùY_J_Wàô]\õà]Y\›[€úÀú€‹ù
-
-KäOOòãôÿ\XKôÿ\
-Kú€XŸJ
-WüWôù[ò›[€à\ú€€ò[[ù\ùöY]‘]Y\›[€íS
-J^ÿ€€ú›\ö[Ÿ\Kõ‹[èÿõÿÍà\›0ËH0ËH	”X]ôõ€‹äKôÿ\
-_HX\»Ÿ[HôY⁄\›ò\à[H^»›HÿúŸ\ùòpÈË€Àòò›]ôH[H[ù\ùò[»H	‹Kôÿ\ù—ö^Y
-JKúô\XŸJ	ÀâÀ	À	 _HX\»[ùôH	‹\ú€€ò[[ù\ùöY]—]JKòôYõ‹ôKù[Y\›[\
-_HH	‹\ú€€ò[[ù\ùöY]—]JKòYù\ãù[Y\›[\
-_Kò‹ô]\õò\ùX€H€\‹œWõX\õö[ôÀ\]Y\›[€à\ú€€ò[Z[ù\ùöY]À\]Y\›[€óà]KZ[ù\ùöY]À\]Y\›[€èWâŸ\ÿ KöŸ^J_Wèè‹[à€\‹œWõX\õö[ôÀX€€ôöY[òŸHYY][WèëSïëUíT’HT‘”–S‹‹[èèœâŸ\ÿ \ö[Ÿ
-_O⁄œèë€‹›\öXHH[ôõ‹õX\àŸH›]ôH[›[H[›]õœ»›XHô\‹‹›Hö\òH€€ù^»ô[]Y»‹àõÿÍé»»\∞Ë€»ô\›[YH»[›]õ»€ﬁö[öÀè‹è]à€\‹œWö[ù\ùöY]À\ôX\€€ú◊èâ‘Tî””êS“SïTïíQU◊‘ëPT””îÀõX\
-
-⁄YXô[JOOòù]€à\OWòù]€óà€\‹œWõX\õö[ôÀX⁄\à]KZ[ù\ùöY]À\ôX\€€èWâ⁄YWèâŸ\ÿ Xô[
-_Oÿù]€èò
-Köõ⁄[ä	… _OŸ]èè]à€\‹œWôöY[èèXô[ë^XÿpÈË€»‹⁄[€ò[€Xô[è^\ôXH]KZ[ù\ùöY]À]^õ›‹œWå◊à]KX]]Ÿ‹õ›»XŸZ€\èWë\ÿ‹ô]òH€€H›X\»[]úò\ÀŸH]Z\Ÿ\à^Xÿ\àY[‹ãóèè›^\ôXOèŸ]èè]à€\‹œWõX\õö[ôÀXX›[€ú◊èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€óà]KZ[ù\ùöY]À\ÿ]ôOîÿ[ò\àô\‹‹›Oÿù]€èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óà]KZ[ù\ùöY]ÀY\€Z\‹œîôYö\õ»∞Ë€»ô\‹€ô\èÿù]€èèŸ]èèÿ\ùX€OòWôù[ò›[€à[ú›\ôT\ú€€ò[[ù\ùöY]’RJ
-^ÿ€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWõX\õö[ô◊óI N⁄Yä]öY]ﬂÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ú€€ò[[ù\ùöY]‘ŸX›[€â J\ô]\õéÿ€€ú›ŸX›[€èYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â N‹ŸX›[€ãöYI‹\ú€€ò[[ù\ùöY]‘ŸX›[€âŒ‹ŸX›[€ãò€\‹”ò[YOI€X\õö[ôÀ\ŸX›[€âŒ‹ŸX›[€ãö[õô\íSX]à€\‹œWúŸX›[€ã]]K\õ›◊èè]èè€\‹œWúŸX›[€ãZ⁄X⁄Ÿ\óèëSïëUíT’HT‘”–S‹èèê€⁄\ÿ\»]YH»\]Y\à[ù[ô\è⁄èèŸ]èèŸ]èè€\‹œWö[\óèê\]ZH»[›‹à\ô›[ùH€ÿúôHò]‹»]YH\òŸXô]KX\»›ZòH^XÿpÈË€»[H∞Ë€»€€öXŸKàõÿÍàŸHô\‹€ô\ã^Xÿ\à€€H^»›H⁄[\\€Y[ùHY€õ‹ò\ãè‹è]àYWú\ú€€ò[[ù\ùöY]‘]Y\›[€ú◊èèŸ]èè]à€\‹œWò[ò[\⁄\ÀXÿ\ôàYWú\ú€€ò[[ù\ùöY]”Y[[‹ûWèèèë^XÿpÈÌY\»]YHõÿÍà∞ËH]O⁄èè]àYWú\ú€€ò[[ù\ùöY]‘ô\‹€úŸ\◊à€\‹œWò[ò[\⁄\À\›X⁄◊èèŸ]èèŸ]èòÿ€€ú›]Y\›[€úœ]öY]Àú]Y\ûTŸ[X›‹ä	ÀõX\õö[ôÀ\ŸX›[€â N‹]Y\›[€úœÀòôYõ‹ôJŸX›[€ä_Wò\ﬁ[ò»ù[ò›[€àô[ô\î\ú€€ò[[ù\ùöY] ]ô[ùÀYY ^Ÿ[ú›\ôT\ú€€ò[[ù\ùöY]’RJ
-Nÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ú€€ò[[ù\ùöY]‘]Y\›[€ú… KY[[‹ûOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ú€€ò[[ù\ùöY]‘ô\‹€úŸ\… N⁄YäXõﬁ[Y[[‹ûJ\ô]\õéÿ€€ú›]Y\›[€úœX]ÿZ]\ú€€ò[[ù\ùöY]‘]Y\›[€ú ]ô[ùÀYY K›]O\\ú€€ò[[ù\ùöY]‘›]J
-Nÿõﬁö[õô\íS\]Y\›[€úÀõ[ô›‹]Y\›[€úÀõX\
-\ú€€ò[[ù\ùöY]‘]Y\›[€íS
-Köõ⁄[ä	… Nâœ]à€\‹œWò[ò[\⁄\ÀXÿ\ôèè]à€\‹œWõX\õö[ôÀY[\Wèìô[ö[XH\ô›[ùH\‹€ÿ[[ô[ùHY€‹òKèŸ]èèŸ]èâŒÿ€€ú›ô\‹€úŸ\œSÿöôX›ùò[Y\ ›]Kúô\‹€úŸ\ Kú€‹ù
-
-KäOOõô]»]Jãò[ú›Ÿ\ôY]
-K[ô]»]JKò[ú›Ÿ\ôY]
-JKú€XŸJLäN€Y[[‹ûKö[õô\íS\ô\‹€úŸ\Àõ[ô›‹ô\‹€úŸ\ÀõX\
-èOò[ò[\⁄\‘õ› ãú\ö[ŸXô[ãú›[[X\û_	’õÿÍà^X€›H\‹ŸH[ù\ùò[Àâ JKöõ⁄[ä	… Nò[ò[\⁄\‘õ› 	–Z[ôHò^ö[…À	–\»^XÿpÈÌY\»]YHõÿÍàX⁄Y\à\à\\ôXŸ\∞Ë€»\]ZHHŸ\∞Ë€»\ùX⁄\\à»€€ù^»\»[∞Ë[\Ÿ\Àâ N◊àõﬁú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KZ[ù\ùöY]À\]Y\›[€óI Kôõ‹ëXX⁄
-ÿ\ôOû€]Ÿ[X›YI…Œÿÿ\ôú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KZ[ù\ùöY]À\ôX\€€óI Kôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOû‹Ÿ[X›YXãô]\Ÿ]ö[ù\ùöY]‘ôX\€€éÿÿ\ôú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KZ[ù\ùöY]À\ôX\€€óI Kôõ‹ëXX⁄
-Oûò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	ÀOOXäJ_JNÿÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]KZ[ù\ùöY]À\ÿ]ôWI Kõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú›O\]Y\›[€úÀôö[ô
-OûöŸ^OOOXÿ\ôô]\Ÿ]ö[ù\ùöY]‘]Y\›[€äN⁄Yä\J\ô]\õéÿ€€ú›^Xÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]KZ[ù\ùöY]À]^I OÀùò[YKùö[J
-_	…ÀôX\€€èTTî””êS“SïTïíQU◊‘ëPT””îÀôö[ô
-
-⁄YJOOöYOO\Ÿ[X›Y
-K›[[X\ûOV‹ôX\€€èÀñÃWK^Kôö[\äõ€€X[äKöõ⁄[ä	»8†%	 N⁄Yä\›[[X\ûJ\ô]\õàÿ\›
-	—\ÿ€€H[H[›]õÀ\ÿ‹ô]òH[XH^XÿpÈË€»›H‹]YH[H8†'ôYö\õ»∞Ë€»ô\‹€ô\∏†'Kâ Nÿ€€ú››\\ú€€ò[[ù\ùöY]‘›]J
-N‹›úô\‹€úŸ\÷‹KöŸ^WO^⁄Ÿ^NúKöŸ^K›\ùŸ^NúKú›\ùŸ^Kÿ\^\ŒúKôÿ\ôX\€€éúŸ[X›Y	ÿ›\›€IÀôX\€€ìXô[úôX\€€èÀñÃW_	…À^›[[X\ûK\ö[ŸXô[úKõ‹[èÿ[ù\ùò[»]X[H	”X]ôõ€‹äKôÿ\
-_HX\»Ÿ[H^ÿò[ù\ùò[»H	‹Kôÿ\ù—ö^Y
-JKúô\XŸJ	ÀâÀ	À	 _HX\»Ÿ[H^ÿ›\ùY]úKòôYõ‹ôKù[Y\›[\[ôY]úKòYù\èÀù[Y\›[\ù[[ú›Ÿ\ôY]õô]»]J
-Kù“T”‘›ö[ô 
-_N‹\ú€€ò[[ù\ùöY]‘ÿ]ôJ›
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	‘ô\‹‹›H›X\ôYH€€[»€€ù^»ô[]Y»‹àõÿÍãâ _Nÿÿ\ôú]Y\ûTŸ[X›‹ä	÷Ÿ]KZ[ù\ùöY]ÀY\€Z\‹◊I Kõ€ò€X⁄œX\ﬁ[ò 
-OOûÿ€€ú›O\]Y\›[€úÀôö[ô
-OûöŸ^OOOXÿ\ôô]\Ÿ]ö[ù\ùöY]‘]Y\›[€äN⁄Yä\J\ô]\õéÿ€€ú››\\ú€€ò[[ù\ùöY]‘›]J
-N‹›ô\€Z\‹ŸY‹KöŸ^WO^⁄Ÿ^NúKöŸ^K›\ùŸ^NúKú›\ùŸ^K]õô]»]J
-Kù“T”‘›ö[ô 
-_N‹\ú€€ò[[ù\ùöY]‘ÿ]ôJ›
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	‘\ô›[ùH\ú]Z]òYKâ _N⁄Yä\[Ÿà⁄\ôP]]—‹õ›’^\ôX\œOOIŸù[ò›[€â ]⁄\ôP]]—‹õ›’^\ôX\ ÿ\ô
-_J_Wóã à\»ô\‹‹›\»H[ùô]ö\›HË€»€€ù^»X€\òY»[»\›pË\ö[ÀX\»∞Ë€»[ùò[H€€[»]ô[ù‹»[\‹òZ\»HYYXÿ[Y[ùÀà
-ã◊ôù[ò›[€à\ú€€ò[[ù\ùöY]–[ò[\⁄\–€€ù^
-
-^ÿ€€ú›ô\‹€úŸ\œSÿöôX›ùò[Y\ \ú€€ò[[ù\ùöY]‘›]J
-Kúô\‹€úŸ\ Kú€‹ù
-
-KäOOõô]»]Jãò[ú›Ÿ\ôY]
-K[ô]»]JKò[ú›Ÿ\ôY]
-JN⁄Yä\ô\‹€úŸ\Àõ[ô›
-\ô]\õâ…Œÿ€€ú›ôXŸ[ù\ô\‹€úŸ\Àú€XŸJ
-K\ùœ\ôXŸ[ùõX\
-èOûÿ€€ú›€€òŸ\œ]\[ŸàX\õö[ô–€€òŸ\“[ï^OOIŸù[ò›[€âœ€X\õö[ô–€€òŸ\“[ï^
-‹ãúôX\€€ìXô[ãù^Kôö[\äõ€€X[äKöõ⁄[ä	Àà	 JKõX\
-œOõX\õö[ô–€€òŸ\Xô[
-Àò€€òŸ\
-JNñ◊N‹ô]\õò	‹ãú\ö[ŸXô[Nà	‹ãú›[[X\û_Iÿ€€òŸ\Àõ[ô›ÿ0≠»€€òŸZ]‹»ôX€€öX⁄Y‹Œà	ÿ€€òŸ\Àú€XŸJ Köõ⁄[ä	À	 _Xâ…ﬂXJN‹ô]\õà[ò[\⁄\‘õ› 	—^XÿpÈÌY\»[ôõ‹õXY\»‹àõÿÍâÀ\ùÀöõ⁄[ä	»	 J_Wôù[ò›[€àô[ô\î\ú€€ò[[ù\ùöY]–[ò[\⁄\–€€ù^
-
-^ÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[ò[\⁄\… N⁄YäXõﬁ
-\ô]\õéÿõﬁú]Y\ûTŸ[X›‹ä	÷Ÿ]KZ[ù\ùöY]ÀX€€ù^I OÀúô[[›ôJ
-Nÿ€€ú›[\\ú€€ò[[ù\ùöY]–[ò[\⁄\–€€ù^
-
-N⁄Yä[
-^ÿ€€ú›‹ò\Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	Ÿ]â N›‹ò\ô]\Ÿ]ö[ù\ùöY]–€€ù^IÃIŒ›‹ò\ö[õô\íSZ[ÿõﬁò\[ô⁄[
-‹ò\
-__Wóã à\›0Ï‹öX€Œà^‹»€ô€‹»öXÿ[H€€\X›‹ÀX\»»ÿ\ù0Ë€»€€ù[ùXHXúö[ô»Hö\›X[^òpÈË€»€€\]Kà
-ã◊ò€€ú›\ú€€ò[[ù\ùöY]‘ô]ö[›\—]ô[ùÿ\ôY]ô[ùÿ\ô◊ô]ô[ùÿ\ôYù[ò›[€äJ^⁄YäOÀù\HOOI€õ›IﬂYKù^
-\ô]\õà\ú€€ò[[ù\ùöY]‘ô]ö[›\—]ô[ùÿ\ô
-JNÿ€€ú›œZ⁄[ô[ôõ JK€ôœT›ö[ô Kù^
-Kõ[ô›åML›ö[ô Kù^
-Kú‹]
-◊ã Kõ[ô›åŒ‹ô]\õò\ùX€H€\‹œWù[Y[[ôKZ][H	€€ôœ…⁄\À[€ôÀ[õ›IŒâ…ﬂWèè]à€\‹œWù[Y[[ôK][YWèâ›[YSXô[
-Kù[Y\›[\
-_OŸ]èè]èè]à€\‹œWù[Y[[ôKZ⁄[ô⁄[ôI⁄Àò€\‹”ò[Y_Wèâ⁄Àö⁄[ôOŸ]èè]à€\‹œWù[Y[[ôK]]Hõ›K\ô]öY]◊èâŸ\ÿ Kù^
-_OŸ]èâ€€ôœ…œ‹[à€\‹œWõõ›K[[‹ôWèïô\àXZ\œ‹‹[èâŒâ…ﬂI⁄ÀõY]Kõ[ô›ÿ]à€\‹œWù[Y[[ôK[Y]Wèâ⁄ÀõY]KõX\
-\ÿ Köõ⁄[ä	»0≠»	 _OŸ]èòâ…ﬂIŸKö\–]Y[œÿ]à]KX]Y[œWâŸKöYWèèŸ]èòâ…ﬂOŸ]èèù]€à€\‹œWö][K[Y[ùWà]K[Y[ùOWâŸKöYWà\öXK[Xô[Wì‹0ÈÌY\◊è∏†(∏†(∏†(èÿù]€èèÿ\ùX€OòN◊óôù[ò›[€à[ú›\ôT\ú€€ò[[ù\ùöY]‘›[\ 
-^⁄Yäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ú€€ò[Z[ù\ùöY]À\›[I J\ô]\õéÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹\ú€€ò[Z[ù\ùöY]À\›[IŒ‹›ù^€€ù[ùXö[ù\ùöY]À\ôX\€€úﬁŸ\‹^Nôõ^Ÿÿ\ç‹Ÿõ^]‹ò\ù‹ò\€X\ô⁄[éåLúKö[ù\ùöY]À\ôX\€€ú»õX\õö[ôÀX⁄\úŸ[X›YÿòX⁄Ÿ‹õ›[ôúôÿòJLMãMçÀçMKåé
-N€›][ôNå\€€YôÿòJLMãMçÀçMKçä_Kú\ú€€ò[Z[ù\ùöY]À\]Y\›[€à^\ôX^€Z[ãZZY⁄éKõõ›K\ô]öY]ﬁŸ\‹^Nã]ŸXö⁄]XõﬁÀ]ŸXö⁄]Xõﬁ[‹öY[ùùô\ùXÿ[À]ŸXö⁄][[ôKX€[\åŒ€›ô\ôõ›ŒöY[é›⁄]K\‹XŸNõõ‹õX[€[ôKZZY⁄åKåÕ_Kõõ›K[[‹ô^Ÿ\‹^Nö[õ[ôKXõÿ⁄Œ€X\ô⁄[ã]‹çÿ€€‹éùò\äKXXÿŸ[ùX€€‹ãÕÕMŸN
-NŸõ€ù\⁄^ôNåLúŸõ€ù]ŸZY⁄çÃKö\À[€ôÀ[õ›^ÿ›\ú€‹éú⁄[ù\üXŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_Wóò€€ú›\ú€€ò[[ù\ùöY]‘ô]ö[›\‘ô[ô\ê[\ô[ô\ê[◊úô[ô\ê[X\ﬁ[ò»ù[ò›[€ä
-^ÿ]ÿZ]\ú€€ò[[ù\ùöY]‘ô]ö[›\‘ô[ô\ê[
-
-Nÿ€€ú›]ô[ùœX]ÿZ][]ô[ù 
-KYYœX]ÿZ][YYXÿ][€ú 
-Nÿ]ÿZ]ô[ô\î\ú€€ò[[ù\ùöY] ]ô[ùÀYY N‹ô[ô\î\ú€€ò[[ù\ùöY]–[ò[\⁄\–€€ù^
-
-_N◊ôù[ò›[€à\ú€€ò[[ù\ùöY]–õ€›
-
-^Ÿ[ú›\ôT\ú€€ò[[ù\ùöY]‘›[\ 
-NŸ[ú›\ôT\ú€€ò[[ù\ùöY]’RJ
-N⁄Yää\ô[ô\ê[
-
-NŸ[ŸHŸ][Y[›]
-\ú€€ò[[ù\ùöY]–õ€›çå
-_Wú\ú€€ò[[ù\ùöY]–õ€›
-
-N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃåÀöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àô]ö\Ë€»HXòH[∞Ë[\Ÿ\»çååŒàY\ò\ú]ZXKY⁄Xö[YYKŸ[pËõùXÿHö\›X[HY‹»öX›0ÎX⁄[‹»›YöX⁄Y[ù\»\òH‹∞ËYöX€‹Àà
-ã◊ò€€ú›ìW–SêST“T◊‘ëUíQU◊‘ëSPT—OIÃçåå…Œ◊óôù[ò›[€àõP[ò[\⁄\“X€€äò[YJ^‹ô]\õà‹[à€\‹œWúõKZ[ú⁄Y⁄ZX€€óà]KZX€€èWâ€ò[Y_Wà\öXKZY[èWùùYWèè‹‹[èòWôù[ò›[€àõR[ú⁄Y⁄õ› X€€ãXô[õŸK€ôOI€ô]]ò[	 ^◊àô]\õà]à€\‹œWúõKZ[ú⁄Y⁄\õ›»õK]€ôKI›€ô_Wèâ‹õP[ò[\⁄\“X€€äX€€ä_O]à€\‹œWúõKZ[ú⁄Y⁄X€‹Wèè›õ€ô»€\‹œWúõKZ[ú⁄Y⁄[Xô[èâŸ\ÿ Xô[
-_O‹›õ€ôœè]à€\‹œWúõKZ[ú⁄Y⁄]ò[YWèâÿõŸ_OŸ]èèŸ]èèŸ]èòüWôù[ò›[€àõU^[ô\ ][\ ^‹ô]\õà][\Àôö[\äõ€€X[äKõX\
-Oò‹[à€\‹œWúõKY]Z[[[ôWèâŸ\ÿ ›ö[ô 
-J_O‹‹[èò
-Köõ⁄[ä	… _Wôù[ò›[€àõQ]Z[[ôJXô[ò[YKÿXÿŸ[ùYò[Ÿ_O^ﬂJ^⁄Yäò[YOOO[ù[ò[YOOO][ôYö[ôYò[YOOOI… \ô]\õâ…Œ‹ô]\õà‹[à€\‹œWúõKY]Z[[[ôWèèâÿXÿŸ[ù…»€\‹œWúõKXXÿŸ[ù]^âŒâ…ﬂOâŸ\ÿ Xô[
-_Oÿèà	Ÿ\ÿ ›ö[ô ò[YJJ_O‹‹[èòWôù[ò›[€àõT\ò⁄\ŸTX⁄‘öXŸJ
-^ÿ€€ú››[\\úŸS[€ô^JÀúöXŸJKX⁄‹œSX]õX^
-Kù[Xô\äÀúX⁄ÿYŸ\ _JN‹ô]\õà›[O[ù[€ù[ù›[‹X⁄‹ﬂWóôù[ò›[€àõQ[[–[ò[]X‹‘‹X‹ 
-^◊àô]\õà◊àÃãçKã	–X€‹ôZHÿ[úÿY»H[H›X€»[ú⁄[‹€ÀâÀ	‹€€õ…Àÿ[ûY]NåÀ\[ô\‹ŒåK[ô\ôﬁNåK€€òŸ[ùò][€éåK€Y\[ô\‹ŒåﬂWKàÃKLÀã	–[ù\»\»YYXÿpÈÌY\À]H\›]òH€€H›XÿH[ô\ô⁄XHH[›[XH[ú⁄YYYKâÀ	ÿ⁄X⁄ÀZ[âÀÿ[ûY]Nåã\[ô\‹ŒåK[ô\ôﬁNåK€€òŸ[ùò][€éåK€Y\[ô\‹ŒåüWKàÃKMKÃÀ	—\⁄\À€€úŸY›ZH€€YpÈÿ\à[XH\ôYòHHö\]YZHXZ\»€€òŸ[ùòYÀâÀ	Ÿõÿ€…Àÿ[ûY]NåK\[ô\‹Œåã[ô\ôﬁNåÀ€€òŸ[ùò][€éåÀ€Y\[ô\‹Œå_WKàÃãLÀMKã	–X€‹ôZHZ[ôH[H›X€»€€õ€[ù»HŸ[H]Z]»õÿ€ÀâÀ	‹€€õ…Àÿ[ûY]NåK\[ô\‹ŒåK[ô\ôﬁNåK€€òŸ[ùò][€éåK€Y\[ô\‹ŒåﬂWKàÃãMã	”XZ\»\ôHYHŸ[ùH\‹‹›»H€€HõÿH€€òŸ[ùòpÈË€ÀâÀ	Ÿõÿ€…Àÿ[ûY]NåK\[ô\‹ŒåÀ[ô\ôﬁNåÀ€€òŸ[ùò][€éç€Y\[ô\‹ŒåWKàÃÀK	–X€‹ôZH\ÿÿ[úÿYÀÿ[[»HHõ€H[[‹ãâÀ	‹€€õ…Àÿ[ûY]Nå\[ô\‹Œç[ô\ôﬁNåÀ€€òŸ[ùò][€éåÀ€Y\[ô\‹ŒåWKàÕKLã	–€€YXŸZH»XHXZ\»[ù»H€€HYöX›[YH\òH[öX⁄X\à\ôYò\ÀâÀ	ÿ⁄X⁄ÀZ[âÀÿ[ûY]Nåã\[ô\‹ŒåK[ô\ôﬁNåK€€òŸ[ùò][€éåK€Y\[ô\‹ŒåüWKàÕM	—\ò[ùHH\ôHö\]YZHõŸ]]õ»H€€HXZ\»[ô\ô⁄XKâÀ	Ÿõÿ€…Àÿ[ûY]NåK\[ô\‹ŒåÀ[ô\ôﬁNç€€òŸ[ùò][€éç€Y\[ô\‹ŒåWKàÕKLÀ	–X€‹ôZHò^õÿ]ô[Y[ùH\ÿÿ[úÿY»H\›0Ë]ô[âÀ	‹€€õ…Àÿ[ûY]NåK\[ô\‹Œåã[ô\ôﬁNåã€€òŸ[ùò][€éåã€Y\[ô\‹Œå_WKàÕãLãÀ	–[ù\»\»YYXÿpÈÌY\»]H\›]òHô]]õ»H[H›X€»\‹\ú€ÀâÀ	ÿ⁄X⁄ÀZ[âÀÿ[ûY]NåK\[ô\‹Œåã[ô\ôﬁNåã€€òŸ[ùò][€éåK€Y\[ô\‹Œå_WKàÕãMÀ	”õ»ö[HH\ôHYHŸ[ùHXZ\»ò[ú]Z[»H€€òŸ[ùòYÀâÀ	ÿÿ[XIÀÿ[ûY]Nå\[ô\‹ŒåÀ[ô\ôﬁNåÀ€€òŸ[ùò][€éåÀ€Y\[ô\‹ŒåWKàÕÀLãK	—‹õZH›X€»HX€‹ôZH]Z]»€€õ€[ùÀ€€H›XÿH[ô\ô⁄XKâÀ	‹€€õ…Àÿ[ûY]Nåã\[ô\‹Œå[ô\ôﬁNå€€òŸ[ùò][€éå€Y\[ô\‹ŒçWKàŒLãÃÀ	—]H\›]òHò^õË]ô[X\»Z[ôH[H›X€»\›òpÎYÀâÀ	ÿ⁄X⁄ÀZ[âÀÿ[ûY]NåK\[ô\‹Œåã[ô\ôﬁNåã€€òŸ[ùò][€éåK€Y\[ô\‹Œå_WKàŒMã	—\⁄\»€€úŸY›ZHX[ù\à»õÿ€»Hö\]YZHXZ\»\‹‹›ÀâÀ	Ÿõÿ€…Àÿ[ûY]NåK\[ô\‹ŒåÀ[ô\ôﬁNåÀ€€òŸ[ùò][€éç€Y\[ô\‹ŒåWKàŒKLã	—\⁄\»H‹õZ\àY[‹ãX€‹ôZHô[HH€€H[ô\ô⁄XKâÀ	‹€€õ…Àÿ[ûY]Nå\[ô\‹Œç[ô\ôﬁNç€€òŸ[ùò][€éåÀ€Y\[ô\‹ŒåWKàÃLLÀKã	–[ù\»\»YYXÿpÈÌY\»]H\›]òHÿ[úÿY»H€€H›XÿH€€òŸ[ùòpÈË€ÀâÀ	ÿ⁄X⁄ÀZ[âÀÿ[ûY]Nåã\[ô\‹ŒåK[ô\ôﬁNåK€€òŸ[ùò][€éåK€Y\[ô\‹ŒåüWKàÃLMÀÀ	”XZ\»\ôHö\]YZH[H›X€»Y[‹àH€€úŸY›ZHYH‹ôÿ[ö^ò\ãâÀ	ÿ⁄X⁄ÀZ[âÀÿ[ûY]NåK\[ô\‹Œåã[ô\ôﬁNåã€€òŸ[ùò][€éåÀ€Y\[ô\‹Œå_WKàÃLKMÃÀ	–€€YXŸZHH\ôHò^õË]ô[HŸ[H]Z]H[ú⁄YYYKâÀ	ÿ⁄X⁄ÀZ[âÀÿ[ûY]NåK\[ô\‹Œåã[ô\ôﬁNåã€€òŸ[ùò][€éåã€Y\[ô\‹Œå_WKàÃLKN	–€€úŸY›ZHòXò[\à‹àò\›[ùH[\»HYHŸ[ùHÿ]\ŸôZ]ÀâÀ	Ÿõÿ€…Àÿ[ûY]Nå\[ô\‹ŒåÀ[ô\ôﬁNåÀ€€òŸ[ùò][€éç€Y\[ô\‹ŒåWWàN◊üWôù[ò›[€àõQ[[“\€ ^\ÀJ^ÿ€€ú›[ô]»]J
-NŸúŸ]]JôŸ]]J
-KY^\ NŸúŸ]›\ú K
-N‹ô]\õàù“T”‘›ö[ô 
-_Wò\ﬁ[ò»ù[ò›[€àõQ[ú›\ôQ[[–[ò[]X‹—]J
-^◊àYäYä\ô]\õàò[ŸN◊à€€ú›[X]ÿZ][]ô[ù 
-N⁄YäX[ú€€YJOOôOÀô[[ J\ô]\õàò[ŸN◊à€€ú›Yœ[ô]»Ÿ]
-[õX\
-OOôKöY
-JN€]⁄[ôŸYYò[ŸN◊àõ‹ä€€ú›Ÿ^\ÀK[€Ÿ^YÀÿ€‹ô\◊HŸàõQ[[–[ò[]X‹‘‹X‹ 
-J^◊à€€ú›YX[[ÀX[ò[\⁄\ÀX⁄X⁄ÀIŸ^\ﬂKI⁄KI€_X⁄YäYÀö\ Y
-JX€€ù[ùYN◊à€€ú›Xô[œ^ÿ[ûY]Nâ–[ú⁄YYYIÀ\[ô\‹Œâ—ô[X⁄YYIÀ[ô\ôﬁNâ—[ô\ô⁄XIÀ€€òŸ[ùò][€éâ–€€òŸ[ùòpÈË€…À€Y\[ô\‹Œâ‘€€õ€0Íõò⁄XIﬂN◊à]ÿZ]]]ô[ù
-⁄Y\Nâ€õ›IÀ[Y\›[\úõQ[[“\€ ^\ÀJK^YÀ[€Ÿÿ€‹ôNõ[€Ÿ[€Ÿÿÿ[S[Ÿ[âÃLL	À[[›[€îÿ€‹ô\ŒûÀããúÿ€‹ô\ﬂK[[›[€ìXô[ŒõXô[À[[›[€í[ù[ú⁄]S[Ÿ[âÃM	À[[ŒùùY_JNÿ⁄[ôŸY]ùYN◊àWàô]\õà⁄[ôŸY◊üWò\ﬁ[ò»ù[ò›[€àõSÿYöX⁄[[‘ÿ‹ö\
-
-^◊àYä\[Ÿà[ú›[öX⁄[[œOOIŸù[ò›[€â \ô]\õé◊à]ÿZ]ô]»õ€Z\ŸJ
-ô\€€ôKôZôX›
-OOûÿ€€ú›€Yÿ›[Y[ùú]Y\ûTŸ[X›‹ä	‹ÿ‹ö\Ÿ]K\õK\öX⁄Y[[◊I N⁄Yä€
-^€€òY]ô[ù\›[ô\ä	€ÿY	Àô\€€ôK€€òŸNùùY_JN‹Ÿ][Y[›]
-ô\€€ôKå
-N‹ô]\õüX€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àô]\Ÿ]úõTöX⁄[[œIÃIŒ‹Àú‹òœIÀã›å[[Àöúœ›èLçåå…Œ‹Àõ€õÿY\ô\€€ôN‹Àõ€ô\úõ‹è\ôZôX›Ÿÿ›[Y[ùöXYò\[ô⁄[
- _JWüWúô\›‹ôQ[[œX\ﬁ[ò»ù[ò›[€ä
-^◊àYäX€€ôö\õJ	‘›Xú›]Z\àŸ‹»‹»ôY⁄\›õ‹»HÿY\›õ‹»[‹»Y‹»öX›0ÎX⁄[‹»[\XY‹œ… J\ô]\õé◊àû^ÿ]ÿZ]õSÿYöX⁄[[‘ÿ‹ö\
-
-N⁄Yä\[Ÿà[ú›[öX⁄[[œOOIŸù[ò›[€â X]ÿZ][ú›[öX⁄[[ ‹ô\XŸNùùY_JNŸ[ŸHô]\õàÿ\›
-	”∞Ë€»õ⁄H‹‹Î]ô[ÿ\úôYÿ\à‹»Y‹»öX›0ÎX⁄[‹Àâ Nÿ]ÿZ]õQ[ú›\ôQ[[–[ò[]X‹—]J
-N⁄Yä\[ŸàõR[ùò[Y]OOOIŸù[ò›[€â \õR[ùò[Y]J
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	—Y‹»öX›0ÎX⁄[‹»[\XY‹»ô\›]\òY‹Àâ _Xÿ]⁄
-\úä^ÿ€€ú€€Kô\úõ‹ä\úäN›ÿ\›
-	”∞Ë€»õ⁄H‹‹Î]ô[ô\›]\ò\à‹»Y‹»öX›0ÎX⁄[‹Àâ _WüN◊óúô[ô\ê[ò[\⁄\œX\ﬁ[ò»ù[ò›[€ä]ô[ù ^◊àYä]ÿZ]õQ[ú›\ôQ[[–[ò[]X‹—]J
-JY]ô[ùœJ]ÿZ][]ô[ù 
-JKú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JN◊à€€ú›€‹ùYVÀããô]ô[ù◊Kú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JKﬁX€OX›\úô[ùﬁX€J€‹ùY
-K]\›õ›O\€‹ùYôö[ô
-OOôKù\OOOI€õ›I KﬁX€SYYœ\€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â…âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OèXﬁX€Kú›\ù
-K€€ù^›\ùXﬁX€Kú›\ùLç
-åÕå€€ù^YYœXﬁX€Kõ\›€Y\‹€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â…âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OﬁX€Kú›\ù	âõô]»]JKù[Y\›[\
-KôŸ][YJ
-OèX€€ù^›\ù
-Nñ◊K\›€Y\XﬁX€Kõ\›€Y\€‹ùYôö[ô
-OOôKù\OOOI‹€Y\	 N◊à€€ú›]\›^[]\›õ›O ]\›õ›Kù^ÿ8†'	Ÿ\ÿ ]\›õ›Kù^
-_x†'O€X[âŸ\ÿ [X[êY€ ]\›õ›Kù[Y\›[\
-J_O‹€X[òò⁄X⁄ÀZ[à[[ÿ⁄[€ò[èâŸ\ÿ ›ö[ô ]\›õ›Kõ[€Ÿÿ€‹ôJJ_KÃLÿèè€X[âŸ\ÿ [X[êY€ ]\›õ›Kù[Y\›[\
-J_O‹€X[ò
-Nâ–Z[ôH∞Ë€»0ËH[õ›pÈÌY\ÀâŒ◊à€€ú›YYõ›œXﬁX€SYYÀõ[ô›‹õU^[ô\ ﬁX€SYYÀõX\
-YYXÿ][€ë]ô[ùXô[
-JNâ”ô[ö[HôY⁄\›õ»ô\‹ŸH\∞Î[ŸÀâŒ◊à€€ú››\úô[ùYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ›\úô[ù[ò[\⁄\… N⁄Yä›\úô[ù
-X›\úô[ùö[õô\íSX]à€\‹œWúõKX[ò[\⁄\À[\›èâ‹õR[ú⁄Y⁄õ› 	ÿ€ÿ⁄…À	‘\∞Î[Ÿ»[ò[\ÿY…ÀèâŸ\ÿ ﬁX€KõXô[
-_Oÿèò	ÿXÿŸ[ù	 _I‹õR[ú⁄Y⁄õ› 	€õ›IÀ	Êõ[[»ô[]…À]\›^	€õ›I _I‹õR[ú⁄Y⁄õ› 	‹[	ÀﬁX€Kõ\›€Y\…”YYXÿ[Y[ù‹»\ŸH]YHX€‹ô›IŒâ”YYXÿ[Y[ù‹»ôXŸ[ù\…ÀYYõ›À	€YY	 _Iÿ€€ù^YYÀõ[ô›‹õR[ú⁄Y⁄õ› 	‹[	À	–[ù\»»0Óõ[[»€€õ…ÀõU^[ô\ €€ù^YYÀõX\
-YYXÿ][€ë]ô[ùXô[
-JK	€YY	 Nâ…ﬂI‹õR[ú⁄Y⁄õ› 	€[€€âÀ	‘€€õ»XZ\»ôXŸ[ùIÀ\›€Y\ÿèâŸ\ÿ \ò][€ìXô[
-\ò][€í›\ú \›€Y\ú›\ù[YK\›€Y\ô[ô[YJJJ_Oÿèâ€\›€Y\ú]X[]Oÿ€X[î]X[YYH\òŸXöYNà	Ÿ\ÿ ›ö[ô \›€Y\ú]X[]JJ_KÕO‹€X[òâ…ﬂXâ–Z[ôH∞Ë€»0ËHôY⁄\›õ‹»H€€õÀâÀ	‹€Y\	 _OŸ]èò◊óà€€ú›YZ[úœ\€‹ùYôö[\äOOôKù\OOOI€YYXÿ][€â Kõ›\œ\€‹ùYôö[\äOOôKù\OOOI€õ›I…âôKù^
-K‹õ›\Y^ﬂN◊àõ‹ä€€ú›HŸàYZ[ú ^ÿ€€ú›Ÿ^OXKõYYXÿ][€ü	”YYXÿ[Y[ù…Œ⁄YäY‹õ›\Y⁄Ÿ^WJY‹õ›\Y⁄Ÿ^WO^ÿ€›[ùå\õ\Œñ◊_Nÿ€€ú››[ô]»]JKù[Y\›[\
-KôŸ][YJ
-K[è\›
-Œ
-åÕåôX\òûO[õ›\Àôö[\äèOûÿ€€ú›[ô]»]Jãù[Y\›[\
-KôŸ][YJ
-N‹ô]\õàè\›	âùY[üJNŸ‹õ›\Y⁄Ÿ^WKò€›[ù
-œ[ôX\òûKõ[ô›Ÿ‹õ›\Y⁄Ÿ^WKù\õ\Àú\⁄
-ããõôX\òûKôõ]X\
-èOõ[€Ÿ\õ\ ãù^
-JJ_Wà€€ú›\‹€ÿœSÿöôX›ô[ùöY\ ‹õ›\Y
-Kôö[\ä
-ÀJOOôò€›[ùå
-Kú€‹ù
-
-KäOOòñÃWKò€›[ùXVÃWKò€›[ù
-Kú€XŸJ
-K\‹€ÿ⁄X][€èYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ\‹€ÿ⁄X][€ê[ò[\⁄\… N◊àYä\‹€ÿ⁄X][€äX\‹€ÿ⁄X][€ãö[õô\íSX\‹€ÿÀõ[ô›ÿ]à€\‹œWúõKX[ò[\⁄\À[\›èâÿ\‹€ÿÀõX\
-
-€ò[YK]WJOOûÿ€€ú›œ^ﬂNŸ]Kù\õ\Àôõ‹ëXX⁄
-Oò÷›OJ÷›_
-JÃJNÿ€€ú›€€[[€èSÿöôX›ô[ùöY\  Kú€‹ù
-
-KäOOòñÃWKXVÃWJKú€XŸJ KõX\
-
-›óJOOò	›H
-	€üJX
-Köõ⁄[ä	À	 N‹ô]\õàõR[ú⁄Y⁄õ› 	‹[	Àò[YK	‹õQ]Z[[ôJ	‘ô[]‹»∞Ïﬁ[[‹ŒâÀ	Ÿ]Kò€›[ùH]0ÍH\0Ï‹»YZ[ö\›òpÈÌY\ÿÿXÿŸ[ùùùY_J_Iÿ€€[[€è‹õQ]Z[[ôJ	’\õ[‹»ôX€‹úô[ù\ŒâÀ€€[[€äNâœ‹[à€\‹œWúõKY]Z[[[ôWèêZ[ôHŸ[H\õ[‹»ôX€‹úô[ù\»›YöX⁄Y[ù\Àè‹‹[èâﬂX	€YY	 _JKöõ⁄[ä	… _OŸ]èòúõR[ú⁄Y⁄õ› 	€[ö…À	–Z[ôHŸ[HY∞Ë€…À	‘ôY⁄\›ôHYZ[ö\›òpÈÌY\»Hô[]‹»[»€ô€»»[\Àà»\[‹›òH\[ò\»õﬁ[ZYYH[\‹ò[∞Ë€»ÿ]\ÿ[YYKâÀ	ÿXÿŸ[ù	 N◊óà€€ú›€Y\œ\€‹ùYôö[\äOOôKù\OOOI‹€Y\	 K]ôœ\€Y\Àõ[ô›‹€Y\ÀúôYXŸJ
-ÀJOOú Ÿ\ò][€í›\ú Kú›\ù[YKKô[ô[YJK
-K‹€Y\Àõ[ô›õù[\œ\€Y\Àôö[\äOOìù[Xô\äKú]X[]JJK]ô‘O\\Àõ[ô›‹\ÀúôYXŸJ
-ÀJOOú ”ù[Xô\äKú]X[]JK
-K‹\Àõ[ô›õù[€Y\Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ò[\⁄\… N◊àYä€Y\
-\€Y\ö[õô\íSV€Y]öX ]ôœO[ù[…¯†%	Œô\ò][€ìXô[
-]ô K	”pÍYXHH\òpÈË€… KY]öX ]ô‘OO[ù[…¯†%	Œò]ô‘Kù—ö^Y
-JK	‘]X[YYHpÍYXI KY]öX €Y\÷ÃOŸ\ò][€ìXô[
-\ò][€í›\ú €Y\÷ÃKú›\ù[YK€Y\÷ÃKô[ô[YJJNâ¯†%	À	Êõ[[»€€õ… WKöõ⁄[ä	… N◊óà€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KYYõ›‹œV◊N◊àõ‹ä€€ú›HŸàYY ^ÿ€€ú›œ[YYXÿ][€ê€‹››[[X\ûJK€‹ùY
-N⁄YäX X€€ù[ùYNÿ€€ú›[ô\œV‹õQ]Z[[ôJ	–›\›»‹à[öYYNâÀÀù[ö]O[ù[€[€ô^JÀù[ö]
-Nâ‹Ÿ[H[öYY\»Yö[öY\…ÀÿXÿŸ[ùùùY_JKÀõ[€ùHO[ù[‹õQ]Z[[ôJ	—ÿ\›»ôY⁄\›òY»õ‹»0Óõ[[‹»ÃX\ŒâÀ8¢b	€[€ô^JÀõ[€ùJ_X
-Nâ…◊N€YYõ›‹Àú\⁄
-õR[ú⁄Y⁄õ› 	‹[	ÀKòX›]ôR[ô‹ôYY[ù[ô\Àöõ⁄[ä	… K	€YY	 J_Wà€€ú›YYXÿ][€èYÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYXÿ][€ê[ò[\⁄\… N⁄YäYYXÿ][€ä[YYXÿ][€ãö[õô\íS[YYõ›‹Àõ[ô›ÿ]à€\‹œWúõKX[ò[\⁄\À[\›èâ€YYõ›‹Àú€XŸJäKöõ⁄[ä	… _OŸ]èòúõR[ú⁄Y⁄õ› 	‹[	À	–ÿY\›ôH\ô\Ÿ[ùpÈÌY\…À	–€€H[öYY\»‹àÿZ^K€€\ò\»HYZ[ö\›òpÈÌY\»»\ÿ[›[H›\›‹»Hõ‹õXHXZ\»0Óù[âÀ	€YY	 N◊óà€€ú›ù^\œ\€‹ùYôö[\äOOôKù\OOOI‹\ò⁄\ŸI…âú\úŸS[€ô^JKúöXŸJHO[ù[
-K‹õ›\œ[ô]»X\
-
-N◊àõ‹ä€€ú›Ÿàù^\ ^ÿ€€ú›Ÿ^OX	‹õYYXÿ][€íYõYYXÿ][€ü	€YY	ﬂ_	‹úô\Ÿ[ù][€íY	…ﬂX⁄YäY‹õ›\Àö\ Ÿ^JJY‹õ›\ÀúŸ]
-Ÿ^K◊JNŸ‹õ›\ÀôŸ]
-Ÿ^JKú\⁄
-
-_Wà€€ú›\ò⁄\ŸTõ›‹œVÀããô‹õ›\Àùò[Y\ 
-WKõX\
-\›Oû€\›ú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JNÿ€€ú›\›[\›ÃKöXŸ\œ[\›õX\
-õT\ò⁄\ŸTX⁄‘öXŸJKôö[\äèOùàO[ù[
-K\›X⁄œ\õT\ò⁄\ŸTX⁄‘öXŸJ\›
-KZ[è\öXŸ\Àõ[ô›”X]õZ[äããúöXŸ\ Nõù[‹ô]\õû€\›[úõR[ú⁄Y⁄õ› 	ÿòY…À\›õYYXÿ][€ü	”YYXÿ[Y[ù…À	‹õQ]Z[[ôJ	Êõ[XH€€\òNâÀ[X[êY€ \›ù[Y\›[\
-KÿXÿŸ[ùùùY_J_I‹õQ]Z[[ôJ	’ò[‹à‹à[Xò[YŸ[NâÀ\›X⁄œO[ù[…¯†%	Œõ[€ô^J\›X⁄ KÿXÿŸ[ùùùY_J_I‹õQ]Z[[ôJ	”€ôNâÀ\›úXŸ_	€∞Ë€»[ôõ‹õXY… _I‹õQ]Z[[ôJ	”Y[õ‹àò[‹àôY⁄\›òYŒâÀZ[èO[ù[…¯†%	Œõ[€ô^JZ[äKÿXÿŸ[ùùùY_J_X	ÿù^I __JKú€‹ù
-
-KäOOõô]»]Jãõ\›ù[Y\›[\
-K[ô]»]JKõ\›ù[Y\›[\
-JN◊à€€ú›\ò⁄\ŸOYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸP[ò[\⁄\… N⁄Yä\ò⁄\ŸJ\\ò⁄\ŸKö[õô\íS\\ò⁄\ŸTõ›‹Àõ[ô›ÿ]à€\‹œWúõKX[ò[\⁄\À[\›èâ‹\ò⁄\ŸTõ›‹Àú€XŸJäKõX\
-Oûö[
-Köõ⁄[ä	… _OŸ]èòúõR[ú⁄Y⁄õ› 	ÿòY…À	–Z[ôHŸ[H\›0Ï‹öX€»HôpÈ€…À	‘ôY⁄\›ôH€€\ò\»€€Hò[‹àHÿÿ[\òH€€\\ò\à[Xò[YŸ[ú»[»€ô€»»[\ÀâÀ	ÿù^I N◊àõQX€‹ò]P[ò[\⁄\“XY\ú 
-N⁄Yä\[ŸàYò]RX€€úœOOIŸù[ò›[€â ZYò]RX€€ú ÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWò[ò[\⁄\◊óI JN◊üN◊óôù[ò›[€àõQX€‹ò]P[ò[\⁄\“XY\ú 
-^◊à€€ú››\úô[ùYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ›\úô[ù[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 KX›\úô[ùÀú]Y\ûTŸ[X›‹ä	Œúÿ€‹Oöâ N◊àYä	âàZò€‹Ÿ\›
-	Àò[ò[\⁄\À]]I J^ÿ€€ú›õ›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	Ÿ]â N‹õ›Àò€\‹”ò[YOIÿ[ò[\⁄\À]]HõKX[ò[\⁄\À]]IŒ‹õ›Àö[õô\íSIœ‹[à]KZX€€èWú‹\ö◊èè‹‹[èâŒ⁄òôYõ‹ôJõ› N‹õ›Àò\[ô⁄[
-
-_WüWóöYä\[Ÿàô[ô\ê€€ù[ùZ]P[ò[\⁄\œOOIŸù[ò›[€â ^◊à€€ú›õTô]ê€€ù[ùZ]P[ò[\⁄\œ\ô[ô\ê€€ù[ùZ]P[ò[\⁄\Œ◊àô[ô\ê€€ù[ùZ]P[ò[\⁄\œX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ]ÿZ]õTô]ê€€ù[ùZ]P[ò[\⁄\ ããò\ô‹ Nÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[ò[\⁄\… N⁄YäXõﬁ
-\ô]\õé÷Àããòõﬁú]Y\ûTŸ[X›‹ê[
-	Àò[ò[\⁄\À\õ›… WKôõ‹ëXX⁄
-õ›œOûÿ€€ú›‹[è\õ›Àú]Y\ûTŸ[X›‹ä	‹‹[â N⁄Yä‹[èÀù^€€ù[ùùö[J
-OOOI”ô[ö[H‹»ò^õ‹»€€ôöY›\òY‹»õ⁄H[ò\\‹ÿYÀâ ^‹‹[ãù^€€ù[ùI’Y»Ÿ\ùŒàõÿÍà\›0ËHò^ô[ô»Ÿ]\»ôY⁄\›õ‹»€€Húô\]pÍõò⁄XKâŒ‹‹[ãò€\‹”\›òY
-	‹õK\‹⁄]]ôK]^	 __J_N◊üWóöYä\[Ÿàô[ô\î]X[ù]]]ôQ\⁄õÿ\ôOOIŸù[ò›[€â ^◊à€€ú›õTô]î]X[ù]]]ôQ\⁄õÿ\ôååœ\ô[ô\î]X[ù]]]ôQ\⁄õÿ\ô◊àô[ô\î]X[ù]]]ôQ\⁄õÿ\ôX\ﬁ[ò»ù[ò›[€ä]ô[ù ^⁄Yä]ÿZ]õQ[ú›\ôQ[[–[ò[]X‹—]J
-JY]ô[ùœJ]ÿZ][]ô[ù 
-JKú€‹ù
-
-KäOOõô]»]Jãù[Y\›[\
-K[ô]»]JKù[Y\›[\
-JNÿ]ÿZ]õTô]î]X[ù]]]ôQ\⁄õÿ\ôåå ]ô[ù N‹õR[\õ›ôP[ò[\⁄\–⁄\ù 
-_N◊üWôù[ò›[€àõR[\õ›ôP[ò[\⁄\–⁄\ù 
-^◊à€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWò[ò[\⁄\◊óI N⁄Yä]öY] \ô]\õé◊àöY]Àú]Y\ûTŸ[X›‹ê[
-	Àô\⁄õÿ\ôX⁄\ù	 Kôõ‹ëXX⁄
-ÿ\ôOòÿ\ôò€\‹”\›òY
-	‹õK\ôXYXõKX⁄\ù	 JN◊à€€ú›€€òŸ\œ]öY]Àú]Y\ûTŸ[X›‹ä	÷Ÿ]KX[ò[\⁄\ÀZ][OWò⁄\ù[YYX€€òŸ\◊óI Nÿ€€òŸ\œÀò€\‹”\›òY
-	‹õKX€€òŸ\ÀX⁄\ù	 N◊à€€ú›€Y\]öY]Àú]Y\ûTŸ[X›‹ä	÷Ÿ]KX[ò[\⁄\ÀZ][OWò⁄\ù\€Y\[[ôWóI N‹€Y\Àò€\‹”\›òY
-	‹õK\€Y\X⁄\ù	 N◊àYä\[ŸàYò]RX€€úœOOIŸù[ò›[€â ZYò]RX€€ú öY] WüWóäù[ò›[€àõP[ò[\⁄\‘ô]öY]‘›[\ 
-^◊àYäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õKX[ò[\⁄\À\ô]öY]À\›[I J\ô]\õé◊à€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹õKX[ò[\⁄\À\ô]öY]À\›[IŒ‹›ù^€€ù[ùXàŸ]K]öY]œWò[ò[\⁄\◊óHò[ò[\⁄\ÀXÿ\ô€›ô\ôõ›ŒöY[üWàúõKX[ò[\⁄\À[\›Ÿ\‹^Nô‹öYŸÿ\é\€X\ô⁄[ã]‹åLWàúõKZ[ú⁄Y⁄\õ›ﬁŸ\‹^Nô‹öYŸ‹öY][\]KX€€[[úŒåÕZ[õX^
-YúäNŸÿ\åL\ÿ[Y€ãZ][\Œôõ^\›\ù‹Y[ôŒåLúÿõ‹ô\ã\òY]\ŒåM\ÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéåMJNÿõ‹ô\éå\€€YôÿòJLåLåLéåL
-_WàúõKZ[ú⁄Y⁄ZX€€û›⁄YåÃú⁄ZY⁄åÃúÿõ‹ô\ã\òY]\ŒåL\Ÿ\‹^Nô‹öY‹XŸKZ][\ŒòŸ[ù\éÿòX⁄Ÿ‹õ›[ôúôÿòJLåLåLéå _WàúõKZ[ú⁄Y⁄ZX€€àú›ôÀZX€€ãúõKZ[ú⁄Y⁄ZX€€èú›ôﬁ›⁄YåN\Z[\‹ù[ù⁄ZY⁄åN\Z[\‹ù[ùWàúõKZ[ú⁄Y⁄X€‹^€Z[ã]⁄YåKúõKZ[ú⁄Y⁄[Xô[Ÿ\‹^Nòõÿ⁄ŒŸõ€ù\⁄^ôNåL‹€[ôKZZY⁄åKåçN€X\ô⁄[éå\\KúõKZ[ú⁄Y⁄]ò[Y^Ÿõ€ù\⁄^ôNåL‹€[ôKZZY⁄åKçÿ€€‹éùò\äK\ŸX€€ô\ûJ_WàúõKZ[ú⁄Y⁄]ò[YOòûÿ€€‹éùò\äK]^
-NŸõ€ù]ŸZY⁄çÕLKúõKZ[ú⁄Y⁄]ò[YH€X[Ÿ\‹^Nòõÿ⁄Œ€X\ô⁄[ã]‹å‹Ÿõ€ù\⁄^ôNåL\€[ôKZZY⁄åKåÕN€‹X⁄]NãçÕ_WàúõKY]Z[[[ô^Ÿ\‹^Nòõÿ⁄Œ€X\ô⁄[ã]‹å‹KúõKY]Z[[[ôNôö\ú›X⁄[€X\ô⁄[ã]‹åKúõKY]Z[[[ôHûÿ€€‹éùò\äK]^
-NŸõ€ù]ŸZY⁄çÃKúõKXXÿŸ[ù]^Ÿõ€ù]ŸZY⁄çÕåZ[\‹ù[ùWàúõK]€ôK[õ›HúõKZ[ú⁄Y⁄ZX€€ûÿ€€‹éùò\äK\ôX€‹ô[õ›Kò\äKXXÿŸ[ù
-JNÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô[õ›Kò\äKXXÿŸ[ù
-JHL	Kò[ú‹\ô[ù
-_WàúõK]€ôK[YYúõKZ[ú⁄Y⁄ZX€€ãúõK]€ôK[YYúõKXXÿŸ[ù]^ÿ€€‹éùò\äK\ôX€‹ô[YYò\äK[YY
-J_KúõK]€ôK[YYúõKZ[ú⁄Y⁄ZX€€ûÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô[YYò\äK[YY
-JHL	Kò[ú‹\ô[ù
-_WàúõK]€ôK\€Y\úõKZ[ú⁄Y⁄ZX€€ûÿ€€‹éùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JNÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHL	Kò[ú‹\ô[ù
-_WàúõK]€ôKXù^HúõKZ[ú⁄Y⁄ZX€€ãúõK]€ôKXù^HúõKXXÿŸ[ù]^ÿ€€‹éùò\äK\ôX€‹ôXù^Kò\äKXù^JJ_KúõK]€ôKXù^HúõKZ[ú⁄Y⁄ZX€€ûÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ôXù^Kò\äKXù^JJHL	Kò[ú‹\ô[ù
-_WàúõK]€ôKXXÿŸ[ùúõKZ[ú⁄Y⁄ZX€€ûÿ€€‹éùò\äKXXÿŸ[ù
-NÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äKXXÿŸ[ù
-HL	Kò[ú‹\ô[ù
-_Wà‹€Y\[ò[\⁄\ﬁŸ‹öY][\]KX€€[[úŒúô\X]
-ÀZ[õX^
-YúäJHZ[\‹ù[ùŸÿ\éWà‹€Y\[ò[\⁄\»õY]öXﬁ€Z[ã]⁄Yå›^X[Y€éòŸ[ù\é‹Y[ôŒåLúúÿõ‹ô\ã\òY]\ŒåMÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JH…Kò[ú‹\ô[ù
-Nÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHL…Kò[ú‹\ô[ù
-_Wà‹€Y\[ò[\⁄\»õY]öX»›õ€ôﬁŸõ€ù\⁄^ôNååúZ[\‹ù[ù€[ôKZZY⁄åKåNÿ€€‹éùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JNŸõ€ù]ŸZY⁄çŒH‹€Y\[ò[\⁄\»õY]öX»‹[ûŸõ€ù\⁄^ôNåL\Z[\‹ù[ù€[ôKZZY⁄åKåçNŸõ€ù]ŸZY⁄çÃ€X\ô⁄[ã]‹ç\WàúõK\‹⁄]]ôK]^ÿ€€‹éàÃÃŒŒZ[\‹ù[ùŸõ€ù]ŸZY⁄çÕåZ[\‹ù[ùWàŸ]K]öY]œWò[ò[\⁄\◊óHò⁄\ùXÿ\ôZXYô]èúõ\›X⁄[Ÿõ€ù\⁄^ôNåL‹Z[\‹ù[ù€[ôKZZY⁄åKçHZ[\‹ù[ù€‹X⁄]NãçÃüWàŸ]K]öY]œWò[ò[\⁄\◊óHúõK\ôXYXõKX⁄\ùõÿÿ[X⁄\ù\›ô»^Ÿõ€ù\⁄^ôNååZ[\‹ù[ùŸõ€ù]ŸZY⁄çååWàŸ]K]öY]œWò[ò[\⁄\◊óHúõK\ôXYXõKX⁄\ùõÿÿ[X⁄\ù\›ô»ò⁄\ùX^\À[Xô[Ÿõ€ù\⁄^ôNåå\Z[\‹ù[ùŸõ€ù]ŸZY⁄çÃWàŸ]K]öY]œWò[ò[\⁄\◊óHúõK\ôXYXõKX⁄\ùõÿÿ[X⁄\ù\›ô»ò⁄\ùY‹öY^Ÿõ€ù\⁄^ôNååZ[\‹ù[ùŸõ€ù]ŸZY⁄ççLWàŸ]K]öY]œWò[ò[\⁄\◊óHúõK\ôXYXõKX⁄\ùõÿÿ[X⁄\ù\›ô»ò⁄\ù[[ô^‹›õ⁄ŸK]⁄YççWàŸ]K]öY]œWò[ò[\⁄\◊óHúõKX€€òŸ\ÀX⁄\ùõÿÿ[X⁄\ù\›ô»^Ÿõ€ù\⁄^ôNååúZ[\‹ù[ùŸõ€ù]ŸZY⁄çÃWàŸ]K]öY]œWò[ò[\⁄\◊óHúõK\€Y\X⁄\ùõÿÿ[X⁄\ù\›ô»^Ÿõ€ù\⁄^ôNååúZ[\‹ù[ùŸõ€ù]ŸZY⁄çÃWà[Ÿ]K][YOWô\ö◊óHúõKZ[ú⁄Y⁄\õ›ﬁÿòX⁄Ÿ‹õ›[ôúôÿòJçMKçMKçMKåJNÿõ‹ô\ãX€€‹éúôÿòJçMKçMKçMKåÕJ_WàYYXH
-ôYô\úÀX€€‹ã\ÿ⁄[YNô\ö ^⁄[Ÿ]K][YOWúﬁ\›[WóHúõKZ[ú⁄Y⁄\õ›ﬁÿòX⁄Ÿ‹õ›[ôúôÿòJçMKçMKçMKåJNÿõ‹ô\ãX€€‹éúôÿòJçMKçMKçMKåÕJ__WàYYXJX^]⁄YåŒL
-^»‹€Y\[ò[\⁄\»õY]öX»›õ€ôﬁŸõ€ù\⁄^ôNåN\Z[\‹ù[ùH‹€Y\[ò[\⁄\»õY]öX»‹[ûŸõ€ù\⁄^ôNåLZ[\‹ù[ùKúõKZ[ú⁄Y⁄\õ›ﬁŸ‹öY][\]KX€€[[úŒåÃ\Z[õX^
-YúäN‹Y[ôŒåL\Ÿÿ\é\KúõKZ[ú⁄Y⁄ZX€€û›⁄YåÃ⁄ZY⁄åÃ_WàŸÿ›[Y[ùöXYò\[ô⁄[
-›
-WüJJ
-N◊óò€€ú›ô[X\ŸU‹[ò[\⁄\‘ô]öY]œYÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â Kô[X\ŸPXõ›][ò[\⁄\‘ô]öY]œYÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N⁄Yäô[X\ŸU‹[ò[\⁄\‘ô]öY] \ô[X\ŸU‹[ò[\⁄\‘ô]öY]Àù^€€ù[ùXâ‘ìW–SêST“T◊‘ëUíQU◊‘ëSPT—_X⁄Yäô[X\ŸPXõ›][ò[\⁄\‘ô]öY] \ô[X\ŸPXõ›][ò[\⁄\‘ô]öY]Àù^€€ù[ùTìW–SêST“T◊‘ëUíQU◊‘ëSPT—N◊öYä\[ŸàõR[ùò[Y]OOOIŸù[ò›[€â \õR[ùò[Y]J	ÿ[ò[\⁄\… N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃçöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã à€‹úôpÈÌY\»çåçà[öpË€»õÿù\›H‹»Zù\›\»HÿpÓôH
-»ô]ö\Ë€»‹õ€pË]XÿK€Y⁄Xö[YYHHXòH[∞Ë[\Ÿ\Àà
-ã◊ò€€ú›ìW’åç‘ëSPT—OIÃKåãåXô]Kç	Œ◊óã àKKKKKKKKKHRïT’TŒà[H0ÓõöX€»ÿ\ù0Ë€»ÿpÓôHKKKKKKKKKH
-ã◊ôù[ò›[€àõUåçŸ\\ò]‹ä[úŸ]]ùYJ^ÿ€€ú›OYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	Ÿ]â NŸKò€\‹”ò[YOXŸ][ôÀ\Ÿ\\ò]‹â⁄[úŸ]…»[úŸ]	Œâ…ﬂX‹ô]\õà_Wôù[ò›[€àõUåçõ›—õ‹ä[
-^‹ô]\õà[Àò€‹Ÿ\›
-	ÀúŸ][ô‹À\õ›ÀúŸ][ôÀXõÿ⁄ÀúŸ][ôÀZ[õ[ôI _ù[Wôù[ò›[€àõUåçô[[›ôPYòXŸ[ùŸ\\ò]‹ú õ› ^◊àYä\õ› \ô]\õé◊à€€ú›\õ›Àúô]ö[›\—[[Y[ù⁄Xõ[ôÀè\õ›Àõô^[[Y[ù⁄Xõ[ôŒ◊àYäÀò€\‹”\›ò€€ùZ[ú 	‹Ÿ][ôÀ\Ÿ\\ò]‹â J\úô[[›ôJ
-N◊àYäèÀò€\‹”\›ò€€ùZ[ú 	‹Ÿ][ôÀ\Ÿ\\ò]‹â J[ãúô[[›ôJ
-N◊üWôù[ò›[€àõUåç€€ú€€Y]RX[Ÿ][ô‹ 
-^◊à€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWúŸ][ô‹◊óI N⁄Yä]öY] \ô]\õàò[ŸN◊àû^⁄Yä\[Ÿà[ú›\ôP€€ù[ùZ]TŸ][ô‹’ROOOIŸù[ò›[€â Y[ú›\ôP€€ù[ùZ]TŸ][ô‹’RJ
-_Xÿ]⁄ﬂWà€€ú›YYùèYÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYXÿ][€îôY⁄\›ûPùâ KX[ùèYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[[\‹ù[ôõ–ùâ K€€ù[ùZ]PùèYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]TŸ][ô‹–ùâ N◊àYä[YYùüZX[ùüX€€ù[ùZ]Pùä\ô]\õàò[ŸN◊óà€€ú›YYõ›œ\õUåçõ›—õ‹äYYùäKX[õ›œ\õUåçõ›—õ‹äX[ùäK€€ù[ùZ]Tõ›œ\õUåçõ›—õ‹ä€€ù[ùZ]PùäN◊àYä[YYõ›ﬂZX[õ›ﬂX€€ù[ùZ]Tõ› \ô]\õàò[ŸN◊à€€ú›€›\òŸQ‹õ›\œV€YYõ›Àò€‹Ÿ\›
-	ÀúŸ][ô‹ÀY‹õ›\	 KX[õ›Àò€‹Ÿ\›
-	ÀúŸ][ô‹ÀY‹õ›\	 K€€ù[ùZ]Tõ›Àò€‹Ÿ\›
-	ÀúŸ][ô‹ÀY‹õ›\	 WKôö[\äõ€€X[äN◊óà]‹õ›\Yÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[Ÿ][ô‹—‹õ›\	 N◊àYäY‹õ›\
-^◊à‹õ›\Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ŸX›[€â NŸ‹õ›\öYI⁄X[Ÿ][ô‹—‹õ›\	ŒŸ‹õ›\ò€\‹”ò[YOI‹Ÿ][ô‹ÀY‹õ›\	Œ◊à‹õ›\ö[õô\íSIœèîÿpÓôO⁄èè]à€\‹œWúŸ][ô‹ÀXÿ\ô\›Xÿ\ôõKZX[\Ÿ][ô‹ÀXÿ\ôèèŸ]èâŒ◊à€›\òŸQ‹õ›\÷ÃOÀòôYõ‹ôJ‹õ›\
-N◊àWà‹õ›\ú]Y\ûTŸ[X›‹ä	Œúÿ€‹Oöâ OÀúô\XŸP⁄[ô[äÿ›[Y[ùò‹ôX]U^õŸJ	‘ÿpÓôI JN◊à]ÿ\ôY‹õ›\ú]Y\ûTŸ[X›‹ä	Œúÿ€‹OãúŸ][ô‹ÀXÿ\ô	 N◊àYäXÿ\ô
-^ÿÿ\ôYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	Ÿ]â Nÿÿ\ôò€\‹”ò[YOI‹Ÿ][ô‹ÀXÿ\ô\›Xÿ\ôõKZX[\Ÿ][ô‹ÀXÿ\ô	ŒŸ‹õ›\ò\[ô⁄[
-ÿ\ô
-_Wàÿ\ôò€\‹”\›òY
-	€\›Xÿ\ô	À	‹õKZX[\Ÿ][ô‹ÀXÿ\ô	 N◊óà€YYõ›ÀX[õ›À€€ù[ùZ]Tõ›◊Kôõ‹ëXX⁄
-èOúõUåçô[[›ôPYòXŸ[ùŸ\\ò]‹ú äJN◊àÿ\ôúô\XŸP⁄[ô[ä
-N◊àÿ\ôò\[ô
-YYõ›ÀõUåçŸ\\ò]‹äùYJKX[õ›ÀõUåçŸ\\ò]‹äùYJK€€ù[ùZ]Tõ› N◊óà€€ú›X€€èZX[õ›Àú]Y\ûTŸ[X›‹ä	ÀúŸ][ô‹À\õ›ÀZX€€â N◊àYäX€€ä^⁄X€€ãò€\‹”\›úô[[›ôJ	⁄X[ZX€€â N⁄X€€ãô]\Ÿ]öX€€èI€[€€âﬂWà€€ú›]OZX[õ›Àú]Y\ûTŸ[X›‹ä	‹›õ€ô… N⁄Yä]JZ]Kù^€€ù[ùI“[\‹ù\à€€õ»»\ÿpÓôIŒ◊à€€ú›’]OX€€ù[ùZ]Tõ›Àú]Y\ûTŸ[X›‹ä	‹›õ€ô… N⁄Yä’]JX’]Kù^€€ù[ùI–[\ù\»‹à]\Íõò⁄XIŒ◊óà à\»‹0ÈÌY\»]]À‘ô]ö\ÿ\ã‘\ô›[ù\à\ù[òŸ[H0Ë0ËY⁄[òHH[\‹ùpÈË€À∞Ë€»0Ë[Hö[ò⁄\[à
-ã◊à€€ú›€[ŸOYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄X[[\‹ù[ŸP€€ùõ€	 OÀò€‹Ÿ\›
-	ÀúŸ][ôÀXõÿ⁄… N◊àYä€[ŸIâà[€[ŸKò€‹Ÿ\›
-	»ÿòX⁄Ÿõ‹	 J^‹õUåçô[[›ôPYòXŸ[ùŸ\\ò]‹ú €[ŸJN€€[ŸKúô[[›ôJ
-_Wóà€›\òŸQ‹õ›\Àôõ‹ëXX⁄
-œOû⁄Yä»OOY‹õ›\	âôÀö\–€€õôX›Y
-YÀúô[[›ôJ
-_JN◊àÀããùöY]Àú]Y\ûTŸ[X›‹ê[
-	ÀúŸ][ô‹ÀY‹õ›\	 WKôõ‹ëXX⁄
-œOû◊àYäœOOY‹õ›\
-\ô]\õé◊à€€ú›YÀú]Y\ûTŸ[X›‹ä	Œúÿ€‹Oöâ OÀù^€€ù[ùùö[J
-N◊àYä…”YYXÿ[Y[ù‹…À	‘ÿpÓôHH€€õ…À	–€€ù[ùZYYH‹»ôY⁄\›õ‹…◊Kö[ò€Y\ 
-JYÀúô[[›ôJ
-N◊àJN◊àÀããùöY]Àú]Y\ûTŸ[X›‹ê[
-	Àô‹õ›\Yõ€›õ›I WKôõ‹ëXX⁄
-Oû⁄Yäÿÿ\ù0Ë€»Ï»\\ôXŸ_ò^õ»€€ôöY›\òYÀ⁄Kù\›
-ù^€€ù[ù	… J\úô[[›ôJ
-_JN◊óàYä\[ŸàõRX[[\‹ù⁄Y]OOIŸù[ò›[€â ZX[ùãõ€ò€X⁄œ\õRX[[\‹ù⁄Y]◊àYä\[Ÿà‹[ê€€ù[ùZ]TŸ][ô‹œOOIŸù[ò›[€â X€€ù[ùZ]Pùãõ€ò€X⁄œ[‹[ê€€ù[ùZ]TŸ][ô‹Œ◊àYä\[ŸàYò]RX€€úœOOIŸù[ò›[€â ZYò]RX€€ú ‹õ›\
-N◊àô]\õàùYN◊üWóã àKKKKKKKKKHS∞‡ST—TŒàô[[›ôH€€ùYŸ[HHõ⁄]\»H\ÿH€‹à€€[»[ôõ‹õXpÈË€»KKKKKKKKKH
-ã◊ôù[ò›[€àõUåçô[[›ôSöY⁄€›[ù
-
-^◊à€€ú›€Y\Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ò[\⁄\… N⁄Yä\€Y\
-\ô]\õé◊à€Y\ú]Y\ûTŸ[X›‹ê[
-	ÀõY]öXÀò[ò[\⁄\À\õ›ÀúõKZ[ú⁄Y⁄\õ›… Kôõ‹ëXX⁄
-[Oû◊à€€ú›J[ù^€€ù[ù	… Kùö[J
-N◊àYä€õ⁄]\œ◊ ‹ôY⁄\›òYñÓùW[Y\õ◊ ŸW €õ⁄]\ﬂ]X[ùYYW ŸW €õ⁄]\À⁄Kù\›
-
-JY[úô[[›ôJ
-N◊àJN◊à€€ú›€›[ù\€Y\ú]Y\ûTŸ[X›‹ê[
-	ÀõY]öX… Kõ[ô›◊àYä€›[ù
-\€Y\ú›[Kô‹öY[\]P€€[[úœXô\X]
-	”X]õZ[äÀ€›[ù
-_KZ[õX^
-YúäJX◊üWôù[ò›[€àõUåç[YPÿ\ô
-ÿ\ô€ôJ^⁄YäXÿ\ô
-\ô]\õé÷Àããòÿ\ôò€\‹”\›Kôö[\äœOòÀú›\ù’⁄]
-	‹õK][YKI JKôõ‹ëXX⁄
-œOòÿ\ôò€\‹”\›úô[[›ôJ JNÿÿ\ôò€\‹”\›òY
-	‹õKX[ò[\⁄\ÀX€€‹ôY	ÀõK][YKI›€ô_X
-_Wôù[ò›[€àõUåçY⁄\ù]RX€€äÿ\ôX€€ä^◊à€€ú›õﬁXÿ\ôÀú]Y\ûTŸ[X›‹ä	Àò⁄\ùXÿ\ôZXYô]â KXõﬁÀú]Y\ûTŸ[X›‹ä	Œúÿ€‹Oöâ N⁄YäXõﬁZõﬁú]Y\ûTŸ[X›‹ä	ÀúõKX⁄\ù]]K\õ›… J\ô]\õé◊à€€ú›õ›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	Ÿ]â N‹õ›Àò€\‹”ò[YOI‹õKX⁄\ù]]K\õ›…Œÿ€€ú›OYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹‹[â N⁄Kò€\‹”ò[YOI‹õKX⁄\ù]]KZX€€âŒ⁄Kô]\Ÿ]öX€€èZX€€é⁄KúŸ]]öXù]J	ÿ\öXKZY[âÀ	›ùYI N⁄òôYõ‹ôJõ› N‹õ›Àò\[ô
-K
-WüWôù[ò›[€àõUåç€€‹ö^ôP[ò[\⁄\ 
-^◊à€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWò[ò[\⁄\◊óI N⁄Yä]öY] \ô]\õé◊àõUåçô[[›ôSöY⁄€›[ù
-
-N◊àõUåç[YPÿ\ô
-ÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ›\úô[ù[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 K	ÿ›\úô[ù	 N◊àõUåç[YPÿ\ô
-ÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ\‹€ÿ⁄X][€ê[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 K	€YY	 N◊àõUåç[YPÿ\ô
-ÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 K	‹€Y\	 N◊àõUåç[YPÿ\ô
-ÿ›[Y[ùôŸ][[Y[ùûRY
-	€YYXÿ][€ê[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 K	€YY	 N◊àõUåç[YPÿ\ô
-ÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸP[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 K	ÿù^I N◊óà€€ú›€€ù[ùZ]OYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[ò[\⁄\… OÀò€‹Ÿ\›
-	Àò[ò[\⁄\ÀXÿ\ô	 N◊àYä€€ù[ùZ]J^ÿ€€ú›‹⁄]]ôOK›Y»
-ŒòŸ\ùﬂ⁄ _€€Húô\]VÍôW[ò⁄X_ô[ö[H‹»ò^õ‹À⁄Kù\›
-€€ù[ùZ]Kù^€€ù[ù	… N‹õUåç[YPÿ\ô
-€€ù[ùZ]K‹⁄]]ôO…‹‹⁄]]ôIŒâÿ›\úô[ù	 _Wóà€€ú›‹X‹œ^◊à	ÿ⁄\ù[[€Ÿ[[ôIŒñ…‹‹\ö…À	€[€Ÿ	◊K	ÿ⁄\ù[[€ŸY\›öXù][€âŒñ…ÿ⁄\ù	À	€[€Ÿ	◊Kà	ÿ⁄\ùY[Y[ú⁄[€ã[[ôIŒñ…‹‹\ö…À	Ÿ[Y[ú⁄[€â◊K	ÿ⁄\ù\€Y\[[ôIŒñ…€[€€âÀ	‹€Y\	◊Kà	ÿ⁄\ù\€Y\[[€Ÿ	Œñ…€[€€âÀ	‹€Y\	◊K	ÿ⁄\ù[YYY[IŒñ…‹[	À	€YY	◊Kà	ÿ⁄\ù[YYX€€òŸ\…Œñ…‹[	À	€YY	◊WàN◊àÿöôX›ô[ùöY\ ‹X‹ Kôõ‹ëXX⁄
-
-⁄Ÿ^K⁄X€€ã€ôWWJOOûÿ€€ú›ÿ\ô]öY]Àú]Y\ûTŸ[X›‹äŸ]KX[ò[\⁄\ÀZ][OWâ⁄Ÿ^_WóX
-N⁄YäXÿ\ô
-\ô]\õé‹õUåç[YPÿ\ô
-ÿ\ô€ôJN‹õUåçY⁄\ù]RX€€äÿ\ôX€€ä_JN◊àYä\[ŸàYò]RX€€úœOOIŸù[ò›[€â ZYò]RX€€ú öY] WüWóã àôX\XÿH\⁄\»HÿYHô[ô\à[∞ËõZX€Àà
-ã◊öYä\[Ÿàô[ô\ê[ò[\⁄\œOOIŸù[ò›[€â ^◊à€€ú›ô]è\ô[ô\ê[ò[\⁄\Œ‹ô[ô\ê[ò[\⁄\œX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú››]X]ÿZ]ô]äããò\ô‹ N‹õUåç€€‹ö^ôP[ò[\⁄\ 
-N‹ô]\õà›]WüWöYä\[Ÿàô[ô\î]X[ù]]]ôQ\⁄õÿ\ôOOIŸù[ò›[€â ^◊à€€ú›ô]è\ô[ô\î]X[ù]]]ôQ\⁄õÿ\ô‹ô[ô\î]X[ù]]]ôQ\⁄õÿ\ôX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú››]X]ÿZ]ô]äããò\ô‹ N‹õUåç€€‹ö^ôP[ò[\⁄\ 
-N‹ô]\õà›]WüWöYä\[Ÿàô[ô\ê€€ù[ùZ]P[ò[\⁄\œOOIŸù[ò›[€â ^◊à€€ú›ô]è\ô[ô\ê€€ù[ùZ]P[ò[\⁄\Œ‹ô[ô\ê€€ù[ùZ]P[ò[\⁄\œX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú››]X]ÿZ]ô]äããò\ô‹ Nÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[ò[\⁄\… N⁄Yäõﬁ
-^ÿõﬁú]Y\ûTŸ[X›‹ê[
-	Àò[ò[\⁄\À\õ›»‹[â Kôõ‹ëXX⁄
-‹[èOû⁄Yä€ô[ö[H‹»ò^õ‹»€€ôöY›\òY‹»õ⁄H[ò\\‹ÿYÀ⁄Kù\›
-‹[ãù^€€ù[ù	… J\‹[ãù^€€ù[ùI’Y»Ÿ\ùŒàõÿÍà\›0ËHò^ô[ô»Ÿ]\»ôY⁄\›õ‹»€€Húô\]pÍõò⁄XKâŒ⁄Yä›Y»Ÿ\ùﬂ€€Húô\]VÍôW[ò⁄XK⁄Kù\›
-‹[ãù^€€ù[ù	… J\‹[ãò€\‹”\›òY
-	‹õK\‹⁄]]ôK]^	 _J_\õUåç€€‹ö^ôP[ò[\⁄\ 
-N‹ô]\õà›]WüWóäù[ò›[€àõUåç›[\ 
-^⁄Yäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åç\›[I J\ô]\õéÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹õK]åç\›[IŒ‹›ù^€€ù[ùXã àÿpÓôH[öYöXÿYH
-ã◊à⁄X[Ÿ][ô‹—‹õ›\ãúŸ][ô‹ÀXÿ\ô€›ô\ôõ›ŒöY[üWà⁄X[Ÿ][ô‹—‹õ›\úŸ][ô‹À\õ›ÀZX€€ñŸ]KZX€€èWú[ó^ÿ€€‹éùò\äK\ôX€‹ô[YYò\äK[YY
-JHZ[\‹ù[ùWà⁄X[Ÿ][ô‹—‹õ›\úŸ][ô‹À\õ›ÀZX€€ñŸ]KZX€€èWõ[€€óó^ÿ€€‹éùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHZ[\‹ù[ùWà⁄X[Ÿ][ô‹—‹õ›\ÿ€€ù[ùZ]TŸ][ô‹–ùàúŸ][ô‹À\õ›ÀZX€€ûÿ€€‹éùò\äKXXÿŸ[ù
-HZ[\‹ù[ùWóã àÿYHò[pÎ[XH\ÿH[XH€‹àŸ[pËõùXÿH∞Ï‹öXK[ò€\⁄]ôHõ»[Ÿ»\ÿ›\õÀà
-ã◊ñŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôYÀK\õKX[ò[\⁄\À]€ôNùò\äKXXÿŸ[ù
-Nÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õKX[ò[\⁄\À]€ôJHN	Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùÿõﬁ\⁄Y›Œö[úŸ]\ôÿòJçMKçMKçMKåÃäKLé€€‹ã[Z^
-[à‹ôÿãò\äK\õKX[ò[\⁄\À]€ôJH…Kò[ú‹\ô[ù
-HZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK\€Y\ÀK\õKX[ò[\⁄\À]€ôNùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-J_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK[YYÀK\õKX[ò[\⁄\À]€ôNùò\äK\ôX€‹ô[YYò\äK[YY
-J_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YKXù^^ÀK\õKX[ò[\⁄\À]€ôNùò\äK\ôX€‹ôXù^Kò\äKXù^JJ_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK\‹⁄]]ô^ÀK\õKX[ò[\⁄\À]€ôNàÃÃŒŒWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK[[€ŸÀK\õKX[ò[\⁄\À]€ôNàÕMêŒëüWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YKY[Y[ú⁄[€ûÀK\õKX[ò[\⁄\À]€ôNùò\äKXXÿŸ[ù
-_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YKX›\úô[ùÀK\õKX[ò[\⁄\À]€ôNùò\äKXXÿŸ[ù
-_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôYãò[ò[\⁄\À]]H‹[ãŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôYãò[ò[\⁄\À]]Hûÿ€€‹éùò\äK\õKX[ò[\⁄\À]€ôJHZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôYãúŸX›[€ãZ⁄X⁄Ÿ\ûÿ€€‹éùò\äK\õKX[ò[\⁄\À]€ôJHZ[\‹ù[ù€‹X⁄]NãéLüWóã àõÿ€‹»[ù\õõ‹»Z^[H»⁄[ûòHŸ[∞Í\öX€»H\‹ÿ[HHÿ\úôYÿ\àHÿ]Y€‹öXKà
-ã◊ñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôK[õ›^ÀK\õK\õ›À]€ôNùò\äK\ôX€‹ô[õ›Kò\äKXXÿŸ[ù
-J_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôK[YYÀK\õK\õ›À]€ôNùò\äK\ôX€‹ô[YYò\äK[YY
-J_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôK\€Y\ÀK\õK\õ›À]€ôNùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-J_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôKXù^^ÀK\õK\õ›À]€ôNùò\äK\ôX€‹ôXù^Kò\äKXù^JJ_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôKXXÿŸ[ùÀK\õK\õ›À]€ôNùò\äKXXÿŸ[ù
-_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄\õ›ﬁÿòX⁄Ÿ‹õ›[ôõ[ôX\ãY‹òYY[ù
-MYYÀ€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHIKò\äK\›\ôòXŸKLäJK€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JH…Kò\äK\›\ôòXŸJJJHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHN	Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄[Xô[ÿ€€‹éùò\äK\õK\õ›À]€ôKò\äK]^
-JHZ[\‹ù[ùŸõ€ù]ŸZY⁄çÕåZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄ZX€€ûÿõﬁ\⁄Y›ŒåM€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHN	Kò[ú‹\ô[ù
-_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôK[YYúõKY]Z[[[ôHûÿ€€‹éùò\äK\ôX€‹ô[YYò\äK[YY
-J_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôKXù^HúõKY]Z[[[ôHûÿ€€‹éùò\äK\ôX€‹ôXù^Kò\äKXù^JJ_WñŸ]K]öY]œWò[ò[\⁄\◊óHúõK]€ôK\€Y\úõKY]Z[[[ôHûÿ€€‹éùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-J_Wóã à€€õŒàÏ»pÍ]öXÿ\»0ÓùZ\Œ»€‹à»€€õ»õ‹»∞ÓõY\õ‹»Hò\»\ÿ‹öpÈÌY\Àà
-ã◊à‹€Y\[ò[\⁄\»õY]öXﬁÿòX⁄Ÿ‹õ›[ôõ[ôX\ãY‹òYY[ù
-MYYÀ€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHL…Kò\äK\›\ôòXŸKLäJK€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHIKò\äK\›\ôòXŸJJJHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHç	Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùWà‹€Y\[ò[\⁄\»õY]öX»›õ€ôﬁÿ€€‹éùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHZ[\‹ù[ù›^\⁄Y›ŒåM€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHå	Kò[ú‹\ô[ù
-_Wà‹€Y\[ò[\⁄\»õY]öX»‹[ûÿ€€‹éùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHZ[\‹ù[ùŸõ€ù]ŸZY⁄çÕåZ[\‹ù[ù€‹X⁄]NãéLàZ[\‹ù[ùWóã àÿXôpÈÿ[‹»H‹∞ËYöX€‹»[X∞Í[H0ÍõHôYô\∞Íõò⁄XHö\›X[à
-ã◊ãúõKX⁄\ù]]K\õ›ﬁŸ\‹^Nôõ^ÿ[Y€ãZ][\ŒòŸ[ù\éŸÿ\é\€X\ô⁄[ãXõ›€Nå‹WãúõKX⁄\ù]]K\õ›»û€X\ô⁄[éåZ[\‹ù[ùÿ€€‹éùò\äK\õKX[ò[\⁄\À]€ôKò\äK]^
-JHZ[\‹ù[ùWãúõKX⁄\ù]]KZX€€û›⁄Yåé⁄ZY⁄åéÿõ‹ô\ã\òY]\Œé\Ÿ\‹^Nô‹öY‹XŸKZ][\ŒòŸ[ù\éÿ€€‹éùò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JNÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JHLIKò[ú‹\ô[ù
-Nÿõﬁ\⁄Y›ŒåL‹€€‹ã[Z^
-[à‹ôÿãò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JHMâKò[ú‹\ô[ù
-_WãúõKX⁄\ù]]KZX€€àú›ôÀZX€€ãúõKX⁄\ù]]KZX€€èú›ôﬁ›⁄YåM‹Z[\‹ù[ù⁄ZY⁄åM‹Z[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK\€Y\ò⁄\ùY‹öY^Ÿ]K]öY]œWò[ò[\⁄\◊óHúõK][YK\€Y\ò⁄\ùX^\À[Xô[Ÿö[ùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHZ[\‹ù[ù€‹X⁄]NãéZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK[YYò⁄\ùY‹öY^Ÿ]K]öY]œWò[ò[\⁄\◊óHúõK][YK[YYò⁄\ùX^\À[Xô[Ÿö[ùò\äK\ôX€‹ô[YYò\äK[YY
-JHZ[\‹ù[ù€‹X⁄]NãéZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK\€Y\ò⁄\ù[[ô^‹›õ⁄ŸNùò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JHZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK][YK[YYò⁄\ù[[ô^‹›õ⁄ŸNùò\äK\ôX€‹ô[YYò\äK[YY
-JHZ[\‹ù[ùWñŸ]K]öY]œWò[ò[\⁄\◊óHúõK\‹⁄]]ôK]^ÿ€€‹éàÃÃŒŒZ[\‹ù[ùŸõ€ù]ŸZY⁄çŒZ[\‹ù[ùWóö[Ÿ]K][YOWô\ö◊óHŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄\õ›ﬁÿòX⁄Ÿ‹õ›[ôõ[ôX\ãY‹òYY[ù
-MYYÀ€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHM	KÃNLNLYäK€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHâKÃLLLLMäJHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHçIKôÿòJçMKçMKçMKåL
-JHZ[\‹ù[ùWêYYXJôYô\úÀX€€‹ã\ÿ⁄[YNô\ö ^⁄[Ÿ]K][YOWúﬁ\›[WóHŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄\õ›ﬁÿòX⁄Ÿ‹õ›[ôõ[ôX\ãY‹òYY[ù
-MYYÀ€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHM	KÃNLNLYäK€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHâKÃLLLLMäJHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äKXXÿŸ[ù
-JHçIKôÿòJçMKçMKçMKåL
-JHZ[\‹ù[ù_WòŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_JJ
-N◊óôù[ò›[€àõUåçõ€›
-
-^◊àõUåç€€ú€€Y]RX[Ÿ][ô‹ 
-N‹õUåç€€‹ö^ôP[ò[\⁄\ 
-N◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â KXõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N⁄Yä‹
-]‹ù^€€ù[ùXâ‘ìW’åç‘ëSPT—_X⁄YäXõ›]
-XXõ›]ù^€€ù[ùTìW’åç‘ëSPT—N◊üWúõUåçõ€›
-
-N◊ñŒçLÃMLKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåçõ€›\ JN◊ôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOû⁄YäKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K]XèWúŸ][ô‹◊óI J\Ÿ][Y[›]
-õUåç€€ú€€Y]RX[Ÿ][ô‹ÀÃ
-N⁄YäKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K]XèWò[ò[\⁄\◊óI J\Ÿ][Y[›]
-õUåç€€‹ö^ôP[ò[\⁄\Àå
-_KùYJN◊öYä\[ŸàõR[ùò[Y]OOOIŸù[ò›[€â \õR[ùò[Y]J	ÿ[ò[\⁄\…À	‹Ÿ][ô‹… N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃçãöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåçà8†%Xõ‹ò]0Ï‹ö[»Hò\úòH[ôô\ö[‹àôX€€ú›ùpÎY»€€[»Y]‹à]ôHH[ô\[ô[ùKà
-ã◊ò€€ú›ìW’åçó‘ëSPT—OIÃKåãåXô]Kç	Œ◊óôù[ò›[€àõUåçì‹[ïXòò\ìXä
-^◊àÿÿ][€ãöôYèIÀã›Xòò\ã[Xãö[	Œ◊üWóã à[ù\òŸ\H»õ›0Ë€»Y\€[»\⁄\»H[HŸ\à[›öY»\òH\ú€€ò[^òpÈË€»]ò[∞ÈÿYKà
-ã◊ôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOû◊à€€ú›ù]€èYKù\ôŸ]ò€‹Ÿ\›
-	»›Xòò\ìXêùâ N◊àYäXù]€ä\ô]\õé◊àKúô]ô[ùYò][
-
-N◊àKú›‹[[YYX]Tõ‹Yÿ][€ä
-N◊àõUåçì‹[ïXòò\ìXä
-N◊üKùYJN◊óã à[»ô]‹õò\à»Xõ‹ò]0Ï‹ö[ÀôX\XÿH[YYX][Y[ùHH€€ôöY›\òpÈË€»ÿ[òKà
-ã◊ù⁄[ô›ÀòY]ô[ù\›[ô\ä	‹YŸ\⁄›…À
-
-OOû◊àû^⁄Yä\[Ÿà\TôY⁄\›õ’Xêò\èOOIŸù[ò›[€â X\TôY⁄\›õ’Xêò\ä
-_Xÿ]⁄ﬂWüJN◊óôù[ò›[€àõUåçëö[ò[^ôJ
-^◊àû^⁄Yä\[ŸàìW’åé‘ëSPT—HOOI›[ôYö[ôY	ﬂ\[ŸàìW’åç◊‘ëSPT—HOOI›[ôYö[ôY	 \ô]\õüXÿ]⁄ﬂWà€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â KXõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åçó‘ëSPT—_X◊àYäXõ›]
-XXõ›]ù^€€ù[ùTìW’åçó‘ëSPT—N◊üWúõUåçëö[ò[^ôJ
-N◊úŸ][Y[›]
-õUåçëö[ò[^ôKLå
-N◊óã àHô]ö\Ë€»ŸY›Z[ùHôX⁄\ÿH[ùò\à\⁄\»HçåçÀ⁄\»ôYYö[ôHÿ\ù0ÌY\»Hö\›X[^òY‹ô\Àà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃçÀöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåç»8†%ô]ö\Ë€»X›[][YNà\›0Ï‹öX€Àõ‹õ][0Ë\ö[‹À][\À[∞Ë[\Ÿ\»HY⁄Xö[YYKà
-ã◊ò€€ú›ìW’åç◊‘ëSPT—OIÃKåãåXô]Kç	Œ◊óôù[ò›[€àõUåç’\RX€€ä\J^‹ô]\õà\OOOI€õ›Iœ…€õ›IŒù\OOOI€YYXÿ][€âœ…‹[	Œù\OOOI‹€Y\	œ…€[€€âŒâÿòY…ﬂWôù[ò›[€àõUåç’\P€\‹ \J^‹ô]\õà\OOOI€õ›Iœ…€õ›IŒù\OOOI€YYXÿ][€âœ…€YYXÿ][€âŒù\OOOI‹€Y\	œ…‹€Y\	Œâ‹\ò⁄\ŸIﬂWôù[ò›[€àõUåç’\U€ôJ\J^‹ô]\õà\OOOI€õ›Iœ…›ò\äK\ôX€‹ô[õ›Kò\äKXXÿŸ[ù
-JIŒù\OOOI€YYXÿ][€âœ…›ò\äK\ôX€‹ô[YYò\äK[YY
-JIŒù\OOOI‹€Y\	œ…›ò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JIŒâ›ò\äK\ôX€‹ôXù^Kò\äKXù^JJIﬂWôù[ò›[€àõUåç—‹ŸSXô[
-J^⁄YäOÀù›[‹ŸUò[YHO[ù[	âìù[Xô\ãö\—ö[ö]Jù[Xô\äKù›[‹ŸUò[YJJJ\ô]\õò	”ù[Xô\äKù›[‹ŸUò[YJKù”ÿÿ[T›ö[ô 	‹Pîâ _H	ŸKô‹ŸU[ö]	…ﬂXùö[J
-N‹ô]\õà›ö[ô OÀô‹Ÿ_	… Kùö[J
-_Wôù[ò›[€àõUåç”[€ô^Uò[YJä^ÿ€€ú›è\\úŸS[€ô^JäN‹ô]\õàèO[ù[……Œõ[€ô^Jä_Wôù[ò›[€àõUåç‘X⁄ÿYŸSXô[
-ä^€èSX]õX^
-Kù[Xô\ää_JN‹ô]\õò	€ãù”ÿÿ[T›ö[ô 	‹Pîâ _H	€èOOLO…ÿÿZ^IŒâÿÿZ^\…ﬂXWôù[ò›[€àõUåç’[ö]”Xô[
-ä^€èSù[Xô\ääN‹ô]\õàù[Xô\ãö\—ö[ö]JäIâõèåÿ	€ãù”ÿÿ[T›ö[ô 	‹Pîâ _H	€èOOLO…›[öYYIŒâ›[öYY\…ﬂXâ…ﬂWôù[ò›[€àõUåç“[X[ë\ò][€ì\ \Àÿ€€\X›]ùY_O^ﬂJ^€]Z[èSX]õX^
-X]úõ›[ô
-ù[Xô\ä\ KÕå
-JN⁄YäSù[Xô\ãö\—ö[ö]JZ[äJ\ô]\õâ¯†%	Œ⁄YäZ[èå
-\ô]\õò	€Z[üHZ[òÿ€€ú›SX]ôõ€‹äZ[ãÕå
-KO[Z[âMå⁄Yäç
-^⁄Yä[J\ô]\õò	⁄Z‹ô]\õà€€\X›ÿ	⁄Z	‘›ö[ô JKúY›\ù
-ã	Ã	 _Xò	⁄ZH	€_[Z[òX€€ú›SX]ôõ€‹äÃç
-KöZ	Lç⁄Yä\ö
-\ô]\õò	ŸH	ŸOOLO…ŸXIŒâŸX\…ﬂX‹ô]\õò	ŸH	ŸOOLO…ŸXIŒâŸX\…ﬂHH	‹öZWôù[ò›[€àõUåç“[X[ö^ôQ\ò][€ï^
-^I… ^€]›]T›ö[ô ^
-N€›][›]úô\XŸJ 
- ŒñÀóW
- O W ôXW
-◊
-KŸ⁄K
-ÀäOOúõUåç“[X[ë\ò][€ì\ ù[Xô\ä›ö[ô äKúô\XŸJ	À	À	Àâ JJéçÿ€€\X›ùùY_JJN€›][›]úô\XŸJ 
-÷ÀóW
- W öãŸ⁄K
-ÀäOOúõUåç“[X[ë\ò][€ì\ ù[Xô\ä›ö[ô äKúô\XŸJ	À	À	Àâ JJåÕåÿ€€\X›ùùY_JJN‹ô]\õà›]Wôù[ò›[€àõUåç“[X[ö^ôTõ€›
-õ€›
-^⁄Yä\õ€›
-\ô]\õéÿ€€ú›ÿ[Ÿ\èYÿ›[Y[ùò‹ôX]UôYUÿ[Ÿ\äõ€›õŸQö[\ãî“’◊’V
-Nÿ€€ú›õŸ\œV◊N›⁄[Jÿ[Ÿ\ãõô^õŸJ
-J[õŸ\Àú\⁄
-ÿ[Ÿ\ãò›\úô[ùõŸJNŸõ‹ä€€ú›õŸHŸàõŸ\ ^ÿ€€ú›[õŸKú\ô[ù[[Y[ù⁄Yä\ò€‹Ÿ\›
-	‹›ôÀÿ‹ö\›[K^\ôXK[ú]	 JX€€ù[ùYNÿ€€ú›ô^\õUåç“[X[ö^ôQ\ò][€ï^
-õŸKõõŸUò[Y_	… N⁄Yäô^OO[õŸKõõŸUò[YJ[õŸKõõŸUò[YO[ô^_Wóôù[ò›[€àõUåç”[€ŸòYŸJ
-^‹ô]\õâ…ﬂWôù[ò›[€àõUåç’Y–⁄\
-Y ^‹ô]\õàYœÿ‹[à€\‹œWúõK[õ›K]Y◊èâŸ\ÿ Y _O‹‹[èòâ…ﬂWôù[ò›[€àõUåç–Yò[òŸYY]JJ^ÿ€€ú›][\œV◊NŸõ‹ä€€ú›⁄YóHŸàÿöôX›ô[ùöY\ OÀô[[›[€îÿ€‹ô\ﬂﬂJKú€XŸJäJ^ÿ€€ú›Xô[YKô[[›[€ìXô[œÀñ⁄Y_
-
-\[Ÿà[[›[€ë[Y[ú⁄[€úœOOIŸù[ò›[€âœŸ[[›[€ë[Y[ú⁄[€ú 
-Nñ◊JKôö[ô
-OôöYOOZY
-OÀõXô[
-_Y⁄][\Àú\⁄
-‹[à€\‹œWúõK[Y]K]^èâŸ\ÿ Xô[
-_H	Ÿ\ÿ ä_KÕ‹‹[èò
-_\ô]\õà][\Àöõ⁄[ä	… _Wóã àÿ\ù0ÌY\»H\›0Ï‹öX€À‘ôXŸ[ù\Œà0ÎX€€ôHX⁄[XH»‹∞Ë\ö[À€€[òHY[õ‹ã‹ŸH€€[»Y»ö[ò⁄\[à
-ã◊ô]ô[ùÿ\ôYù[ò›[€äJ^◊à€€ú›\O\õUåç’\P€\‹ Kù\JKX€€è\õUåç’\RX€€äKù\JK€ôO\õUåç’\U€ôJKù\JN€]⁄[ôI‘ëQ“T’ì…À]OI…ÀY]OI…Œ◊àYäKù\OOOI€õ›I ^◊à⁄[ôYKò]Y[”€õO…–Sì’p·‡”»Hì÷âŒäYKù^	âôKõ[€Ÿÿ€‹ôHO[ù[…–“P“ÀRSâŒâ–Sì’p·‡”… N›]OYKù^	–⁄X⁄ÀZ[à[[ÿ⁄[€ò[	Œÿ€€ú›òYŸ\œX	‹õUåç”[€ŸòYŸJKõ[€Ÿÿ€‹ôJ_I‹õUåç’Y–⁄\
-KùY _I‹õUåç–Yò[òŸYY]JJ_X⁄YäòYŸ\ [Y]OX]à€\‹œWù[Y[[ôK[Y]HõK[Y]KXòYŸ\◊èâÿòYŸ\ﬂOŸ]èò◊àY[ŸHYäKù\OOOI€YYXÿ][€â ^◊à⁄[ôI”QQP–SQSï…Œÿ€€ú›‹ŸO\õUåç—‹ŸSXô[
-JN›]OX	ŸKõYYXÿ][€ü	”YYXÿ[Y[ù…ﬂIŸ‹ŸOÿ0≠»	Ÿ‹Ÿ_Xâ…ﬂX⁄YäKõõ›J[Y]OX]à€\‹œWù[Y[[ôK[Y]WèâŸ\ÿ Kõõ›J_OŸ]èò◊àY[ŸHYäKù\OOOI‹€Y\	 ^◊à⁄[ôI‘””ì…Œ›]OY\ò][€ìXô[
-\ò][€í›\ú Kú›\ù[YKKô[ô[YJJNÿ€€ú›ö]œVŸKú]X[]Oÿ]X[YYH	ŸKú]X[]_KÕXõù[Kú€›\òŸOOOI⁄X[\⁄‹ù›]	œ…“[\‹ùY»»ÿpÓôIŒâ”X[ùX[	ÀKõõ›WKôö[\äõ€€X[äN⁄Yäö]Àõ[ô›
-[Y]OX]à€\‹œWù[Y[[ôK[Y]Wèâÿö]ÀõX\
-\ÿ Köõ⁄[ä	»0≠»	 _OŸ]èò◊àY[Ÿ^◊à⁄[ôI–””TêIŒÿ€€ú›öXŸO\õUåç”[€ô^Uò[YJKúöXŸJN›]OX	ŸKõYYXÿ][€ü	”YYXÿ[Y[ù…ﬂI‹öXŸOÿ0≠»	‹öXŸ_Xâ…ﬂXÿ€€ú›ö]œVŸKúX⁄ÿYŸ\œ‹õUåç‘X⁄ÿYŸSXô[
-KúX⁄ÿYŸ\ Nõù[KúXŸWKôö[\äõ€€X[äN⁄Yäö]Àõ[ô›
-[Y]OX]à€\‹œWù[Y[[ôK[Y]Wèâÿö]ÀõX\
-\ÿ Köõ⁄[ä	»0≠»	 _OŸ]èò◊àWàô]\õò\ùX€H€\‹œWù[Y[[ôKZ][HõK]åçÀ][Y[[ôHõK]\KI›\_Wà›[OWãK\õK\ôX€‹ô]€ôNâ›€ô_Wèè]à€\‹œWù[Y[[ôK\⁄YWèè‹[à€\‹œWù[Y[[ôK]\KZX€€óèâ‹›ô X€€ä_O‹‹[èè]à€\‹œWù[Y[[ôK][YWèâ›[YSXô[
-Kù[Y\›[\
-_OŸ]èèŸ]èè]à€\‹œWù[Y[[ôK[XZ[óèè]à€\‹œWù[Y[[ôKZ⁄[ô⁄[ôI›\_Wèâ⁄⁄[ôOŸ]èè]à€\‹œWù[Y[[ôK]]WèâŸ\ÿ ]J_OŸ]èâ€Y]_IŸKö\–]Y[œÿ]à]KX]Y[œWâŸKöYWèèŸ]èòâ…ﬂOŸ]èèù]€à€\‹œWö][K[Y[ùWà]K[Y[ùOWâŸKöYWà\öXK[Xô[Wì‹0ÈÌY\◊è∏†(∏†(∏†(èÿù]€èèÿ\ùX€OòüN◊óôù[ò›[€àõUåç—[ö[òŸR\›‹ûQö[\ú 
-^ÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	⁄\›‹ûQö[\ú… N⁄YäXõﬁ
-\ô]\õéÿ€€ú›X\^€õ›Nñ…€õ›IÀ	–[õ›pÈÌY\…◊KYYXÿ][€éñ…‹[	À	”YYXÿ[Y[ù‹…◊K€Y\ñ…€[€€âÀ	‘€€õ…◊K\ò⁄\ŸNñ…ÿòY…À	–€€\ò\…◊_NŸõ‹ä€€ú›àŸàõﬁú]Y\ûTŸ[X›‹ê[
-	÷Ÿ]KYö[\óI J^ÿ€€ú›‹Xœ[X\ÿãô]\Ÿ]ôö[\óN⁄Yä\‹Xﬂãô]\Ÿ]úõUåç“X€€èOOIÃI X€€ù[ùYNÿãô]\Ÿ]úõUåç“X€€èIÃIŒÿãò€\‹”\›òY
-	‹õKYö[\ã]\I Nÿãú›[KúŸ]õ‹\ùJ	ÀK\õKYö[\ã]€ôIÀõUåç’\U€ôJãô]\Ÿ]ôö[\äJNÿãö[õô\íSX‹[à€\‹œWúõKYö[\ãZX€€óèâ‹›ô ‹X÷ÃJ_O‹‹[èè‹[èâ‹‹X÷ÃW_O‹‹[èò_Wóã à€€õ»\ÿHHY\€XH[ô›XYŸ[Hö\›X[H\ÿÿ[HH[[‹ãX[ù[ô»x†$ÕKà
-ã◊ú]X[]TŸ[X›‹èYù[ò›[€äò[YOM
-^‹ô]\õò]à€\‹œWú€Y\\]X[]HõK\€Y\\]X[]WàYWú€Y\]X[]Wèâ÷ÃKãÀWKõX\
-OOûÿ€€ú›œ]\[ŸàõS[€ŸOOIŸù[ò›[€âœ‹õS[€Ÿ
-JNûÿ€€‹éñ……À	»—ëå–åÃ	À	»—ëçêL	À	»—ëëåIÀ	»ÃÕQNâÀ	»ÕMêŒëâ◊V‹WKõ‹ô\éâ»ŸôôâÀ^úOOOLœ…»ÃÃÃé	Œâ»ŸôôâÀ€›Œâ‹ôÿòJLMåçMKå IﬂN‹ô]\õòù]€à\OWòù]€óà]K\]X[]OWâ‹_Wà€\‹œWõ[€Ÿ\ÿ€‹ôHõK\€Y\\]X[]K\ÿ€‹ôH	”ù[Xô\äò[YJOOO\O…‹Ÿ[X›Y	Œâ…ﬂWà\öXK\ô\‹ŸYWâ”ù[Xô\äò[YJOOO\_Wà›[OWãK[[€ŸX€€‹éâÿÀò€€‹üNÀK[[€ŸXõ‹ô\éâÿÀòõ‹ô\üNÀK[[€Ÿ]^âÿÀù^NÀK[[€ŸY€›ŒâÿÀô€›ﬂWèâ‹_Oÿù]€èòJKöõ⁄[ä	… _OŸ]èè[ú]\OWöY[óàYWú€Y\]X[]Uò[YWàò[YOWâ”X]õX^
-KX]õZ[äKù[Xô\äò[YJ_
-J_WèòN◊ù⁄\ôT]X[]TŸ[X›‹èYù[ò›[€ä
-^ÿ€€ú›ù]€úœVÀããôÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	»‹€Y\]X[]HŸ]K\]X[]WI WKY[èYÿ›[Y[ùôŸ][[Y[ùûRY
-	‹€Y\]X[]Uò[YI Nÿù]€úÀôõ‹ëXX⁄
-èOòãõ€ò€X⁄œJ
-OOûÿù]€úÀôõ‹ëXX⁄
-Oûﬁò€\‹”\›ùŸŸ€J	‹Ÿ[X›Y	ÀOOXäNﬁúŸ]]öXù]J	ÿ\öXK\ô\‹ŸY	À›ö[ô OOXäJ_JN⁄YäY[äZY[ãùò[YOXãô]\Ÿ]ú]X[]_J_N◊óã à[öZ\õ»[H€€\ò\Œà\ô\Ÿ[ùHŸ[\ôHâHŸ[ù]õ‹»]X[ô»»ÿ[\»\ôHõÿ€À‹ÿ[òKà
-ã◊ôù[ò›[€àõUåç—õ‹õX][€ô^R[ú]
-[
-^⁄YäY[T›ö[ô [ùò[Y_	… Kùö[J
-J\ô]\õéÿ€€ú›è\\úŸS[€ô^J[ùò[YJN⁄YäàO[ù[
-Y[ùò[YO[[€ô^Jä_Wôÿ›[Y[ùòY]ô[ù\›[ô\ä	Ÿõÿ›\€›]	ÀOOû⁄YäKù\ôŸ]ÀöYOOI‹\ò⁄\ŸTöXŸI \õUåç—õ‹õX][€ô^R[ú]
-Kù\ôŸ]
-_KùYJN◊ôÿ›[Y[ùòY]ô[ù\›[ô\ä	‹›XõZ]	À
-
-OOû‹õUåç—õ‹õX][€ô^R[ú]
-ÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTöXŸI J_KùYJN◊öYä\[Ÿà‹[î\ò⁄\ŸT⁄Y]OOIŸù[ò›[€â ^◊à€€ú›õUåç‘ô]ì‹[î\ò⁄\ŸT⁄Y][‹[î\ò⁄\ŸT⁄Y]◊à‹[î\ò⁄\ŸT⁄Y]X\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú››]X]ÿZ]õUåç‘ô]ì‹[î\ò⁄\ŸT⁄Y]
-ããò\ô‹ Nÿ€€ú›[ú]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹\ò⁄\ŸTöXŸI N⁄Yä[ú]
-^⁄[ú]úXŸZ€\èI‘â	Œ‹Ÿ][Y[›]
-
-
-OOúõUåç—õ‹õX][€ô^R[ú]
-[ú]
-K
-_\ô]\õà›]WüWóã àö\›X[^òpÈË€»H€€\òH€€H∞Ï›[»\ÿ‹ô]»HY»ö[ò⁄\[[H\›\]YKà
-ã◊ôù[ò›[€àõUåç‘\ò⁄\ŸQ]Z[
-Xô[ò[YK›€ôOYò[Ÿ_O^ﬂJ^⁄Yäò[YOOO[ù[ò[YOOO][ôYö[ôY›ö[ô ò[YJKùö[J
-OOOI… \ô]\õâ…Œ‹ô]\õò]à€\‹œWúõK\\ò⁄\ŸKY]Z[	›€ôO…»€ôIŒâ…ﬂWèè€X[âŸ\ÿ Xô[
-_O‹€X[è›õ€ôœâŸ\ÿ ›ö[ô ò[YJJ_O‹›õ€ôœèŸ]èòWöYä\[Ÿà‹[ë]ô[ùöY]Ÿ\èOOIŸù[ò›[€â ^◊à€€ú›õUåç‘ô]ïöY]Ÿ\è[‹[ë]ô[ùöY]Ÿ\é◊à‹[ë]ô[ùöY]Ÿ\èX\ﬁ[ò»ù[ò›[€äY
-^ÿ€€ú›OJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-N⁄YäOÀù\HOOI‹\ò⁄\ŸI \ô]\õàõUåç‘ô]ïöY]Ÿ\äY
-Nÿ€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOYKõYYXÿ][€íY
-_ö[ôõŸö[PûQ]ô[ù
-KYY KYö[ôô\Ÿ[ù][€äKKúô\Ÿ[ù][€íY
-Kô\Ÿ[ù][€è\‹ô\Ÿ[ù][€ë\‹^J
-Nâ…Œÿ€€ú›öXŸO\õUåç”[€ô^Uò[YJKúöXŸJ_KúöXŸ_	¯†%	Œÿ€€ú›õŸOV‹õUåç‘\ò⁄\ŸQ]Z[
-	”YYXÿ[Y[ù…ÀKõYYXÿ][€ü	”YYXÿ[Y[ù…À›€ôNùùY_JKõUåç‘\ò⁄\ŸQ]Z[
-	–\ô\Ÿ[ùpÈË€…Àô\Ÿ[ù][€äKõUåç‘\ò⁄\ŸQ]Z[
-	…ÀõUåç‘X⁄ÿYŸSXô[
-KúX⁄ÿYŸ\ JKõUåç‘\ò⁄\ŸQ]Z[
-	…ÀõUåç’[ö]”Xô[
-Kù›[[ö] JKõUåç‘\ò⁄\ŸQ]Z[
-	’ò[‹àY€…ÀöXŸK›€ôNùùY_JKõUåç‘\ò⁄\ŸQ]Z[
-	–€€\òY»[IÀKúXŸ_	”∞Ë€»[ôõ‹õXY… K]à€\‹œWúõK\\ò⁄\ŸKY]WèâŸ\ÿ ôY⁄\›õ—]Z[]JKù[Y\›[\
-J_OŸ]èòKöõ⁄[ä	… N€‹[êòX⁄Ÿõ‹
-	–€€\òIÀ]à€\‹œWúõK\\ò⁄\ŸKY]Z[◊èâÿõŸ_OŸ]èè]à€\‹œWôõ‹õKXX›[€ú◊èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€óàYWùöY]Ÿ\ê€‹ŸPùóèëôX⁄\èÿù]€èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€óàYWùöY]Ÿ\ëY]ùóèëY]\èÿù]€èèŸ]èò]èOô]ãúô]ô[ùYò][
-
-JNŸÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ê€‹ŸPùâ Kõ€ò€X⁄œX€‹ŸT⁄Y]Ÿÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ëY]ùâ Kõ€ò€X⁄œJ
-OOõ‹[ë]ô[ùY]‹äY
-_WüWóã à‹∞ËYöX€»H\›öXùZpÈË€»8†$ÃLà∞Ï›[‹»‹ò[ô\Àò\ŸH€€‹öYHH€€ùYŸ[H[ùõÀŸõ‹òHH€€[òKà
-ã◊úõS[€Ÿò\ê⁄\ùYù[ò›[€äõ›‹ ^‹õ›‹œ\õ›‹Àú€XŸJLJN⁄Yä\õ›‹Àõ[ô›
-\ô]\õà⁄\ù[\J	–Z[ôH∞Ë€»0ËHY‹»›YöX⁄Y[ù\Àâ Nÿ€€ú›œMÃåLÃLY^€ååãéåNåÃéççüK]œUÀ\Yõ\Yúãò\ŸVORMò\ŸRLÕò\êò\ŸOXò\ŸVKLL›Xò\êò\ŸK\YùX^SX]õX^
-Kããúõ›‹ÀõX\
-èOìù[Xô\äãùò[YJ_
-JKùœSX]õX^
-ã]À‹õ›‹Àõ[ô›
-ãçMäN‹ô]\õò›ô»€\‹œWõÿÿ[X⁄\ù\›ô»õK[[€ŸXò\ú»õK]åçÀ[[€ŸXò\ú◊àöY]–õﬁWå	’ﬂH	“Wàõ€OWö[Y◊à\öXK[Xô[Wë\›öXùZpÈË€»»[[‹óèè[ôH€\‹œWò⁄\ù^ô\õ◊àOWâ‹YõWàLOWâÿò\êò\Ÿ_WàèWâ’À\YúüWàLèWâÿò\êò\Ÿ_Wãœâ‹õ›‹ÀõX\
-
-ãJOOûÿ€€ú›œ\õS[€Ÿ
-JKò[YOSù[Xô\äãùò[YJ_ﬁ\Yõ
- JÀçJJö]À‹õ›‹Àõ[ô›]ò[YO”X]õX^
-Lãò[YK€X^
-ú›
-NåÀ‹Xò\êò\ŸKZ[ú⁄YO]ò[YOå	âöèMã€›[ùOZ[ú⁄YO›‹
-ÃçŒìX]õX^
-NK‹LL
-K€›[ùö[Z[ú⁄YOÿÀù^âÿ›\úô[ù€€‹âÀò\ëö[ZOOOL…»ÃMÃMÃQ	ŒòÀò€€‹é‹ô]\õòôX›€\‹œWúõK]åçÀ[[€ŸXò\óàWâÿﬁXùÀÃüWàOWâ›‹Wà⁄YWâÿùﬂWàZY⁄Wâ⁄WàûWåLWàö[Wâÿò\ëö[Wà›õ⁄ŸOWâ⁄OOOL…»ÕÕçM—ëâŒòÀòõ‹ô\üWà›õ⁄ŸK]⁄YWåóèè]Oìõ›H	⁄_Nà	›ò[Y_HôY⁄\›õ  O›]Oè‹ôX›è^€\‹œWò⁄\ùXò\ã]ò[YH	⁄[ú⁄YO…⁄[ú⁄YIŒâ€›]⁄YIﬂWàWâÿﬁWàOWâÿ€›[ù_Wà^X[ò⁄‹èWõZYWàö[Wâÿ€›[ùö[Wèâ›ò[Y_O›^èôX›€\‹œWúõK]åçÀ[[€ŸXò\ŸWàWâÿﬁXùÀÃüWàOWâÿò\ŸV_Wà⁄YWâÿùﬂWàZY⁄Wâÿò\ŸRWàûWåLàö[Wâÿò\ëö[Wà›õ⁄ŸOWâ⁄OOOL…»ÕÕçM—ëâŒòÀòõ‹ô\üWà›õ⁄ŸK]⁄YWåKéãœè^€\‹œWúõK]åçÀ[[€ŸXò\ŸK[Xô[àWâÿﬁWàOWâÿò\ŸVJÃåﬂWà^X[ò⁄‹èWõZYWàö[WâÿÀù^Wèâ⁄_O›^òJKöõ⁄[ä	… _O‹›ôœòN◊óôù[ò›[€àõUåç‘€\⁄€€ù[ùZ]J
-^ÿ€€ú›õﬁYÿ›[Y[ùôŸ][[Y[ùûRY
-	ÿ€€ù[ùZ]P[ò[\⁄\… N⁄YäXõﬁ
-\ô]\õéŸõ‹ä€€ú›õ›»ŸàÀããòõﬁú]Y\ûTŸ[X›‹ê[
-	Àò[ò[\⁄\À\õ›… WJ^ÿ€€ú››õ€ôœ\õ›Àú]Y\ûTŸ[X›‹ä	‹›õ€ô… KXô[\›õ€ôœÀù^€€ù[ùùö[J
-_	…À‹[è\õ›Àú]Y\ûTŸ[X›‹ä	‹‹[â N⁄Yä◊ìXZ[‹à[ù\ùò[»[ùôH^‹À⁄Kù\›
-Xô[
-J^‹õ›Àúô[[›ôJ
-Nÿ€€ù[ùY_ZYä◊í[ù\ùò[‹»]XZ\À⁄Kù\›
-Xô[
-J^‹›õ€ôœÀúô[[›ôJ
-N‹õ›Àò€\‹”\›òY
-	‹õKX€€ù[ùZ]K\›]\… Nÿ€€ú›‹⁄]]ôOK›Y»Ÿ\ùﬂ€€Húô\]VÍôW[ò⁄X_ô[ö[H‹»ò^õ‹À⁄Kù\›
-‹[èÀù^€€ù[ù	… N‹õ›Àò€\‹”\›ùŸŸ€J	‹‹⁄]]ôIÀ‹⁄]]ôJN⁄Yä‹⁄]]ôIâú‹[ä\‹[ãù^€€ù[ùI’Y»Ÿ\ùÀõÿÍà\›0ËHò^ô[ô»Ÿ]\»ôY⁄\›õ‹»€€Húô\]pÍõò⁄XKâﬂ_\õUåç“[X[ö^ôTõ€›
-õﬁ
-_Wôù[ò›[€àõUåç‘€\⁄[ò[\⁄\ 
-^ÿ€€ú›öY]œYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWò[ò[\⁄\◊óI N⁄Yä]öY] \ô]\õéÿ€€ú›\›]öY]Àú]Y\ûTŸ[X›‹ä	÷Ÿ]KX[ò[\⁄\ÀZ][OWò⁄\ù[[€ŸY\›öXù][€óóHâ N⁄Yä\›
-Y\›ù^€€ù[ùI—\›öXùZpÈË€»»[[‹âŒÿ€€ú›\ò⁄\ŸO]öY]Àú]Y\ûTŸ[X›‹ä	»‹\ò⁄\ŸP[ò[\⁄\… N‹\ò⁄\ŸOÀú]Y\ûTŸ[X›‹ê[
-	ÀúõKY]Z[[[ôHâ Kôõ‹ëXX⁄
-èOû⁄Yä◊ì€ôNã⁄Kù\›
-ãù^€€ù[ù	… JXãù^€€ù[ùI–€€\òY»[NâﬂJN‹õUåç‘€\⁄€€ù[ùZ]J
-N‹õUåç“[X[ö^ôTõ€›
-öY] _WóöYä\[Ÿàô[ô\ê[ò[\⁄\œOOIŸù[ò›[€â ^◊à€€ú›õUåç‘ô]îô[ô\ê[ò[\⁄\œ\ô[ô\ê[ò[\⁄\Œ‹ô[ô\ê[ò[\⁄\œX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú››]X]ÿZ]õUåç‘ô]îô[ô\ê[ò[\⁄\ ããò\ô‹ N‹õUåç‘€\⁄[ò[\⁄\ 
-N‹ô]\õà›]WüWöYä\[Ÿàô[ô\î]X[ù]]]ôQ\⁄õÿ\ôOOIŸù[ò›[€â ^◊à€€ú›õUåç‘ô]îô[ô\ë\⁄õÿ\ô\ô[ô\î]X[ù]]]ôQ\⁄õÿ\ô‹ô[ô\î]X[ù]]]ôQ\⁄õÿ\ôX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú››]X]ÿZ]õUåç‘ô]îô[ô\ë\⁄õÿ\ô
-ããò\ô‹ N‹õUåç‘€\⁄[ò[\⁄\ 
-N‹ô]\õà›]WüWöYä\[Ÿàô[ô\ê€€ù[ùZ]P[ò[\⁄\œOOIŸù[ò›[€â ^◊à€€ú›õUåç‘ô]ê€€ù[ùZ]O\ô[ô\ê€€ù[ùZ]P[ò[\⁄\Œ‹ô[ô\ê€€ù[ùZ]P[ò[\⁄\œX\ﬁ[ò»ù[ò›[€äããò\ô‹ ^ÿ€€ú››]X]ÿZ]õUåç‘ô]ê€€ù[ùZ]Jããò\ô‹ N‹õUåç‘€\⁄€€ù[ùZ]J
-N‹ô]\õà›]WüWöYä\[Ÿà\P[ò[\⁄\‘ô]öY]‘XŸ[Y[ùOOIŸù[ò›[€â ^◊à€€ú›õUåç‘ô]îô]öY]‘XŸ[Y[ùX\P[ò[\⁄\‘ô]öY]‘XŸ[Y[ùÿ\P[ò[\⁄\‘ô]öY]‘XŸ[Y[ùYù[ò›[€äããò\ô‹ ^ÿ€€ú››]\õUåç‘ô]îô]öY]‘XŸ[Y[ù
-ããò\ô‹ N‹Ÿ][Y[›]
-õUåç‘€\⁄[ò[\⁄\À
-N‹ô]\õà›]WüWóôù[ò›[€àõUåç—[ú›\ôT›[\ 
-^€]›Yÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åçÀ\›[I N⁄Yä\›
-^‹›Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹õK]åçÀ\›[IŒŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_\›ù^€€ù[ùXã àÿXôpÈÿ[‹Œà0Î][»ö[ò⁄\[ö[YZ\õÀ\ÿ‹öpÈË€»\⁄\Àà
-ã◊ãúYŸKZXY\èô]ûŸ\‹^Nôõ^Ÿõ^Y\ôX›[€éò€€[[üKúYŸKZXY\èô]èö^€‹ô\éåKúYŸKZXY\èô]èãô^YXúõ›ﬁ€‹ô\éåN€X\ô⁄[éçúZ[\‹ù[ùWóã àô[[›ôHHòZ^KÿÿZ^H\ÿ›\òH]∞Ë\»‹»0Î][‹»‹»⁄Y]Àà
-ã◊ãú⁄Y]ZXY\ãú⁄Y]ZXY\àûÿòX⁄Ÿ‹õ›[ôùò[ú‹\ô[ùZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ùÿòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùÀ]ŸXö⁄]XòX⁄Ÿõ‹Yö[\éõõ€ôHZ[\‹ù[ùKú⁄Y]ZXY\ûÿõ‹ô\éåZ[\‹ù[ùKú⁄Y]ZXY\éòôYõ‹ôKú⁄Y]ZXY\éòYù\ûŸ\‹^Nõõ€ôHZ[\‹ù[ùWóã à\›0Ï‹öX€»»ôXŸ[ù\»
-ã◊ãù[Y[[ôKZ][KúõK]åçÀ][Y[[ô^Ÿ‹öY][\]KX€€[[úŒçZ[õX^
-YúäHçZ[\‹ù[ùÿ€€[[ãYÿ\éZ[\‹ù[ù‹Y[ôÀ[YùåL\Z[\‹ù[ùKù[Y[[ôK\⁄Y^Ÿ\‹^Nôõ^Ÿõ^Y\ôX›[€éò€€[[éÿ[Y€ãZ][\ŒòŸ[ù\éŸÿ\ç‹€Z[ã]⁄YåKù[Y[[ôK]\KZX€€û›⁄Yåå‹⁄ZY⁄åå‹Ÿ\‹^Nô‹öY‹XŸKZ][\ŒòŸ[ù\éÿ€€‹éùò\äK\õK\ôX€‹ô]€ôJ_Kù[Y[[ôK]\KZX€€àú›ôÀZX€€ãù[Y[[ôK]\KZX€€à›ôﬁ›⁄Yåå\Z[\‹ù[ù⁄ZY⁄åå\Z[\‹ù[ùKù[Y[[ôK\⁄YHù[Y[[ôK][Y^‹Y[ôÀ]‹åZ[\‹ù[ù›^X[Y€éòŸ[ù\é›⁄]K\‹XŸNõõ›‹ò\Ÿõ€ù]ò\öX[ù[ù[Y\öXŒùXù[\ã[ù[\ﬂKù[Y[[ôK[XZ[û€Z[ã]⁄YåKúõK[Y]KXòYŸ\ﬁŸ\‹^Nôõ^Z[\‹ù[ùÿ[Y€ãZ][\ŒòŸ[ù\éŸÿ\ç‹Ÿõ^]‹ò\ù‹ò\KúõK[Z[öK[[€Ÿ›⁄Yåç‹⁄ZY⁄åç‹ÿõ‹ô\ã\òY]\Œé\Ÿ\‹^Nö[õ[ôKY‹öY‹XŸKZ][\ŒòŸ[ù\éÿòX⁄Ÿ‹õ›[ôùò\äK\õK[Z[öK[[€Ÿ
-Nÿõ‹ô\éåKç\€€Yò\äK\õK[Z[öKXõ‹ô\äNÿ€€‹éùò\äK\õK[Z[öK]^
-NŸõ€ù\⁄^ôNåL‹Ÿõ€ù]ŸZY⁄éL€[ôKZZY⁄åNÿõﬁ\⁄Y›Œå\ò\äK\õK[Z[öKY€› _KúõK[õ›K]Yﬁ‹‹⁄][€éúô[]]ôNŸ\‹^Nö[õ[ôKYõ^ÿ[Y€ãZ][\ŒòŸ[ù\é€Z[ãZZY⁄åç\‹Y[ôŒç\Lúÿ€\\]ú€Y€€äúL	HL	HL	KúL	KL	JNÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ŸX€€ô\ûJHLIKò\äK\›\ôòXŸKLäJNÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåL\Ÿõ€ù]ŸZY⁄çÃKúõK[Y]K]^Ÿõ€ù\⁄^ôNåL\ÿ€€‹éùò\äK\ŸX€€ô\ûJ_Wóã àö[õ‹»€€H0ÎX€€ô\»Ÿ[pËõùX€‹Àà
-ã◊à⁄\›‹ûQö[\ú»ôö[\ãX⁄\úõKYö[\ã]\^Ÿ\‹^Nö[õ[ôKYõ^ÿ[Y€ãZ][\ŒòŸ[ù\éŸÿ\çúÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\õKYö[\ã]€ôJHN	Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùH⁄\›‹ûQö[\ú»úõKYö[\ãZX€€û›⁄YåM‹⁄ZY⁄åM‹Ÿ\‹^Nô‹öY‹XŸKZ][\ŒòŸ[ù\éÿ€€‹éùò\äK\õKYö[\ã]€ôJ_H⁄\›‹ûQö[\ú»úõKYö[\ãZX€€à›ôﬁ›⁄YåMúZ[\‹ù[ù⁄ZY⁄åMúZ[\‹ù[ùH⁄\›‹ûQö[\ú»ôö[\ãX⁄\úõKYö[\ã]\KúŸ[X›YÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\õKYö[\ã]€ôJHMIKò\äK\›\ôòXŸJJHZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùÿ€€‹éùò\äK]^
-HZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õKYö[\ã]€ôJHâKò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùÿõﬁ\⁄Y›Œåú€€‹ã[Z^
-[à‹ôÿãò\äK\õKYö[\ã]€ôJHIKò[ú‹\ô[ù
-HZ[\‹ù[ùWóã à]X[YYH»€€õ»õ»Y∞Ë€»ö\›X[»[[‹ãà
-ã◊ãúõK\€Y\\]X[]^Ÿ\‹^Nô‹öYZ[\‹ù[ùŸ‹öY][\]KX€€[[úŒúô\X]
-KZ[õX^
-YúäJHZ[\‹ù[ùŸÿ\é\Z[\‹ù[ù‹Y[ôŒçúú\€›ô\ôõ›Œùö\⁄Xõ_KúõK\€Y\\]X[]K\ÿ€‹ô^⁄ZY⁄çNZ[\‹ù[ùÿõ‹ô\ã\òY]\ŒåM‹Z[\‹ù[ùÿòX⁄Ÿ‹õ›[ôùò\äK[[€ŸX€€‹äHZ[\‹ù[ùÿ€€‹éùò\äK[[€Ÿ]^
-HZ[\‹ù[ùÿõ‹ô\éåKé€€Yò\äK[[€ŸXõ‹ô\äHZ[\‹ù[ùŸõ€ù\⁄^ôNåN\Z[\‹ù[ùŸõ€ù]ŸZY⁄éLZ[\‹ù[ùÿõﬁ\⁄Y›Œå‹\ôÿòJå HZ[\‹ù[ù›ò[ú⁄][€éùò[úŸõ‹õHåN»›XöXÀXô^öY\äåãéåãJKõﬁ\⁄Y›»åN»X\ŸHZ[\‹ù[ùKúõK\€Y\\]X[]K\ÿ€‹ôKúŸ[X›Y›ò[úŸõ‹õNúÿÿ[JKåJHò[ú€]VJL\
-HZ[\‹ù[ùÿõﬁ\⁄Y›Œåú€€‹ã[Z^
-[à‹ôÿãò\äK[[€ŸXõ‹ô\äHN	K⁄]HâJKL\ò\äK[[€ŸY€› HZ[\‹ù[ùﬁãZ[ô^åüWóã à][\»H€€\òH
-ã◊ãúõK\\ò⁄\ŸKY]Z[ﬁŸ\‹^Nô‹öYŸÿ\åLKúõK\\ò⁄\ŸKY]Z[‹Y[ôŒåL‹Mÿõ‹ô\éå\€€Yò\äK\Ÿ\\ò]‹äNÿõ‹ô\ã\òY]\ŒåMúÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\ôX€‹ôXù^Kò\äKXù^JJH	Kò\äK\›\ôòXŸKLäJ_KúõK\\ò⁄\ŸKY]Z[€X[Ÿ\‹^Nòõÿ⁄Œÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåLç\Ÿõ€ù]ŸZY⁄çÃå€X\ô⁄[ãXõ›€NçKúõK\\ò⁄\ŸKY]Z[›õ€ôﬁŸ\‹^Nòõÿ⁄Œÿ€€‹éùò\äK]^
-NŸõ€ù\⁄^ôNåM‹€[ôKZZY⁄åKåŒ€›ô\ôõ›À]‹ò\ò[û]⁄\ô_KúõK\\ò⁄\ŸKY]Z[ù€ôH›õ€ôﬁÿ€€‹éùò\äK\ôX€‹ôXù^Kò\äKXù^JJ_KúõK\\ò⁄\ŸKY]^›^X[Y€éòŸ[ù\éÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåLãç\‹Y[ôŒçúŸõ€ù]ò\öX[ù[ù[Y\öXŒùXù[\ã[ù[\ﬂWóã à]ö\€»[ùõŸ]0Ï‹ö[»H[∞Ë[\Ÿ\»XZ\»€€\X›»HYÎ]ô[à
-ã◊ñŸ]K]öY]œWò[ò[\⁄\◊óOãõõ›XŸKXÿ\ô‹Y[ôŒåLLúZ[\‹ù[ùŸ‹öY][\]KX€€[[úŒåÕZ[õX^
-YúäHZ[\‹ù[ùÿ[Y€ãZ][\ŒòŸ[ù\àZ[\‹ù[ùVŸ]K]öY]œWò[ò[\⁄\◊óOãõõ›XŸKXÿ\ôõõ›XŸKZX€€û⁄ù\›YûK\Ÿ[éòŸ[ù\àZ[\‹ù[ùÿ[Y€ã\Ÿ[éòŸ[ù\àZ[\‹ù[ù‹Y[ôŒåZ[\‹ù[ùVŸ]K]öY]œWò[ò[\⁄\◊óOãõõ›XŸKXÿ\ô›^X[Y€éöù\›YûN›^Zù\›YûNö[ù\ã]€‹ô⁄\[úŒò]]ﬂWóã àÿ\ù0ÌY\»[ù\õõ‹Œàù[ô»€ò[H\õpÌöX€Àù[òÿH⁄[ûòH⁄\YÀà
-ã◊ñŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄\õ›ÀŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôYò[ò[\⁄\À\õ›ﬁÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JJH	Kò\äK\›\ôòXŸKLäJHZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôZ[XYŸNõõ€ôHZ[\‹ù[ùÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JJHå	Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ùZ[Ÿ]K][YOWô\ö◊óHŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄\õ›À[Ÿ]K][YOWô\ö◊óHŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôYò[ò[\⁄\À\õ›ﬁÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JJHLIKÃMMLXJHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JJHç…KôÿòJçMKçMKçMKåL
-JHZ[\‹ù[ùPYYXJôYô\úÀX€€‹ã\ÿ⁄[YNô\ö ^⁄[Ÿ]K][YOWúﬁ\›[WóHŸ]K]öY]œWò[ò[\⁄\◊óHúõKZ[ú⁄Y⁄\õ›À[Ÿ]K][YOWúﬁ\›[WóHŸ]K]öY]œWò[ò[\⁄\◊óHúõKX[ò[\⁄\ÀX€€‹ôYò[ò[\⁄\À\õ›ﬁÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JJHLIKÃMMLXJHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äK\õK\õ›À]€ôKò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JJHç…KôÿòJçMKçMKçMKåL
-JHZ[\‹ù[ù_Wóã à]ò[X\àöXÿHö\›X[Y[ùHõ‹òH»ÿ\ù0Ë€À0Ë\ôZ]HH€\ò[Y[ùH\‹€ÿ⁄XY»[»][HXòZ^Àà
-ã◊ñŸ]K]öY]œWò[ò[\⁄\◊óHò[ò[\⁄\À\ô]öY]ÀZ][Nõõ›
-ò[ò[\⁄\ÀZ][K\ôZôX›Y
-^€X\ô⁄[ã]‹çZ[\‹ù[ù€›ô\ôõ›Œùö\⁄XõHZ[\‹ù[ùVŸ]K]öY]œWò[ò[\⁄\◊óHò[ò[\⁄\À\ô]öY]ÀZ][Nõõ›
-ò[ò[\⁄\ÀZ][K\ôZôX›Y
-Oãôõÿ][ôÀ\ô]öY]ÀŸ]K]öY]œWò[ò[\⁄\◊óHô\⁄õÿ\ôX⁄\ùõõ›
-ò[ò[\⁄\ÀZ][K\ôZôX›Y
-Hò⁄\ùXÿ\ôZXYãò⁄\ù\ô]öY]ÀXùû‹‹⁄][€éòXú€€]HZ[\‹ù[ù›‹ãLÕ\Z[\‹ù[ù‹öY⁄åúZ[\‹ù[ùﬁãZ[ô^ç€X\ô⁄[éåZ[\‹ù[ùKô\⁄õÿ\ôX⁄\ùò⁄\ùXÿ\ôZXY‹‹⁄][€éú›]X»Z[\‹ù[ùKò[ò[\⁄\À\ôZôX›Y\ŸX›[€àò⁄\ù\ô]öY]ÀXùû‹‹⁄][€éú›]X»Z[\‹ù[ùWóã àÿXôpÈÿ[»‹»‹∞ËYöX€‹ŒàŸ[HÿZ^[öH\›ò[öH]∞Ë\»»0ÎX€€ôKà€›»Ï»õ»[òKà
-ã◊ãúõKX⁄\ù]]KZX€€ûÿòX⁄Ÿ‹õ›[ôùò[ú‹\ô[ùZ[\‹ù[ùÿõ‹ô\ã\òY]\ŒåZ[\‹ù[ùÿõﬁ\⁄Y›Œõõ€ôHZ[\‹ù[ù›⁄Yåç‹Z[\‹ù[ù⁄ZY⁄åç‹Z[\‹ù[ùKúõKX⁄\ù]]KZX€€àú›ôÀZX€€ãúõKX⁄\ù]]KZX€€èú›ôﬁ›⁄YååúZ[\‹ù[ù⁄ZY⁄ååúZ[\‹ù[ùZ[Ÿ]K]ö\›X[[[ŸOWõ‹[Z^ôYóHúõKX⁄\ù]]KZX€€ûŸö[\éõõ€ôHZ[\‹ù[ùZ[Ÿ]K]ö\›X[[[ŸOWù[òWóHúõKX⁄\ù]]KZX€€ûŸö[\éôõ‹\⁄Y› ‹€€‹ã[Z^
-[à‹ôÿãò\äK\õKX[ò[\⁄\À]€ôKò\äKXXÿŸ[ù
-JHN	Kò[ú‹\ô[ù
-JHZ[\‹ù[ùWóã à‹∞ËYöX€‹»XZ\»YÎ]ôZ\Àà
-ã◊ñŸ]K]öY]œWò[ò[\⁄\◊óHõÿÿ[X⁄\ù\›ô»ò⁄\ùY‹öY^Ÿ]K]öY]œWò[ò[\⁄\◊óHõÿÿ[X⁄\ù\›ô»ò⁄\ùX^\À[Xô[Ÿ]K]öY]œWò[ò[\⁄\◊óHõÿÿ[X⁄\ù\›ô»ò⁄\ùXò\ã[Xô[Ÿõ€ù\⁄^ôNåM\Z[\‹ù[ù€‹X⁄]NãéZ[\‹ù[ùVŸ]K]öY]œWò[ò[\⁄\◊óHõÿÿ[X⁄\ù\›ô»ò⁄\ùXò\ã]ò[Y^Ÿõ€ù\⁄^ôNåNZ[\‹ù[ùŸõ€ù]ŸZY⁄éLZ[\‹ù[ù€‹X⁄]NåHZ[\‹ù[ùVŸ]KX[ò[\⁄\ÀZ][OWò⁄\ù[[€ŸY\›öXù][€óóHò⁄\ùXÿ\ôZXYûŸõ€ù\⁄^ôNåN\Z[\‹ù[ù›⁄]K\‹XŸNõõ›‹ò\Z[\‹ù[ù€]\ã\‹X⁄[ôŒãKåô[HZ[\‹ù[ùKúõK]åçÀ[[€ŸXò\ú»úõK]åçÀ[[€ŸXò\ŸK[Xô[Ÿõ€ù\⁄^ôNåNŸõ€ù]ŸZY⁄éLKúõK]åçÀ[[€ŸXò\ú»ò⁄\ùXò\ã]ò[Y^Ÿõ€ù\⁄^ôNåN\Z[\‹ù[ùŸõ€ù]ŸZY⁄éLZ[\‹ù[ùKúõK]åçÀ[[€ŸXò\ú»ò⁄\ùXò\ã]ò[YKõ›]⁄Y^Ÿö[ò›\úô[ù€€‹àZ[\‹ù[ùKúõK]åçÀ[[€ŸXò\ú»ò⁄\ù^ô\õﬁ€‹X⁄]Nãç_Wóã à€€ù[ùZYYNà›]\»‹⁄]]õ»Ÿ[H0Î][»0ÍX€öX€À€€Hõ]‹ôY[àò[ú€0Óò⁄YÀà
-ã◊àÿ€€ù[ùZ]P[ò[\⁄\»úõKX€€ù[ùZ]K\›]\ﬁ‹Y[ôŒåMMúZ[\‹ù[ù›^X[Y€éòŸ[ù\àZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãÃÃŒŒMIKò\äK\›\ôòXŸKLäJHZ[\‹ù[ùÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿãÃÃŒŒÕ	Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùÿõ‹ô\ã\òY]\ŒåMúZ[\‹ù[ùHÿ€€ù[ùZ]P[ò[\⁄\»úõKX€€ù[ùZ]K\›]\»‹[û€X\ô⁄[éåZ[\‹ù[ùÿ€€‹éò€€‹ã[Z^
-[à‹ôÿãÃÃŒŒ	Kò\äK]^
-HMâJHZ[\‹ù[ùŸõ€ù\⁄^ôNåMZ[\‹ù[ùŸõ€ù]ŸZY⁄çŒZ[\‹ù[ù€[ôKZZY⁄åKçZ[\‹ù[ùHÿ€€ù[ùZ]P[ò[\⁄\»úõKX€€ù[ùZ]K\›]\Œõõ›
-ú‹⁄]]ôJ^ÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äKXXÿŸ[ù
-H	Kò\äK\›\ôòXŸKLäJHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äKXXÿŸ[ù
-Hå	Kò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùHÿ€€ù[ùZ]P[ò[\⁄\»úõKX€€ù[ùZ]K\›]\Œõõ›
-ú‹⁄]]ôJH‹[ûÿ€€‹éùò\äK]^
-HZ[\‹ù[ùŸõ€ù]ŸZY⁄ççLZ[\‹ù[ùWóêYYXJX^]⁄YåŒL
-^Àù[Y[[ôKZ][KúõK]åçÀ][Y[[ô^Ÿ‹öY][\]KX€€[[úŒåÕ‹Z[õX^
-YúäHåúZ[\‹ù[ùÿ€€[[ãYÿ\ç‹Z[\‹ù[ùKù[Y[[ôK]\KZX€€û›⁄Yåå\⁄ZY⁄åå\Kù[Y[[ôK]\KZX€€àú›ôÀZX€€ãù[Y[[ôK]\KZX€€à›ôﬁ›⁄YåN\Z[\‹ù[ù⁄ZY⁄åN\Z[\‹ù[ùVŸ]KX[ò[\⁄\ÀZ][OWò⁄\ù[[€ŸY\›öXù][€óóHò⁄\ùXÿ\ôZXYûŸõ€ù\⁄^ôNåM‹Z[\‹ù[ù_WòWóôù[ò›[€àõUåç—ö[ò[^ôJ
-^‹õUåç—[ú›\ôT›[\ 
-N‹õUåç—[ö[òŸR\›‹ûQö[\ú 
-N‹õUåç‘€\⁄[ò[\⁄\ 
-N‹õUåç“[X[ö^ôTõ€›
-ÿ›[Y[ùú]Y\ûTŸ[X›‹ä	÷Ÿ]K]öY]œWõX\õö[ô◊óI JNÿ€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â KXõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N⁄Yä‹
-]‹ù^€€ù[ùXâ‘ìW’åç◊‘ëSPT—_X⁄YäXõ›]
-XXõ›]ù^€€ù[ùTìW’åç◊‘ëSPT—_WóúõUåç—ö[ò[^ôJ
-N÷ÃLåçLMÃÃåKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåç—ö[ò[^ôK\ JN◊ôÿ›[Y[ùòY]ô[ù\›[ô\ä	ÿ€X⁄…ÀOOû⁄YäKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K]XèWö\›‹ûWóI J\Ÿ][Y[›]
-õUåç—[ö[òŸR\›‹ûQö[\úÀÃ
-N⁄YäKù\ôŸ]ò€‹Ÿ\›
-	÷Ÿ]K]XèWò[ò[\⁄\◊óI J\Ÿ][Y[›]
-õUåç‘€\⁄[ò[\⁄\À
-_KùYJN◊ùû^⁄Yä\[ŸàõR[ùò[Y]OOOIŸù[ò›[€â \õR[ùò[Y]J
-_Xÿ]⁄ﬂWùû^⁄Yäââù\[ŸàõTô[ô\êX›]ôOOOIŸù[ò›[€â \õTô[ô\êX›]ôJù[Ÿõ‹òŸNùùY_JKòÿ]⁄
-€€ú€€Kô\úõ‹ä_Xÿ]⁄ﬂWàéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃéöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåé8†%ÿ\ù0ÌY\»€€\X›‹À][\»[H‹òYHH\›öXùZpÈË€»H[[‹àYÎ]ô[à
-ã◊ò€€ú›ìW’åé‘ëSPT—OIÃKåãåXô]Kç	Œ◊óôù[ò›[€àõUåé\RX€€ä\J^‹ô]\õà\OOOI€õ›Iœ…€õ›IŒù\OOOI€YYXÿ][€âœ…‹[	Œù\OOOI‹€Y\	œ…€[€€âŒâÿòY…ﬂWôù[ò›[€àõUåé\P€\‹ \J^‹ô]\õà\OOOI€õ›Iœ…€õ›IŒù\OOOI€YYXÿ][€âœ…€YYXÿ][€âŒù\OOOI‹€Y\	œ…‹€Y\	Œâ‹\ò⁄\ŸIﬂWôù[ò›[€àõUåé\SXô[
-J^⁄YäKù\OOOI€õ›I \ô]\õàKò]Y[”€õO…–[õ›pÈË€»HõﬁâŒäYKù^	âôKõ[€Ÿÿ€‹ôHO[ù[…–⁄X⁄ÀZ[âŒâ–[õ›pÈË€… N⁄YäKù\OOOI€YYXÿ][€â \ô]\õâ”YYXÿ[Y[ù…Œ⁄YäKù\OOOI‹€Y\	 \ô]\õâ‘€€õ…Œ‹ô]\õâ–€€\òIﬂWôù[ò›[€àõUåé€ôJ\J^‹ô]\õà\OOOI€õ›Iœ…›ò\äK\ôX€‹ô[õ›Kò\äKXXÿŸ[ù
-JIŒù\OOOI€YYXÿ][€âœ…›ò\äK\ôX€‹ô[YYò\äK[YY
-JIŒù\OOOI‹€Y\	œ…›ò\äK\ôX€‹ô\€Y\ò\äK\€Y\
-JIŒâ›ò\äK\ôX€‹ôXù^Kò\äKXù^JJIﬂWôù[ò›[€àõUåé‹ŸJJ^⁄Yä\[ŸàõUåç—‹ŸSXô[OOIŸù[ò›[€â \ô]\õàõUåç—‹ŸSXô[
-JN⁄YäOÀù›[‹ŸUò[YHO[ù[
-\ô]\õò	”ù[Xô\äKù›[‹ŸUò[YJKù”ÿÿ[T›ö[ô 	‹Pîâ _H	ŸKô‹ŸU[ö]	…ﬂXùö[J
-N‹ô]\õà›ö[ô OÀô‹Ÿ_	… Kùö[J
-_Wôù[ò›[€àõUåé[€ô^Jä^⁄Yä\[ŸàõUåç”[€ô^Uò[YOOOIŸù[ò›[€â \ô]\õàõUåç”[€ô^Uò[YJäNÿ€€ú›è\\úŸS[€ô^JäN‹ô]\õàèO[ù[……Œõ[€ô^Jä_Wôù[ò›[€àõUåéX⁄ÿYŸJä^⁄Yä\[ŸàõUåç‘X⁄ÿYŸSXô[OOIŸù[ò›[€â \ô]\õàõUåç‘X⁄ÿYŸSXô[
-äN€èSX]õX^
-Kù[Xô\ää_JN‹ô]\õò	€üH	€èOOLO…ÿÿZ^IŒâÿÿZ^\…ﬂXWôù[ò›[€àõUåé[ö] ä^⁄Yä\[ŸàõUåç’[ö]”Xô[OOIŸù[ò›[€â \ô]\õàõUåç’[ö]”Xô[
-äN€èSù[Xô\ääN‹ô]\õàù[Xô\ãö\—ö[ö]JäIâõèåÿ	€üH	€èOOLO…›[öYYIŒâ›[öYY\…ﬂXâ…ﬂWóã à\›0Ï‹öX€À‘ôXŸ[ù\Œà[[Z[òHH€€[òH]\ò[H»Y[ùHH∞Íú»€ù‹Àà
-ã◊ô]ô[ùÿ\ôYù[ò›[€äJ^◊à€€ú›\O\õUåé\P€\‹ Kù\JKX€€è\õUåé\RX€€äKù\JK€ôO\õUåé€ôJKù\JKXô[\õUåé\SXô[
-JN€]õŸOI…ÀY]OI…Œ◊àYäKù\OOOI€õ›I ^◊àõŸOX]à€\‹œWù[Y[[ôK]]WèâŸ\ÿ Kù^	–⁄X⁄ÀZ[à[[ÿ⁄[€ò[	 _OŸ]èò◊à€€ú›òYŸ\œX	›\[ŸàõUåç”[€ŸòYŸOOOIŸù[ò›[€âœ‹õUåç”[€ŸòYŸJKõ[€Ÿÿ€‹ôJNâ…ﬂI›\[ŸàõUåç’Y–⁄\OOIŸù[ò›[€âœ‹õUåç’Y–⁄\
-KùY Nâ…ﬂI›\[ŸàõUåç–Yò[òŸYY]OOOIŸù[ò›[€âœ‹õUåç–Yò[òŸYY]JJNâ…ﬂX◊àYäòYŸ\ [Y]OX]à€\‹œWù[Y[[ôK[Y]HõK[Y]KXòYŸ\◊èâÿòYŸ\ﬂOŸ]èò◊àY[ŸHYäKù\OOOI€YYXÿ][€â ^◊à€€ú›‹ŸO\õUåé‹ŸJJNÿõŸOX]à€\‹œWù[Y[[ôK]]HõK\ôX€‹ô[ò[YWèâŸ\ÿ KõYYXÿ][€ü	”YYXÿ[Y[ù… _OŸ]èâŸ‹ŸOÿ]à€\‹œWúõK\ôX€‹ô\›Xõ[ôWèâŸ\ÿ ‹ŸJ_OŸ]èòâ…ﬂX◊àYäKõõ›J[Y]OX]à€\‹œWù[Y[[ôK[Y]HõK\ôX€‹ô[õ›WèâŸ\ÿ Kõõ›J_OŸ]èò◊àY[ŸHYäKù\OOOI‹€Y\	 ^◊àõŸOX]à€\‹œWù[Y[[ôK]]HõK\ôX€‹ô[ò[YWèâŸ\ÿ \ò][€ìXô[
-\ò][€í›\ú Kú›\ù[YKKô[ô[YJJJ_OŸ]èò◊à€€ú›ö]œVŸKú]X[]Oÿ]X[YYH	ŸKú]X[]_KÕXõù[Kú€›\òŸOOOI⁄X[\⁄‹ù›]	œ…“[\‹ùY»»ÿpÓôIŒâ”X[ùX[	ÀKõõ›WKôö[\äõ€€X[äN⁄Yäö]Àõ[ô›
-[Y]OX]à€\‹œWù[Y[[ôK[Y]Wèâÿö]ÀõX\
-\ÿ Köõ⁄[ä	»0≠»	 _OŸ]èò◊àY[Ÿ^◊à€€ú›öXŸO\õUåé[€ô^JKúöXŸJNÿõŸOX]à€\‹œWù[Y[[ôK]]HõK\ôX€‹ô[ò[YWèâŸ\ÿ KõYYXÿ][€ü	”YYXÿ[Y[ù… _OŸ]èâ‹öXŸOÿ]à€\‹œWúõK\ôX€‹ô\›Xõ[ôHõK\\ò⁄\ŸK\öXŸWèâŸ\ÿ öXŸJ_OŸ]èòâ…ﬂX◊à€€ú›X⁄ÿYŸSXô[YKúX⁄ÿYŸ\œ‹õUåéX⁄ÿYŸJKúX⁄ÿYŸ\ Nâ…Œÿ€€ú›XŸOYKúXŸOÿ‹[à€\‹œWúõK\\ò⁄\ŸK\XŸWèè‹[à€\‹œWúõK\\ò⁄\ŸK\XŸKZX€€óà\öXKZY[èWùùYWèè›ô»€\‹œWúõK\\ò⁄\ŸK\XŸK\›ô◊à[úœWöãÀ›››ÀùÃÀõ‹ôÀÃå‹›ô◊àöY]–õﬁWååçÕMŒååÕçÃóèè]WìLååÕLMàLåMŒM–ÃååÕLMàMKçŒLàMKçŒLàååÕLMàLåMÃNHååÕLMêÕçMÃÃHååÕLMàMKçŒLàLåMŒM–ÃçMÃÃHçMÃÃHLåMÃNHÃMKçŒLàååÕLMàçMÃÃHååÕLMàLåMŒM÷ìLLKçMåçHLçŒMéPÃLKåÃLàLçŒMéHLçLŒLHLçåMLåMÃNHLåéMéPŒKééHLçåMKåÃLçHLçŒMéHçŒLçHLçŒMéPŒååÕŒLçŒMéHÀçÕHLçåMÀåŒéHLåéMéPÕ»LçåMãçLåÕLçŒMéHKéNŒLçŒMéPÕKçåLŒLçŒMéHKåççMåàLçÃLHéMéÕHLçMŒSéMéÕHMéÕNPÕéMéÕHMKçMåçHKåŒLåàMKéMÕçàãåLçHMKéMÕçìMååNMKéMÕçêÃMéMLÃHMKéMÕçàMKåÕÕHMKçMM»MKåÕÕHMéÕNSMKåÕÕHLçMM–ÃMKåŒHLçéML»MçÃççàLçŒMéHMåÕNMLçŒMéPÃLÀééHLçŒMéHLÀåÃÕNHLçåMLãéMéLåéMéPÃLãçNLŒLçåMLãåLMLçŒMéHLKçMåçHLçŒMéVìLLãåMàLãåNML”LãåMàMKåÃLìååÃLàMKåÃLìååÃLàLãåNML–ŒååÃLàLKéMåHåÕNLŒLKéLçHçNLÕÕHLKéLçSLKçÕçMàLKéLçPÃLKéNLåàLKéLçHLãåMàLKéMåHLãåMàLãåNML÷ìMååLMçNNMååLMçÕåNPÕååLMKçÕçMàéMÕçMàLåLMÃàKéLéMéHLåLMÃêÕãçLÃLçHLåLMÃàÀåÃLçHKééLàÀåÃéLàKåÕÕPÕÀçåLŒKééLàåLLŒLåLMÃàçÃççMàLåLMÃêŒKåÃéLàLåLMÃàKééLàKééLàLåLMÃàKåÕÕPÃLçåàKééLàLéLåàLåLMÃàLKçLŒLåLMÃêÃLãåLçHLåLMÃàLãçåçHKééLàLãéLMHKåÕÕPÃLÀååÃHKééLàLÀçÃLHLåLMÃàMåÃ»LåLMÃêÃMKåççMàLåLMÃàMãååÕKåŒLåàMãååÕçççìMãååÕçNNMìMãéLéMéHåŒéPÕãçéÕHåŒéHãåŒLàçåLŒKéNLŒKåŒSåÃLçHÀéLåNMKéLåNHÀéLåNMåÕÕHKåŒPÃMåMçHçåLŒLÀçÕçMàåŒéHLÀåÃLçHåŒéVóàö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWåéWãœè‹›ôœè‹‹[èâŸ\ÿ KúXŸJ_O‹‹[èòâ…Œ⁄YäX⁄ÿYŸSXô[XŸJ[Y]OX]à€\‹œWù[Y[[ôK[Y]HõK\\ò⁄\ŸK[Y]Wèâ‹X⁄ÿYŸSXô[ÿ‹[à€\‹œWúõK\\ò⁄\ŸK\]X[ù]WèâŸ\ÿ X⁄ÿYŸSXô[
-_O‹‹[èòâ…ﬂI‹X⁄ÿYŸSXô[	âúXŸO…œ‹[à€\‹œWúõK\\ò⁄\ŸK\Ÿ\\ò]‹óè∞≠œ‹‹[èâŒâ…ﬂI‹XŸ_OŸ]èò◊àWàô]\õò\ùX€H€\‹œWù[Y[[ôKZ][HõK]åé][Y[[ôHõK]\KI›\_Wà›[OWãK\õK\ôX€‹ô]€ôNâ›€ô_Wèè‹[à]K[Y[ùOWâŸ\ÿ KöY
-_WàY[èè‹‹[èè]à€\‹œWúõKXÿ\ôZXY\óèè]à€\‹œWúõKXÿ\ôZXY\ã[XZ[óèè‹[à€\‹œWù[Y[[ôK]\KZX€€óèâ‹›ô X€€ä_O‹‹[èè]à€\‹œWù[Y[[ôKZ⁄[ô⁄[ôI›\_WèâŸ\ÿ Xô[
-_OŸ]èèŸ]èè[YH€\‹œWù[Y[[ôK][YWèâŸ\ÿ [YSXô[
-Kù[Y\›[\
-J_O›[YOèŸ]èè]à€\‹œWù[Y[[ôK[XZ[óèâÿõŸ_I€Y]_IŸKö\–]Y[œÿ]à]KX]Y[œWâŸ\ÿ KöY
-_WèèŸ]èòâ…ﬂOŸ]èèÿ\ùX€OòüN◊óã à][\»€€\X›‹»H[HX\»€€[ò\»]X[ô»ò^àŸ[ùYÀà
-ã◊ôù[ò›[€àõUåé]Z[ÿ\ô
-Xô[ò[YK›⁄YOYò[ŸK€ôOYò[ŸK[Yò[Ÿ_O^ﬂJ^⁄Yäò[YOOO[ù[ò[YOOO][ôYö[ôY›ö[ô ò[YJKùö[J
-OOOI… \ô]\õâ…Œ‹ô]\õò]à€\‹œWúõK]åéY]Z[Xÿ\ô	›⁄YO…»⁄YIŒâ…ﬂI›€ôO…»€ôIŒâ…ﬂWèâ€Xô[ÿ€X[âŸ\ÿ Xô[
-_O‹€X[òâ…ﬂI⁄[›ò[YNò›õ€ôœâŸ\ÿ ›ö[ô ò[YJJ_O‹›õ€ôœòOŸ]èòWôù[ò›[€àõUåé]Z[]Jò[YJ^‹ô]\õò]à€\‹œWúõK]åéY]Z[Y]WèâŸ\ÿ ôY⁄\›õ—]Z[]Jò[YJJ_OŸ]èòWôù[ò›[€àõUåéöY]Ÿ\êX›[€ú Y
-^◊à€€ú›[Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ë[]Pùâ KY]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›öY]Ÿ\ëY]ùâ N◊àYäY]
-YY]õ€ò€X⁄œJ
-OOõ‹[ë]ô[ùY]‹äY
-N◊àYä[
-Y[õ€ò€X⁄œX\ﬁ[ò 
-OOû⁄YäX€€ôö\õJ	—^€Z\à\›HôY⁄\›õœ… J\ô]\õéÿ]ÿZ][]Q]ô[ù
-Y
-Nÿ€‹ŸT⁄Y]
-
-Nÿ]ÿZ]ô[ô\ê[
-
-N›ÿ\›
-	‘ôY⁄\›õ»^€pÎYÀâ _N◊üWôù[ò›[€àõUåé]Z[ù]€ú 
-^‹ô]\õò]à€\‹œWôõ‹õKXX›[€ú»õK]åé]öY]Ÿ\ãXX›[€ú◊èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€à[ôŸ\ã\õ›◊àYWùöY]Ÿ\ë[]Pùóèë^€Z\èÿù]€èèù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€óàYWùöY]Ÿ\ëY]ùóèëY]\èÿù]€èèŸ]èòWóõ‹[ë]ô[ùöY]Ÿ\èX\ﬁ[ò»ù[ò›[€äY
-^◊à€€ú›OJ]ÿZ][]ô[ù 
-JKôö[ô
-OûöYOOZY
-N⁄YäYJ\ô]\õé◊à€€ú›YYœX]ÿZ][YYXÿ][€ú 
-KO[YYÀôö[ô
-OûöYOOYKõYYXÿ][€íY
-_ö[ôõŸö[PûQ]ô[ù
-KYY KYö[ôô\Ÿ[ù][€äKKúô\Ÿ[ù][€íY
-Kô\Ÿ[ù][€è\‹ô\Ÿ[ù][€ë\‹^J
-Nâ…À€ôO\õUåé€ôJKù\JN€]]OI‘ôY⁄\›õ…Àÿ\ôœI…Œ◊àYäKù\OOOI‹\ò⁄\ŸI ^◊à]OI–€€\òIŒÿ€€ú›öXŸO\õUåé[€ô^JKúöXŸJ_KúöXŸ_	¯†%	Œÿÿ\ôœV◊àõUåé]Z[ÿ\ô
-	”YYXÿ[Y[ù…ÀKõYYXÿ][€ü	”YYXÿ[Y[ù…À›€ôNùùY_JKõUåé]Z[ÿ\ô
-	–\ô\Ÿ[ùpÈË€…Àô\Ÿ[ù][€ü	”∞Ë€»[ôõ‹õXYI KàõUåé]Z[ÿ\ô
-	…ÀõUåéX⁄ÿYŸJKúX⁄ÿYŸ\ JKõUåé]Z[ÿ\ô
-	…ÀõUåé[ö] Kù›[[ö] _	’[öYY\»∞Ë€»[ôõ‹õXY\… KàõUåé]Z[ÿ\ô
-	’ò[‹àY€…ÀöXŸK›€ôNùùY_JKõUåé]Z[ÿ\ô
-	–€€\òY»[IÀKúXŸ_	”∞Ë€»[ôõ‹õXY… KõUåé]Z[]JKù[Y\›[\
-WàKöõ⁄[ä	… N◊àY[ŸHYäKù\OOOI€YYXÿ][€â ^◊à]OI”YYXÿ[Y[ù…Œÿ€€ú›‹ŸO\õUåé‹ŸJJK]OYKù[ö]’ZŸ[àO[ù[ÿ	”ù[Xô\äKù[ö]’ZŸ[äKù”ÿÿ[T›ö[ô 	‹Pîâ _H	”ù[Xô\äKù[ö]’ZŸ[äOOOLO…›[öYYIŒâ›[öYY\…ﬂXäKú]X[ù]_	… Nÿÿ\ôœV◊àõUåé]Z[ÿ\ô
-	”YYXÿ[Y[ù…ÀKõYYXÿ][€ü	”YYXÿ[Y[ù…À›€ôNùùY_JKõUåé]Z[ÿ\ô
-	–\ô\Ÿ[ùpÈË€…Àô\Ÿ[ù][€ü	”∞Ë€»[ôõ‹õXYI KàõUåé]Z[ÿ\ô
-	—‹ŸIÀ‹Ÿ_	”∞Ë€»[ôõ‹õXYIÀ›€ôNùùY_JKõUåé]Z[ÿ\ô
-	‘]X[ùYYIÀ]_	”∞Ë€»[ôõ‹õXYI KàõUåé]Z[ÿ\ô
-	”ÿúŸ\ùòpÈË€…ÀKõõ›K›⁄YNùùY_JKõUåé]Z[]JKù[Y\›[\
-WàKöõ⁄[ä	… N◊àY[ŸHYäKù\OOOI‹€Y\	 ^◊à]OI‘€€õ…Œÿÿ\ôœV◊àõUåé]Z[ÿ\ô
-	—‹õZ]H0Ë…ÀôY⁄\›õ—]Z[]JKú›\ù[YJK›€ôNùùY_JKõUåé]Z[ÿ\ô
-	–X€‹ô›H0Ë…ÀôY⁄\›õ—]Z[]JKô[ô[YJK›€ôNùùY_JKàõUåé]Z[ÿ\ô
-	—\òpÈË€…À\ò][€ìXô[
-\ò][€í›\ú Kú›\ù[YKKô[ô[YJJJKõUåé]Z[ÿ\ô
-	‘]X[YYH\òŸXöYIÀKú]X[]Oÿ	ŸKú]X[]_HHXâ… KàõUåé]Z[ÿ\ô
-	”ÿúŸ\ùòpÈÌY\…ÀKõõ›K›⁄YNùùY_JKõUåé]Z[ÿ\ô
-	”‹öYŸ[IÀKú€›\òŸOOOI⁄X[\⁄‹ù›]	œ…“[\‹ùY»»\ÿpÓôIŒâ”X[ùX[	À›⁄YNùùY_JWàKöõ⁄[ä	… N◊àY[ŸHYäKù\OOOI€õ›I ^◊à]OYKù^…–[õ›pÈË€…Œâ–⁄X⁄ÀZ[à[[ÿ⁄[€ò[	Œÿ€€ú›[€ŸYKõ[€Ÿÿ€‹ôHO[ù[	âù\[ŸàõUåç”[€ŸòYŸOOOIŸù[ò›[€âœ‹õUåç”[€ŸòYŸJKõ[€Ÿÿ€‹ôJNâ…ÀYœYKùY…âù\[ŸàõUåç’Y–⁄\OOIŸù[ò›[€âœ‹õUåç’Y–⁄\
-KùY Nâ…Œ◊àYä[€Ÿ
-Xÿ\ô œ\õUåé]Z[ÿ\ô
-	“[[‹âÀ[€Ÿ⁄[ùùYK€ôNùùY_JN⁄YäY Xÿ\ô œ\õUåé]Z[ÿ\ô
-	’Y…ÀYÀ⁄[ùùY_JN◊àÿ\ô œ\õUåé]Z[ÿ\ô
-	–[õ›pÈË€…ÀKù^	–[õ›pÈË€»HõﬁâÀ›⁄YNùùY_JN◊àõ‹ä€€ú›⁄Ÿ^Kò[YWHŸàÿöôX›ô[ùöY\ Kô[[›[€îÿ€‹ô\ﬂﬂJJ^ÿ€€ú›Xô[YKô[[›[€ìXô[œÀñ⁄Ÿ^W_
-
-\[Ÿà[[›[€ë[Y[ú⁄[€úœOOIŸù[ò›[€âœŸ[[›[€ë[Y[ú⁄[€ú 
-Nñ◊JKôö[ô
-OôöYOOZŸ^JOÀõXô[
-_Ÿ^Nÿÿ\ô œ\õUåé]Z[ÿ\ô
-Xô[	›ò[Y_HH
-_WàYäKö\–]Y[ Xÿ\ô œ\õUåé]Z[ÿ\ô
-	‡]Y[…À‹[à]KX]Y[œWâŸ\ÿ KöY
-_Wèè‹‹[èò›⁄YNùùYK[ùùY_JNÿÿ\ô œ\õUåé]Z[]JKù[Y\›[\
-N◊àY[ŸHô]\õé◊à‹[êòX⁄Ÿõ‹
-]K]à€\‹œWúõK]åéY]Z[Y‹öYõKY]Z[I‹õUåé\P€\‹ Kù\J_Wà›[OWãK\õKY]Z[]€ôNâ›€ô_Wèâÿÿ\ôﬂOŸ]èâ‹õUåé]Z[ù]€ú 
-_X]èOô]ãúô]ô[ùYò][
-
-JN‹õUåéöY]Ÿ\êX›[€ú Y
-N⁄YäKö\–]Y[ X]ÿZ]Yò]P]Y[ ÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI JN◊üN◊óã à\›öXùZpÈË€»»[[‹éà∞ÓõY\õ‹»XZ[‹ô\»H€€ùò\›HY\]]õ»[»ù[ôÀà
-ã◊ôù[ò›[€àõUåé€€ùò\›
-^ò[òX⁄œI»Ÿôôâ ^ÿ€€ú›OT›ö[ô ^	… KõX]⁄
-◊à ÃNXKYó^ÕüJI⁄JN⁄Yä[J\ô]\õàò[òX⁄Œÿ€€ú›è\\úŸR[ù
-VÃWKMäKèJèèåMäIåçMKœJèèé
-IåçMKè[âåçMKZ\OJäåéNJŸ çN ÿäåLM
-KÃL‹ô]\õàZ\OèLMMO…»ÃLLLÃN	Œâ»—ëëëëëâﬂWúõS[€Ÿò\ê⁄\ùYù[ò›[€äõ›‹ ^‹õ›‹œ\õ›‹Àú€XŸJLJN⁄Yä\õ›‹Àõ[ô›
-\ô]\õà⁄\ù[\J	–Z[ôH∞Ë€»0ËHY‹»›YöX⁄Y[ù\Àâ Nÿ€€ú›œMÃåLÃåY^€ååãéåNåÕéçÃK]œUÀ\Yõ\Yúãò\ŸVORMLò\ŸRLŒò\êò\ŸOXò\ŸVKLLã›Xò\êò\ŸK\YùX^SX]õX^
-Kããúõ›‹ÀõX\
-èOìù[Xô\äãùò[YJ_
-JKùœSX]õX^
-]À‹õ›‹Àõ[ô›
-ãçN
-N‹ô]\õò›ô»€\‹œWõÿÿ[X⁄\ù\›ô»õK[[€ŸXò\ú»õK]åé[[€ŸXò\ú◊àöY]–õﬁWå	’ﬂH	“Wàõ€OWö[Y◊à\öXK[Xô[Wë\›öXùZpÈË€»»[[‹óèè[ôH€\‹œWò⁄\ù^ô\õ◊àOWâ‹YõWàLOWâÿò\êò\Ÿ_WàèWâ’À\YúüWàLèWâÿò\êò\Ÿ_Wãœâ‹õ›‹ÀõX\
-
-ãJOOûÿ€€ú›œ\õS[€Ÿ
-JKò[YOSù[Xô\äãùò[YJ_ﬁ\Yõ
- JÀçJJö]À‹õ›‹Àõ[ô›]ò[YO”X]õX^
-Mò[YK€X^
-ú›
-NåÀ‹Xò\êò\ŸKZ[ú⁄YO]ò[YOå	âöèMLã€›[ùOZ[ú⁄YO›‹
-ÃÃNìX]õX^
-åã‹LLJKò\ëö[ZOOOL…»ÃMÃMÃQ	ŒòÀò€€‹ã€›[ùö[Z[ú⁄YO‹õUåé€€ùò\›
-ò\ëö[Àù^
-Nâ›ò\äK]^
-IÀò\ŸU^\õUåé€€ùò\›
-ò\ëö[Àù^
-N‹ô]\õòôX›€\‹œWúõK]åé[[€ŸXò\óàWâÿﬁXùÀÃüWàOWâ›‹Wà⁄YWâÿùﬂWàZY⁄Wâ⁄WàûWåLóàö[Wâÿò\ëö[Wà›õ⁄ŸOWâ⁄OOOL…»ÕÕçM—ëâŒòÀòõ‹ô\üWà›õ⁄ŸK]⁄YWåóèè]Oìõ›H	⁄_Nà	›ò[Y_HôY⁄\›õ  O›]Oè‹ôX›è^€\‹œWúõK]åéXò\ã]ò[YH	⁄[ú⁄YO…⁄[ú⁄YIŒâ€›]⁄YIﬂWàWâÿﬁWàOWâÿ€›[ù_Wà^X[ò⁄‹èWõZYWàö[Wâÿ€›[ùö[Wèâ›ò[Y_O›^èôX›€\‹œWúõK]åé[[€ŸXò\ŸWàWâÿﬁXùÀÃüWàOWâÿò\ŸV_Wà⁄YWâÿùﬂWàZY⁄Wâÿò\ŸRWàûWåLWàö[Wâÿò\ëö[Wà›õ⁄ŸOWâ⁄OOOL…»ÕÕçM—ëâŒòÀòõ‹ô\üWà›õ⁄ŸK]⁄YWåKéãœè^€\‹œWúõK]åéXò\ŸK[Xô[àWâÿﬁWàOWâÿò\ŸVJÃçüWà^X[ò⁄‹èWõZYWàö[Wâÿò\ŸU^Wèâ⁄_O›^òJKöõ⁄[ä	… _O‹›ôœòN◊óôù[ò›[€àõUåé›[\ 
-^⁄Yäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åé\›[I J\ô]\õéÿ€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N‹›öYI‹õK]åé\›[IŒ‹›ù^€€ù[ùXã à\›0Ï‹öX€»HôXŸ[ù\»
-ã◊ãù[Y[[ôKZ][KúõK]åé][Y[[ô^Ÿ\‹^Nòõÿ⁄»Z[\‹ù[ù‹‹⁄][€éúô[]]ôN‹Y[ôŒåL\LúLúZ[\‹ù[ùÿõ‹ô\ã\òY]\ŒåçZ[\‹ù[ù€Z[ã]⁄YåWãúõK]åé][Y[[ôHúõKXÿ\ôZXY\ûŸ\‹^Nôõ^ÿ[Y€ãZ][\ŒòŸ[ù\é⁄ù\›YûKX€€ù[ùú‹XŸKXô]ŸY[éŸÿ\åL€X\ô⁄[ãXõ›€NçúWãúõK]åé][Y[[ôHúõKXÿ\ôZXY\ã[XZ[ûŸ\‹^Nôõ^ÿ[Y€ãZ][\ŒòŸ[ù\éŸÿ\é€Z[ã]⁄YåWãúõK]åé][Y[[ôHù[Y[[ôK]\KZX€€û›⁄Yåç⁄ZY⁄åçŸ\‹^Nô‹öY‹XŸKZ][\ŒòŸ[ù\éŸõ^åçÿ€€‹éùò\äK\õK\ôX€‹ô]€ôJ_WãúõK]åé][Y[[ôHù[Y[[ôK]\KZX€€à›ôﬁ›⁄Yåå\Z[\‹ù[ù⁄ZY⁄åå\Z[\‹ù[ùWãúõK]åé][Y[[ôHù[Y[[ôKZ⁄[ô€X\ô⁄[éåZ[\‹ù[ùŸõ€ù\⁄^ôNåMKç\Z[\‹ù[ù€[ôKZZY⁄åKåHZ[\‹ù[ùŸõ€ù]ŸZY⁄éZ[\‹ù[ù€]\ã\‹X⁄[ôŒåZ[\‹ù[ù›^]ò[úŸõ‹õNõõ€ôHZ[\‹ù[ùÿ€€‹éùò\äK\õK\ôX€‹ô]€ôJHZ[\‹ù[ùWãúõK]åé][Y[[ôHù[Y[[ôK][Y^‹Y[ôŒåZ[\‹ù[ùŸõ€ù\⁄^ôNåMç\Z[\‹ù[ù€[ôKZZY⁄åKåHZ[\‹ù[ùŸõ€ù]ŸZY⁄çÕåZ[\‹ù[ùÿ€€‹éùò\äK\ŸX€€ô\ûJHZ[\‹ù[ù›⁄]K\‹XŸNõõ›‹ò\WãúõK]åé][Y[[ôHù[Y[[ôK[XZ[û‹Y[ôÀ[YùåÃú€Z[ã]⁄YåWãúõK]åé][Y[[ôHù[Y[[ôK]]^Ÿõ€ù\⁄^ôNåMçÕ\Z[\‹ù[ù€[ôKZZY⁄åKåÕHZ[\‹ù[ùŸõ€ù]ŸZY⁄çMåZ[\‹ù[ù€]\ã\‹X⁄[ôŒãKå[_WãúõK]åé][Y[[ôHúõK\ôX€‹ô[ò[Y^Ÿõ€ù\⁄^ôNåMKåç\Z[\‹ù[ùŸõ€ù]ŸZY⁄çÃåZ[\‹ù[ùWãúõK]åé][Y[[ôHúõK\ôX€‹ô\›Xõ[ô^€X\ô⁄[ã]‹åúŸõ€ù\⁄^ôNåLÀç\€[ôKZZY⁄åKåçNŸõ€ù]ŸZY⁄çÃÿ€€‹éùò\äK\ŸX€€ô\ûJ_WãúõK]åé][Y[[ôHúõK\\ò⁄\ŸK\öXŸ^ÿ€€‹éùò\äK\ôX€‹ôXù^Kò\äKXù^JJ_WãúõK]åé][Y[[ôHù[Y[[ôK[Y]^€X\ô⁄[ã]‹ç\Z[\‹ù[ùŸõ€ù\⁄^ôNåLKçÕ\Z[\‹ù[ù€[ôKZZY⁄åKåÕHZ[\‹ù[ùWãúõK]åé][Y[[ôHö][K[Y[ù^Ÿ\‹^Nõõ€ôHZ[\‹ù[ùWãúõK]åé][Y[[ôHúõK[Y]KXòYŸ\ﬁŸ\‹^Nôõ^ÿ[Y€ãZ][\ŒòŸ[ù\éŸõ^]‹ò\ù‹ò\Ÿÿ\ç‹€X\ô⁄[ã]‹éZ[\‹ù[ùWãúõK]åé][Y[[ôHúõK[Z[öK[[€Ÿ›⁄YåÃ\Z[\‹ù[ù⁄ZY⁄åÃúZ[\‹ù[ù€Z[ã]⁄YåÃ\Z[\‹ù[ùÿõ‹ô\ã\òY]\ŒåLZ[\‹ù[ùŸõ€ù\⁄^ôNåNZ[\‹ù[ùŸõ€ù]ŸZY⁄éLZ[\‹ù[ùŸ\‹^Nö[õ[ôKY‹öYZ[\‹ù[ù‹XŸKZ][\ŒòŸ[ù\àZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôùò\äK\õK[Z[öK[[€Ÿ
-HZ[\‹ù[ùÿ€€‹éùò\äK\õK[Z[öK]^
-HZ[\‹ù[ùÿõ‹ô\éåKçú€€Yò\äK\õK[Z[öKXõ‹ô\äHZ[\‹ù[ùÿõﬁ\⁄Y›ŒåLò\äK\õK[Z[öKY€› HZ[\‹ù[ùWãúõK]åé][Y[[ôHúõK[õ›K]Yﬁ‹‹⁄][€éúô[]]ôNŸ\‹^Nö[õ[ôKYõ^Z[\‹ù[ùÿ[Y€ãZ][\ŒòŸ[ù\é⁄ZY⁄åçZ[\‹ù[ù€Z[ãZZY⁄åçZ[\‹ù[ù‹Y[ôŒå\Z[\‹ù[ù€X\ô⁄[ã[Yùç\ÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\ŸX€€ô\ûJHÃâKò[ú‹\ô[ù
-HZ[\‹ù[ùÿõ‹ô\ã\òY]\Œé\Z[\‹ù[ùÿòX⁄Ÿ‹õ›[ôùò[ú‹\ô[ùZ[\‹ù[ùÿ€€‹éùò\äK\ŸX€€ô\ûJHZ[\‹ù[ùŸõ€ù\⁄^ôNåLKç\Z[\‹ù[ùŸõ€ù]ŸZY⁄çÃZ[\‹ù[ùÿ€\\]õõ€ôHZ[\‹ù[ùWãúõK]åé][Y[[ôHúõK[õ›K]YŒòôYõ‹ô^ÿ€€ù[ùâ…Œ‹‹⁄][€éòXú€€]N€YùãM\›‹çú›⁄Yé\⁄ZY⁄é\ÿòX⁄Ÿ‹õ›[ôùò\äK\›\ôòXŸJNÿõ‹ô\ã[Yùå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\ŸX€€ô\ûJHÃâKò[ú‹\ô[ù
-Nÿõ‹ô\ãXõ›€Nå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\ŸX€€ô\ûJHÃâKò[ú‹\ô[ù
-N›ò[úŸõ‹õNúõ›]JYY Nÿõ‹ô\ãXõ›€K[Yù\òY]\ŒåúWö[Ÿ]K][YOWô\ö◊óHúõK]åé][Y[[ôHúõK[õ›K]YŒòôYõ‹ô^ÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\›\ôòXŸJHMIKõX⁄»IJ_WêYYXJôYô\úÀX€€‹ã\ÿ⁄[YNô\ö ^⁄[Ÿ]K][YOWúﬁ\›[WóHúõK]åé][Y[[ôHúõK[õ›K]YŒòôYõ‹ô^ÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\›\ôòXŸJHMIKõX⁄»IJ__Wóã à\úôY€ô[Y[ù»€€ú⁄\›[ùHõ‹»ÿ\ù0ÌY\»€€\X›‹»\›Hò[pÎ[XKà
-ã◊ãù[Y[[ôKZ][Kò[ò[\⁄\À\õ›ÀõY]öXÀúõKZ[ú⁄Y⁄\õ›ÀúôY⁄\›ûKXÿ\ôõYY\›YŸŸ\›[€ãXÿ\ôò€€ù[ùZ]KX[\ù\õ›ﬁÿõ‹ô\ã\òY]\ŒååúZ[\‹ù[ùWóã à][\»
-ã◊ãúõK]åéY]Z[Y‹öYŸ\‹^Nô‹öYŸ‹öY][\]KX€€[[úŒúô\X]
-ãZ[õX^
-YúäJNŸÿ\é€X\ô⁄[ã]‹éWãúõK]åéY]Z[Xÿ\ô€Z[ã]⁄Yå‹Y[ôŒåL\Lúÿõ‹ô\ã\òY]\ŒååúÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äK\›\ôòXŸKLäHLâKò\äK\õKY]Z[]€ôJH	JNÿõ‹ô\éå\€€Y€€‹ã[Z^
-[à‹ôÿãò\äK\Ÿ\\ò]‹äHâKò\äK\õKY]Z[]€ôJHN	J_WãúõK]åéY]Z[Xÿ\ôù⁄YKúõK]åéY]Z[Y]^Ÿ‹öYX€€[[éåKÀL_WãúõK]åéY]Z[Xÿ\ô€X[Ÿ\‹^Nòõÿ⁄Œ€X\ô⁄[éåúÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåLçÕ\€[ôKZZY⁄åKåMNŸõ€ù]ŸZY⁄çÃåWãúõK]åéY]Z[Xÿ\ô›õ€ôﬁŸ\‹^Nòõÿ⁄Œÿ€€‹éùò\äK]^
-NŸõ€ù\⁄^ôNåMç\€[ôKZZY⁄åKåçNŸõ€ù]ŸZY⁄çÕå€›ô\ôõ›À]‹ò\ò[û]⁄\ô_WãúõK]åéY]Z[Xÿ\ôù€ôH›õ€ôﬁÿ€€‹éùò\äK\õKY]Z[]€ôJ_WãúõK]åéY]Z[Xÿ\ôúõK[Z[öK[[€Ÿ›⁄YåÃú⁄ZY⁄åÃ‹Ÿ\‹^Nö[õ[ôKY‹öY‹XŸKZ][\ŒòŸ[ù\éÿõ‹ô\ã\òY]\ŒåLÿòX⁄Ÿ‹õ›[ôùò\äK\õK[Z[öK[[€Ÿ
-Nÿ€€‹éùò\äK\õK[Z[öK]^
-Nÿõ‹ô\éåKç\€€Yò\äK\õK[Z[öKXõ‹ô\äNŸõ€ù\⁄^ôNåNŸõ€ù]ŸZY⁄éLWãúõK]åéY]Z[Xÿ\ôúõK[õ›K]YﬁŸ\‹^Nö[õ[ôKYõ^ÿ[Y€ãZ][\ŒòŸ[ù\é⁄ZY⁄åç‹Y[ôŒå\ÿõ‹ô\éå\€€Yò\äK\Ÿ\\ò]‹äNÿõ‹ô\ã\òY]\Œé\ÿòX⁄Ÿ‹õ›[ôùò[ú‹\ô[ùÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåLKç\Ÿõ€ù]ŸZY⁄çÃWãúõK]åéY]Z[Y]^›^X[Y€éòŸ[ù\éÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåLãç\Ÿõ€ù]ŸZY⁄ççL‹Y[ôŒç\úúWãúõK]åé]öY]Ÿ\ãXX›[€úﬁŸ‹öY][\]KX€€[[úŒåYúàKåÕYúàZ[\‹ù[ùŸÿ\é\Z[\‹ù[ù€X\ô⁄[ã]‹åL‹Z[\‹ù[ùWãúõK]åé]öY]Ÿ\ãXX›[€ú»›öY]Ÿ\ë[]Pùûÿ€€‹éùò\äKY[ôŸ\äHZ[\‹ù[ùÿõ‹ô\ãX€€‹éò€€‹ã[Z^
-[à‹ôÿãò\äKY[ôŸ\äHÃâKò\äK\Ÿ\\ò]‹äJHZ[\‹ù[ùÿòX⁄Ÿ‹õ›[ôò€€‹ã[Z^
-[à‹ôÿãò\äKY[ôŸ\äHâKò\äK\›\ôòXŸJJHZ[\‹ù[ùWãú⁄Y]ö\ úõK]åéY]Z[Y‹öY
-Hú⁄Y]ZXY\û€X\ô⁄[ãXõ›€NåúZ[\‹ù[ùWãú⁄Y]ö\ úõK]åéY]Z[Y‹öY
-^‹Y[ôÀ[YùåMZ[\‹ù[ù‹Y[ôÀ\öY⁄åMZ[\‹ù[ùWóã à‹∞ËYöX€»
-ã◊ãúõK]åé[[€ŸXò\ú»úõK]åéXò\ã]ò[Y^Ÿõ€ù\⁄^ôNåNZ[\‹ù[ùŸõ€ù]ŸZY⁄éLZ[\‹ù[ù€‹X⁄]NåHZ[\‹ù[ùWãúõK]åé[[€ŸXò\ú»úõK]åéXò\ŸK[Xô[Ÿõ€ù\⁄^ôNåM‹Z[\‹ù[ùŸõ€ù]ŸZY⁄éLZ[\‹ù[ù€‹X⁄]NåHZ[\‹ù[ùWãúõK]åé[[€ŸXò\ú»^õ›]⁄Y^‹Z[ù[‹ô\éú›õ⁄ŸN‹›õ⁄ŸNò€€‹ã[Z^
-[à‹ôÿãò\äK\›\ôòXŸJHâKò[ú‹\ô[ù
-N‹›õ⁄ŸK]⁄Yåú‹›õ⁄ŸK[[ôZõ⁄[éúõ›[ôWóêYYXJX^]⁄YåŒL
-^◊àúõK]åé][Y[[ôHù[Y[[ôK[XZ[û‹Y[ôÀ[Yùåé\WàúõK]åé][Y[[ôHù[Y[[ôKZ⁄[ôŸõ€ù\⁄^ôNåM\Z[\‹ù[ùWàúõK]åé][Y[[ôHù[Y[[ôK][Y^Ÿõ€ù\⁄^ôNåMZ[\‹ù[ùWàúõK]åéY]Z[Xÿ\ô‹Y[ôŒåLLWàúõK]åéY]Z[Xÿ\ô›õ€ôﬁŸõ€ù\⁄^ôNåLÀçÕ\WüWòŸÿ›[Y[ùöXYò\[ô⁄[
-›
-_Wóôù[ò›[€àõUåéö[ò[^ôJ
-^‹õUåé›[\ 
-Nÿ€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â KXõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N⁄Yä‹
-]‹ù^€€ù[ùXâ‘ìW’åé‘ëSPT—_X⁄YäXõ›]
-XXõ›]ù^€€ù[ùTìW’åé‘ëSPT—N⁄Yä\[ŸàõR[ùò[Y]OOOIŸù[ò›[€â \õR[ùò[Y]J	⁄€YIÀ	⁄\›‹ûIÀ	ÿ[ò[\⁄\… N›û^‹õUåç—[ö[òŸR\›‹ûQö[\úœÀä
-_Xÿ]⁄ﬂ_WúõUåéö[ò[^ôJ
-N◊óóã àÿ\úôYÿH»ôYö[ò[Y[ù»ö\›X[ŸY›Z[ùH\0Ï‹»\›Hô]ö\Ë€Àà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃéKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåéH8†%õ›0ÌY\»XZ\»\úôY€ôY‹»òHXòH\ô[ô^òYÀà
-ã◊ò€€ú›ìW’åéW‘ëSPT—OIÃKåãåXô]Kç	Œ◊óôù[ò›[€àõUåéQ[ú›\ôT›[\ 
-^◊àYäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åéK\›[I J\ô]\õé◊à€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N◊à›öYI‹õK]åéK\›[IŒ◊à›ù^€€ù[ùXñŸ]K]öY]œWõX\õö[ô◊óHõX\õö[ôÀXX›[€ú»ù]€û◊àõ‹ô\ã\òY]\ŒåNZ[\‹ù[ù◊àZ[ãZZY⁄ç◊àY[ôÀ[YùåM\Z[\‹ù[ù◊àY[ôÀ\öY⁄åM\Z[\‹ù[ù◊üWñŸ]K]öY]œWõX\õö[ô◊óHõX\õö[ôÀX⁄\◊àõ‹ô\ã\òY]\ŒéNN\Z[\‹ù[ù◊üWñŸ]K]öY]œWõX\õö[ô◊óHõX\õö[ôÀ\ô[[›ô^◊àõ‹ô\ã\òY]\ŒåMúZ[\‹ù[ù◊àZ[ãZZY⁄åÕú◊àY[ôÀ[YùåLúZ[\‹ù[ù◊àY[ôÀ\öY⁄åLúZ[\‹ù[ù◊üWñŸ]K]öY]œWõX\õö[ô◊óHõX\õö[ôÀXX›[€ú»ù]€éòX›]ôKñŸ]K]öY]œWõX\õö[ô◊óHõX\õö[ôÀX⁄\òX›]ôKñŸ]K]öY]œWõX\õö[ô◊óHõX\õö[ôÀ\ô[[›ôNòX›]ô^◊àò[úŸõ‹õNúÿÿ[JéM N◊üWò◊àÿ›[Y[ùöXYò\[ô⁄[
-›
-N◊üWóôù[ò›[€àõUåéQö[ò[^ôJ
-^◊àõUåéQ[ú›\ôT›[\ 
-N◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â N◊à€€ú›Xõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åéW‘ëSPT—_X◊àYäXõ›]
-XXõ›]ù^€€ù[ùTìW’åéW‘ëSPT—N◊üWúõUåéQö[ò[^ôJ
-N◊ñÃçLLNKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåéQö[ò[^ôK\ JN◊óóã àÿ\úôYÿH»[[ö[Y[ù»€ÿò[‹»€€ùõ€\»HôX⁄\ãà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃÃöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåÃ8†%€€ùõ€\»HôX⁄\à[[öY‹»0Ë\‹]Y\ôH[HŸ\»\»ò[ô[\Àà
-ã◊ò€€ú›ìW’åÃ‘ëSPT—OIÃKåãåXô]Kç	Œ◊óôù[ò›[€àõUåÃ[ú›\ôT›[\ 
-^◊àYäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åÃ\›[I J\ô]\õé◊à€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N◊à›öYI‹õK]åÃ\›[IŒ◊à›ù^€€ù[ùXãú⁄Y]ZXY\û◊à\‹^Nô‹öYZ[\‹ù[ù◊à‹öY][\]KX€€[[úŒçZ[õX^
-YúäHZ[\‹ù[ù◊à[Y€ãZ][\ŒòŸ[ù\àZ[\‹ù[ù◊à€€[[ãYÿ\éZ[\‹ù[ù◊üWãú⁄Y]ZXY\àú⁄Y]X€‹Ÿ^◊à‹öYX€€[[éåHZ[\‹ù[ù◊à‹öY\õ›ŒåHZ[\‹ù[ù◊àù\›YûK\Ÿ[éú›\ùZ[\‹ù[ù◊à‹ô\éãLHZ[\‹ù[ù◊üWãú⁄Y]ZXY\àû◊à‹öYX€€[[éåàZ[\‹ù[ù◊à‹öY\õ›ŒåHZ[\‹ù[ù◊àZ[ã]⁄Yå◊àX\ô⁄[éåZ[\‹ù[ù◊à^X[Y€éòŸ[ù\àZ[\‹ù[ù◊à[ôKZZY⁄åKåàZ[\‹ù[ù◊üWãôõ‹õKXX›[€úœãúõKX€‹ŸKXX›[€ããúôY⁄\›ûK]€€ò\èãúõKX€‹ŸKXX›[€û◊à‹ô\éãLHZ[\‹ù[ù◊à‹öYX€€[[éåHZ[\‹ù[ù◊üWò◊àÿ›[Y[ùöXYò\[ô⁄[
-›
-N◊üWóôù[ò›[€àõUåÃX\ö–€‹ŸPX›[€ú õ€›Yÿ›[Y[ù
-^◊àõ€›ú]Y\ûTŸ[X›‹ê[Àä	ÿù]€â Kôõ‹ëXX⁄
-ù]€èOû◊à€€ú›Xô[T›ö[ô ù]€ãù^€€ù[ù	… Kúô\XŸJ◊ ÀŸÀ	»	 Kùö[J
-Kù”ÿÿ[S›Ÿ\êÿ\ŸJ	‹Pîâ N◊àù]€ãò€\‹”\›ùŸŸ€J	‹õKX€‹ŸKXX›[€âÀXô[OOIŸôX⁄\â N◊àJN◊üWóôù[ò›[€àõUåÃÿ]⁄€‹ŸPX›[€ú 
-^◊à€€ú›õ‹õOYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI N◊àYäYõ‹õ_õ‹õKô]\Ÿ]úõUåÃÿ]⁄OOIÃI \ô]\õé◊àõ‹õKô]\Ÿ]úõUåÃÿ]⁄IÃIŒ◊àõUåÃX\ö–€‹ŸPX›[€ú õ‹õJN◊àô]»]]][€ìÿúŸ\ùô\ä
-
-OOúõUåÃX\ö–€‹ŸPX›[€ú õ‹õJJKõÿúŸ\ùôJõ‹õKÿ⁄[\›ùùYK›XùôYNùùY_JN◊üWóôù[ò›[€àõUåÃö[ò[^ôJ
-^◊àõUåÃ[ú›\ôT›[\ 
-N◊àõUåÃÿ]⁄€‹ŸPX›[€ú 
-N◊àõUåÃX\ö–€‹ŸPX›[€ú ÿ›[Y[ù
-N◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â N◊à€€ú›Xõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åÃ‘ëSPT—_X◊àYäXõ›]
-XXõ›]ù^€€ù[ùTìW’åÃ‘ëSPT—N◊üWúõUåÃö[ò[^ôJ
-N◊ñÃçLLNKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåÃö[ò[^ôK\ JN◊óóã àÿ\úôYÿH»õ›õ»Î[Xõ€»HôX⁄[Y[ùÀà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃÃKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåÃH8†%õ›õ»0ÎX€€ôH⁄\ò›[\àHôX⁄[Y[ùÀà
-ã◊ò€€ú›ìW’åÃW‘ëSPT—OIÃKåãåXô]Kç	Œ◊ò€€ú›ìW’åÃW–”‘—W“P””èWè›ô»€\‹œWúõKX€‹ŸKZX€€óà[úœWöãÀ›››ÀùÃÀõ‹ôÀÃå‹›ô◊àöY]–õﬁWååçÕMŒååÕçÃóà\öXKZY[èWùùYWàõÿ›\ÿXõOWôò[ŸWèèœèôX›ZY⁄WåååÕçÃóà‹X⁄]OWåà⁄YWååçÕMŒàWåàOWåãœè]WìLååÕLMàLåMŒM–ÃååÕLMàMKçŒLàMKçŒLàååÕLMàLåMÃNHååÕLMêÕçMÃÃHååÕLMàMKçŒLàLåMŒM–ÃçMÃÃHçMÃÃHLåMÃNHÃMKçŒLàååÕLMàçMÃÃHååÕLMàLåMŒM÷ìLLÀåçHãåLçSLåNNHKåMŒMç”ÀåLMÃNHãåLçPÕãéMéÕHKéNŒãééHKéLMàãçåLŒKéLMêÕãååÃLàKéLMàKééHãååNÕHKééHãçåLŒÕKééHãéLçHKéMåMãéNLåNHãåLMMàÀåLÃéSKåMåéMLåNMìãåLMMàLÀåçåêÕKéMåMLÀåŒLàKééHLÀçMåçHKééHLÀçÕMŒÕKééHMåMMåàãååÃLàMçÕçàãçåLŒMçÕçêÕãéLçHMçÕçàãéNŒMåŒNÀåLÃéHMåçMŒLåMŒM»LKååLSLÀååççàMåçMŒÃLÀåÕçÃàMåŒNLÀçLŒLHMçÕçàLÀçÕHMçÕçêÃMåMMçÕçàMçéMåMMåàMçéLÀçÕMŒÃMçéLÀçMåçHMåŒNLÀåŒLàMåçMŒLÀåçåìLKåNNHLåNLçSMåçMŒÀåLÃéPÃMåŒNãéNLåNHMçéãéLçHMçéãçåLŒÃMçéãååNÕHMåMKéLMàLÀçÕHKéLMêÃLÀçMM»KéLMàLÀåŒéKéNŒLÀåçHãåLçVóàö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWåéWãœèŸœè‹›ôœóé◊óôù[ò›[€àõUåÃQ[ú›\ôT›[\ 
-^◊àYäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åÃK\›[I J\ô]\õé◊à€€ú››Yÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N◊à›öYI‹õK]åÃK\›[IŒ◊à›ù^€€ù[ùXãúõKX€‹ŸKZX€€û◊à\‹^Nòõÿ⁄Œ◊à⁄Yåç◊àZY⁄åç◊à⁄[ù\ãY]ô[ùŒõõ€ôN◊üWãú⁄Y]X€‹Ÿ^◊àõ€ù\⁄^ôNåZ[\‹ù[ù◊üWò◊àÿ›[Y[ùöXYò\[ô⁄[
-›
-N◊üWóôù[ò›[€àõUåÃP\P€‹ŸRX€€ú õ€›Yÿ›[Y[ù
-^◊àõ€›ú]Y\ûTŸ[X›‹ê[Àä	ÿù]€ñÿ\öXK[Xô[WëôX⁄\óóKù]€ãú⁄Y]X€‹ŸI Kôõ‹ëXX⁄
-ù]€èOû◊àYäXù]€ãú]Y\ûTŸ[X›‹ä	ÀúõKX€‹ŸKZX€€â JXù]€ãö[õô\íSTìW’åÃW–”‘—W“P””é◊àJN◊üWóôù[ò›[€àõUåÃQö[ò[^ôJ
-^◊àõUåÃQ[ú›\ôT›[\ 
-N◊àõUåÃP\P€‹ŸRX€€ú ÿ›[Y[ù
-N◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â N◊à€€ú›Xõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åÃW‘ëSPT—_X◊àYäXõ›]
-XXõ›]ù^€€ù[ùTìW’åÃW‘ëSPT—N◊üWúõUåÃQö[ò[^ôJ
-N◊õô]»]]][€ìÿúŸ\ùô\äôX€‹ôœOúôX€‹ôÀôõ‹ëXX⁄
-ôX€‹ôOúôX€‹ôòYYõŸ\Àôõ‹ëXX⁄
-õŸOOû◊àYäõŸKõõŸU\OOOLJ\õUåÃP\P€‹ŸRX€€ú õŸKõX]⁄\œÀä	ÿù]€â O€õŸNõõŸJN◊üJJJKõÿúŸ\ùôJÿ›[Y[ùòõŸKÿ⁄[\›ùùYK›XùôYNùùY_JN◊ñÃçLLNKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåÃQö[ò[^ôK\ JN◊óóã àÿ\úôYÿH»õ›õ»0ÎX€€ôHH\›0Ï‹öX€Àà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃÃãöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåÃà8†%õ›õ»0ÎX€€ôHH\›0Ï‹öX€Àà
-ã◊ò€€ú›ìW’åÃó‘ëSPT—OIÃKåãåXô]Kç	Œ◊ò€€ú›ìW’åÃó“T’‘ñW“P””èWè»ò[úŸõ‹õOWùò[ú€]JçH
-Hÿÿ[JéÕ
-Wàö[Wò›\úô[ù€€‹óàö[[‹X⁄]OWãéWà›õ⁄ŸOWõõ€ôWèè]WìLMãçÕÃÕãééSMãçÕÃÕåãåçPÃMãçÕÃÕçåçÃÕMKçÕçMàçKåéLHLÀçÕçMàçKåéLSÀåŒHçKåéLPÃKåŒHçKåéLHçåçÃÕåãåçSãééPÃçŒLçHKåŒHÀçÕMŒHÀåŒHÀçÕMŒSÀåÃŒçÀçÕMŒPÃÀåÃÃM»ÀééLåHÀåÃéLàÀéLåàÀåÃéLàÀéMÕçMìÀåÃéLàKååÕÃÀåÃéLàKåçNLHÀåÃéLàKåLŒLàÀåÃÃÕå»KåMÀåNMKåMÃKéMåMKåMKåŒéHKçÕåNHKåŒéHãééLìKåŒéHåãååççêÃKåŒéHåÀåÃLçHKéMåMåÀéLåàÀåNMåÀéLåìLÀçéÕHåÀéLåêÃMéLçHåÀéLåàMKåŒLàåÀåÃLçHMKåŒLàåãååççìMKåŒLàãééLêÃMKåŒLàKçÕåNHMéLçHKåMLÀçéÕHKåMLÀçŒNKåMÃLÀçàKåLŒLàLÀçL»KåçNLHLÀçL»KååÕLÀçL»ÀéMÕçMêÃLÀçL»ÀéLåàLÀçàÀééLåHLÀçÕLàÀçÕMŒSLÀçÕçMàÀçÕMŒPÃMKçÕçMàÀçÕMŒHMãçÕÃÕçŒLçHMãçÕÃÕãééVóãœè]WìMKåéMéKéLéMéSLKçÕçàKéLéMéPÃLãååÕKéLéMéHLãåÕNMKçNLÕÕHLãåÕNMKååÕLãåÕNMÀéMÕçMêÃLãåÕNMÀçåçHLãååÕÀåÃÃHLKçÕçàÀåÃÃSLçéÀåÃÃPÃLçMHKéMÕçMàKçHKåNMåŒLåàKåNMÕÀåçÃÕKåNMãåÕNLŒKéMÕçMàãåÃéHÀåÃÃSKåéMéÀåÃÃPÕçÕHÀåÃÃHçMàÀçåçHçMàÀéMÕçMìçMàKååÕÕçMàKçNLÕÕHçÕHKéLéMéHKåéMéKéLéMéVìNåŒLåàååÕÕÀéLåàååÕÀçLåNHÀçåLŒÀçLåNHÀåLÃéPÕÀçLåNHãçåÃéHÀéLåàãååÕŒåŒLåàãååÕŒŒééHãååÕŒKåéLçHãçåÃéHKåéLçHÀåLÃéPŒKåéLçHÀçåLŒééHååÕåŒLåàååÕóãœè]WìLÀéNLŒLKçMåçSLãéLMHLKçMåçPÃLÀååLHLKçMåçHLÀçåHLKåÃLçHLÀçåHLKåMMêÃLÀçåHLçÃNLÀååLHLçéLãéLMHLçéÀéNLŒLçéÃÀçMåçHLçéÀåÃLçHLçÃNÀåÃLçHLKåMMêÃÀåÃLçHLKåÃLçHÀçMåçHLKçMåçHÀéNLŒLKçMåçVìLÀéNLŒMKåMÃNSLãéLMHMKåMÃNPÃLÀååNMKåMÃNHLÀçåHMéLéM»LÀçåHMçåçPÃLÀçåHMåÃéHLÀååNMåNHLãéLMHMåNSÀéNLŒMåNPÃÀçMMéHMåNHÀåÃLçHMåÃéHÀåÃLçHMçåçPÃÀåÃLçHMéLéM»ÀçMMéHMKåMÃNHÀéNLŒMKåMÃNVìLÀéNLŒNéNLåìçMåçHNéNLåêŒéNLŒNéNLåàKåLLŒNçÕåàKåLLŒNçL–ŒKåLLŒNåMàéçÃNHMÀéNçMåçHMÀéNÀéNLŒMÀéNÃÀçMMéHMÀéNÀåÃLçHNåMàÀåÃLçHNçL–ÃÀåÃLçHNçÕåàÀçMåçHNéNLåàÀéNLŒNéNLåñóãœèŸœóé◊óôù[ò›[€àõUåÃê\R\›‹ûRX€€ä
-^◊àû^◊àYä\[Ÿàò\ŸRX€€úœOOI€ÿöôX›	 Xò\ŸRX€€úÀö\›‹ûOTìW’åÃó“T’‘ñW“P””é◊àYä⁄[ô›ÀîëQ“T’ì◊”êUó“P””î ]⁄[ô›ÀîëQ“T’ì◊”êUó“P””îÀö\›‹ûOTìW’åÃó“T’‘ñW“P””é◊à€€ú›ò\èYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	ÀùXãXò\â N◊àYäò\ââù\[ŸàYò]RX€€úœOOIŸù[ò›[€â ZYò]RX€€ú ò\äN◊àXÿ]⁄ﬂWüWôù[ò›[€àõUåÃëö[ò[^ôJ
-^◊àõUåÃê\R\›‹ûRX€€ä
-N◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â N◊à€€ú›Xõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åÃó‘ëSPT—_X◊àYäXõ›]
-XXõ›]ù^€€ù[ùTìW’åÃó‘ëSPT—N◊üWúõUåÃëö[ò[^ôJ
-N◊ñÃçLLNKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåÃëö[ò[^ôK\ JN◊óóã àÿ\úôYÿHH€‹úôpÈË€»Hô\›]\òpÈË€»H]X[^òpÈË€»]]€pË]XÿKà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃÃÀöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåÃ»8†%ô\›]\òpÈË€»ô\öYöXÿYHH]X[^òpÈË€»€€ôöpË]ô[»–Kà
-ã◊ò€€ú›ìW’åÃ◊‘ëSPT—OIÃKåãåXô]Kç	Œ◊óôù[ò›[€àõUåÃ’ò[Y]ô[ù
-J^◊àô]\õàõ€€X[äIâù\[ŸàKöYOOI‹›ö[ô……âôKöY	âù\[ŸàKù[Y\›[\OOI‹›ö[ô……âôKù[Y\›[\	âñ…€õ›IÀ	€YYXÿ][€âÀ	‹€Y\	À	‹\ò⁄\ŸI◊Kö[ò€Y\ Kù\JJN◊üWôù[ò›[€àõUåÃ’ò[YYYXÿ][€äJ^◊àô]\õàõ€€X[äIâù\[ŸàKöYOOI‹›ö[ô……âõKöY	âù\[ŸàKòX›]ôR[ô‹ôYY[ùOOI‹›ö[ô……âõKòX›]ôR[ô‹ôYY[ùùö[J
-JN◊üWóö[\‹ù]OX\ﬁ[ò»ù[ò›[€äö[J^◊àû^◊àÿ\›
-	“[\‹ù[ô»Hô\öYöXÿ[ô»òX⁄›\8†)â N◊à€€ú›\úŸYRî””ãú\úŸJ]ÿZ]ö[Kù^
-
-JN◊à€€ú›€›\òŸQ]ô[ùœP\úò^Kö\–\úò^J\úŸY
-O‹\úŸYú\úŸYÀô]ô[ùŒ◊àYäP\úò^Kö\–\úò^J€›\òŸQ]ô[ù J]õ›»ô]»\úõ‹ä	”»òX⁄›\∞Ë€»€€ù0Í[H[XH\›HHôY⁄\›õ‹Àâ N◊à€€ú›]ô[ùœ\€›\òŸQ]ô[ùÀôö[\äõUåÃ’ò[Y]ô[ù
-N◊à€€ú›YYXÿ][€úœP\úò^Kö\–\úò^J\úŸYÀõYYXÿ][€ú O‹\úŸYõYYXÿ][€úÀôö[\äõUåÃ’ò[YYYXÿ][€äNñ◊N◊àYäY]ô[ùÀõ[ô›	âà[YYXÿ][€úÀõ[ô›
-]õ›»ô]»\úõ‹ä	”ô[ö[HôY⁄\›õ»∞Ë[Y»õ⁄H[ò€€ùòY»õ»òX⁄›\â N◊óàõ‹ä€€ú›]ô[ùŸà]ô[ù X]ÿZ]]]ô[ù
-Àããô]ô[ùJN◊àõ‹ä€€ú›YYXÿ][€àŸàYYXÿ][€ú X]ÿZ]]YYXÿ][€äÀããõYYXÿ][€üJN◊óà€€ú››‹ôY]ô[ùœX]ÿZ][]ô[ù 
-N◊à€€ú››‹ôYYYXÿ][€úœX]ÿZ][YYXÿ][€ú 
-N◊à€€ú›]ô[ùYœ[ô]»Ÿ]
-›‹ôY]ô[ùÀõX\
-][OOö][KöY
-JN◊à€€ú›YYXÿ][€íYœ[ô]»Ÿ]
-›‹ôYYYXÿ][€úÀõX\
-][OOö][KöY
-JN◊à€€ú›ô\öYöYY]ô[ùœY]ô[ùÀôö[\ä][OOô]ô[ùYÀö\ ][KöY
-JKõ[ô›◊à€€ú›ô\öYöYYYYXÿ][€úœ[YYXÿ][€úÀôö[\ä][OOõYYXÿ][€íYÀö\ ][KöY
-JKõ[ô›◊àYäô\öYöYY]ô[ù»OOY]ô[ùÀõ[ô›ô\öYöYYYYXÿ][€ú»OO[YYXÿ][€úÀõ[ô›
-^◊àõ›»ô]»\úõ‹äH‹ò]òpÈË€»∞Ë€»õ⁄H€€ôö\õXYH
-	›ô\öYöYY]ô[ùﬂK…Ÿ]ô[ùÀõ[ô›HôY⁄\›õ‹Œ»	›ô\öYöYYYYXÿ][€úﬂK…€YYXÿ][€úÀõ[ô›HYYXÿ[Y[ù‹ Kò
-N◊àWóàYä\úŸYÀúŸ][ô‹…âù\[Ÿà\úŸYúŸ][ô‹œOOI€ÿöôX›	…âàP\úò^Kö\–\úò^J\úŸYúŸ][ô‹ J^◊àÿ]ôTŸ][ô‹ ÀããôŸ]Ÿ][ô‹ 
-Kããú\úŸYúŸ][ô‹ﬂJN◊àWàÿÿ[›‹òYŸKúŸ]][J	‹ôY⁄\›õÀXô]KY[[À\ŸYYY	À	ﬁY\… N◊àYä\[ŸàõR[ùò[Y]OOOIŸù[ò›[€â \õR[ùò[Y]J
-N◊àYä\[Ÿà›⁄]⁄XèOOIŸù[ò›[€â \›⁄]⁄Xä	⁄\›‹ûI N◊àYä\[ŸàõTô[ô\êX›]ôOOOIŸù[ò›[€â X]ÿZ]õTô[ô\êX›]ôJ	⁄\›‹ûIÀŸõ‹òŸNùùY_JN◊à[ŸH]ÿZ]ô[ô\ê[
-
-N◊à€€ú›Y€õ‹ôY\€›\òŸQ]ô[ùÀõ[ô›Y]ô[ùÀõ[ô›◊à€€ú››[[X\ûOX	›ô\öYöYY]ô[ùﬂHôY⁄\›õ…›ô\öYöYY]ô[ùœOOLO……Œâ‹…ﬂHH	›ô\öYöYYYYXÿ][€úﬂHYYXÿ[Y[ù…›ô\öYöYYYYXÿ][€úœOOLO……Œâ‹…ﬂHô\›]\òY…›ô\öYöYY]ô[ù ›ô\öYöYYYYXÿ][€úœOOLO……Œâ‹…ﬂKò◊àÿ\›
-Y€õ‹ôYÿ	‹›[[X\û_H	⁄Y€õ‹ôYH][I⁄Y€õ‹ôYOOLO……Œâ‹…ﬂHY€õ‹òY…⁄Y€õ‹ôYOOLO……Œâ‹…ﬂKòú›[[X\ûJN◊àXÿ]⁄
-\úõ‹ä^◊à€€ú€€Kô\úõ‹ä	—ò[H[»ô\›]\ò\àòX⁄›\	À\úõ‹äN◊à€€ú›Y\‹ÿYŸOY\úõ‹à[ú›[òŸ[Ÿà\úõ‹èŸ\úõ‹ãõY\‹ÿYŸNâ”∞Ë€»õ⁄H‹‹Î]ô[\à»\ú]Z]õÀâŒ◊à[\ù
-»òX⁄›\∞Ë€»õ⁄Hô\›]\òYÀóóâ€Y\‹ÿYŸ_Wóìô[ö[HY»^\›[ùHõ⁄H\YÿYÀò
-N◊àÿ\›
-	—ò[H[»ô\›]\ò\à»òX⁄›\â N◊àWüN◊óôù[ò›[€àõUåÃ’\]Uô\ú⁄[€ä
-^◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â N◊à€€ú›Xõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åÃ◊‘ëSPT—_X◊àYäXõ›]
-XXõ›]ù^€€ù[ùTìW’åÃ◊‘ëSPT—N◊üWóôù[ò›[€àõUåÃ“[ú›[\]Tù[ù[YJ
-^◊àYäJ	‹Ÿ\ùöXŸU€‹öŸ\â»[àò]öYÿ]‹äJ\ô]\õé◊à€€ú›Y€€ùõ€\èPõ€€X[äò]öYÿ]‹ãúŸ\ùöXŸU€‹öŸ\ãò€€ùõ€\äN◊à]ô[ÿY[ôœYò[ŸN◊àò]öYÿ]‹ãúŸ\ùöXŸU€‹öŸ\ãòY]ô[ù\›[ô\ä	ÿ€€ùõ€\ò⁄[ôŸIÀ
-
-OOû◊àYäZY€€ùõ€\üô[ÿY[ô \ô]\õé◊àô[ÿY[ôœ]ùYN◊àÿÿ][€ãúô[ÿY
-
-N◊àJN◊à€€ú›⁄X⁄œX\ﬁ[ò 
-OOû◊àû^◊à€€ú›ôY⁄\›ò][€èX]ÿZ]⁄[ô›Àó◊‘ìW—T–PìQ‘’◊‘ëQ“T’Täã‹›Àöúœ›èI‘ìW’åÃ◊‘ëSPT—_X›\]UöXPÿX⁄Nâ€õ€ôIﬂJN◊à]ÿZ]ôY⁄\›ò][€ãù\]J
-N◊àYäôY⁄\›ò][€ãùÿZ][ô \ôY⁄\›ò][€ãùÿZ][ôÀú‹›Y\‹ÿYŸJ›\Nâ‘““T’–RUSë…ﬂJN◊àXÿ]⁄
-\úõ‹ä^ÿ€€ú€€Kô\úõ‹ä	—ò[H[»ô\öYöXÿ\à]X[^òpÈË€…À\úõ‹ä_WàN◊à⁄X⁄ 
-N◊àÿ›[Y[ùòY]ô[ù\›[ô\ä	›ö\⁄Xö[]X⁄[ôŸIÀ
-
-OOû⁄Yäÿ›[Y[ùùö\⁄Xö[]T›]OOOI›ö\⁄XõI X⁄X⁄ 
-_JN◊àŸ][ù\ùò[
-⁄X⁄ÀMJçå
-åL
-N◊üWóúõUåÃ’\]Uô\ú⁄[€ä
-N◊ñÃçLLNKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåÃ’\]Uô\ú⁄[€ã\ JN◊úõUåÃ“[ú›[\]Tù[ù[YJ
-N◊óóã àÿ\úôYÿH‹»[Ÿ‹»ŸY›\õ»H›Xú›]Z\à›H€€Xö[ò\àòX⁄›\Àà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃÕöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåÕ8†%\ÿ€€H[ùôH›Xú›]Z\à›H€€Xö[ò\à[»ô\›]\ò\à[HòX⁄›\à
-ã◊ò€€ú›ìW’åÕ‘ëSPT—OIÃKåãåXô]Kç	Œ◊õ]õUåÕ[ô[ô“[\‹ù[ù[◊óôù[ò›[€àõUåÕ[ö\]YPûRY
-][\ ^◊àô]\õàÀããõô]»X\
-][\ÀõX\
-][OOñ⁄][KöYÀããö][_WJJKùò[Y\ 
-WN◊üWôù[ò›[€àõUåÕò[úÿX›[€ä[ŸK]ô[ùÀYYXÿ][€ú ^◊à€€ú››‹ô\œV—UëSïÀQQP–US”î◊N◊àô]\õàô]»õ€Z\ŸJ
-ô\€€ôKôZôX›
-OOû◊à€€ú›ò[úÿX›[€èYãùò[úÿX›[€ä›‹ô\À	‹ôXY‹ö]I N◊àò[úÿX›[€ãõ€ò€€\]OJ
-OOúô\€€ôJ
-N◊àò[úÿX›[€ãõ€ô\úõ‹èJ
-OOúôZôX›
-ò[úÿX›[€ãô\úõ‹üô]»\úõ‹ä	—ò[H[»‹ò]ò\à»òX⁄›\â JN◊àò[úÿX›[€ãõ€òXõ‹ùJ
-OOúôZôX›
-ò[úÿX›[€ãô\úõ‹üô]»\úõ‹ä	–Hô\›]\òpÈË€»õ⁄Hÿ[òŸ[YH[»ò[ò€»ÿÿ[â JN◊àYä[ŸOOOI‹ô\XŸI ^◊àò[úÿX›[€ãõÿöôX››‹ôJUëSï Kò€X\ä
-N◊àò[úÿX›[€ãõÿöôX››‹ôJQQP–US”î Kò€X\ä
-N◊àWà€€ú›]ô[ù›‹ôO]ò[úÿX›[€ãõÿöôX››‹ôJUëSï N◊à€€ú›YYXÿ][€î›‹ôO]ò[úÿX›[€ãõÿöôX››‹ôJQQP–US”î N◊à]ô[ùÀôõ‹ëXX⁄
-][OOô]ô[ù›‹ôKú]
-][JJN◊àYYXÿ][€úÀôõ‹ëXX⁄
-][OOõYYXÿ][€î›‹ôKú]
-][JJN◊àJN◊üWóò\ﬁ[ò»ù[ò›[€àõUåÕô\›‹ôJ\úŸY[ŸJ^◊à€€ú›€›\òŸQ]ô[ùœP\úò^Kö\–\úò^J\úŸY
-O‹\úŸYú\úŸYÀô]ô[ùŒ◊à€€ú›]ô[ùœ\õUåÕ[ö\]YPûRY
-€›\òŸQ]ô[ùÀôö[\äõUåÃ’ò[Y]ô[ù
-JN◊à€€ú›YYXÿ][€úœ\õUåÕ[ö\]YPûRY
-\úò^Kö\–\úò^J\úŸYÀõYYXÿ][€ú O‹\úŸYõYYXÿ][€úÀôö[\äõUåÃ’ò[YYYXÿ][€äNñ◊JN◊àû^◊à€‹ŸT⁄Y]
-
-N◊àÿ\›
-[ŸOOOI‹ô\XŸIœ…‘›Xú›]Z[ô»Hô\öYöXÿ[ô»Y‹¯†)âŒâ–€€Xö[ò[ô»Hô\öYöXÿ[ô»Y‹¯†)â N◊à]ÿZ]õUåÕò[úÿX›[€ä[ŸK]ô[ùÀYYXÿ][€ú N◊óà€€ú››‹ôY]ô[ùœX]ÿZ][]ô[ù 
-N◊à€€ú››‹ôYYYXÿ][€úœX]ÿZ][YYXÿ][€ú 
-N◊à€€ú›]ô[ùYœ[ô]»Ÿ]
-›‹ôY]ô[ùÀõX\
-][OOö][KöY
-JN◊à€€ú›YYXÿ][€íYœ[ô]»Ÿ]
-›‹ôYYYXÿ][€úÀõX\
-][OOö][KöY
-JN◊à€€ú›ô\öYöYY]ô[ùœY]ô[ùÀôö[\ä][OOô]ô[ùYÀö\ ][KöY
-JKõ[ô›◊à€€ú›ô\öYöYYYYXÿ][€úœ[YYXÿ][€úÀôö[\ä][OOõYYXÿ][€íYÀö\ ][KöY
-JKõ[ô›◊à€€ú›^X›ô\XŸ[Y[ù[[ŸHOOI‹ô\XŸIﬂ
-›‹ôY]ô[ùÀõ[ô›OOY]ô[ùÀõ[ô›	âú›‹ôYYYXÿ][€úÀõ[ô›OO[YYXÿ][€úÀõ[ô›
-N◊àYäô\öYöYY]ô[ù»OOY]ô[ùÀõ[ô›ô\öYöYYYYXÿ][€ú»OO[YYXÿ][€úÀõ[ô›Y^X›ô\XŸ[Y[ù
-^◊àõ›»ô]»\úõ‹äHô\öYöXÿpÈË€»[ò€€ùõ›H	›ô\öYöYY]ô[ùﬂK…Ÿ]ô[ùÀõ[ô›HôY⁄\›õ‹»H	›ô\öYöYYYYXÿ][€úﬂK…€YYXÿ][€úÀõ[ô›HYYXÿ[Y[ù‹Àò
-N◊àWóàYä[ŸOOOI‹ô\XŸI ^◊à€€ú›ô\›‹ôYŸ][ô‹œ\\úŸYÀúŸ][ô‹…âù\[Ÿà\úŸYúŸ][ô‹œOOI€ÿöôX›	…âàP\úò^Kö\–\úò^J\úŸYúŸ][ô‹ O‹\úŸYúŸ][ô‹ŒûﬂN◊àÿ]ôTŸ][ô‹ ÀããôYò][Ÿ][ô‹Àããúô\›‹ôYŸ][ô‹ﬂJN◊àWàÿÿ[›‹òYŸKúŸ]][J	‹ôY⁄\›õÀXô]KY[[À\ŸYYY	À	ﬁY\… N◊àYä\[ŸàõR[ùò[Y]OOOIŸù[ò›[€â \õR[ùò[Y]J
-N◊à›⁄]⁄Xä	⁄\›‹ûI N◊àYä\[ŸàõTô[ô\êX›]ôOOOIŸù[ò›[€â X]ÿZ]õTô[ô\êX›]ôJ	⁄\›‹ûIÀŸõ‹òŸNùùY_JN◊à[ŸH]ÿZ]ô[ô\ê[
-
-N◊à€€ú›X›[€è[[ŸOOOI‹ô\XŸIœ…–òX⁄›\ô\›]\òY…Œâ–òX⁄›\€€XY»[‹»Y‹»]XZ\…Œ◊àÿ\›
-	ÿX›[€üNà	›ô\öYöYY]ô[ùﬂHôY⁄\›õ…›ô\öYöYY]ô[ùœOOLO……Œâ‹…ﬂHH	›ô\öYöYYYYXÿ][€úﬂHYYXÿ[Y[ù…›ô\öYöYYYYXÿ][€úœOOLO……Œâ‹…ﬂKò
-N◊àXÿ]⁄
-\úõ‹ä^◊à€€ú€€Kô\úõ‹ä	—ò[HòHô\›]\òpÈË€»\ÿ€€YIÀ\úõ‹äN◊à€€ú›Y\‹ÿYŸOY\úõ‹à[ú›[òŸ[Ÿà\úõ‹èŸ\úõ‹ãõY\‹ÿYŸNâ”∞Ë€»õ⁄H‹‹Î]ô[€€ò€Z\àHô\›]\òpÈË€ÀâŒ◊à[\ù
-∞Ë€»õ⁄H‹‹Î]ô[ô\›]\ò\à»òX⁄›\óóâ€Y\‹ÿYŸ_X
-N◊àÿ\›
-	—ò[H[»ô\›]\ò\à»òX⁄›\â N◊àYö[ò[^◊àõUåÕ[ô[ô“[\‹ù[ù[◊àWüWóôù[ò›[€àõUåÕ‹[ê⁄⁄XŸJ\úŸY]ô[ùÀYYXÿ][€úÀY€õ‹ôY
-^◊àõUåÕ[ô[ô“[\‹ù\\úŸY◊à€€ú›€›[ù^X	Ÿ]ô[ùÀõ[ô›HôY⁄\›õ…Ÿ]ô[ùÀõ[ô›OOLO……Œâ‹…ﬂHH	€YYXÿ][€úÀõ[ô›HYYXÿ[Y[ù…€YYXÿ][€úÀõ[ô›OOLO……Œâ‹…ﬂX◊à‹[êòX⁄Ÿõ‹
-	–€€[»[\‹ù\à»òX⁄›\…Àà]à€\‹œWò[ò[\⁄\À\õ›»õK]åÕZ[\‹ù\›[[X\ûWèè›õ€ôœë\›HòX⁄›\€€ù0Í[H	Ÿ\ÿ €›[ù^
-_O‹›õ€ôœè‹[èë\ÿ€€H»]YH]ôHX€€ùXŸ\à€€H‹»Y‹»]YH∞ËH\›0Ë€»ô\›H\\ô[Àâ⁄Y€õ‹ôYÿ	⁄Y€õ‹ôYH][I⁄Y€õ‹ôYOOLO……Œâ‹…ﬂH[ù∞Ë[Y…⁄Y€õ‹ôYOOLO……Œâ‹…ﬂH∞Ë€»Ÿ\∞ËI⁄Y€õ‹ôYOOLO……ŒâË€…ﬂH[\‹ùY…⁄Y€õ‹ôYOOLO……Œâ‹…ﬂKòâ…ﬂO‹‹[èèŸ]èóà]à€\‹œWúõK]åÕZ[\‹ùX⁄⁄XŸWèóàù]€à\OWòù]€óà€\‹œWúö[X\ûKXù]€àù[Xù]€óàYWúõR[\‹ùô\XŸWèî›Xú›]Z\àY»[»òX⁄›\ÿù]€èóà€X[ê\YÿH‹»ôY⁄\›õ‹»HYYXÿ[Y[ù‹»]XZ\»Hô\›]\òH»€€ùpÓô»H\»€€ôöY›\òpÈÌY\»\›HòX⁄›\à0‚HH‹0ÈË€»õ‹õX[\òHôX›\\ò\à[XHÏ‹XH€€\]Kè‹€X[óàŸ]èóà]à€\‹œWúõK]åÕZ[\‹ùX⁄⁄XŸWèóàù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€àù[Xù]€óàYWúõR[\‹ùY\ôŸWèî€€X\à[‹»Y‹»]XZ\œÿù]€èóà€X[ìX[ù0Í[H»]YH∞ËH^\›HHYX⁄[€òH»òX⁄›\à]X[ô»[H][H]ô\à»Y\€[»Y[ùYöXÿY‹ãô]ò[XŸHHô\úË€»»òX⁄›\à\»€€ôöY›\òpÈÌY\»]XZ\»Ë€»X[ùY\Àè‹€X[óàŸ]èóàù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€àù[Xù]€óà]KXÿ[òŸ[êÿ[òŸ[\èÿù]€èóà
-N◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õR[\‹ùô\XŸI Kõ€ò€X⁄œJ
-OOúõUåÕô\›‹ôJõUåÕ[ô[ô“[\‹ù	‹ô\XŸI N◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õR[\‹ùY\ôŸI Kõ€ò€X⁄œJ
-OOúõUåÕô\›‹ôJõUåÕ[ô[ô“[\‹ù	€Y\ôŸI N◊üWóö[\‹ù]OX\ﬁ[ò»ù[ò›[€äö[J^◊àû^◊à€€ú›\úŸYRî””ãú\úŸJ]ÿZ]ö[Kù^
-
-JN◊à€€ú›€›\òŸQ]ô[ùœP\úò^Kö\–\úò^J\úŸY
-O‹\úŸYú\úŸYÀô]ô[ùŒ◊àYäP\úò^Kö\–\úò^J€›\òŸQ]ô[ù J]õ›»ô]»\úõ‹ä	”»\ú]Z]õ»∞Ë€»€€ù0Í[H[XH\›HHôY⁄\›õ‹Àâ N◊à€€ú›]ô[ùœ\õUåÕ[ö\]YPûRY
-€›\òŸQ]ô[ùÀôö[\äõUåÃ’ò[Y]ô[ù
-JN◊à€€ú›YYXÿ][€úœ\õUåÕ[ö\]YPûRY
-\úò^Kö\–\úò^J\úŸYÀõYYXÿ][€ú O‹\úŸYõYYXÿ][€úÀôö[\äõUåÃ’ò[YYYXÿ][€äNñ◊JN◊àYäY]ô[ùÀõ[ô›	âà[YYXÿ][€úÀõ[ô›
-]õ›»ô]»\úõ‹ä	”ô[ö[HôY⁄\›õ»∞Ë[Y»õ⁄H[ò€€ùòY»õ»òX⁄›\â N◊àõUåÕ‹[ê⁄⁄XŸJ\úŸY]ô[ùÀYYXÿ][€úÀ€›\òŸQ]ô[ùÀõ[ô›Y]ô[ùÀõ[ô›
-N◊àXÿ]⁄
-\úõ‹ä^◊à€€ú€€Kô\úõ‹ä	–òX⁄›\[ù∞Ë[Y…À\úõ‹äN◊à€€ú›Y\‹ÿYŸOY\úõ‹à[ú›[òŸ[Ÿà\úõ‹èŸ\úõ‹ãõY\‹ÿYŸNâ”∞Ë€»õ⁄H‹‹Î]ô[\à»\ú]Z]õÀâŒ◊à[\ù
-\›H\ú]Z]õ»∞Ë€»ŸHŸ\à[\‹ùYÀóóâ€Y\‹ÿYŸ_Wóìô[ö[HY»]X[õ⁄H[\òYÀò
-N◊àÿ\›
-	–\ú]Z]õ»HòX⁄›\[ù∞Ë[YÀâ N◊àWüN◊óôù[ò›[€àõUåÕ›[\ 
-^◊àYäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åÕ\›[I J\ô]\õé◊à€€ú››[OYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N◊à›[KöYI‹õK]åÕ\›[IŒ◊à›[Kù^€€ù[ùXàúõK]åÕZ[\‹ù\›[[X\û^€X\ô⁄[ãXõ›€NåLúWàúõK]åÕZ[\‹ùX⁄⁄XŸ^Ÿ\‹^Nô‹öYŸÿ\çú€X\ô⁄[ãXõ›€NåL‹WàúõK]åÕZ[\‹ùX⁄⁄XŸH€X[‹Y[ôŒåÿ€€‹éùò\äK\ŸX€€ô\ûJNŸõ€ù\⁄^ôNåLú€[ôKZZY⁄åKåÕ_Wà◊àÿ›[Y[ùöXYò\[ô⁄[
-›[JN◊üWôù[ò›[€àõUåÕö[ò[^ôJ
-^◊àõUåÕ›[\ 
-N◊à€€ú›‹Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›‹ô\ú⁄[€â N◊à€€ú›Xõ›]Yÿ›[Y[ùôŸ][[Y[ùûRY
-	›ô\ú⁄[€ìXô[	 N◊àYä‹
-]‹ù^€€ù[ùXâ‘ìW’åÕ‘ëSPT—_X◊àYäXõ›]
-XXõ›]ù^€€ù[ùTìW’åÕ‘ëSPT—N◊üWúõUåÕö[ò[^ôJ
-N◊ñÃçLLNKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåÕö[ò[^ôK\ JN◊óã àÿ\úôYÿHH€€ú€€YpÈË€»H[ù\ôòXŸHH»[ôXÿY‹àŸöX⁄X[Hô\úË€Àà
-ã◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çã àKKKHåÃÕKöú»ô\Ÿ\ùòY»€€[»ÿ‹ö\\€€Y»KKKH
-ã¬ä
-
-OOûÿ€€ú›œYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹ÿ‹ö\	 N‹Àù^Hã àçåÕH8†%€€ú€€YHHô\úË€»€€Y[ùH\0Ï‹»ŸHHô]ö\Ë€»ö\›X[Hù[ò⁄[€ò[ÿ\úôYÿ\ãà
-ã◊ò€€ú›ìW’åÕW‘ëSPT—OIÃKåãåXô]Kç	Œ◊óôù[ò›[€àõUåÕS[Ÿ[\‘ôXYJ
-^◊àô]\õà◊à\[ŸàõUåéQö[ò[^ôOOOIŸù[ò›[€âÀà\[ŸàõUåÃö[ò[^ôOOOIŸù[ò›[€âÀà\[ŸàõUåÃQö[ò[^ôOOOIŸù[ò›[€âÀà\[ŸàõUåÃëö[ò[^ôOOOIŸù[ò›[€âÀà\[ŸàõUåÃ’\]Uô\ú⁄[€èOOIŸù[ò›[€âÀà\[ŸàõUåÕö[ò[^ôOOOIŸù[ò›[€â◊àKô]ô\ûJõ€€X[äN◊üWôù[ò›[€àõUåÕTXõ\⁄ô[X\ŸJ
-^◊àYä\õUåÕS[Ÿ[\‘ôXYJ
-J^◊à€€ú€€Kô\úõ‹ä	–H]X[^òpÈË€»çåÕH∞Ë€»\õZ[õ›HHÿ\úôYÿ\ãâ N◊àô]\õàò[ŸN◊àWà⁄[ô›ÀîëQ“T’ì◊–’TîëSï‘ëSPT—OTìW’åÕW‘ëSPT—N◊à⁄[ô›Àô\‹]⁄]ô[ù
-ô]»›\›€Q]ô[ù
-	‹ôY⁄\›õŒúô[X\ŸK\ôXYIÀŸ]Z[û‹ô[X\ŸNîìW’åÕW‘ëSPT—__JJN◊àô]\õàùYN◊üWôù[ò›[€àõUåÕTôYúô\⁄€‹öŸ\ä
-^◊àYäJ	‹Ÿ\ùöXŸU€‹öŸ\â»[àò]öYÿ]‹äJ\ô]\õé◊à⁄[ô›Àó◊‘ìW—T–PìQ‘’◊‘ëQ“T’Täã‹›Àöúœ›èI‘ìW’åÕW‘ëSPT—_X›\]UöXPÿX⁄Nâ€õ€ôIﬂJWàù[äôY⁄\›ò][€èOúôY⁄\›ò][€ãù\]J
-JWàòÿ]⁄
-\úõ‹èOò€€ú€€Kô\úõ‹ä	—ò[H[»]X[^ò\à»\Xÿ]]õ…À\úõ‹äJN◊üWóò€€ú›õUåÕTô]ö[›\‘ÿ]ôQõ‹õO\ÿ]ôQõ‹õN◊ò€€ú›õUåÕTô]ö[›\‘ÿ]ôQY]Y]ô[ù\ÿ]ôQY]Y]ô[ù◊ò€€ú›õUåÕTô]ö[›\”‹[ë]ô[ùY]‹è[‹[ë]ô[ùY]‹é◊óõ‹[ìõ›T⁄Y]X\ﬁ[ò»ù[ò›[€ä
-^◊à›\úô[ù\OI€õ›IŒ◊à[ô[ô–]Y[œ[ù[◊à€€ú›õ›œ]”ÿÿ[[ú]
-
-N◊à‹[êòX⁄Ÿõ‹
-	”õ›òH[õ›pÈË€…Àà]à€\‹œWôöY[èèXô[ê€€[»õÿÍà\›0ËHŸHŸ[ù[ô»Y€‹òOœ€Xô[âŸ[[›[€ì[€ŸŸ[X›‹íS
-
-_OŸ]èóà	Ÿ[[›[€êYò[òŸYS
-
-_Wà]à€\‹œWôöY[èèXô[õ‹èWõõ›U^èê[õ›pÈË€»‹⁄[€ò[€Xô[è^\ôXHYWõõ›U^àõ›‹œWåóà]KX]]Ÿ‹õ›»XŸZ€\èWì»]YHõÿÍà\òŸXô]KŸ[ù]H›H[ú€›O◊èè›^\ôXOèŸ]èóà]à€\‹œWôöY[èèXô[õ‹èWõõ›UY◊èïY»‹⁄[€ò[€Xô[è[ú]YWõõ›UY◊àXŸZ€\èWë^éà[ú⁄YYYKÿ[XK€€õ◊èèŸ]èóà	Ÿ]QöY[
-	‹ôX€‹ô[YIÀ	—]HH‹∞Ë\ö[…Àõ›À‹⁄›”õ›ŒùùYKô\Ÿ\ùôSõ›ŒùùY_J_Wà	Ÿõ‹õPù]€ú 
-_Wàÿ]ôQõ‹õJN◊à›\úô[ù\OI€õ›IŒ◊à€€ú›õ‹õOYÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI N◊àõ‹õOÀò€\‹”\›òY
-	‹õK[õ›KYõ‹õI N◊à⁄\ôQ[[›[€ê€€ùõ€ 
-N◊àYä\[Ÿà⁄\ôP]]—‹õ›’^\ôX\œOOIŸù[ò›[€â ]⁄\ôP]]—‹õ›’^\ôX\ õ‹õJN◊üN◊óúÿ]ôQõ‹õOX\ﬁ[ò»ù[ò›[€ä]ô[ù
-^◊àYä›\úô[ù\HOOI€õ›I \ô]\õàõUåÕTô]ö[›\‘ÿ]ôQõ‹õJ]ô[ù
-N◊à]ô[ùúô]ô[ùYò][
-
-N◊à€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›U^	 OÀùò[YKùö[J
-_	…Œ◊à€€ú›[€Ÿÿ€‹ôOY[[›[€ì[€Ÿÿ€‹ôJ
-N◊à€€ú›[[›[€îÿ€‹ô\œY[[›[€îÿ€‹ô\—úõ€Qõ‹õJ
-N◊à€€ú›[Y\›[\[ô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôX€‹ô[YI OÀùò[YJN◊àYä]^	âõ[€Ÿÿ€‹ôOO[ù[	âàSÿöôX›öŸ^\ [[›[€îÿ€‹ô\ Kõ[ô›
-\ô]\õàÿ\›
-	—\ÿ‹ô]òH›HôY⁄\›ôH[»Y[õ‹»[XHõ›H[[ÿ⁄[€ò[â N◊àYäù[Xô\ãö\”òSä[Y\›[\ôŸ][YJ
-JJ\ô]\õàÿ\›
-	“[ôõ‹õYH[XH]HH‹∞Ë\ö[»∞Ë[Y‹Àâ N◊à]ÿZ]]]ô[ù
-◊àYùZY
-	€õ›I K\Nâ€õ›IÀ[Y\›[\ù[Y\›[\ù“T”‘›ö[ô 
-K^àYŒôÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›UY… OÀùò[YKùö[J
-_	…Àà[€Ÿÿ€‹ôK[[›[€îÿ€‹ô\À[[›[€ìXô[Œô[[›[€ìXô[‘€ò\⁄›
-[[›[€îÿ€‹ô\ K[[Œôò[ŸWàJN◊à€‹ŸT⁄Y]
-
-N◊à]ÿZ]ô[ô\ê[
-
-N◊àÿ\›
-	–[õ›pÈË€»ÿ[òKâ N◊üN◊óúÿ]ôQY]Y]ô[ùX\ﬁ[ò»ù[ò›[€ä]ô[ù^\›[ô ^◊àYä^\›[ôœÀù\HOOI€õ›I \ô]\õàõUåÕTô]ö[›\‘ÿ]ôQY]Y]ô[ù
-]ô[ù^\›[ô N◊à]ô[ùúô]ô[ùYò][
-
-N◊à€€ú›^Yÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›U^	 OÀùò[YKùö[J
-_	…Œ◊à€€ú›[€Ÿÿ€‹ôOY[[›[€ì[€Ÿÿ€‹ôJ
-N◊à€€ú›[[›[€îÿ€‹ô\œY[[›[€îÿ€‹ô\—úõ€Qõ‹õJ
-N◊à€€ú›[Y\›[\[ô]»]Jÿ›[Y[ùôŸ][[Y[ùûRY
-	‹ôX€‹ô[YI OÀùò[YJN◊àYä]^	âõ[€Ÿÿ€‹ôOO[ù[	âàSÿöôX›öŸ^\ [[›[€îÿ€‹ô\ Kõ[ô›
-\ô]\õàÿ\›
-	—\ÿ‹ô]òH›HôY⁄\›ôH[»Y[õ‹»[XHõ›H[[ÿ⁄[€ò[â N◊àYäù[Xô\ãö\”òSä[Y\›[\ôŸ][YJ
-JJ\ô]\õàÿ\›
-	“[ôõ‹õYH[XH]HH‹∞Ë\ö[»∞Ë[Y‹Àâ N◊à€€ú›ôX€‹ô^Àããô^\›[ôÀ[Y\›[\ù[Y\›[\ù“T”‘›ö[ô 
-K^YŒôÿ›[Y[ùôŸ][[Y[ùûRY
-	€õ›UY… OÀùò[YKùö[J
-_	…À[€Ÿÿ€‹ôK[[›[€îÿ€‹ô\À[[›[€ìXô[Œô[[›[€ìXô[‘€ò\⁄›
-[[›[€îÿ€‹ô\ _N◊à]ÿZ]]]ô[ù
-ôX€‹ô
-N◊à€‹ŸT⁄Y]
-
-N◊à]ÿZ]ô[ô\ê[
-
-N◊àÿ\›
-	–[\òpÈÌY\»ÿ[ò\Àâ N◊üN◊óõ‹[ë]ô[ùY]‹èX\ﬁ[ò»ù[ò›[€äY
-^◊à]ÿZ]õUåÕTô]ö[›\”‹[ë]ô[ùY]‹äY
-N◊àÿ›[Y[ùú]Y\ûTŸ[X›‹ä	»Ÿõ‹õHùõ⁄XŸK\õ›… OÀúô[[›ôJ
-N◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	Ÿõ‹õI OÀò€\‹”\›ùŸŸ€J	‹õK[õ›KYõ‹õIÀ›\úô[ù\OOOI€õ›I N◊üN◊óôù[ò›[€àõUåÕP€€\X›õ›T›[\ 
-^◊àYäÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õK]åÕK[õ›K\›[I J\ô]\õé◊à€€ú››[OYÿ›[Y[ùò‹ôX]Q[[Y[ù
-	‹›[I N◊à›[KöYI‹õK]åÕK[õ›K\›[IŒ◊à›[Kù^€€ù[ùXàúõK[õ›KYõ‹õ^Ÿ\‹^Nô‹öYŸÿ\é\WàúõK[õ›KYõ‹õOãôöY[úõK[õ›KYõ‹õOãô[[›[€ãXYò[òŸYúõK[õ›KYõ‹õOãôõ‹õKXX›[€úﬁ€X\ô⁄[ã]‹åZ[\‹ù[ù€X\ô⁄[ãXõ›€NåZ[\‹ù[ùWàúõK[õ›KYõ‹õH^\ôXH€õ›U^€Z[ãZZY⁄ççZ[\‹ù[ù⁄ZY⁄çç‹Y[ôÀ]‹åL‹Y[ôÀXõ›€NåLWàúõK[õ›KYõ‹õHõ[€ŸXõÿ⁄ﬁ€X\ô⁄[ã]‹ç\WàúõK[õ›KYõ‹õHõ[€Ÿ\ÿÿ[^Ÿÿ\å‹WàúõK[õ›KYõ‹õHõ[€Ÿ\ÿ€‹ô^€Z[ãZZY⁄åÕZ[\‹ù[ùWàúõK[õ›KYõ‹õHô[[›[€ãXYò[òŸY‹Y[ôÀ]‹ç‹Z[\‹ù[ù‹Y[ôÀXõ›€Nç‹Z[\‹ù[ùWàúõK[õ›KYõ‹õHôõ‹õKXX›[€úﬁ‹Y[ôÀ]‹åúZ[\‹ù[ùWàú⁄Y]ö\ úõK[õ›KYõ‹õJ^‹Y[ôÀ]‹åLZ[\‹ù[ù‹Y[ôÀXõ›€NõX^
-L[ùäÿYôKX\ôXKZ[úŸ]Xõ›€JJHZ[\‹ù[ùWàú⁄Y]ö\ úõK[õ›KYõ‹õJHú⁄Y]ZXY\û€X\ô⁄[ãXõ›€NçúZ[\‹ù[ùWà◊àÿ›[Y[ùöXYò\[ô⁄[
-›[JN◊üWóôù[ò›[€àõUåÕR[ú›[\]Pù]€ä
-^◊à€€ú›ÿ\ôYÿ›[Y[ùú]Y\ûTŸ[X›‹ä	ÀòXõ›]Y‹õ›\ö[ôõÀXÿ\ô	 N◊àYäXÿ\ôÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õQõ‹òŸU\]Pùâ J\ô]\õé◊àÿ\ôö[úŸ\ùYòXŸ[ùS
-	ÿôYõ‹ôY[ô	À]à€\‹œWúõK]\]K\õ›◊èè‹[èê]X[^òpÈÌY\œ‹‹[èèù]€à\OWòù]€óà€\‹œWúŸX€€ô\ûKXù]€àõK]\]KXù]€óàYWúõQõ‹òŸU\]Pùóèêù\ÿÿ\àY€‹òOÿù]€èèŸ]èò
-N◊àÿ›[Y[ùôŸ][[Y[ùûRY
-	‹õQõ‹òŸU\]Pùâ Kõ€ò€X⁄œX\ﬁ[ò»]ô[ùOû◊à€€ú›ù]€èY]ô[ùò›\úô[ù\ôŸ]◊àYä[ò]öYÿ]‹ãõ€ì[ôJ\ô]\õàÿ\›
-	–€€ôX›K\ŸH0Ë[ù\õô]\òH]X[^ò\ãâ N◊àù]€ãô\ÿXõY]ùYN◊àù]€ãù^€€ù[ùI–ù\ÿÿ[ô¯†)âŒ◊àû^◊à€€ú›õÿôOX]ÿZ]ô]⁄
-ã‹ô[X\ŸKY›X\ôöúœ›ô\öYöXÿ\èI—]Kõõ› 
-_XÿÿX⁄Nâ€õÀ\›‹ôIﬂJN◊àYä\õÿôKõ⁄ ]õ›»ô]»\úõ‹ä	–HXõXÿpÈË€»∞Ë€»ô\‹€ô]Kâ N◊àYä	‹Ÿ\ùöXŸU€‹öŸ\â»[àò]öYÿ]‹ä^◊à€€ú›ôY⁄\›ò][€èX]ÿZ]⁄[ô›Àó◊‘ìW—T–PìQ‘’◊‘ëQ“T’Täã‹›ÀöúœŸõ‹òÿ\èI—]Kõõ› 
-_X›\]UöXPÿX⁄Nâ€õ€ôIﬂJN◊à]ÿZ]ôY⁄\›ò][€ãù\]J
-N◊àYäôY⁄\›ò][€ãùÿZ][ô \ôY⁄\›ò][€ãùÿZ][ôÀú‹›Y\‹ÿYŸJ›\Nâ‘““T’–RUSë…ﬂJN◊àWàYä	ÿÿX⁄\…»[à⁄[ô› ^◊à€€ú›Ÿ^\œX]ÿZ]ÿX⁄\ÀöŸ^\ 
-N◊à]ÿZ]õ€Z\ŸKò[
-Ÿ^\Àôö[\äŸ^OOöŸ^Kú›\ù’⁄]
-	‹ôY⁄\›õÀXô]K]åKI JKõX\
-Ÿ^OOòÿX⁄\Àô[]JŸ^JJJN◊àWàù]€ãù^€€ù[ùI–]X[^ò[ô¯†)âŒ◊àÿÿ][€ãúô\XŸJ	€ÿÿ][€ãú]ò[Y_Oÿ]X[^ò\èI—]Kõõ› 
-_X
-N◊àXÿ]⁄
-\úõ‹ä^◊à€€ú€€Kô\úõ‹ä	—ò[H[»õ‹∞Èÿ\à]X[^òpÈË€…À\úõ‹äN◊àù]€ãô\ÿXõYYò[ŸN◊àù]€ãù^€€ù[ùI’[ù\àõ›ò[Y[ùIŒ◊àÿ\›
-	”∞Ë€»õ⁄H‹‹Î]ô[ù\ÿÿ\àH]X[^òpÈË€Àâ N◊àWàN◊üWóúõUåÕP€€\X›õ›T›[\ 
-N◊úõUåÕR[ú›[\]Pù]€ä
-N◊úõUåÕTXõ\⁄ô[X\ŸJ
-N◊úô\]Y\›[ö[X][€ëúò[YJõUåÕTXõ\⁄ô[X\ŸJN◊ñÃçLLNKôõ‹ëXX⁄
-\œOúŸ][Y[›]
-õUåÕTXõ\⁄ô[X\ŸK\ JN◊úõUåÕTôYúô\⁄€‹öŸ\ä
-N◊àéŸÿ›[Y[ùöXYò\[ô⁄[
- N‹Àúô[[›ôJ
-NﬂJJ
-N¬Çä
-
-HOà¬à€€ú›ëTî“S”àH	ÃKåãåXô]Kç	Œ¬à⁄[ô›ÀîëQ“T’ì◊–’TîëSï‘ëSPT—HHëTî“S”é¬à⁄[ô›Àó◊‹õUåTZ[ùô\ú⁄[€èÀä
-N¬à⁄[ô›Àô\‹]⁄]ô[ù
-ô]»›\›€Q]ô[ù
-	‹ôY⁄\›õŒúô[X\ŸK\ôXYIÀŸ]Z[û‹ô[X\ŸNïëTî“S”ü_JJN¬àÿ›[Y[ùú]Y\ûTŸ[X›‹ê[
-	Àùõ⁄XŸK\õ›… Kôõ‹ëXX⁄
-[Oà[úô[[›ôJ
-JN¬üJJ
-N¬
+(() => {
+  const VERSION = '1.2.0-beta.44';
+  window.REGISTRO_CURRENT_RELEASE = VERSION;
+  window.__rmV1PaintVersion?.();
+  window.dispatchEvent(new CustomEvent('registro:release-ready', {detail:{release:VERSION}}));
+  document.querySelectorAll('.voice-row').forEach(el => el.remove());
+})();
