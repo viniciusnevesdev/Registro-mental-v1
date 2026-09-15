@@ -398,7 +398,7 @@
 
   function installExposureAction() {
     const grid=document.querySelector('[data-view="home"] .action-grid');
-    if(!grid||document.getElementById('rmSubstanceAction'))return;
+    if(!grid)return; const existing=document.getElementById('rmSubstanceAction'); if(existing) existing.remove(); return;
     const button=document.createElement('button');
     button.type='button';
     button.id='rmSubstanceAction';
