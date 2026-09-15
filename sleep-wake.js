@@ -1,10 +1,10 @@
-/* Monitor de tempo acordado — Oficial 1.2.1
+/* Monitor de tempo acordado — Oficial 1.2.2
    Usa o fim do último sono concluído como despertar. O horário manual é
    reservado para quando o usuário acorda sem registrar um sono completo. */
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.1';
+  const RELEASE = '1.2.2';
   window.REGISTRO_CURRENT_RELEASE = RELEASE;
   document.getElementById('topVersion')?.replaceChildren(document.createTextNode(`v${RELEASE}`));
   document.getElementById('versionLabel')?.replaceChildren(document.createTextNode(RELEASE));
@@ -151,7 +151,7 @@
   if(window.__RM_MED_STOCK_LOADER__) return;
   window.__RM_MED_STOCK_LOADER__=true;
   var s=document.createElement('script');
-  s.src='./medication-inventory.js?v=1.2.1';
+  s.src='./medication-inventory.js?v=1.2.2';
   s.async=true;
   document.head.appendChild(s);
 })();
