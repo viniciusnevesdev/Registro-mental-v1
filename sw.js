@@ -1,4 +1,4 @@
-/* Registro Mental 1.2.2 — Service Worker aposentado */
+/* Registro Mental 1.2.3 — Service Worker aposentado */
 self.addEventListener('install', event => { event.waitUntil(self.skipWaiting()); });
 self.addEventListener('activate', event => {
   event.waitUntil((async () => {
@@ -9,7 +9,7 @@ self.addEventListener('activate', event => {
     try { await self.registration.unregister(); } catch (_) {}
     try {
       const clients = await self.clients.matchAll({ type: 'window', includeUncontrolled: true });
-      clients.forEach(client => client.postMessage({ type: 'REGISTRO_SW_RETIRED', release: '1.2.2' }));
+      clients.forEach(client => client.postMessage({ type: 'REGISTRO_SW_RETIRED', release: '1.2.3' }));
     } catch (_) {}
   })());
 });
