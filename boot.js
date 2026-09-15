@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.3';
+  const RELEASE = '1.2.4';
   const STARTED = performance.now();
   const scopeToken = '/Registro-mental-v1/';
   const DIAG_KEY = 'registro-last-diagnostic-v1';
