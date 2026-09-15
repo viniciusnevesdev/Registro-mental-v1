@@ -1,7 +1,7 @@
 {
   "official": {
     "path": "./",
-    "release": "1.2.2",
+    "release": "1.2.3",
     "branch": "main",
     "database": "registro-mental-v1"
   },
