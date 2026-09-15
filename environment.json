@@ -1,6 +1,6 @@
 {
   "environment": "production",
-  "release": "1.2.2",
+  "release": "1.2.3",
   "data": "registro-mental-v1",
   "stable": true
 }
