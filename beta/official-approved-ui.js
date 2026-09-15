@@ -362,3 +362,5 @@
   function apply(){installStyles();installNoteViewer();applyActionIcons(document)}
   apply();new MutationObserver(()=>applyActionIcons(document)).observe(document.documentElement,{childList:true,subtree:true});document.addEventListener('click',()=>setTimeout(applyActionIcons,0),{passive:true});window.addEventListener('registro:release-ready',apply);
 })();
+
+(()=>{const v='1.2.0-beta.47';const set=()=>{for(const id of ['topVersion','versionLabel']){const e=document.getElementById(id);if(e)e.textContent=id==='topVersion'?'v'+v:v}};set();setTimeout(set,500);setTimeout(set,1800)})();
