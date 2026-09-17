@@ -1,10 +1,10 @@
-/* Monitor de tempo acordado — Beta 1.2.0-beta.45
+/* Monitor de tempo acordado — Beta 1.2.0-beta.51
    Usa o fim do último sono concluído como despertar. O horário manual é
    reservado para quando o usuário acorda sem registrar um sono completo. */
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.0-beta.45';
+  const RELEASE = '1.2.0-beta.51';
   window.REGISTRO_CURRENT_RELEASE = RELEASE;
   document.getElementById('topVersion')?.replaceChildren(document.createTextNode(`v${RELEASE}`));
   document.getElementById('versionLabel')?.replaceChildren(document.createTextNode(RELEASE));
