@@ -30,6 +30,7 @@
   };
 })();
 
+
 /* ---- v04c1.js preservado como script isolado ---- */
 (()=>{const s=document.createElement('script');s.text="const APP_VERSION='1.2.0-beta.51';\nconst DB_NAME='registro-mental-beta-v1';\nconst EVENTS='events';\nconst AUDIO='audio';\nconst MEDICATIONS='medications';\nconst SETTINGS_KEY='registro-beta-settings-v1';\nconst LAST_BACKUP_KEY='registro-beta-last-backup';\nconst LAST_HEALTH_IMPORT_KEY='registro-beta-last-health-import';\nconst BACKUP_WARN_DAYS=7;\n\nlet db=null,currentType=null,mediaRecorder=null,audioChunks=[],pendingAudio=null,pendingSleepSource='manual',historyFilter='all',selectedMedicationId=null,selectedPresentationId=null,iconEditorTarget=null;\n\nconst baseIcons={\n home:'<path d=\"M3 11.5 12 4l9 7.5\"></path><path d=\"M5.5 10.5V20h13v-9.5\"></path><path d=\"M9.5 20v-6h5v6\"></path>',\n history:'<path d=\"M3.5 12a8.5 8.5 0 1 0 2.5-6\"></path><path d=\"M3.5 5v5h5\"></path><path d=\"M12 7.5V12l3 2\"></path>',\n chart:'<path d=\"M4 19V10\"></path><path d=\"M10 19V5\"></path><path d=\"M16 19v-7\"></path><path d=\"M22 19V8\"></path>',\n settings:'<circle cx=\"12\" cy=\"12\" r=\"3\"></circle><path d=\"M19.4 15a1.7 1.7 0 0 0 .34 1.88l.06.06-2.86 2.86-.06-.06A1.7 1.7 0 0 0 15 19.4a1.7 1.7 0 0 0-1 .6 1.7 1.7 0 0 0-.4 1.1V21H9.6v-.1a1.7 1.7 0 0 0-.4-1.1 1.7 1.7 0 0 0-1-.6 1.7 1.7 0 0 0-1.88.34l-.06.06-2.86-2.86.06-.06A1.7 1.7 0 0 0 3.8 15a1.7 1.7 0 0 0-.6-1 1.7 1.7 0 0 0-1.1-.4H2V9.6h.1A1.7 1.7 0 0 0 3.2 9a1.7 1.7 0 0 0 .6-1 1.7 1.7 0 0 0-.34-1.88l-.06-.06L6.26 3.2l.06.06A1.7 1.7 0 0 0 8.2 3.6a1.7 1.7 0 0 0 1-.6 1.7 1.7 0 0 0 .4-1.1V2h4v.1a1.7 1.7 0 0 0 .4 1.1 1.7 1.7 0 0 0 1 .6 1.7 1.7 0 0 0 1.88-.34l.06-.06 2.86 2.86-.06.06A1.7 1.7 0 0 0 19.4 8c.1.4.3.75.6 1 .3.25.7.4 1.1.4h.1v4h-.1c-.4 0-.8.15-1.1.4-.3.25-.5.6-.6 1.2Z\"></path>',\n note:'<path d=\"M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z\"></path><path d=\"m13.5 6.5 4 4\"></path>',\n pill:'<path d=\"M8 18.5 18.5 8a4.24 4.24 0 0 0-6-6L2 12.5a4.24 4.24 0 1 0 6 6Z\"></path><path d=\"m8.5 6.5 9 9\"></path>',\n moon:'<path d=\"M20 15.3A8 8 0 0 1 8.7 4 8.5 8.5 0 1 0 20 15.3Z\"></path>',\n bag:'<path d=\"M5.5 8h13l-1 12h-11l-1-12Z\"></path><path d=\"M9 8V6a3 3 0 0 1 6 0v2\"></path>',\n spark:'<path d=\"m12 3 1.4 4.1L17.5 8.5l-4.1 1.4L12 14l-1.4-4.1-4.1-1.4 4.1-1.4L12 3Z\"></path><path d=\"m19 14 .8 2.2L22 17l-2.2.8L19 20l-.8-2.2L16 17l2.2-.8L19 14Z\"></path>',\n link:'<path d=\"M10 13a5 5 0 0 0 7.1.1l2-2a5 5 0 0 0-7.1-7.1l-1.1 1.1\"></path><path d=\"M14 11a5 5 0 0 0-7.1-.1l-2 2A5 5 0 0 0 12 20l1.1-1.1\"></path>',\n heart:'<path d=\"M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8L12 21l8.8-8.6a5.5 5.5 0 0 0 0-7.8Z\"></path>',\n export:'<path d=\"M12 3v12\"></path><path d=\"m7 8 5-5 5 5\"></path><path d=\"M5 13v7h14v-7\"></path>',\n import:'<path d=\"M12 15V3\"></path><path d=\"m7 10 5 5 5-5\"></path><path d=\"M5 13v7h14v-7\"></path>',\n plus:'<path d=\"M12 5v14M5 12h14\"></path>',\n edit:'<path d=\"M4 20h4l11-11a2.8 2.8 0 0 0-4-4L4 16v4Z\"></path>',\n clock:'<circle cx=\"12\" cy=\"12\" r=\"9\"></circle><path d=\"M12 7v5l3 2\"></path>'\n};\n\nconst defaultSettings={theme:'system',accent:'violet',iconSize:'medium',iconWeight:'regular',showVersion:true,healthImportMode:'review',fontFamily:'system',fontWeight:'400',hideTabLabels:false,iconOverrides:{}};\n\nfunction esc(v=''){return String(v).replace(/[&<>\"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',\"'\":'&#039;'}[c]))}\nfunction uid(p){return `${p}-${Date.now()}-${Math.random().toString(36).slice(2,8)}`}\nfunction localDate(date){const y=date.getFullYear(),m=String(date.getMonth()+1).padStart(2,'0'),d=String(date.getDate()).padStart(2,'0');return `${y}-${m}-${d}`}\nfunction toLocalInput(iso=new Date().toISOString()){const d=new Date(iso),off=d.getTimezoneOffset()*60000;return new Date(d.getTime()-off).toISOString().slice(0,16)}\nfunction timeLabel(i){return new Date(i).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}\nfunction dayLabel(s){const d=new Date(`${s}T12:00:00`),t=localDate(new Date()),y=new Date();y.setDate(y.getDate()-1);if(s===t)return'Hoje';if(s===localDate(y))return'Ontem';return d.toLocaleDateString('pt-BR',{weekday:'long',day:'2-digit',month:'short'})}\nfunction eventDay(e){return localDate(new Date(e.timestamp))}\nfunction durationHours(a,b){return Math.max(0,(new Date(b)-new Date(a))/3600000)}\nfunction durationLabel(x){if(!Number.isFinite(x))return'—';const h=Math.floor(x),m=Math.round((x-h)*60);return`${h}h${m?` ${m}min`:''}`}\nfunction humanAgo(i){const min=Math.max(0,Math.floor((Date.now()-new Date(i))/60000));if(min<1)return'agora';if(min<60)return`há ${min} min`;const h=Math.floor(min/60);if(h<24)return`há ${h}h`;return`há ${Math.floor(h/24)}d`}\nfunction parseMoney(v=''){const n=Number(String(v).replace(/[^0-9,.-]/g,'').replace(/\\./g,'').replace(',','.'));return Number.isFinite(n)?n:null}\nfunction money(n){return n==null||!Number.isFinite(n)?'—':n.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}\nfunction normalizeText(v=''){return String(v).normalize('NFD').replace(/[\\u0300-\\u036f]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()}\nfunction levenshtein(a,b){a=normalizeText(a);b=normalizeText(b);const m=a.length,n=b.length,dp=Array.from({length:m+1},()=>Array(n+1).fill(0));for(let i=0;i<=m;i++)dp[i][0]=i;for(let j=0;j<=n;j++)dp[0][j]=j;for(let i=1;i<=m;i++)for(let j=1;j<=n;j++)dp[i][j]=Math.min(dp[i-1][j]+1,dp[i][j-1]+1,dp[i-1][j-1]+(a[i-1]===b[j-1]?0:1));return dp[m][n]}\nfunction parseStrength(text=''){const m=String(text).match(/([0-9]+(?:[.,][0-9]+)?)\\s*(mg|mcg|µg|g|ml|mL)/i);return m?{value:Number(m[1].replace(',','.')),unit:m[2].replace('µ','m').toLowerCase()==='ml'?'mL':m[2].replace('µ','m')}:null}\nfunction currentMinutes(){const d=new Date();return d.getHours()*60+d.getMinutes()}\nfunction minuteDistance(a,b){const d=Math.abs(a-b)%1440;return Math.min(d,1440-d)}\nfunction qualityColorClass(q){return `q${Math.max(1,Math.min(5,Number(q)||3))}`}\n\nfunction getSettings(){try{return{...defaultSettings,...JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}')}}catch{return{...defaultSettings}}}\nfunction saveSettings(s){localStorage.setItem(SETTINGS_KEY,JSON.stringify(s));applySettings()}\nfunction setSetting(k,v){const s=getSettings();s[k]=v;saveSettings(s)}\nfunction sanitizeSvgMarkup(markup=''){let s=String(markup).trim();s=s.replace(/<script[\\s\\S]*?<\\/script>/gi,'').replace(/<foreignObject[\\s\\S]*?<\\/foreignObject>/gi,'').replace(/\\son\\w+\\s*=\\s*(['\"]).*?\\1/gi,'').replace(/\\s(?:href|xlink:href)\\s*=\\s*(['\"])(?:https?:|data:|javascript:).*?\\1/gi,'');const svgMatch=s.match(/<svg[^>]*>([\\s\\S]*?)<\\/svg>/i);return svgMatch?svgMatch[1]:s}\nfunction svg(name){const s=getSettings(),override=s.iconOverrides?.[name];let body=baseIcons[name]||baseIcons.note;if(override?.type==='svg'&&override.value)body=sanitizeSvgMarkup(override.value);else if(override?.type==='bank'&&baseIcons[override.value])body=baseIcons[override.value];return `<svg class=\"svg-icon\" viewBox=\"0 0 24 24\" aria-hidden=\"true\">${body}</svg>`}\nfunction hydrateIcons(root=document){root.querySelectorAll('[data-icon]').forEach(el=>{el.innerHTML=svg(el.dataset.icon)})}\nfunction updateSegmentIndicator(group,selector,value){if(!group)return;const buttons=[...group.querySelectorAll('button')],idx=Math.max(0,buttons.findIndex(b=>b.dataset[selector]===String(value)));group.style.setProperty('--segment-count',String(buttons.length));group.style.setProperty('--segment-index',String(idx));buttons.forEach((b,i)=>b.classList.toggle('selected',i===idx))}\nfunction updateTabBubble(){const tabs=[...document.querySelectorAll('.tab-item')],idx=Math.max(0,tabs.findIndex(t=>t.classList.contains('selected')));document.querySelector('.tab-bar')?.style.setProperty('--tab-index',String(idx))}";document.head.appendChild(s);s.remove();})();
 
@@ -138,4 +139,295 @@
   window.__rmV1PaintVersion?.();
   window.dispatchEvent(new CustomEvent('registro:release-ready', {detail:{release:VERSION}}));
   document.querySelectorAll('.voice-row').forEach(el => el.remove());
+})();
+
+/* Beta — vínculos explícitos entre anotações e medicamentos (sem inferir causalidade). */
+(() => {
+  let rmMentionIds = [];
+  let rmMentionPickerOpen = false;
+  let rmMentionSearch = '';
+
+  const uniqueMedicationIds = ids => [...new Set((Array.isArray(ids) ? ids : []).filter(id => typeof id === 'string' && id))];
+  const mentionLabel = (id, medications) => {
+    const medication = medications.find(item => item.id === id);
+    return medication ? medicationDisplay(medication) : 'Medicamento não disponível';
+  };
+
+  function relatedMedicationsMarkup() {
+    return `<div class="field rm-related-medications rm-expand-card">
+      <div id="rmMentionChips" class="rm-mention-chips"></div>
+      <button type="button" class="rm-add-medication rm-expand-toggle" id="rmAddMedication" aria-expanded="false"><span>Mencionar medicamentos</span><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 17.4688 10.3672" width="24" height="24">
+ <g>
+  <rect height="10.3672" opacity="0" width="17.4688" x="0" y="0"/>
+  <path d="M8.53125 10.3672C8.75781 10.3672 8.96875 10.2656 9.125 10.0938L16.8281 2.07031C16.9766 1.92188 17.0625 1.73438 17.0625 1.51562C17.0625 1.07812 16.7266 0.742188 16.2812 0.742188C16.0781 0.742188 15.875 0.820312 15.7266 0.960938L8.05469 8.94531L9.01562 8.94531L1.32812 0.960938C1.1875 0.820312 0.992188 0.742188 0.78125 0.742188C0.335938 0.742188 0 1.07812 0 1.51562C0 1.73438 0.09375 1.92188 0.234375 2.07812L7.9375 10.1016C8.10938 10.2656 8.30469 10.3672 8.53125 10.3672Z" fill="currentColor" fill-opacity="0.85"/>
+ </g>
+ </svg></button>
+      <div id="rmMentionPicker" class="rm-mention-picker hidden"></div>
+    </div>`;
+  }
+
+  async function renderMentionSelector() {
+    const chips = document.getElementById('rmMentionChips');
+    const picker = document.getElementById('rmMentionPicker');
+    const add = document.getElementById('rmAddMedication');
+    if (!chips || !picker || !add) return;
+    const medications = await allMedications();
+    rmMentionIds = uniqueMedicationIds(rmMentionIds);
+    chips.innerHTML = rmMentionIds.map(id => `<span class="rm-mention-chip"><span>${esc(mentionLabel(id, medications))}</span><button type="button" data-remove-mention="${esc(id)}" aria-label="Remover medicamento">×</button></span>`).join('');
+    chips.querySelectorAll('[data-remove-mention]').forEach(button => {
+      button.onclick = () => {
+        rmMentionIds = rmMentionIds.filter(id => id !== button.dataset.removeMention);
+        renderMentionSelector();
+      };
+    });
+    add.onclick = () => {
+      rmMentionPickerOpen = !rmMentionPickerOpen;
+      renderMentionSelector();
+    };
+    add.setAttribute('aria-expanded', String(rmMentionPickerOpen));
+    picker.classList.toggle('hidden', !rmMentionPickerOpen);
+    if (!rmMentionPickerOpen) return;
+    const normalizedSearch = normalizeText(rmMentionSearch);
+    const visibleMedications = medications.filter(medication => !normalizedSearch || normalizeText(medicationDisplay(medication)).includes(normalizedSearch));
+    const list = !medications.length ? '<p>Nenhum medicamento cadastrado.</p>' : !visibleMedications.length ? '<p>Nenhum medicamento encontrado.</p>' : `<div class="rm-mention-results">${visibleMedications.map(medication => `<label class="rm-mention-option"><input type="checkbox" value="${esc(medication.id)}" ${rmMentionIds.includes(medication.id) ? 'checked' : ''}><span class="rm-mention-selection" aria-hidden="true"></span><span>${esc(medicationDisplay(medication))}</span></label>`).join('')}</div>`;
+    picker.innerHTML = `<div class="rm-mention-search-wrap"><svg class="rm-mention-search-icon" viewBox="0 0 19.9297 19.7109" aria-hidden="true"><path d="M0 7.90625C0 12.2578 3.54688 15.8047 7.90625 15.8047C9.66406 15.8047 11.2812 15.2266 12.5938 14.25L17.7422 19.4062C17.9375 19.6094 18.2109 19.7109 18.4922 19.7109C19.1094 19.7109 19.5234 19.2422 19.5234 18.6562C19.5234 18.3672 19.4219 18.1172 19.2344 17.9219L14.1094 12.7734C15.1719 11.4375 15.8125 9.74219 15.8125 7.90625C15.8125 3.54688 12.2656 0 7.90625 0C3.54688 0 0 3.54688 0 7.90625ZM1.46094 7.90625C1.46094 4.35156 4.35156 1.46094 7.90625 1.46094C11.4609 1.46094 14.3438 4.35156 14.3438 7.90625C14.3438 11.4531 11.4609 14.3438 7.90625 14.3438C4.35156 14.3438 1.46094 11.4531 1.46094 7.90625Z"/></svg><input id="rmMentionSearch" class="rm-mention-search" type="search" value="${esc(rmMentionSearch)}" autocomplete="off"></div>${list}`;
+    const search = document.getElementById('rmMentionSearch');
+    search.oninput = () => {
+      rmMentionSearch = search.value;
+      renderMentionSelector().then(() => {
+        const nextSearch = document.getElementById('rmMentionSearch');
+        nextSearch?.focus();
+        nextSearch?.setSelectionRange(rmMentionSearch.length, rmMentionSearch.length);
+      });
+    };
+    picker.querySelectorAll('input[type="checkbox"]').forEach(input => {
+      input.onchange = () => {
+        rmMentionIds = input.checked ? uniqueMedicationIds([...rmMentionIds, input.value]) : rmMentionIds.filter(id => id !== input.value);
+        renderMentionSelector();
+      };
+    });
+  }
+
+  async function setMentionIds(ids) {
+    rmMentionIds = uniqueMedicationIds(ids);
+    await renderMentionSelector();
+  }
+
+  const previousSaveForm = saveForm;
+  const previousSaveEditedEvent = saveEditedEvent;
+  const previousOpenEventEditor = openEventEditor;
+  const previousOpenEventViewer = openEventViewer;
+
+  openNoteSheet = async function() {
+    currentType = 'note';
+    pendingAudio = null;
+    rmMentionIds = [];
+    rmMentionPickerOpen = false;
+    rmMentionSearch = '';
+    const now = toLocalInput();
+    openBackdrop('Nova anotação', `
+      <div class="field"><label>Como você está se sentindo agora?</label>${emotionMoodSelectorHTML()}</div>
+      ${emotionAdvancedHTML()}
+      <div class="field"><label for="noteText">Anotação opcional</label><textarea id="noteText" rows="2" data-autogrow placeholder="O que você percebeu, sentiu ou pensou?"></textarea></div>
+      ${relatedMedicationsMarkup()}
+      ${dateField('recordTime', 'Data e horário', now, {showNow:true, reserveNow:true})}
+      ${formButtons()}
+    `, saveForm);
+    currentType = 'note';
+    document.querySelector('.sheet')?.classList.add('rm-note-sheet');
+    document.getElementById('form')?.classList.add('rm-note-form');
+    wireEmotionControls();
+    if (typeof wireAutoGrowTextareas === 'function') wireAutoGrowTextareas(document.getElementById('form'));
+    await renderMentionSelector();
+  };
+
+  saveForm = async function(event) {
+    if (currentType !== 'note') return previousSaveForm(event);
+    event.preventDefault();
+    const text = document.getElementById('noteText')?.value.trim() || '';
+    const moodScore = emotionMoodScore();
+    const emotionScores = emotionScoresFromForm();
+    const timestamp = new Date(document.getElementById('recordTime')?.value);
+    if (!text && moodScore == null && !Object.keys(emotionScores).length) return toast('Escreva ou registre pelo menos uma nota emocional.');
+    if (Number.isNaN(timestamp.getTime())) return toast('Informe uma data e horário válidos.');
+    await putEvent({id:uid('note'), type:'note', noteOrigin:'annotation', timestamp:timestamp.toISOString(), text, medicationMentions:uniqueMedicationIds(rmMentionIds), moodScore, emotionScores, emotionLabels:emotionLabelsSnapshot(emotionScores), demo:false});
+    closeSheet();
+    await renderAll();
+    toast('Anotação salva.');
+  };
+
+  saveEditedEvent = async function(event, existing) {
+    if (existing?.type !== 'note') return previousSaveEditedEvent(event, existing);
+    event.preventDefault();
+    const text = document.getElementById('noteText')?.value.trim() || '';
+    const moodScore = emotionMoodScore();
+    const emotionScores = emotionScoresFromForm();
+    const timestamp = new Date(document.getElementById('recordTime')?.value);
+    if (!text && moodScore == null && !Object.keys(emotionScores).length) return toast('Escreva ou registre pelo menos uma nota emocional.');
+    if (Number.isNaN(timestamp.getTime())) return toast('Informe uma data e horário válidos.');
+    const record = {...existing, timestamp:timestamp.toISOString(), text, medicationMentions:uniqueMedicationIds(rmMentionIds), moodScore, emotionScores, emotionLabels:emotionLabelsSnapshot(emotionScores)};
+    await putEvent(record);
+    closeSheet();
+    await renderAll();
+    toast('Alterações salvas.');
+  };
+
+  openEventEditor = async function(id) {
+    const existing = (await allEvents()).find(item => item.id === id);
+    await previousOpenEventEditor(id);
+    if (existing?.type === 'note') {
+      document.querySelector('.sheet')?.classList.add('rm-note-sheet');
+      await setMentionIds(existing.medicationMentions);
+    }
+  };
+
+  openEventViewer = async function(id) {
+    const event = (await allEvents()).find(item => item.id === id);
+    if (!event || event.type !== 'note') return previousOpenEventViewer(id);
+    const medications = await allMedications();
+    const mentions = uniqueMedicationIds(event.medicationMentions);
+    const tone = rmV28Tone(event.type);
+    let cards = '';
+    const mood = event.moodScore != null && typeof rmV27MoodBadge === 'function' ? rmV27MoodBadge(event.moodScore) : '';
+    const tag = event.tag && typeof rmV27TagChip === 'function' ? rmV27TagChip(event.tag) : '';
+    if (mood) cards += rmV28DetailCard('Humor', mood, {html:true, tone:true});
+    if (tag) cards += rmV28DetailCard('Tag', tag, {html:true});
+    if (event.text) cards += rmV28DetailCard('Anotação', event.text, {wide:true});
+    if (mentions.length) {
+      const chips = mentions.map(mentionId => `<span class="rm-detail-mention">${esc(mentionLabel(mentionId, medications))}</span>`).join('');
+      cards += rmV28DetailCard('Medicamentos relacionados', `<div class="rm-detail-mentions">${chips}</div><p class="rm-detail-mention-note">Relação percebida pela pessoa usuária; não indica causalidade.</p>`, {wide:true, html:true});
+    }
+    for (const [key, value] of Object.entries(event.emotionScores || {})) {
+      const label = event.emotionLabels?.[key] || (typeof emotionDimensions === 'function' ? emotionDimensions().find(dimension => dimension.id === key)?.label : null) || key;
+      cards += rmV28DetailCard(label, `${value} de 4`);
+    }
+    cards += rmV28DetailDate(event.timestamp);
+    openBackdrop('Anotação', `<div class="rm-v28-detail-grid rm-detail-note" style="--rm-detail-tone:${tone}">${cards}</div>${rmV28DetailButtons()}`, formEvent => formEvent.preventDefault());
+    rmV28ViewerActions(id);
+  };
+})();
+
+/* Beta — acabamento final da sheet Nova anotação. */
+(() => {
+  const chevronSVG = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 17.4688 10.3672" width="24" height="24" aria-hidden="true"><g><rect height="10.3672" opacity="0" width="17.4688" x="0" y="0"/><path d="M8.53125 10.3672C8.75781 10.3672 8.96875 10.2656 9.125 10.0938L16.8281 2.07031C16.9766 1.92188 17.0625 1.73438 17.0625 1.51562C17.0625 1.07812 16.7266 0.742188 16.2812 0.742188C16.0781 0.742188 15.875 0.820312 15.7266 0.960938L8.05469 8.94531L9.01562 8.94531L1.32812 0.960938C1.1875 0.820312 0.992188 0.742188 0.78125 0.742188C0.335938 0.742188 0 1.07812 0 1.51562C0 1.73438 0.09375 1.92188 0.234375 2.07812L7.9375 10.1016C8.10938 10.2656 8.30469 10.3672 8.53125 10.3672Z" fill="currentColor" fill-opacity="0.85"/></g></svg>`;
+  const selectedSVG = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewBox="0 0 20.7578 20.3672" width="24" height="24" aria-hidden="true"><g><rect height="20.3672" opacity="0" width="20.7578" x="0" y="0"/><path d="M20.3516 10.1797C20.3516 15.7812 15.7812 20.3516 10.1719 20.3516C4.57031 20.3516 0 15.7812 0 10.1797C0 4.57031 4.57031 0 10.1719 0C15.7812 0 20.3516 4.57031 20.3516 10.1797ZM13.5391 6.16406L9.02344 13.3438L6.77344 10.5312C6.5625 10.2578 6.36719 10.1719 6.125 10.1719C5.73438 10.1719 5.42969 10.4922 5.42969 10.8828C5.42969 11.0781 5.50781 11.2734 5.64062 11.4453L8.30469 14.6641C8.53125 14.9531 8.75781 15.0781 9.05469 15.0781C9.35156 15.0781 9.59375 14.9375 9.77344 14.6641L14.6719 6.98438C14.7734 6.82031 14.875 6.61719 14.875 6.42969C14.875 6.03125 14.5312 5.76562 14.1562 5.76562C13.9219 5.76562 13.6953 5.90625 13.5391 6.16406Z" fill="currentColor" fill-opacity="0.85"/></g></svg>`;
+  const ultra = () => document.documentElement.dataset.visualMode === 'ultra' && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  emotionAdvancedHTML = function(values = {}) {
+    const dimensions = emotionDimensions().filter(dimension => dimension.active !== false);
+    const dimensionMarkup = dimensions.map(dimension => emotionDimensionHTML(dimension, values[dimension.id])).join('').replace(/<button type="button" class="tiny-clear" data-clear-dimension="[^"]+">Limpar<\/button>/g, '');
+    return `<details class="emotion-advanced rm-expand-card" id="emotionAdvanced"><summary><span class="rm-accordion-heading">${chevronSVG}<span>Detalhar sensações e emoções</span></span></summary><div class="rm-accordion-body"><div class="rm-accordion-content"><p class="helper">Opcional. Nenhuma dimensão recebe valor automaticamente.</p><div id="emotionDimensionsList">${dimensionMarkup}</div><button type="button" class="secondary-button full-button" id="addEmotionDimensionBtn">+ Criar nova dimensão</button><div class="emotion-new-dimension hidden" id="emotionNewDimension"><div class="field"><label>Nome da dimensão</label><input id="emotionDimensionName" placeholder="Ex.: despersonalização"></div><div class="field-grid"><div class="field"><label>0 significa</label><input id="emotionDimensionLow" placeholder="nenhuma"></div><div class="field"><label>5 significa</label><input id="emotionDimensionHigh" placeholder="muito intensa"></div></div><div class="learning-actions"><button type="button" class="primary-button" id="saveEmotionDimensionBtn">Adicionar</button><button type="button" class="secondary-button" id="cancelEmotionDimensionBtn">Cancelar</button></div></div></div></div></details>`;
+  };
+
+  function refreshClearButtons(root = document) {
+    root.querySelectorAll('#clearMoodScore').forEach(button => button.classList.toggle('rm-clear-visible', Boolean(document.querySelector('[data-mood-score].selected'))));
+    root.querySelectorAll('[data-clear-dimension]').forEach(button => button.classList.toggle('rm-clear-visible', Boolean(button.closest('[data-emotion-dimension]')?.querySelector('[data-emotion-score].selected'))));
+  }
+
+  const previousSelectMood = emotionSelectMood;
+  emotionSelectMood = function(value) { previousSelectMood(value); refreshClearButtons(); };
+  const previousWireEmotionControls = wireEmotionControls;
+  wireEmotionControls = function() {
+    previousWireEmotionControls();
+    const details = document.getElementById('emotionAdvanced');
+    if (details && !details.dataset.rmAccordion) {
+      details.dataset.rmAccordion = 'true';
+      details.querySelector('summary').addEventListener('click', event => {
+        if (!ultra()) return;
+        event.preventDefault();
+        const body = details.querySelector('.rm-accordion-body');
+        if (details.open) {
+          body.style.height = `${body.scrollHeight}px`;
+          requestAnimationFrame(() => { body.style.height = '0px'; details.classList.add('rm-accordion-closing'); });
+          setTimeout(() => { details.open = false; details.classList.remove('rm-accordion-closing'); body.style.height = ''; }, 320);
+        } else {
+          details.open = true;
+          body.style.height = '0px';
+          requestAnimationFrame(() => { body.style.height = `${body.scrollHeight}px`; });
+          setTimeout(() => { body.style.height = ''; }, 320);
+        }
+      });
+    }
+    refreshClearButtons();
+  };
+
+  document.addEventListener('click', event => {
+    const target = event.target.closest('#form [data-mood-score],#form [data-emotion-score],#form #clearMoodScore,#form [data-clear-dimension]');
+    if (!target) return;
+    if (target.matches('[data-mood-score]')) {
+      document.querySelectorAll('#form [data-mood-score]').forEach(button => button.classList.toggle('selected', button === target));
+    } else if (target.matches('[data-emotion-score]')) {
+      const dimension = target.closest('[data-emotion-dimension]');
+      const wasSelected = target.classList.contains('selected');
+      dimension?.querySelectorAll('[data-emotion-score]').forEach(button => button.classList.toggle('selected', !wasSelected && button === target));
+      event.stopImmediatePropagation();
+    } else if (target.matches('#clearMoodScore')) {
+      document.querySelectorAll('#form [data-mood-score]').forEach(button => button.classList.remove('selected'));
+    } else {
+      target.closest('[data-emotion-dimension]')?.querySelectorAll('[data-emotion-score]').forEach(button => button.classList.remove('selected'));
+    }
+    refreshClearButtons();
+  }, true);
+
+  const baseOpenBackdrop = openBackdrop;
+  const baseCloseSheet = closeSheet;
+  let lockedScrollY = 0;
+  function lockPageScroll() {
+    if (document.body.classList.contains('rm-sheet-scroll-locked')) return;
+    lockedScrollY = window.scrollY;
+    document.body.style.top = `-${lockedScrollY}px`;
+    document.body.classList.add('rm-sheet-scroll-locked');
+  }
+  function unlockPageScroll() {
+    if (!document.body.classList.contains('rm-sheet-scroll-locked')) return;
+    document.body.classList.remove('rm-sheet-scroll-locked');
+    document.body.style.top = '';
+    window.scrollTo(0, lockedScrollY);
+  }
+  openBackdrop = function(...args) { const result = baseOpenBackdrop.apply(this, args); lockPageScroll(); return result; };
+  closeSheet = function(...args) { const result = baseCloseSheet.apply(this, args); unlockPageScroll(); return result; };
+  document.getElementById('closeBtn').onclick = closeSheet;
+
+  const previousNoteTypeLabel = rmV28TypeLabel;
+  rmV28TypeLabel = function(event) {
+    return event?.type === 'note' && event.noteOrigin === 'annotation' ? 'Anotação' : previousNoteTypeLabel(event);
+  };
+  const previousEventCard = eventCard;
+  eventCard = function(event) {
+    const card = previousEventCard(event);
+    return event?.type === 'note' && event.noteOrigin === 'annotation' && !event.text
+      ? card
+        .replace('<div class="timeline-title">Check-in emocional</div>', '')
+        .replace('<div class="timeline-main"></div>', '')
+        .replace('rm-v28-timeline', 'rm-v28-timeline rm-note-score-only')
+      : card;
+  };
+
+  document.addEventListener('click', event => {
+    const button = event.target.closest('#rmAddMedication');
+    if (!button || !ultra()) return;
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    const card = button.closest('.rm-related-medications');
+    const closing = button.getAttribute('aria-expanded') === 'true';
+    if (closing) {
+      card.classList.remove('rm-accordion-open');
+      button.setAttribute('aria-expanded', 'false');
+      setTimeout(() => button.onclick?.(), 320);
+    } else {
+      button.setAttribute('aria-expanded', 'true');
+      button.onclick?.();
+      requestAnimationFrame(() => card.classList.add('rm-accordion-open'));
+    }
+  }, true);
+
+  const observer = new MutationObserver(() => {
+    document.querySelectorAll('.rm-mention-selection').forEach(selection => {
+      if (selection.dataset.rmSelectedIcon) return;
+      selection.innerHTML = selectedSVG;
+      selection.dataset.rmSelectedIcon = 'true';
+    });
+    refreshClearButtons();
+  });
+  observer.observe(document.getElementById('form'), {childList:true, subtree:true});
 })();

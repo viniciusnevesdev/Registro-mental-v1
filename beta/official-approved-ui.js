@@ -356,11 +356,59 @@
   const deleteIcon='<svg viewBox="0 0 19.7734 24.0234" aria-hidden="true" focusable="false"><path d="M6.67969 19.1484C7.01562 19.1484 7.23438 18.9297 7.22656 18.625L6.90625 7.60156C6.89844 7.29688 6.67188 7.09375 6.35938 7.09375C6.02344 7.09375 5.80469 7.30469 5.8125 7.61719L6.13281 18.625C6.14062 18.9375 6.35938 19.1484 6.67969 19.1484ZM9.6875 19.1484C10.0156 19.1484 10.25 18.9297 10.25 18.625L10.25 7.61719C10.25 7.30469 10.0156 7.09375 9.6875 7.09375C9.35938 7.09375 9.125 7.30469 9.125 7.61719L9.125 18.625C9.125 18.9297 9.35938 19.1484 9.6875 19.1484ZM12.6875 19.1484C13.0078 19.1484 13.2266 18.9453 13.2344 18.6328L13.5547 7.61719C13.5625 7.30469 13.3438 7.10156 13.0156 7.10156C12.7031 7.10156 12.4766 7.29688 12.4688 7.60938L12.1484 18.625C12.1406 18.9297 12.3516 19.1484 12.6875 19.1484ZM5.33594 4.46875L6.70312 4.46875L6.70312 2.32031C6.70312 1.69531 7.13281 1.28906 7.80469 1.28906L11.5469 1.28906C12.2188 1.28906 12.6484 1.69531 12.6484 2.32031L12.6484 4.46875L14.0156 4.46875L14.0156 2.24219C14.0156.851562 13.1172 0 11.625 0L7.72656 0C6.24219 0 5.33594.851562 5.33594 2.24219ZM.648438 5.14844L18.7188 5.14844C19.0781 5.14844 19.3672 4.85156 19.3672 4.5C19.3672 4.14062 19.0781 3.84375 18.7188 3.84375L.648438 3.84375C.304688 3.84375 0 4.14844 0 4.5C0 4.85938.304688 5.14844.648438 5.14844ZM5.10156 22.3125L14.2812 22.3125C15.625 22.3125 16.5703 21.3984 16.6406 20.0547L17.3828 4.96875L15.9844 4.96875L15.2812 19.9141C15.25 20.5469 14.7734 21.0078 14.1484 21.0078L5.21094 21.0078C4.60156 21.0078 4.11719 20.5391 4.08594 19.9141L3.34375 4.97656L1.99219 4.97656L2.73438 20.0625C2.80469 21.4062 3.73438 22.3125 5.10156 22.3125Z" fill="currentColor" fill-opacity=".85"/></svg>';
   function installStyles(){if(document.getElementById('rm-note-viewer-ui'))return;const s=document.createElement('style');s.id='rm-note-viewer-ui';s.textContent='.rm-note-detail-view{display:grid;gap:12px}.rm-note-view-mood{padding:15px 13px 13px;border:1px solid color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 38%,var(--separator));border-radius:19px;background:color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 10%,var(--surface));box-shadow:0 7px 21px color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 14%,transparent)}.rm-note-view-mood-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 11px}.rm-note-view-mood-head strong{font-size:15px;line-height:1.1;color:var(--text)}.rm-note-view-mood-head b{font-size:25px;line-height:1;font-weight:850;color:var(--rm-note-mood-color,#7657ff);letter-spacing:-.04em}.rm-note-view-mood-head b small{font-size:12px;letter-spacing:0;color:var(--secondary);font-weight:700} .rm-note-view-bar{position:relative;height:18px;border-radius:999px;background:color-mix(in srgb,var(--secondary) 18%,transparent);overflow:visible;box-shadow:inset 0 1px 2px rgba(0,0,0,.12)}.rm-note-view-bar span{display:block;height:100%;border-radius:inherit;background:var(--rm-note-mood-color,#7657ff);box-shadow:0 0 16px color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 82%,transparent);transition:width .25s ease}.rm-note-view-bar i{position:absolute;top:50%;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;transform:translate(-50%,-50%);font-style:normal;font-size:13px;font-weight:850;color:#fff;background:var(--rm-note-mood-color,#7657ff);box-shadow:0 0 18px color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 90%,transparent)}.rm-note-view-caption{display:flex;justify-content:space-between;gap:8px;margin-top:8px;color:var(--secondary);font-size:10px;font-weight:650}.rm-note-view-date{padding:8px 3px 1px;text-align:center;color:var(--secondary);font-size:15.5px;line-height:1.25;font-weight:740}.rm-note-detail-view .rm-v28-detail-card{margin:0}.rm-note-detail-view .rm-v28-detail-card.wide{grid-column:auto}.form-actions:has(#viewerEditBtn),.form-actions:has(#editMedBtn),.sheet-options:has(#editEventBtn){display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-top:14px!important}.rm-unified-card-action{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;flex:0 0 52px!important;padding:0!important;border-radius:50%!important;display:inline-grid!important;place-items:center!important;line-height:1!important}.rm-unified-card-action svg{display:block!important;width:24px!important;height:24px!important;overflow:visible!important}.rm-unified-card-action--delete{margin-right:auto!important}.rm-unified-card-action--edit{margin-left:auto!important}.rm-unified-card-action:active{transform:scale(.93)!important}@media(max-width:370px){.rm-note-view-scale{gap:3px}.rm-note-view-score{height:28px;font-size:11px}.rm-note-view-mood{padding:13px 10px 11px}}';document.head.appendChild(s)}
   function applyActionIcons(root=document){[['viewerEditBtn','edit','Editar registro',editIcon],['editEventBtn','edit','Editar registro',editIcon],['editMedBtn','edit','Editar medicamento',editIcon],['viewerDeleteBtn','delete','Excluir registro',deleteIcon],['deleteBtn','delete','Excluir registro',deleteIcon],['deleteMedBtn','delete','Excluir medicamento',deleteIcon]].forEach(d=>{const b=root.getElementById?root.getElementById(d[0]):root.querySelector('#'+d[0]);if(!b||b.dataset.rmUnifiedAction===d[1])return;b.dataset.rmUnifiedAction=d[1];b.classList.add('rm-unified-card-action','rm-unified-card-action--'+d[1]);b.setAttribute('aria-label',d[2]);b.title=d[2];b.innerHTML=d[3]})}
-  function moodColor(v){try{return typeof rmMood==='function'?(rmMood(v).color||'#7657ff'):'#7657ff'}catch(_){return'#7657ff'}}
-  function moodViewer(score){if(score===null||score===undefined||Number.isNaN(Number(score)))return'';const v=Math.max(0,Math.min(10,Number(score))),pct=v*10;return'<section class="rm-note-view-mood" style="--rm-note-mood-color:'+moodColor(v)+'" aria-label="Avaliação de humor: '+v+' de 10"><div class="rm-note-view-mood-head"><strong>Avaliação do humor</strong><b>'+v+'<small>/10</small></b></div><div class="rm-note-view-bar" aria-hidden="true"><span style="width:'+pct+'%"></span><i style="left:'+pct+'%">'+v+'</i></div><div class="rm-note-view-caption"><span>0 · muito mal</span><span>5 · neutro</span><span>10 · muito bem</span></div></section>'}
-  function installNoteViewer(){const previous=window.openEventViewer;if(typeof previous!=='function'||previous.__rmNoteViewerRefined)return;const refined=async function(id){const event=(await allEvents()).find(item=>item.id===id);if(!event||event.type!=='note')return previous.apply(this,arguments);const details=[];if(event.tag&&typeof rmV28DetailCard==='function')details.push(rmV28DetailCard('Tag',typeof rmV27TagChip==='function'?rmV27TagChip(event.tag):event.tag,{html:true}));for(const [key,value] of Object.entries(event.emotionScores||{})){const dim=typeof emotionDimensions==='function'?emotionDimensions():[],label=event.emotionLabels?.[key]||(dim.find(d=>d.id===key)?.label)||key;if(typeof rmV28DetailCard==='function')details.push(rmV28DetailCard(label,String(value)+' de 4'))}const audio=event.hasAudio?'<div class="rm-v28-detail-card wide"><small>Áudio</small><span data-audio="'+esc(event.id)+'"></span></div>':'',note=typeof rmV28DetailCard==='function'?rmV28DetailCard('Anotação',event.text||'Anotação de voz',{wide:true}):'<div>'+esc(event.text||'Anotação de voz')+'</div>',buttons=typeof rmV28DetailButtons==='function'?rmV28DetailButtons():'<div class="form-actions"><button type="button" class="secondary-button danger-row" id="viewerDeleteBtn">Excluir</button><button type="button" class="primary-button" id="viewerEditBtn">Editar</button></div>';openBackdrop(event.text?'Anotação':'Check-in emocional','<div class="rm-note-detail-view">'+moodViewer(event.moodScore)+note+'<div class="rm-v28-detail-grid">'+details.join('')+audio+'</div><time class="rm-note-view-date">'+esc(registroDetailDate(event.timestamp))+'</time></div>'+buttons,ev=>ev.preventDefault());rmV28ViewerActions?.(id);applyActionIcons(document);if(event.hasAudio)await hydrateAudio(document.getElementById('form'))};refined.__rmNoteViewerRefined=true;window.openEventViewer=refined}
+  /* A visualização de nota é instalada ao final deste arquivo, após a Mood Bar. */
+  function installNoteViewer(){}
   function apply(){installStyles();installNoteViewer();applyActionIcons(document)}
   apply();new MutationObserver(()=>applyActionIcons(document)).observe(document.documentElement,{childList:true,subtree:true});document.addEventListener('click',()=>setTimeout(applyActionIcons,0),{passive:true});window.addEventListener('registro:release-ready',apply);
 })();
 
 (()=>{const v='1.2.0-beta.51';const set=()=>{for(const id of ['topVersion','versionLabel']){const e=document.getElementById(id);if(e)e.textContent=id==='topVersion'?'v'+v:v}};set();setTimeout(set,500);setTimeout(set,1800)})();
+
+/* Beta — detalhe de anotação alinhado à Mood Bar usada na criação. */
+(() => {
+  'use strict';
+
+  function hasMood(score) {
+    return score !== null && score !== undefined && score !== '' && Number.isFinite(Number(score));
+  }
+
+  function readOnlyMoodBar(score) {
+    if (!hasMood(score) || typeof window.emotionMoodSelectorHTML !== 'function') return '';
+    return `<section class="rm-note-readonly-mood" aria-label="Humor registrado: ${Number(score)} de 10">${window.emotionMoodSelectorHTML(score)
+      .replace(/<button type="button" class="tiny-clear" id="clearMoodScore">[\s\S]*?<\/button>/, '')
+      .replace(/<button /g, '<button tabindex="-1" aria-disabled="true" ')}</section>`;
+  }
+
+  function compactMoodIndicator(score) {
+    if (!hasMood(score) || typeof window.emotionMoodSelectorHTML !== 'function') return '';
+    const value = Math.max(0, Math.min(10, Math.round(Number(score))));
+    const markup = window.emotionMoodSelectorHTML(value);
+    const color = markup.match(/--rm-mood-v2-color:([^;"\s]+)/)?.[1] || 'var(--accent)';
+    const width = Math.max(26, Math.round(16 + value * 9.4));
+    return `<div class="rm-note-detail-score" role="img" aria-label="Humor ${value} de 10" style="--rm-note-detail-mood:${color};--rm-note-detail-width:${width}px"><span>${value}</span></div>`;
+  }
+
+  const previousNoteViewer = window.openEventViewer;
+  window.openEventViewer = async function(id) {
+    const event = (await allEvents()).find(item => item.id === id);
+    if (!event || event.type !== 'note') return previousNoteViewer.apply(this, arguments);
+
+    const medications = await allMedications();
+    const details = [];
+    if (event.text && typeof rmV28DetailCard === 'function') details.push(rmV28DetailCard('Anotação', event.text, {wide:true}));
+    const mentionIds = Array.isArray(event.medicationMentions) ? [...new Set(event.medicationMentions.filter(Boolean))] : [];
+    if (mentionIds.length && typeof rmV28DetailCard === 'function') {
+      const chips = mentionIds.map(id => `<span class="rm-detail-mention">${esc(typeof mentionLabel === 'function' ? mentionLabel(id, medications) : id)}</span>`).join('');
+      details.push(rmV28DetailCard('Medicamentos mencionados', `<div class="rm-detail-mentions">${chips}</div>`, {wide:true, html:true}));
+    }
+    for (const [key, value] of Object.entries(event.emotionScores || {})) {
+      const dimension = typeof emotionDimensions === 'function' ? emotionDimensions() : [];
+      const label = event.emotionLabels?.[key] || dimension.find(item => item.id === key)?.label || key;
+      if (typeof rmV28DetailCard === 'function') details.push(rmV28DetailCard(label, `${value} de 4`));
+    }
+    const buttons = typeof rmV28DetailButtons === 'function' ? rmV28DetailButtons() : '<div class="form-actions"><button type="button" class="secondary-button danger-row" id="viewerDeleteBtn">Excluir</button><button type="button" class="primary-button" id="viewerEditBtn">Editar</button></div>';
+    const scoreOnly = !event.text && hasMood(event.moodScore) && !event.tag && !mentionIds.length && !Object.keys(event.emotionScores || {}).length;
+    openBackdrop('Anotação', `<div class="rm-note-detail-view${scoreOnly ? ' rm-note-detail-score-only' : ''}">${scoreOnly ? compactMoodIndicator(event.moodScore) : readOnlyMoodBar(event.moodScore)}<div class="rm-v28-detail-grid">${details.join('')}</div><time class="rm-note-view-date">${esc(registroDetailDate(event.timestamp))}</time></div>${buttons}`, formEvent => formEvent.preventDefault());
+    rmV28ViewerActions?.(id);
+  };
+})();
