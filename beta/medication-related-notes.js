@@ -126,6 +126,8 @@
     return true;
   }
 
+  // API pequena para extensões da Beta reutilizarem a mesma relação temporal.
+  window.rmMedicationRelatedNotes = { CONTEXT_WINDOW_MS, relatedNotesForMedication };
   installStyles();
   const timer = setInterval(() => { if (install()) clearInterval(timer); }, 80);
   setTimeout(() => clearInterval(timer), 5000);
