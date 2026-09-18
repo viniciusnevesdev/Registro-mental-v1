@@ -561,6 +561,8 @@
       await loadScript('./medication-administration-selection.js', 8000);
       currentStage = 'medication-reminders.js';
       await loadScript('./medication-reminders.js', 8000);
+      currentStage = 'medication-related-notes.js';
+      await loadScript('./medication-related-notes.js', 8000);
       setStep('patches', 'ok', 'aplicadas');
       log('ok', 'Correções finais, refinamentos aprovados e aparência consolidada carregados');
     } catch (error) {
