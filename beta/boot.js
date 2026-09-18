@@ -565,6 +565,8 @@
       await loadScript('./medication-related-notes.js', 8000);
       currentStage = 'medication-emotions.js';
       await loadScript('./medication-emotions.js', 8000);
+      currentStage = 'semantic-glow.js';
+      await loadScript('./semantic-glow.js', 8000);
       setStep('patches', 'ok', 'aplicadas');
       log('ok', 'Correções finais, refinamentos aprovados e aparência consolidada carregados');
     } catch (error) {
