@@ -775,3 +775,27 @@
   window.addEventListener('registro:release-ready', schedule);
   [150,500,1200].forEach(ms => setTimeout(schedule, ms));
 })();
+
+/* RM_MAX_PILL_SEGMENTED_V1 */
+(() => {
+  if (document.getElementById('rm-max-pill-segmented-style')) return;
+  const style = document.createElement('style');
+  style.id = 'rm-max-pill-segmented-style';
+  style.textContent = `
+    .segmented,
+    .animated-segmented {
+      border-radius: 9999px !important;
+      overflow: hidden !important;
+    }
+    .segmented button,
+    .animated-segmented button,
+    .segmented button.selected,
+    .animated-segmented button.selected {
+      border-radius: 9999px !important;
+    }
+    .animated-segmented::before {
+      border-radius: 9999px !important;
+    }
+  `;
+  document.head.appendChild(style);
+})();
