@@ -16,6 +16,9 @@
     .compact-summary-list .summary-row:nth-child(3){--rm-semantic-tone:var(--record-sleep,var(--sleep))}
     .compact-summary-list .summary-row:nth-child(4){--rm-semantic-tone:var(--record-buy,var(--buy))}
 
+    /* Mesma borda discreta e padronizada da versão Oficial em todos os registros. */
+    .timeline-item.rm-v28-timeline{border:1px solid var(--rm-line)!important}
+
     /* Ultra: uma única sombra colorida, suave e estática, abaixo da borda. */
     html[data-visual-mode="ultra"] .rm-v28-timeline{
       border:1px solid var(--rm-line)!important;
@@ -31,7 +34,7 @@
       border-color:color-mix(in srgb,var(--rm-card-accent,var(--accent)) 22%,var(--separator))!important;
       box-shadow:0 5px 14px color-mix(in srgb,var(--rm-card-accent,var(--accent)) 10%,transparent)!important;
     }
-    html[data-visual-mode="ultra"] #historyFilters .filter-chip.rm-filter-type.selected{
+    html[data-visual-mode="ultra"] #historyFilters .filter-chip.selected{
       box-shadow:
         0 0 0 1.5px color-mix(in srgb,var(--rm-filter-tone,var(--accent)) 88%,transparent),
         0 0 14px 1px color-mix(in srgb,var(--rm-filter-tone,var(--accent)) 82%,transparent),
