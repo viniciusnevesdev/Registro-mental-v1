@@ -209,6 +209,8 @@
       .rm-beta-update-row .rm-update-button {
         min-height: 34px !important;
         padding: 7px 11px !important;
+        border: 0 !important;
+        border-radius: 999px !important;
         white-space: nowrap;
       }
       #rmBetaUndoImportBtn[hidden],
