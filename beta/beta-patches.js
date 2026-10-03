@@ -131,7 +131,7 @@
         color: var(--text, currentColor);
       }
 
-      /* Registro de medicamento: a quantidade pertence às compras/estoque. */
+      /* Administração por unidade: concentração, quantidade e total calculado. */
       #doseFields.rm-beta-dose-compact {
         display: grid !important;
         grid-template-columns: minmax(0, 1.35fr) minmax(0, .65fr) !important;
@@ -660,25 +660,6 @@
     return true;
   }
 
-  function removeMedicationQuantityField() {
-    const quantity = document.getElementById('unitsTaken');
-    if (!quantity || quantity.type === 'hidden') return;
-
-    const quantityField = quantity.closest('.field');
-    const hiddenQuantity = document.createElement('input');
-    hiddenQuantity.type = 'hidden';
-    hiddenQuantity.id = 'unitsTaken';
-    hiddenQuantity.value = '1';
-    hiddenQuantity.dataset.rmBetaFixedQuantity = '1';
-    quantityField?.replaceWith(hiddenQuantity);
-
-    const doseLabel = document.querySelector('label[for="unitDoseValue"]')
-      || document.getElementById('unitDoseValue')?.closest('.field')?.querySelector('label');
-    if (doseLabel) doseLabel.textContent = 'Dose';
-
-    document.querySelector('#doseFields .dose-result')?.remove();
-  }
-
   function refineMedicationSheet() {
     const note = document.getElementById('medNote');
     if (note) {
@@ -688,9 +669,12 @@
     document.getElementById('doseMode')?.classList.add('rm-beta-dose-mode');
 
     const doseFields = document.getElementById('doseFields');
+    doseFields?.classList.toggle('rm-beta-dose-compact', Boolean(document.getElementById('unitsTaken')));
     if (doseFields && document.getElementById('unitsTaken')) {
-      doseFields.classList.add('rm-beta-dose-compact');
-      removeMedicationQuantityField();
+      const doseLabel = document.getElementById('unitDoseValue')?.closest('.field')?.querySelector('label');
+      if (doseLabel) doseLabel.textContent = 'Dose por comprimido/cápsula';
+      const quantityLabel = document.getElementById('unitsTaken')?.closest('.field')?.querySelector('label');
+      if (quantityLabel) quantityLabel.textContent = 'Quantidade tomada';
     }
   }
 

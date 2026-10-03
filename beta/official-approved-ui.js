@@ -229,26 +229,17 @@
     }
   }
 
-  function removeMedicationQuantityField() {
-    const quantity = document.getElementById('unitsTaken');
-    if (!quantity || quantity.type === 'hidden') return;
-    const field = quantity.closest('.field');
-    const hidden = document.createElement('input');
-    hidden.type = 'hidden'; hidden.id = 'unitsTaken'; hidden.value = '1';
-    field?.replaceWith(hidden);
-    const doseLabel = document.querySelector('label[for="unitDoseValue"]') || document.getElementById('unitDoseValue')?.closest('.field')?.querySelector('label');
-    if (doseLabel) doseLabel.textContent = 'Dose';
-    document.querySelector('#doseFields .dose-result')?.remove();
-  }
-
   function refineMedicationSheet() {
     const note = document.getElementById('medNote');
     if (note) note.placeholder = 'Motivo desta administração, como você estava se sentindo ou algo fora do comum…';
     document.getElementById('doseMode')?.classList.add('rm-official-dose-mode');
     const doseFields = document.getElementById('doseFields');
+    doseFields?.classList.toggle('rm-official-dose-compact', Boolean(document.getElementById('unitsTaken')));
     if (doseFields && document.getElementById('unitsTaken')) {
-      doseFields.classList.add('rm-official-dose-compact');
-      removeMedicationQuantityField();
+      const doseLabel = document.getElementById('unitDoseValue')?.closest('.field')?.querySelector('label');
+      if (doseLabel) doseLabel.textContent = 'Dose por comprimido/cápsula';
+      const quantityLabel = document.getElementById('unitsTaken')?.closest('.field')?.querySelector('label');
+      if (quantityLabel) quantityLabel.textContent = 'Quantidade tomada';
     }
   }
 
@@ -398,7 +389,12 @@
     if (event.text && typeof rmV28DetailCard === 'function') details.push(rmV28DetailCard('Anotação', event.text, {wide:true}));
     const mentionIds = Array.isArray(event.medicationMentions) ? [...new Set(event.medicationMentions.filter(Boolean))] : [];
     if (mentionIds.length && typeof rmV28DetailCard === 'function') {
-      const chips = mentionIds.map(id => `<span class="rm-detail-mention">${esc(typeof mentionLabel === 'function' ? mentionLabel(id, medications) : id)}</span>`).join('');
+      const medicationsById = new Map(medications.map(medication => [medication.id, medication]));
+      const chips = mentionIds.map(id => {
+        const medication = medicationsById.get(id);
+        const label = medication ? medicationDisplay(medication) : 'Medicamento não disponível';
+        return `<span class="rm-detail-mention">${esc(label)}</span>`;
+      }).join('');
       details.push(rmV28DetailCard('Medicamentos mencionados', `<div class="rm-detail-mentions">${chips}</div>`, {wide:true, html:true}));
     }
     for (const [key, value] of Object.entries(event.emotionScores || {})) {
