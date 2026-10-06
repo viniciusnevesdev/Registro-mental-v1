@@ -89,6 +89,11 @@
       }
       .rm-official-update-row .rm-update-button{min-height:34px!important;padding:7px 11px!important;white-space:nowrap}
 
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{display:grid!important;grid-template-columns:minmax(0,1fr) 74px!important;gap:0!important;align-items:end!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>label{grid-column:1/-1!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#unitDoseValue{grid-column:1!important;min-width:0!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{grid-column:2!important;width:100%!important;min-width:0!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 4px!important;text-align:right!important;appearance:none!important}
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview{grid-column:2!important;grid-row:2!important}
       @media(max-width:370px){
         #doseFields.rm-official-dose-compact{gap:7px!important}
         #doseFields.rm-official-dose-compact input,#doseFields.rm-official-dose-compact select{
@@ -240,6 +245,18 @@
       if (doseLabel) doseLabel.textContent = 'Dose por comprimido/cápsula';
       const quantityLabel = document.getElementById('unitsTaken')?.closest('.field')?.querySelector('label');
       if (quantityLabel) quantityLabel.textContent = 'Quantidade tomada';
+      const doseField = document.getElementById('unitDoseValue')?.closest('.field');
+      const unitField = document.getElementById('doseUnit')?.closest('.field');
+      const unitSelect = document.getElementById('doseUnit');
+      if (doseField && unitField && unitSelect && doseField.dataset.rmDoseUnitMerged !== '1') {
+        unitField.querySelector('label')?.remove();
+        doseField.appendChild(unitSelect);
+        unitField.remove();
+        doseField.dataset.rmDoseUnitMerged = '1';
+        doseField.classList.add('rm-dose-with-unit');
+      }
+      const preview = [...doseFields.children].find(node => normalize(node.textContent).includes('dose total calculada'));
+      preview?.classList.add('rm-dose-total-preview');
     }
   }
 
