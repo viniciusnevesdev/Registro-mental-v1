@@ -134,12 +134,25 @@
       }
       #doseMode.rm-official-dose-mode button{min-height:36px!important;padding:7px 8px!important;font-size:12px!important}
 
-      /* Atualização integrada ao cartão de Dados. */
+      /* Atualização isolada das ações de backup. */
+      .rm-official-update-card{margin:12px 0!important}
       .rm-official-update-row{
         display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;
-        align-items:center!important;gap:11px!important;padding:12px 14px!important
+        align-items:center!important;gap:11px!important;padding:13px 14px!important
       }
-      .rm-official-update-row .rm-update-button{min-height:34px!important;padding:7px 11px!important;white-space:nowrap}
+      .rm-official-update-row .rm-update-row-icon{color:#34C759!important}
+      .rm-official-update-row .rm-update-row-icon svg{width:23px!important;height:19px!important;display:block!important}
+      .rm-official-update-row .rm-update-button{
+        min-height:36px!important;padding:7px 12px!important;white-space:nowrap;
+        border-radius:999px!important;display:inline-flex!important;align-items:center!important;
+        justify-content:center!important;gap:7px!important
+      }
+      .rm-official-update-row .rm-update-action-icon{
+        width:17px!important;height:14px!important;display:block!important;color:#34C759!important
+      }
+      #rmOfficialUndoImportBtn .settings-row-icon{color:var(--danger,#FF453A)!important}
+      #rmOfficialUndoImportBtn .settings-row-icon svg{width:21px!important;height:21px!important;display:block!important}
+      #rmOfficialUndoImportBtn .settings-row-icon svg *{fill:currentColor!important;stroke:none!important}
 
       #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{position:relative!important;display:block!important;min-width:0!important}
       #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#unitDoseValue{width:100%!important;min-width:0!important;padding-right:68px!important}
@@ -243,20 +256,38 @@
 
       const updateButton = document.getElementById('rmForceUpdateBtn');
       const dataCard = data?.querySelector('.settings-card');
-      if (updateButton && dataCard && !document.getElementById('rmOfficialUpdateRow')) {
-        const previousHandler = updateButton.onclick;
-        const row = document.createElement('div');
+      if (updateButton && data && dataCard) {
+        const refreshIcon = '<svg class="rm-update-action-icon" viewBox="0 0 24.861 20.3672" aria-hidden="true" focusable="false"><path d="M23.8133 8.76562h-4.5469c-.6328 0-.8125.4375-.4531.9375l2.2187 3.1641c.2891.4219.7188.4297 1.0157 0l2.2187-3.1563c.3594-.5078.1875-.9453-.4531-.9453ZM12.2274 1.46094c4.8203 0 8.7187 3.89844 8.7187 8.71876 0 .3906.3281.7187.7344.7187.3906 0 .7109-.3203.7187-.7109C22.3914 4.55469 17.8445 0 12.2274 0 9.23517 0 6.50079 1.30469 4.63361 3.41406c-.35157.38282-.23438.88282.08593 1.10938.28125.21094.65625.21875 1.00782-.15625 1.60937-1.80469 3.9375-2.90625 6.5-2.90625ZM.641418 11.5859h4.546872c.63282 0 .80469-.4375.45313-.9375L3.42267 7.48438c-.28906-.41406-.71875-.42188-1.01563 0L.188293 10.6406c-.367188.5078-.1875.9453.453125.9453ZM12.2274 18.8984c-4.82036 0-8.71879-3.8984-8.71879-8.7187 0-.3985-.32813-.7266-.73438-.7266-.39062 0-.71094.3203-.71875.7187.00781 5.6328 4.55469 10.1797 10.17192 10.1797 2.9921 0 5.7265-1.3047 7.5937-3.4062.3516-.3907.2344-.8829-.0859-1.1172-.2813-.2031-.6563-.2188-1.0078.164 1.6093 1.7969 3.9375 2.9063 6.5 2.9063Z" fill="currentColor" fill-opacity=".85"/></svg>';
+        const row = document.getElementById('rmOfficialUpdateRow') || document.createElement('div');
         row.id = 'rmOfficialUpdateRow';
         row.className = 'settings-row rm-official-update-row';
-        row.innerHTML = `<span class="settings-row-icon" data-icon="clock"></span><span><strong>Atualizar aplicativo</strong><small>Busca a versão mais recente sem apagar seus dados</small></span>`;
-        updateButton.closest('.rm-update-row')?.remove();
-        row.appendChild(updateButton);
-        updateButton.onclick = previousHandler;
-        const separator = document.createElement('div');
-        separator.className = 'setting-separator inset';
-        dataCard.prepend(separator);
-        dataCard.prepend(row);
-        try { if (typeof hydrateIcons === 'function') hydrateIcons(row); } catch (_) {}
+        if (!row.querySelector('strong')) row.innerHTML = `<span class="settings-row-icon rm-update-row-icon"></span><span><strong>Atualizar aplicativo</strong><small>Busca a versão mais recente sem apagar seus dados</small></span>`;
+        const rowIcon = row.querySelector('.settings-row-icon');
+        if (rowIcon) { rowIcon.classList.add('rm-update-row-icon'); rowIcon.removeAttribute('data-icon'); rowIcon.innerHTML = refreshIcon; }
+        if (!updateButton.parentElement?.isSameNode(row)) {
+          const previousHandler = updateButton.onclick;
+          updateButton.closest('.rm-update-row')?.remove();
+          row.appendChild(updateButton);
+          updateButton.onclick = previousHandler;
+        }
+        updateButton.classList.add('rm-official-update-button');
+        updateButton.innerHTML = `${refreshIcon}<span>Buscar agora</span>`;
+        let updateCard = document.getElementById('rmOfficialUpdateCard');
+        if (!updateCard) {
+          updateCard = document.createElement('div');
+          updateCard.id = 'rmOfficialUpdateCard';
+          updateCard.className = 'settings-card list-card rm-official-update-card';
+          (data.querySelector('#backupWarning') || data.querySelector(':scope > h2'))?.insertAdjacentElement('afterend', updateCard);
+        }
+        if (!row.parentElement?.isSameNode(updateCard)) updateCard.appendChild(row);
+        if (dataCard.firstElementChild?.classList.contains('setting-separator')) dataCard.firstElementChild.remove();
+      }
+
+      const undoButton = document.getElementById('rmOfficialUndoImportBtn');
+      if (undoButton) {
+        const undoIcon = '<svg viewBox="0 0 19.3516 18.5547" aria-hidden="true" focusable="false"><path d="M0 6.72656c0 .21094.078125.40625.25.57032l5.98438 5.90622c.14843.1485.36718.2344.55468.2344.45313 0 .75-.3125.75-.75 0-.2187-.07031-.3906-.20312-.5234L4.25 9.13281 1.50781 6.72656 4.25 4.32031 7.33594 1.28906c.13281-.13281.20312-.30468.20312-.52343 0-.4375-.29687-.75-.75-.75-.1875 0-.40625.08594-.55468.23438L.25 6.15625C.078125 6.32031 0 6.51562 0 6.72656Zm8.74219 11.07034c0 .414 0 .7578.46875.7578h2.60937c4.3125 0 6.8125-2.5078 6.8125-6.2656 0-3.75-2.5547-6.3203-6.9375-6.3203H4.60938l-3.14844.1172c-.35938.0156-.64062.2891-.64062.6406 0 .3516.28124.625.64062.6406l3.14844.1172h7.50781c3.41406 0 5.3125 1.9297 5.3125 4.7266 0 2.7969-1.8984 4.8281-5.3125 4.8281H9.51562c-.46875 0-.77343.3359-.77343.7578Z" fill="currentColor" fill-opacity=".85"/></svg>';
+        const icon = undoButton.querySelector('.settings-row-icon');
+        if (icon) { icon.removeAttribute('data-icon'); icon.innerHTML = undoIcon; }
       }
     }
 
