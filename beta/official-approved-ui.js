@@ -74,9 +74,12 @@
       }
       /* Sensações: botão compacto, sem título auxiliar nem marcador nativo. */
       #rmMedicationEmotionField>label{display:none!important}
+      #rmMedicationEmotionField .emotion-advanced{
+        padding:0!important
+      }
       #rmMedicationEmotionField .emotion-advanced>summary{
         list-style:none!important;display:flex!important;align-items:center!important;
-        min-height:40px!important;height:40px!important;padding:0 14px!important;
+        min-height:36px!important;height:36px!important;padding:0 14px!important;
         gap:8px!important
       }
       #rmMedicationEmotionField .emotion-advanced>summary::-webkit-details-marker{display:none!important}
@@ -251,6 +254,7 @@
   }
 
   function refineMedicationSheet() {
+    document.querySelector('#rmMedicationEmotionField>label')?.remove();
     const note = document.getElementById('medNote');
     if (note) note.placeholder = 'Motivo desta administração, como você estava se sentindo ou algo fora do comum…';
     document.getElementById('doseMode')?.classList.add('rm-official-dose-mode');
