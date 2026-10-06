@@ -92,6 +92,38 @@
         width:18px!important;height:11px!important;flex:0 0 18px!important;
         display:block!important
       }
+      /* Dose por unidade: três controles na mesma linha. */
+      #doseFields.rm-official-dose-compact{
+        grid-template-columns:minmax(0,1.48fr) minmax(0,.88fr) minmax(0,.82fr)!important;
+        gap:8px!important;align-items:end!important
+      }
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{grid-column:1!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-quantity{grid-column:2!important}
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview{
+        grid-column:3!important;grid-row:1!important;align-self:end!important;
+        min-height:44px!important;padding:7px 9px!important;border-radius:15px!important;
+        display:grid!important;align-content:center!important;gap:1px!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview span{
+        font-size:9px!important;line-height:1.05!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview strong{
+        font-size:17px!important;line-height:1.05!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-quantity .rm-dose-stepper{
+        display:grid!important;grid-template-columns:31px minmax(0,1fr) 31px!important;
+        height:44px!important;overflow:hidden!important;border:1px solid var(--separator)!important;
+        border-radius:14px!important;background:var(--field)!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-stepper button{
+        border:0!important;background:transparent!important;color:var(--text)!important;
+        font:inherit!important;font-size:20px!important;line-height:1!important;padding:0!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-stepper input{
+        width:100%!important;min-width:0!important;height:100%!important;border:0!important;
+        border-radius:0!important;background:transparent!important;box-shadow:none!important;
+        padding:0!important;text-align:center!important
+      }
       #doseMode.rm-official-dose-mode{
         min-height:44px!important;padding:3px!important;border:1px solid rgba(142,142,147,.28)!important;
         border-radius:14px!important;background:rgba(142,142,147,.08)!important;box-shadow:none!important
@@ -277,6 +309,37 @@
       }
       const preview = [...doseFields.children].find(node => normalize(node.textContent).includes('dose total calculada'));
       preview?.classList.add('rm-dose-total-preview');
+
+      const quantityField = document.getElementById('unitsTaken')?.closest('.field');
+      const quantityInput = document.getElementById('unitsTaken');
+      if (quantityField && quantityInput) {
+        quantityLabel.textContent = 'Quantidade';
+        quantityField.classList.add('rm-dose-quantity');
+        if (!quantityField.querySelector('.rm-dose-stepper')) {
+          const stepper = document.createElement('div');
+          stepper.className = 'rm-dose-stepper';
+          const decrease = document.createElement('button');
+          decrease.type = 'button';
+          decrease.className = 'rm-dose-stepper-button';
+          decrease.setAttribute('aria-label','Diminuir quantidade');
+          decrease.textContent = '−';
+          const increase = document.createElement('button');
+          increase.type = 'button';
+          increase.className = 'rm-dose-stepper-button';
+          increase.setAttribute('aria-label','Aumentar quantidade');
+          increase.textContent = '+';
+          quantityInput.replaceWith(stepper);
+          stepper.append(decrease, quantityInput, increase);
+          const changeQuantity = delta => {
+            const current = Number(String(quantityInput.value).replace(',','.'));
+            const next = Math.max(1, (Number.isFinite(current) ? current : 1) + delta);
+            quantityInput.value = Number.isInteger(next) ? String(next) : String(next).replace('.',',');
+            quantityInput.dispatchEvent(new Event('input',{bubbles:true}));
+          };
+          decrease.addEventListener('click',()=>changeQuantity(-1));
+          increase.addEventListener('click',()=>changeQuantity(1));
+        }
+      }
     }
   }
 
