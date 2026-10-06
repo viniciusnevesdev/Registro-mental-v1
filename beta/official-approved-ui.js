@@ -158,6 +158,40 @@
       #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#unitDoseValue{width:100%!important;min-width:0!important;padding-right:68px!important}
       #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{position:absolute!important;right:5px!important;bottom:4px!important;width:58px!important;height:38px!important;min-width:0!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 3px!important;text-align:right!important;appearance:none!important}
       #doseFields.rm-official-dose-compact .rm-dose-total-preview{grid-column:3!important;grid-row:1!important}
+      /* Formulário de medicamento: espaçamento, centralização e ações-pílula. */
+      .rm-medication-sheet::before{content:none!important;display:none!important}
+      .rm-medication-sheet .sheet-drag-handle,.rm-medication-sheet .sheet-handle,.rm-medication-sheet .drag-handle{display:none!important}
+      .rm-medication-sheet .sheet-header{
+        position:relative!important;display:flex!important;justify-content:center!important;
+        align-items:center!important;min-height:56px!important;padding:16px 18px!important
+      }
+      .rm-medication-sheet .sheet-header h2,.rm-medication-sheet #sheetTitle{
+        width:100%!important;margin:0!important;text-align:center!important
+      }
+      .rm-medication-sheet .sheet-header .sheet-close{
+        position:absolute!important;left:18px!important;top:50%!important;transform:translateY(-50%)!important
+      }
+      #form.rm-medication-form{display:grid!important;gap:12px!important}
+      #form.rm-medication-form>.field,#form.rm-medication-form>#doseFields,
+      #form.rm-medication-form>#rmMedicationEmotionField,#form.rm-medication-form>.med-suggestion-card,
+      #form.rm-medication-form>.form-actions{margin:0!important}
+      #form.rm-medication-form .field>label,#form.rm-medication-form #doseFields label{
+        width:100%!important;justify-content:center!important;text-align:center!important
+      }
+      #form.rm-medication-form input,#form.rm-medication-form textarea{
+        text-align:center!important
+      }
+      #form.rm-medication-form #doseMode button[data-dose-mode="perUnit"]{
+        white-space:nowrap!important;font-size:11.5px!important
+      }
+      #form.rm-medication-form #rmMedicationEmotionField .emotion-advanced>summary,
+      #form.rm-medication-form #rmMedicationEmotionField .rm-accordion-heading{
+        justify-content:center!important;text-align:center!important
+      }
+      #form.rm-medication-form #medNote{min-height:44px!important}
+      #form.rm-medication-form .form-actions{gap:12px!important;margin-top:4px!important}
+      #form.rm-medication-form .form-actions>button{border-radius:999px!important}
+      #form.rm-medication-form #recordTime{text-align:center!important}
       @media(max-width:370px){
         #doseFields.rm-official-dose-compact{gap:7px!important}
         #doseFields.rm-official-dose-compact input,#doseFields.rm-official-dose-compact select{
@@ -317,10 +351,30 @@
   }
 
   function refineMedicationSheet() {
+    const form = document.getElementById('form');
+    const sheet = document.getElementById('sheetTitle')?.closest('.sheet');
+    form?.classList.add('rm-medication-form');
+    sheet?.classList.add('rm-medication-sheet');
     document.querySelector('#rmMedicationEmotionField>label')?.remove();
+
+    const medication = document.getElementById('medName');
+    const medicationField = medication?.closest('.field');
+    medicationField?.querySelector('label')?.remove();
+    if (medication) {
+      medication.placeholder = 'Medicamento';
+      medication.setAttribute('aria-label','Medicamento');
+    }
+
     const note = document.getElementById('medNote');
-    if (note) note.placeholder = 'Motivo desta administração, como você estava se sentindo ou algo fora do comum…';
-    document.getElementById('doseMode')?.classList.add('rm-official-dose-mode');
+    if (note) note.placeholder = 'Observação opcional';
+
+    const recordTime = document.getElementById('recordTime');
+    recordTime?.closest('.field')?.querySelector('label')?.remove();
+
+    const doseMode = document.getElementById('doseMode');
+    doseMode?.classList.add('rm-official-dose-mode');
+    const perUnitButton = doseMode?.querySelector('[data-dose-mode="perUnit"]');
+    if (perUnitButton) perUnitButton.textContent = 'Comprimidos / Cápsulas';
     const doseFields = document.getElementById('doseFields');
     doseFields?.classList.toggle('rm-official-dose-compact', Boolean(document.getElementById('unitsTaken')));
     if (doseFields && document.getElementById('unitsTaken')) {
