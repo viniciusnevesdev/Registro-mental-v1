@@ -57,6 +57,81 @@
     html[data-visual-mode="optimized"] .compact-summary-list .summary-row-icon{box-shadow:none}
     html[data-visual-mode="optimized"] .action-card:not(.primary-action){box-shadow:0 2px 8px rgba(38,43,70,.055)!important}
     html[data-visual-mode="optimized"] #historyFilters .filter-chip.rm-filter-type.selected{box-shadow:0 1px 4px color-mix(in srgb,var(--rm-filter-tone) 10%,transparent)!important}
+
+    /* Observação do registro de medicamento: uma linha, expandindo só quando necessário. */
+    #medNote.rm-med-note-autogrow{
+      min-height:44px!important;
+      height:44px;
+      overflow-y:hidden!important;
+      resize:none!important;
+      box-sizing:border-box!important;
+    }
   `;
   document.head.appendChild(style);
+})();
+
+/* Interações do app: bloqueia zoom e compacta a observação de medicamento. */
+(() => {
+  'use strict';
+
+  function lockViewportZoom() {
+    let viewport = document.querySelector('meta[name="viewport"]');
+    if (!viewport) {
+      viewport = document.createElement('meta');
+      viewport.name = 'viewport';
+      document.head.appendChild(viewport);
+    }
+    viewport.setAttribute('content', 'width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover');
+
+    const prevent = event => event.preventDefault();
+    ['gesturestart', 'gesturechange', 'gestureend'].forEach(type => {
+      document.addEventListener(type, prevent, { passive:false });
+    });
+    document.addEventListener('touchmove', event => {
+      if (event.touches && event.touches.length > 1) event.preventDefault();
+    }, { passive:false });
+    document.addEventListener('dblclick', prevent, { passive:false });
+
+    let lastTouchEnd = 0;
+    document.addEventListener('touchend', event => {
+      const now = Date.now();
+      if (now - lastTouchEnd <= 300) event.preventDefault();
+      lastTouchEnd = now;
+    }, { passive:false });
+
+    document.addEventListener('wheel', event => {
+      if (event.ctrlKey || event.metaKey) event.preventDefault();
+    }, { passive:false });
+    document.addEventListener('keydown', event => {
+      if ((event.ctrlKey || event.metaKey) && ['+', '=', '-', '0'].includes(event.key)) event.preventDefault();
+    });
+  }
+
+  function resizeMedicationNote(note) {
+    note.style.height = '44px';
+    if (note.value) note.style.height = `${Math.max(44, note.scrollHeight)}px`;
+  }
+
+  function refineMedicationNote() {
+    const note = document.getElementById('medNote');
+    if (!note) return;
+
+    const field = note.closest('.field');
+    const label = field?.querySelector(`label[for="${note.id}"]`) || field?.querySelector(':scope > label');
+    if (label) label.remove();
+
+    note.placeholder = 'Observação opcional';
+    note.rows = 1;
+    note.classList.add('rm-med-note-autogrow');
+    if (!note.dataset.rmAutoGrow) {
+      note.dataset.rmAutoGrow = '1';
+      note.addEventListener('input', () => resizeMedicationNote(note));
+    }
+    resizeMedicationNote(note);
+  }
+
+  lockViewportZoom();
+  refineMedicationNote();
+  new MutationObserver(refineMedicationNote).observe(document.body, { childList:true, subtree:true });
+  document.addEventListener('registro:release-ready', refineMedicationNote);
 })();
