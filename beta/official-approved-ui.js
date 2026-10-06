@@ -72,6 +72,23 @@
       #doseFields.rm-official-dose-compact input,#doseFields.rm-official-dose-compact select{
         width:100%!important;min-width:0!important;padding-left:11px!important;padding-right:11px!important
       }
+      /* Sensações: botão compacto, sem título auxiliar nem marcador nativo. */
+      #rmMedicationEmotionField>label{display:none!important}
+      #rmMedicationEmotionField .emotion-advanced>summary{
+        list-style:none!important;display:flex!important;align-items:center!important;
+        min-height:40px!important;height:40px!important;padding:0 14px!important;
+        gap:8px!important
+      }
+      #rmMedicationEmotionField .emotion-advanced>summary::-webkit-details-marker{display:none!important}
+      #rmMedicationEmotionField .emotion-advanced>summary::marker{content:''!important}
+      #rmMedicationEmotionField .rm-accordion-heading{
+        display:flex!important;align-items:center!important;gap:8px!important;
+        line-height:1!important
+      }
+      #rmMedicationEmotionField .rm-accordion-heading>svg{
+        width:18px!important;height:11px!important;flex:0 0 18px!important;
+        display:block!important
+      }
       #doseMode.rm-official-dose-mode{
         min-height:44px!important;padding:3px!important;border:1px solid rgba(142,142,147,.28)!important;
         border-radius:14px!important;background:rgba(142,142,147,.08)!important;box-shadow:none!important
