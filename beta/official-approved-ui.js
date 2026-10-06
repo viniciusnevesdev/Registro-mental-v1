@@ -89,10 +89,9 @@
       }
       .rm-official-update-row .rm-update-button{min-height:34px!important;padding:7px 11px!important;white-space:nowrap}
 
-      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{display:grid!important;grid-template-columns:minmax(0,1fr) 74px!important;gap:0!important;align-items:end!important}
-      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>label{grid-column:1/-1!important}
-      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#unitDoseValue{grid-column:1!important;min-width:0!important}
-      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{grid-column:2!important;width:100%!important;min-width:0!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 4px!important;text-align:right!important;appearance:none!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{position:relative!important;display:block!important;min-width:0!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#unitDoseValue{width:100%!important;min-width:0!important;padding-right:68px!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{position:absolute!important;right:5px!important;bottom:4px!important;width:58px!important;height:38px!important;min-width:0!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 3px!important;text-align:right!important;appearance:none!important}
       #doseFields.rm-official-dose-compact .rm-dose-total-preview{grid-column:2!important;grid-row:2!important}
       @media(max-width:370px){
         #doseFields.rm-official-dose-compact{gap:7px!important}
