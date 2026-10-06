@@ -160,7 +160,7 @@
       #doseFields.rm-official-dose-compact .rm-dose-total-preview{grid-column:3!important;grid-row:1!important}
       /* Formulário de medicamento: espaçamento, centralização e ações-pílula. */
       .rm-medication-sheet::before{content:none!important;display:none!important}
-      .rm-medication-sheet .sheet-drag-handle,.rm-medication-sheet .sheet-handle,.rm-medication-sheet .drag-handle{display:none!important}
+      .rm-medication-sheet .sheet-drag-handle,.rm-medication-sheet .sheet-handle,.rm-medication-sheet .drag-handle,.rm-medication-sheet .grabber{display:none!important}
       .rm-medication-sheet .sheet-header{
         position:relative!important;display:flex!important;justify-content:center!important;
         align-items:center!important;min-height:56px!important;padding:16px 18px!important
