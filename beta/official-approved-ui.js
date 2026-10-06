@@ -248,7 +248,10 @@
     if (typeof original !== 'function') return false;
     if (original.__rmOfficialNoteHeaderRefined) return true;
     const wrapped = function(event, ...rest) {
-      const html = original.call(this, event, ...rest);
+
+      
+/* Remove rótulos auxiliares da tela de registro de medicamento. */
+(()=>{const apply=()=>{const doseLabel=document.getElementById('doseMode')?.closest('.field')?.querySelector('label');if(doseLabel)doseLabel.remove();const emotionHelper=document.querySelector('#rmMedicationEmotionField .helper');if(emotionHelper)emotionHelper.remove();};setInterval(apply,250);})();const html = original.call(this, event, ...rest);
       if (!event || event.type !== 'note' || event.moodScore == null) return html;
       const template = document.createElement('template');
       template.innerHTML = String(html).trim();
