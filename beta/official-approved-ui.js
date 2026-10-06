@@ -144,7 +144,7 @@
       #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{position:relative!important;display:block!important;min-width:0!important}
       #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#unitDoseValue{width:100%!important;min-width:0!important;padding-right:68px!important}
       #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{position:absolute!important;right:5px!important;bottom:4px!important;width:58px!important;height:38px!important;min-width:0!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 3px!important;text-align:right!important;appearance:none!important}
-      #doseFields.rm-official-dose-compact .rm-dose-total-preview{grid-column:2!important;grid-row:2!important}
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview{grid-column:3!important;grid-row:1!important}
       @media(max-width:370px){
         #doseFields.rm-official-dose-compact{gap:7px!important}
         #doseFields.rm-official-dose-compact input,#doseFields.rm-official-dose-compact select{
@@ -294,7 +294,7 @@
     doseFields?.classList.toggle('rm-official-dose-compact', Boolean(document.getElementById('unitsTaken')));
     if (doseFields && document.getElementById('unitsTaken')) {
       const doseLabel = document.getElementById('unitDoseValue')?.closest('.field')?.querySelector('label');
-      if (doseLabel) doseLabel.textContent = 'Dose por comprimido/cápsula';
+      if (doseLabel) doseLabel.textContent = 'Dose por unidade';
       const quantityLabel = document.getElementById('unitsTaken')?.closest('.field')?.querySelector('label');
       if (quantityLabel) quantityLabel.textContent = 'Quantidade tomada';
       const doseField = document.getElementById('unitDoseValue')?.closest('.field');
