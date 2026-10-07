@@ -182,7 +182,8 @@
         text-align:left!important
       }
       #form input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
-      #form textarea,#form select{
+      #form textarea,#form select,
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{
         text-align:left!important
       }
       #form.rm-medication-form #doseMode button[data-dose-mode="perUnit"]{
