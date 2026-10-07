@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex,nofollow">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#f5f5f7">
+<title>Laboratório — Escala de humor</title>
+<style>
+:root{
+  color-scheme:light dark;
+  --bg:#f5f5f7;--surface:#fff;--surface2:#fbfbfd;--text:#111114;--secondary:#6e6e73;
+  --separator:rgba(60,60,67,.14);--track:rgba(255,255,255,.88);--accent:#7259D6;
+  --fill:#57D65A;--shadow:0 12px 30px rgba(0,0,0,.09);--soft:0 5px 18px rgba(0,0,0,.05)
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#111114;--surface:#1c1c1e;--surface2:#232326;--text:#f5f5f7;--secondary:#a1a1a6;
+  --separator:rgba(235,235,245,.14);--track:rgba(44,44,46,.92);
+  --shadow:0 12px 28px rgba(0,0,0,.28);--soft:0 5px 18px rgba(0,0,0,.18)
+}}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif}
+body{padding:calc(26px + env(safe-area-inset-top)) 14px calc(42px + env(safe-area-inset-bottom))}
+main{width:min(100%,700px);margin:auto}
+.eyebrow{margin:0 0 6px;color:var(--secondary);font-size:11px;font-weight:760;letter-spacing:.08em;text-transform:uppercase}
+h1{margin:0;font-size:30px;letter-spacing:-.03em}
+.intro{margin:10px 0 24px;color:var(--secondary);font-size:14px;line-height:1.5}
+.stack{display:grid;gap:18px}
+.panel{border:1px solid var(--separator);background:var(--surface);border-radius:26px;padding:18px 16px;box-shadow:var(--soft)}
+.head-row{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.panel h2{margin:0;font-size:18px}
+.sub{margin:5px 0 0;color:var(--secondary);font-size:12px;line-height:1.45}
+.mode-toggle{display:flex;align-items:center;gap:8px;background:var(--surface2);border:1px solid var(--separator);border-radius:999px;padding:5px 7px 5px 10px;font-size:11px;font-weight:750;color:var(--secondary);white-space:nowrap}
+.switch{appearance:none;width:36px;height:22px;border:0;border-radius:999px;background:rgba(127,127,127,.24);position:relative;margin:0;transition:.2s}
+.switch:after{content:"";position:absolute;width:18px;height:18px;left:2px;top:2px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.25);transition:.2s}
+.switch:checked{background:var(--accent)}
+.switch:checked:after{transform:translateX(14px)}
+.scale-wrap{margin-top:20px;display:grid;grid-template-columns:40px minmax(0,1fr);gap:8px;align-items:center}
+.zero,.scale button{appearance:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent;font:800 12px/1 -apple-system,BlinkMacSystemFont,"SF Pro Text",sans-serif}
+.zero{width:40px;height:40px;border-radius:50%;background:var(--track);color:var(--secondary);border:1px solid var(--separator);box-shadow:var(--shadow);transition:.18s transform,.18s background,.18s color,.18s box-shadow,.18s filter}
+.scale-shell{position:relative;height:40px;isolation:isolate}
+.glow{position:absolute;z-index:0;left:0;top:0;height:40px;width:0;border-radius:999px;background:var(--fill);filter:blur(10px);opacity:0;transition:width .28s cubic-bezier(.2,.8,.2,1),background .2s,opacity .2s}
+.ultra .glow{opacity:.68}
+.scale{position:absolute;z-index:1;inset:0;border-radius:999px;background:var(--track);border:1px solid var(--separator);overflow:hidden;box-shadow:var(--shadow);backdrop-filter:blur(24px) saturate(145%);-webkit-backdrop-filter:blur(24px) saturate(145%)}
+.fill{position:absolute;inset:0 auto 0 0;width:0;background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,0) 45%),var(--fill);border-radius:999px;transition:width .28s cubic-bezier(.2,.8,.2,1),background .2s}
+.scale-grid{position:relative;z-index:2;display:grid;grid-template-columns:repeat(10,minmax(0,1fr));height:100%}
+.scale button{min-width:0;background:transparent;color:var(--secondary);transition:.18s color,.18s transform,.18s text-shadow}
+.scale button.filled{color:rgba(255,255,255,.93)}
+.scale button.selected{color:#fff;transform:scale(1.08);text-shadow:0 1px 3px rgba(0,0,0,.26)}
+.zero.selected{background:var(--fill);color:#fff;transform:scale(1.05);box-shadow:0 0 0 2px color-mix(in srgb,var(--fill) 28%,transparent),var(--shadow)}
+.ultra .zero.selected{filter:drop-shadow(0 0 9px var(--fill)) drop-shadow(0 0 18px color-mix(in srgb,var(--fill) 60%,transparent))}
+.summary{margin-top:16px;min-height:44px}
+.summary strong{display:block;font-size:16px}
+.summary small{display:block;margin-top:4px;color:var(--secondary);font-size:12px;line-height:1.4}
+.palette-row{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:5px;margin-top:15px}
+.swatch{display:grid;gap:4px;justify-items:center;min-width:0}
+.swatch i{display:block;width:100%;aspect-ratio:1;border-radius:10px;box-shadow:var(--soft)}
+.swatch span{font-size:9px;font-weight:750;color:var(--secondary)}
+.preview-card{margin-top:16px;padding:15px;border:1px solid var(--separator);border-radius:22px;background:var(--surface2)}
+.record-topline{display:flex;align-items:center;gap:8px;min-width:0}
+.record-title{font-size:18px;font-weight:780;line-height:1.1}
+.record-mood{height:13px;min-width:13px;width:60px;max-width:112px;border-radius:999px;background:var(--fill);box-shadow:0 1px 0 rgba(255,255,255,.24) inset;transition:width .28s cubic-bezier(.2,.8,.2,1),background .2s,box-shadow .2s;position:relative;overflow:hidden}
+.record-mood:after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(255,255,255,.20),transparent 55%);pointer-events:none}
+.record-mood-number-inside{position:absolute;z-index:2;inset:0;display:grid;place-items:center;color:rgba(0,0,0,.48);font-size:9px;font-weight:680;line-height:1;user-select:none}
+.record-mood-number-outside{font-size:10px;font-weight:650;line-height:1;color:var(--secondary);opacity:.82;min-width:9px;text-align:center}
+[hidden]{display:none!important}
+.ultra .record-mood{box-shadow:0 0 9px color-mix(in srgb,var(--fill) 55%,transparent),0 1px 0 rgba(255,255,255,.25) inset}
+.record-meta{margin-top:8px;color:var(--secondary);font-size:11px}
+.record-text{margin:11px 0 0;font-size:14px;line-height:1.48}
+.legend{margin-top:13px;padding-top:12px;border-top:1px solid var(--separator);color:var(--secondary);font-size:11px;line-height:1.4}
+.examples{display:grid;gap:9px;margin-top:14px}
+.mini-card{padding:12px 13px;border:1px solid var(--separator);border-radius:17px;background:var(--surface)}
+.mini-title-row{display:flex;align-items:center;gap:7px}
+.mini-title{font-size:14px;font-weight:760}
+.mini-mood{height:10px;border-radius:999px;background:var(--example-color);width:var(--example-width);position:relative;display:grid;place-items:center}
+.mini-in{font-size:8px;font-weight:680;color:rgba(0,0,0,.48);line-height:1}
+.mini-out{font-size:9px;font-weight:650;color:var(--secondary);opacity:.82;line-height:1}
+.mini-meta{margin-top:5px;color:var(--secondary);font-size:10px}
+.footer-note{margin-top:14px;color:var(--secondary);font-size:12px;line-height:1.45}
+@media(max-width:430px){
+  .panel{padding-left:12px;padding-right:12px}.scale-wrap{grid-template-columns:36px minmax(0,1fr);gap:6px}
+  .zero{width:36px;height:36px}.scale-shell,.glow{height:36px}.palette-row{gap:4px}
+  .mode-toggle{padding-left:8px}.record-title{font-size:17px}
+}
+</style>
+</head>
+<body>
+<main>
+<p class="eyebrow">Registro Mental · Laboratório</p>
+<h1>Escala de humor</h1>
+<p class="intro">A barra principal foi preservada. Esta versão mantém o glow do modo Ultra e testa a nota numérica como informação secundária no cartão.</p>
+
+<div class="stack">
+<section class="panel" id="labPanel">
+  <div class="head-row">
+    <div><h2>Seleção do humor</h2><p class="sub">0 separado; 1–10 dentro da cápsula de progresso.</p></div>
+    <label class="mode-toggle">Modo Ultra <input class="switch" id="ultraToggle" type="checkbox" checked></label>
+  </div>
+
+  <div class="scale-wrap" role="group" aria-label="Estado emocional de zero a dez">
+    <button class="zero" type="button" data-mood="0">0</button>
+    <div class="scale-shell">
+      <div class="glow" id="glow"></div>
+      <div class="scale">
+        <div class="fill" id="fill"></div>
+        <div class="scale-grid">
+          <button type="button" data-mood="1">1</button><button type="button" data-mood="2">2</button><button type="button" data-mood="3">3</button><button type="button" data-mood="4">4</button><button type="button" data-mood="5">5</button><button type="button" data-mood="6">6</button><button type="button" data-mood="7">7</button><button type="button" data-mood="8">8</button><button type="button" data-mood="9">9</button><button type="button" data-mood="10">10</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary" id="summary"></div>
+
+  <div class="palette-row" aria-label="Paleta de humor">
+    <div class="swatch"><i style="background:#2A223A"></i><span>0</span></div>
+    <div class="swatch"><i style="background:#FF4B4B"></i><span>1</span></div>
+    <div class="swatch"><i style="background:#FF7A1A"></i><span>2</span></div>
+    <div class="swatch"><i style="background:#FF9F0A"></i><span>3</span></div>
+    <div class="swatch"><i style="background:#FFD60A"></i><span>4</span></div>
+    <div class="swatch"><i style="background:#FFE119"></i><span>5</span></div>
+    <div class="swatch"><i style="background:#BEEA2E"></i><span>6</span></div>
+    <div class="swatch"><i style="background:#57D65A"></i><span>7</span></div>
+    <div class="swatch"><i style="background:#31C46C"></i><span>8</span></div>
+    <div class="swatch"><i style="background:#20D6A3"></i><span>9</span></div>
+    <div class="swatch"><i style="background:#39E6D4"></i><span>10</span></div>
+  </div>
+</section>
+
+<section class="panel" id="previewPanel">
+  <h2>Pré-visualização do cartão do registro</h2>
+  <p class="sub">A cor e o comprimento continuam sendo a leitura principal. O número aparece discretamente para dar precisão.</p>
+
+  <div class="preview-card">
+    <div class="record-topline">
+      <div class="record-title">Anotação</div>
+      <div class="record-mood" id="recordMood" aria-label="Humor 7">
+        <span class="record-mood-number-inside" id="recordMoodInside">7</span>
+      </div>
+      <span class="record-mood-number-outside" id="recordMoodOutside" hidden>7</span>
+    </div>
+    <div class="record-meta">Hoje · 02:45</div>
+    <p class="record-text" id="recordText">Hoje me senti mais estável. Ainda cansado em alguns momentos, mas com disposição razoável e menos peso emocional.</p>
+    <div class="legend">Notas 0–3: o número fica do lado de fora para não aumentar artificialmente a cápsula. Notas 4–10: o número fica dentro da própria barra, pequeno e sem competir com o título.</div>
+  </div>
+
+  <div class="examples">
+    <div class="mini-card">
+      <div class="mini-title-row"><span class="mini-title">Anotação</span><span class="mini-mood" style="--example-color:#FF4B4B;--example-width:18px"></span><span class="mini-out">1</span></div>
+      <div class="mini-meta">Nota 1: cápsula mínima + número discreto ao lado.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title-row"><span class="mini-title">Anotação</span><span class="mini-mood" style="--example-color:#FFE119;--example-width:59px"><span class="mini-in">5</span></span></div>
+      <div class="mini-meta">Nota 5: número já cabe dentro da barra.</div>
+    </div>
+    <div class="mini-card">
+      <div class="mini-title-row"><span class="mini-title">Anotação</span><span class="mini-mood" style="--example-color:#20D6A3;--example-width:96px"><span class="mini-in">9</span></span></div>
+      <div class="mini-meta">Nota 9: barra longa com número central discreto.</div>
+    </div>
+  </div>
+
+  <p class="footer-note">O cartão acompanha a nota que você tocar na barra principal, para comparar em tempo real o comportamento do número dentro e fora da cápsula.</p>
+</section>
+</div>
+</main>
+
+<script>
+(()=>{
+const colors={0:'#2A223A',1:'#FF4B4B',2:'#FF7A1A',3:'#FF9F0A',4:'#FFD60A',5:'#FFE119',6:'#BEEA2E',7:'#57D65A',8:'#31C46C',9:'#20D6A3',10:'#39E6D4'};
+const labels={0:'Estado excepcionalmente ruim',1:'Muito ruim',2:'Muito ruim',3:'Ruim',4:'Abaixo do normal',5:'Mediano',6:'Razoável',7:'Bem',8:'Muito bem',9:'Ótimo',10:'Excelente'};
+const texts={0:'Dia muito pesado emocionalmente, com sensação de esgotamento e pouca energia.',1:'Humor muito baixo, com bastante peso emocional e pouca disposição.',2:'Ainda bem difícil, mas um pouco menos intenso do que o pior ponto.',3:'Dia ruim, com incômodo emocional presente na maior parte do tempo.',4:'Abaixo do normal, mas já com alguns momentos de respiro.',5:'Estado mediano, sem estar bem, mas também sem grande queda.',6:'Razoável. Consegui tocar o dia com alguma estabilidade.',7:'Hoje me senti mais estável. Ainda cansado em alguns momentos, mas com disposição razoável e menos peso emocional.',8:'Me senti bem e mais leve, com boa presença e energia ao longo do dia.',9:'Humor alto e consistente, com sensação clara de bem-estar.',10:'Um dia excepcionalmente bom, leve e raro, com sensação de plenitude.'};
+
+const panel=document.getElementById('labPanel');
+const previewPanel=document.getElementById('previewPanel');
+const ultra=document.getElementById('ultraToggle');
+const fill=document.getElementById('fill');
+const glow=document.getElementById('glow');
+const summary=document.getElementById('summary');
+const recordMood=document.getElementById('recordMood');
+const inside=document.getElementById('recordMoodInside');
+const outside=document.getElementById('recordMoodOutside');
+const recordText=document.getElementById('recordText');
+const buttons=[...document.querySelectorAll('[data-mood]')];
+
+function cardWidth(v){if(v===0)return 13;return 12+v*9.4}
+function setUltra(){panel.classList.toggle('ultra',ultra.checked);previewPanel.classList.toggle('ultra',ultra.checked)}
+ultra.addEventListener('change',setUltra);setUltra();
+
+function select(v){
+  const color=colors[v];
+  document.documentElement.style.setProperty('--fill',color);
+  buttons.forEach(b=>{
+    const n=Number(b.dataset.mood),on=n===v;
+    b.classList.toggle('selected',on);
+    b.classList.toggle('filled',v>0&&n>0&&n<=v);
+    b.setAttribute('aria-pressed',String(on));
+  });
+
+  const p=v===0?0:v*10;
+  fill.style.width=p+'%';
+  glow.style.width=p+'%';
+  summary.innerHTML='<strong>Humor selecionado: '+v+'</strong><small>'+labels[v]+' · no modo Ultra, a área preenchida recebe um glow da própria cor.</small>';
+
+  recordMood.style.width=cardWidth(v)+'px';
+  recordMood.style.background=color;
+  recordMood.setAttribute('aria-label','Humor '+v);
+  inside.textContent=v;
+  outside.textContent=v;
+
+  const numberOutside=v<=3;
+  inside.hidden=numberOutside;
+  outside.hidden=!numberOutside;
+
+  recordText.textContent=texts[v];
+  try{navigator.vibrate?.(10)}catch(_){}
+}
+buttons.forEach(b=>b.addEventListener('click',()=>select(Number(b.dataset.mood))));
+select(7);
+})();
+</script>
+</body>
+</html>

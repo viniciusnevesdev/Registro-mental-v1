@@ -72,6 +72,58 @@
       #doseFields.rm-official-dose-compact input,#doseFields.rm-official-dose-compact select{
         width:100%!important;min-width:0!important;padding-left:11px!important;padding-right:11px!important
       }
+      /* Sensações: botão compacto, sem título auxiliar nem marcador nativo. */
+      #rmMedicationEmotionField>label{display:none!important}
+      #rmMedicationEmotionField .emotion-advanced{
+        padding:0!important
+      }
+      #rmMedicationEmotionField .emotion-advanced>summary{
+        list-style:none!important;display:flex!important;align-items:center!important;
+        min-height:36px!important;height:36px!important;padding:0 14px!important;
+        gap:8px!important
+      }
+      #rmMedicationEmotionField .emotion-advanced>summary::-webkit-details-marker{display:none!important}
+      #rmMedicationEmotionField .emotion-advanced>summary::marker{content:''!important}
+      #rmMedicationEmotionField .rm-accordion-heading{
+        display:flex!important;align-items:center!important;gap:8px!important;
+        line-height:1!important
+      }
+      #rmMedicationEmotionField .rm-accordion-heading>svg{
+        width:18px!important;height:11px!important;flex:0 0 18px!important;
+        display:block!important
+      }
+      /* Dose por unidade: três controles na mesma linha. */
+      #doseFields.rm-official-dose-compact{
+        grid-template-columns:minmax(0,1.48fr) minmax(0,.88fr) minmax(0,.82fr)!important;
+        gap:8px!important;align-items:end!important
+      }
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{grid-column:1!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-quantity{grid-column:2!important}
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview{
+        grid-column:3!important;grid-row:1!important;align-self:end!important;
+        min-height:44px!important;padding:7px 9px!important;border-radius:15px!important;
+        display:grid!important;align-content:center!important;gap:1px!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview span{
+        font-size:9px!important;line-height:1.05!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview strong{
+        font-size:17px!important;line-height:1.05!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-quantity .rm-dose-stepper{
+        display:grid!important;grid-template-columns:31px minmax(0,1fr) 31px!important;
+        height:44px!important;overflow:hidden!important;border:1px solid var(--separator)!important;
+        border-radius:14px!important;background:var(--field)!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-stepper button{
+        border:0!important;background:transparent!important;color:var(--text)!important;
+        font:inherit!important;font-size:20px!important;line-height:1!important;padding:0!important
+      }
+      #doseFields.rm-official-dose-compact .rm-dose-stepper input{
+        width:100%!important;min-width:0!important;height:100%!important;border:0!important;
+        border-radius:0!important;background:transparent!important;box-shadow:none!important;
+        padding:0!important;text-align:center!important
+      }
       #doseMode.rm-official-dose-mode{
         min-height:44px!important;padding:3px!important;border:1px solid rgba(142,142,147,.28)!important;
         border-radius:14px!important;background:rgba(142,142,147,.08)!important;box-shadow:none!important
@@ -82,13 +134,69 @@
       }
       #doseMode.rm-official-dose-mode button{min-height:36px!important;padding:7px 8px!important;font-size:12px!important}
 
-      /* Atualização integrada ao cartão de Dados. */
+      /* Atualização isolada das ações de backup. */
+      .rm-official-update-card{margin:12px 0!important}
       .rm-official-update-row{
         display:grid!important;grid-template-columns:auto minmax(0,1fr) auto!important;
-        align-items:center!important;gap:11px!important;padding:12px 14px!important
+        align-items:center!important;gap:11px!important;padding:13px 14px!important
       }
-      .rm-official-update-row .rm-update-button{min-height:34px!important;padding:7px 11px!important;white-space:nowrap}
+      .rm-official-update-row .rm-update-row-icon{color:#34C759!important}
+      .rm-official-update-row .rm-update-row-icon svg{width:23px!important;height:19px!important;display:block!important}
+      .rm-official-update-row .rm-update-button{
+        min-height:36px!important;padding:7px 12px!important;white-space:nowrap;
+        border-radius:999px!important;display:inline-flex!important;align-items:center!important;
+        justify-content:center!important;gap:7px!important
+      }
+      .rm-official-update-row .rm-update-action-icon{
+        width:17px!important;height:14px!important;display:block!important;color:#34C759!important
+      }
+      #rmOfficialUndoImportBtn .settings-row-icon{color:var(--danger,#FF453A)!important}
+      #rmOfficialUndoImportBtn .settings-row-icon svg{width:21px!important;height:21px!important;display:block!important}
+      #rmOfficialUndoImportBtn .settings-row-icon svg *{fill:currentColor!important;stroke:none!important}
 
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit{position:relative!important;display:block!important;min-width:0!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#unitDoseValue{width:100%!important;min-width:0!important;padding-right:68px!important}
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{position:absolute!important;right:5px!important;bottom:4px!important;width:58px!important;height:38px!important;min-width:0!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 3px!important;text-align:right!important;appearance:none!important}
+      #doseFields.rm-official-dose-compact .rm-dose-total-preview{grid-column:3!important;grid-row:1!important}
+      /* Formulário de medicamento: espaçamento, centralização e ações-pílula. */
+      .rm-medication-sheet::before{content:none!important;display:none!important}
+      .rm-medication-sheet .sheet-drag-handle,.rm-medication-sheet .sheet-handle,.rm-medication-sheet .drag-handle,.rm-medication-sheet .grabber{display:none!important}
+      .rm-medication-sheet .sheet-header{
+        position:relative!important;display:flex!important;justify-content:center!important;
+        align-items:center!important;min-height:56px!important;padding:16px 18px!important
+      }
+      .rm-medication-sheet .sheet-header h2,.rm-medication-sheet #sheetTitle{
+        width:100%!important;margin:0!important;text-align:center!important
+      }
+      .rm-medication-sheet .sheet-header .sheet-close{
+        position:absolute!important;left:18px!important;top:50%!important;transform:translateY(-50%)!important
+      }
+      #form.rm-medication-form{display:grid!important;gap:12px!important}
+      #form.rm-medication-form>.field,#form.rm-medication-form>#doseFields,
+      #form.rm-medication-form>#rmMedicationEmotionField,#form.rm-medication-form>.med-suggestion-card,
+      #form.rm-medication-form>.form-actions{margin:0!important}
+      #form.rm-medication-form .field>label,#form.rm-medication-form #doseFields label{
+        width:100%!important;justify-content:center!important;text-align:center!important
+      }
+      #form.rm-medication-form input,#form.rm-medication-form textarea{
+        text-align:left!important
+      }
+      #form input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      #form textarea,#form select,
+      #doseFields.rm-official-dose-compact .field.rm-dose-with-unit>#doseUnit{
+        text-align:left!important
+      }
+      #form.rm-medication-form #doseMode button[data-dose-mode="perUnit"]{
+        white-space:nowrap!important;font-size:11.5px!important
+      }
+      #form.rm-medication-form #rmMedicationEmotionField .emotion-advanced>summary,
+      #form.rm-medication-form #rmMedicationEmotionField .rm-accordion-heading{
+        justify-content:center!important;text-align:center!important
+      }
+      #form.rm-medication-form #medNote{min-height:44px!important}
+      #form.rm-medication-form .form-actions{gap:12px!important;margin-top:4px!important}
+      #form.rm-medication-form .form-actions>button{border-radius:999px!important}
+      #form.rm-medication-form #recordTime{text-align:left!important}
       @media(max-width:370px){
         #doseFields.rm-official-dose-compact{gap:7px!important}
         #doseFields.rm-official-dose-compact input,#doseFields.rm-official-dose-compact select{
@@ -187,20 +295,38 @@
 
       const updateButton = document.getElementById('rmForceUpdateBtn');
       const dataCard = data?.querySelector('.settings-card');
-      if (updateButton && dataCard && !document.getElementById('rmOfficialUpdateRow')) {
-        const previousHandler = updateButton.onclick;
-        const row = document.createElement('div');
+      if (updateButton && data && dataCard) {
+        const refreshIcon = '<svg class="rm-update-action-icon" viewBox="0 0 24.861 20.3672" aria-hidden="true" focusable="false"><path d="M23.8133 8.76562h-4.5469c-.6328 0-.8125.4375-.4531.9375l2.2187 3.1641c.2891.4219.7188.4297 1.0157 0l2.2187-3.1563c.3594-.5078.1875-.9453-.4531-.9453ZM12.2274 1.46094c4.8203 0 8.7187 3.89844 8.7187 8.71876 0 .3906.3281.7187.7344.7187.3906 0 .7109-.3203.7187-.7109C22.3914 4.55469 17.8445 0 12.2274 0 9.23517 0 6.50079 1.30469 4.63361 3.41406c-.35157.38282-.23438.88282.08593 1.10938.28125.21094.65625.21875 1.00782-.15625 1.60937-1.80469 3.9375-2.90625 6.5-2.90625ZM.641418 11.5859h4.546872c.63282 0 .80469-.4375.45313-.9375L3.42267 7.48438c-.28906-.41406-.71875-.42188-1.01563 0L.188293 10.6406c-.367188.5078-.1875.9453.453125.9453ZM12.2274 18.8984c-4.82036 0-8.71879-3.8984-8.71879-8.7187 0-.3985-.32813-.7266-.73438-.7266-.39062 0-.71094.3203-.71875.7187.00781 5.6328 4.55469 10.1797 10.17192 10.1797 2.9921 0 5.7265-1.3047 7.5937-3.4062.3516-.3907.2344-.8829-.0859-1.1172-.2813-.2031-.6563-.2188-1.0078.164 1.6093 1.7969 3.9375 2.9063 6.5 2.9063Z" fill="currentColor" fill-opacity=".85"/></svg>';
+        const row = document.getElementById('rmOfficialUpdateRow') || document.createElement('div');
         row.id = 'rmOfficialUpdateRow';
         row.className = 'settings-row rm-official-update-row';
-        row.innerHTML = `<span class="settings-row-icon" data-icon="clock"></span><span><strong>Atualizar aplicativo</strong><small>Busca a versão mais recente sem apagar seus dados</small></span>`;
-        updateButton.closest('.rm-update-row')?.remove();
-        row.appendChild(updateButton);
-        updateButton.onclick = previousHandler;
-        const separator = document.createElement('div');
-        separator.className = 'setting-separator inset';
-        dataCard.prepend(separator);
-        dataCard.prepend(row);
-        try { if (typeof hydrateIcons === 'function') hydrateIcons(row); } catch (_) {}
+        if (!row.querySelector('strong')) row.innerHTML = `<span class="settings-row-icon rm-update-row-icon"></span><span><strong>Atualizar aplicativo</strong><small>Busca a versão mais recente sem apagar seus dados</small></span>`;
+        const rowIcon = row.querySelector('.settings-row-icon');
+        if (rowIcon) { rowIcon.classList.add('rm-update-row-icon'); rowIcon.removeAttribute('data-icon'); rowIcon.innerHTML = refreshIcon; }
+        if (!updateButton.parentElement?.isSameNode(row)) {
+          const previousHandler = updateButton.onclick;
+          updateButton.closest('.rm-update-row')?.remove();
+          row.appendChild(updateButton);
+          updateButton.onclick = previousHandler;
+        }
+        updateButton.classList.add('rm-official-update-button');
+        updateButton.innerHTML = `${refreshIcon}<span>Buscar agora</span>`;
+        let updateCard = document.getElementById('rmOfficialUpdateCard');
+        if (!updateCard) {
+          updateCard = document.createElement('div');
+          updateCard.id = 'rmOfficialUpdateCard';
+          updateCard.className = 'settings-card list-card rm-official-update-card';
+          (data.querySelector('#backupWarning') || data.querySelector(':scope > h2'))?.insertAdjacentElement('afterend', updateCard);
+        }
+        if (!row.parentElement?.isSameNode(updateCard)) updateCard.appendChild(row);
+        if (dataCard.firstElementChild?.classList.contains('setting-separator')) dataCard.firstElementChild.remove();
+      }
+
+      const undoButton = document.getElementById('rmOfficialUndoImportBtn');
+      if (undoButton) {
+        const undoIcon = '<svg viewBox="0 0 19.3516 18.5547" aria-hidden="true" focusable="false"><path d="M0 6.72656c0 .21094.078125.40625.25.57032l5.98438 5.90622c.14843.1485.36718.2344.55468.2344.45313 0 .75-.3125.75-.75 0-.2187-.07031-.3906-.20312-.5234L4.25 9.13281 1.50781 6.72656 4.25 4.32031 7.33594 1.28906c.13281-.13281.20312-.30468.20312-.52343 0-.4375-.29687-.75-.75-.75-.1875 0-.40625.08594-.55468.23438L.25 6.15625C.078125 6.32031 0 6.51562 0 6.72656Zm8.74219 11.07034c0 .414 0 .7578.46875.7578h2.60937c4.3125 0 6.8125-2.5078 6.8125-6.2656 0-3.75-2.5547-6.3203-6.9375-6.3203H4.60938l-3.14844.1172c-.35938.0156-.64062.2891-.64062.6406 0 .3516.28124.625.64062.6406l3.14844.1172h7.50781c3.41406 0 5.3125 1.9297 5.3125 4.7266 0 2.7969-1.8984 4.8281-5.3125 4.8281H9.51562c-.46875 0-.77343.3359-.77343.7578Z" fill="currentColor" fill-opacity=".85"/></svg>';
+        const icon = undoButton.querySelector('.settings-row-icon');
+        if (icon) { icon.removeAttribute('data-icon'); icon.innerHTML = undoIcon; }
       }
     }
 
@@ -229,26 +355,81 @@
     }
   }
 
-  function removeMedicationQuantityField() {
-    const quantity = document.getElementById('unitsTaken');
-    if (!quantity || quantity.type === 'hidden') return;
-    const field = quantity.closest('.field');
-    const hidden = document.createElement('input');
-    hidden.type = 'hidden'; hidden.id = 'unitsTaken'; hidden.value = '1';
-    field?.replaceWith(hidden);
-    const doseLabel = document.querySelector('label[for="unitDoseValue"]') || document.getElementById('unitDoseValue')?.closest('.field')?.querySelector('label');
-    if (doseLabel) doseLabel.textContent = 'Dose';
-    document.querySelector('#doseFields .dose-result')?.remove();
-  }
-
   function refineMedicationSheet() {
+    const form = document.getElementById('form');
+    const sheet = document.getElementById('sheetTitle')?.closest('.sheet');
+    form?.classList.add('rm-medication-form');
+    sheet?.classList.add('rm-medication-sheet');
+    document.querySelector('#rmMedicationEmotionField>label')?.remove();
+
+    const medication = document.getElementById('medName');
+    const medicationField = medication?.closest('.field');
+    medicationField?.querySelector('label')?.remove();
+    if (medication) {
+      medication.placeholder = 'Medicamento';
+      medication.setAttribute('aria-label','Medicamento');
+    }
+
     const note = document.getElementById('medNote');
-    if (note) note.placeholder = 'Motivo desta administração, como você estava se sentindo ou algo fora do comum…';
-    document.getElementById('doseMode')?.classList.add('rm-official-dose-mode');
+    if (note) note.placeholder = 'Observação opcional';
+
+    const recordTime = document.getElementById('recordTime');
+    recordTime?.closest('.field')?.querySelector('label')?.remove();
+
+    const doseMode = document.getElementById('doseMode');
+    doseMode?.classList.add('rm-official-dose-mode');
+    const perUnitButton = doseMode?.querySelector('[data-dose-mode="perUnit"]');
+    if (perUnitButton) perUnitButton.textContent = 'Comprimidos / Cápsulas';
     const doseFields = document.getElementById('doseFields');
+    doseFields?.classList.toggle('rm-official-dose-compact', Boolean(document.getElementById('unitsTaken')));
     if (doseFields && document.getElementById('unitsTaken')) {
-      doseFields.classList.add('rm-official-dose-compact');
-      removeMedicationQuantityField();
+      const doseLabel = document.getElementById('unitDoseValue')?.closest('.field')?.querySelector('label');
+      if (doseLabel) doseLabel.textContent = 'Dose por unidade';
+      const quantityLabel = document.getElementById('unitsTaken')?.closest('.field')?.querySelector('label');
+      if (quantityLabel) quantityLabel.textContent = 'Quantidade tomada';
+      const doseField = document.getElementById('unitDoseValue')?.closest('.field');
+      const unitField = document.getElementById('doseUnit')?.closest('.field');
+      const unitSelect = document.getElementById('doseUnit');
+      if (doseField && unitField && unitSelect && doseField.dataset.rmDoseUnitMerged !== '1') {
+        unitField.querySelector('label')?.remove();
+        doseField.appendChild(unitSelect);
+        unitField.remove();
+        doseField.dataset.rmDoseUnitMerged = '1';
+        doseField.classList.add('rm-dose-with-unit');
+      }
+      const preview = [...doseFields.children].find(node => normalize(node.textContent).includes('dose total calculada'));
+      preview?.classList.add('rm-dose-total-preview');
+
+      const quantityField = document.getElementById('unitsTaken')?.closest('.field');
+      const quantityInput = document.getElementById('unitsTaken');
+      if (quantityField && quantityInput) {
+        quantityLabel.textContent = 'Quantidade';
+        quantityField.classList.add('rm-dose-quantity');
+        if (!quantityField.querySelector('.rm-dose-stepper')) {
+          const stepper = document.createElement('div');
+          stepper.className = 'rm-dose-stepper';
+          const decrease = document.createElement('button');
+          decrease.type = 'button';
+          decrease.className = 'rm-dose-stepper-button';
+          decrease.setAttribute('aria-label','Diminuir quantidade');
+          decrease.textContent = '−';
+          const increase = document.createElement('button');
+          increase.type = 'button';
+          increase.className = 'rm-dose-stepper-button';
+          increase.setAttribute('aria-label','Aumentar quantidade');
+          increase.textContent = '+';
+          quantityInput.replaceWith(stepper);
+          stepper.append(decrease, quantityInput, increase);
+          const changeQuantity = delta => {
+            const current = Number(String(quantityInput.value).replace(',','.'));
+            const next = Math.max(1, (Number.isFinite(current) ? current : 1) + delta);
+            quantityInput.value = Number.isInteger(next) ? String(next) : String(next).replace('.',',');
+            quantityInput.dispatchEvent(new Event('input',{bubbles:true}));
+          };
+          decrease.addEventListener('click',()=>changeQuantity(-1));
+          increase.addEventListener('click',()=>changeQuantity(1));
+        }
+      }
     }
   }
 
@@ -257,7 +438,10 @@
     if (typeof original !== 'function') return false;
     if (original.__rmOfficialNoteHeaderRefined) return true;
     const wrapped = function(event, ...rest) {
-      const html = original.call(this, event, ...rest);
+
+      
+/* Remove rótulos auxiliares da tela de registro de medicamento. */
+(()=>{const apply=()=>{const doseLabel=document.getElementById('doseMode')?.closest('.field')?.querySelector('label');if(doseLabel)doseLabel.remove();const emotionHelper=document.querySelector('#rmMedicationEmotionField .helper');if(emotionHelper)emotionHelper.remove();};setInterval(apply,250);})();const html = original.call(this, event, ...rest);
       if (!event || event.type !== 'note' || event.moodScore == null) return html;
       const template = document.createElement('template');
       template.innerHTML = String(html).trim();
@@ -349,96 +533,71 @@
 })();
 
 
-/* RM_SLEEP_DURATION_SCORE_V1 */
+/* Beta — visualização de anotações e ações circulares sincronizadas. */
 (() => {
-  if (window.__RM_SLEEP_DURATION_SCORE_V1) return;
-  window.__RM_SLEEP_DURATION_SCORE_V1 = true;
+  'use strict';
+  const editIcon='<svg viewBox="0 0 23.9375 23.6221" aria-hidden="true" focusable="false"><path d="M17.5156 3.43031L16.2334 4.71341L7.1133 4.71341C5.33986 4.71341 4.33986 5.71341 4.33986 7.48685L4.33986 16.7915C4.33986 18.5728 5.33986 19.5728 7.1133 19.5728L16.418 19.5728C18.1914 19.5728 19.1914 18.5728 19.1914 16.7915L19.1914 7.73493L20.4838 6.44073C20.5449 6.76632 20.5742 7.11882 20.5742 7.49466L20.5742 16.7915C20.5742 19.4634 19.0899 20.9556 16.418 20.9556L7.1133 20.9556C4.44142 20.9556 2.95705 19.4634 2.95705 16.7915L2.95705 7.49466C2.95705 4.82279 4.44142 3.3306 7.1133 3.3306L16.418 3.3306C16.811 3.3306 17.1782 3.36288 17.5156 3.43031Z" fill="currentColor" fill-opacity=".85"/><path d="M9.83986 14.3306L11.6524 13.5259L21.0508 4.12748L19.8086 2.8931L10.418 12.2915L9.56642 14.0494C9.4883 14.1978 9.6758 14.4009 9.83986 14.3306ZM21.7617 3.43216L22.4414 2.72904C22.7695 2.3931 22.7774 1.96341 22.457 1.6431L22.2617 1.44779C21.9649 1.15091 21.5195 1.18998 21.207 1.50248L20.5195 2.18216Z" fill="currentColor" fill-opacity=".85"/></svg>';
+  const deleteIcon='<svg viewBox="0 0 19.7734 24.0234" aria-hidden="true" focusable="false"><path d="M6.67969 19.1484C7.01562 19.1484 7.23438 18.9297 7.22656 18.625L6.90625 7.60156C6.89844 7.29688 6.67188 7.09375 6.35938 7.09375C6.02344 7.09375 5.80469 7.30469 5.8125 7.61719L6.13281 18.625C6.14062 18.9375 6.35938 19.1484 6.67969 19.1484ZM9.6875 19.1484C10.0156 19.1484 10.25 18.9297 10.25 18.625L10.25 7.61719C10.25 7.30469 10.0156 7.09375 9.6875 7.09375C9.35938 7.09375 9.125 7.30469 9.125 7.61719L9.125 18.625C9.125 18.9297 9.35938 19.1484 9.6875 19.1484ZM12.6875 19.1484C13.0078 19.1484 13.2266 18.9453 13.2344 18.6328L13.5547 7.61719C13.5625 7.30469 13.3438 7.10156 13.0156 7.10156C12.7031 7.10156 12.4766 7.29688 12.4688 7.60938L12.1484 18.625C12.1406 18.9297 12.3516 19.1484 12.6875 19.1484ZM5.33594 4.46875L6.70312 4.46875L6.70312 2.32031C6.70312 1.69531 7.13281 1.28906 7.80469 1.28906L11.5469 1.28906C12.2188 1.28906 12.6484 1.69531 12.6484 2.32031L12.6484 4.46875L14.0156 4.46875L14.0156 2.24219C14.0156.851562 13.1172 0 11.625 0L7.72656 0C6.24219 0 5.33594.851562 5.33594 2.24219ZM.648438 5.14844L18.7188 5.14844C19.0781 5.14844 19.3672 4.85156 19.3672 4.5C19.3672 4.14062 19.0781 3.84375 18.7188 3.84375L.648438 3.84375C.304688 3.84375 0 4.14844 0 4.5C0 4.85938.304688 5.14844.648438 5.14844ZM5.10156 22.3125L14.2812 22.3125C15.625 22.3125 16.5703 21.3984 16.6406 20.0547L17.3828 4.96875L15.9844 4.96875L15.2812 19.9141C15.25 20.5469 14.7734 21.0078 14.1484 21.0078L5.21094 21.0078C4.60156 21.0078 4.11719 20.5391 4.08594 19.9141L3.34375 4.97656L1.99219 4.97656L2.73438 20.0625C2.80469 21.4062 3.73438 22.3125 5.10156 22.3125Z" fill="currentColor" fill-opacity=".85"/></svg>';
+  function installStyles(){if(document.getElementById('rm-note-viewer-ui'))return;const s=document.createElement('style');s.id='rm-note-viewer-ui';s.textContent='.rm-note-detail-view{display:grid;gap:12px}.rm-note-view-mood{padding:15px 13px 13px;border:1px solid color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 38%,var(--separator));border-radius:19px;background:color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 10%,var(--surface));box-shadow:0 7px 21px color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 14%,transparent)}.rm-note-view-mood-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:0 0 11px}.rm-note-view-mood-head strong{font-size:15px;line-height:1.1;color:var(--text)}.rm-note-view-mood-head b{font-size:25px;line-height:1;font-weight:850;color:var(--rm-note-mood-color,#7657ff);letter-spacing:-.04em}.rm-note-view-mood-head b small{font-size:12px;letter-spacing:0;color:var(--secondary);font-weight:700} .rm-note-view-bar{position:relative;height:18px;border-radius:999px;background:color-mix(in srgb,var(--secondary) 18%,transparent);overflow:visible;box-shadow:inset 0 1px 2px rgba(0,0,0,.12)}.rm-note-view-bar span{display:block;height:100%;border-radius:inherit;background:var(--rm-note-mood-color,#7657ff);box-shadow:0 0 16px color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 82%,transparent);transition:width .25s ease}.rm-note-view-bar i{position:absolute;top:50%;width:34px;height:34px;border-radius:50%;display:grid;place-items:center;transform:translate(-50%,-50%);font-style:normal;font-size:13px;font-weight:850;color:#fff;background:var(--rm-note-mood-color,#7657ff);box-shadow:0 0 18px color-mix(in srgb,var(--rm-note-mood-color,#7657ff) 90%,transparent)}.rm-note-view-caption{display:flex;justify-content:space-between;gap:8px;margin-top:8px;color:var(--secondary);font-size:10px;font-weight:650}.rm-note-view-date{padding:8px 3px 1px;text-align:center;color:var(--secondary);font-size:15.5px;line-height:1.25;font-weight:740}.rm-note-detail-view .rm-v28-detail-card{margin:0}.rm-note-detail-view .rm-v28-detail-card.wide{grid-column:auto}.form-actions:has(#viewerEditBtn),.form-actions:has(#editMedBtn),.sheet-options:has(#editEventBtn){display:flex!important;align-items:center!important;justify-content:space-between!important;gap:12px!important;margin-top:14px!important}.rm-unified-card-action{width:52px!important;height:52px!important;min-width:52px!important;min-height:52px!important;flex:0 0 52px!important;padding:0!important;border-radius:50%!important;display:inline-grid!important;place-items:center!important;line-height:1!important}.rm-unified-card-action svg{display:block!important;width:24px!important;height:24px!important;overflow:visible!important}.rm-unified-card-action--delete{margin-right:auto!important}.rm-unified-card-action--edit{margin-left:auto!important}.rm-unified-card-action:active{transform:scale(.93)!important}@media(max-width:370px){.rm-note-view-scale{gap:3px}.rm-note-view-score{height:28px;font-size:11px}.rm-note-view-mood{padding:13px 10px 11px}}';document.head.appendChild(s)}
+  function applyActionIcons(root=document){[['viewerEditBtn','edit','Editar registro',editIcon],['editEventBtn','edit','Editar registro',editIcon],['editMedBtn','edit','Editar medicamento',editIcon],['viewerDeleteBtn','delete','Excluir registro',deleteIcon],['deleteBtn','delete','Excluir registro',deleteIcon],['deleteMedBtn','delete','Excluir medicamento',deleteIcon]].forEach(d=>{const b=root.getElementById?root.getElementById(d[0]):root.querySelector('#'+d[0]);if(!b||b.dataset.rmUnifiedAction===d[1])return;b.dataset.rmUnifiedAction=d[1];b.classList.add('rm-unified-card-action','rm-unified-card-action--'+d[1]);b.setAttribute('aria-label',d[2]);b.title=d[2];b.innerHTML=d[3]})}
+  /* A visualização de nota é instalada ao final deste arquivo, após a Mood Bar. */
+  function installNoteViewer(){}
+  function apply(){installStyles();installNoteViewer();applyActionIcons(document)}
+  apply();new MutationObserver(()=>applyActionIcons(document)).observe(document.documentElement,{childList:true,subtree:true});document.addEventListener('click',()=>setTimeout(applyActionIcons,0),{passive:true});window.addEventListener('registro:release-ready',apply);
+})();
 
-  const kindOf = e => (e?.sleepKind === 'nap' || e?.sleepType === 'nap' || e?.isNap === true) ? 'nap' : 'main';
-  const score = h => {
-    h=Number(h); if(!Number.isFinite(h)||h<=0)return null;
-    if(h<2)return{n:1,t:'Extremamente curto',l:'alert'};
-    if(h<3)return{n:2,t:'Muito curto',l:'alert'};
-    if(h<4)return{n:3,t:'Muito curto',l:'alert'};
-    if(h<5)return{n:4,t:'Insuficiente',l:'caution'};
-    if(h<6)return{n:5,t:'Abaixo do ideal',l:'caution'};
-    if(h<7)return{n:7,t:'Quase adequado',l:'near'};
-    if(h<=9)return{n:10,t:'Ideal',l:'ideal'};
-    if(h<=10)return{n:9,t:'Duração longa',l:'near'};
-    if(h<=11)return{n:8,t:'Sono prolongado',l:'near'};
-    if(h<=12)return{n:7,t:'Muito prolongado',l:'caution'};
-    if(h<=13)return{n:6,t:'Duração incomum',l:'caution'};
-    return{n:5,t:'Duração muito longa',l:'alert'};
+(()=>{const v='1.2.6';const set=()=>{for(const id of ['topVersion','versionLabel']){const e=document.getElementById(id);if(e)e.textContent=id==='topVersion'?'v'+v:v}};set();setTimeout(set,500);setTimeout(set,1800)})();
+
+/* Beta — detalhe de anotação alinhado à Mood Bar usada na criação. */
+(() => {
+  'use strict';
+
+  function hasMood(score) {
+    return score !== null && score !== undefined && score !== '' && Number.isFinite(Number(score));
+  }
+
+  function readOnlyMoodBar(score) {
+    if (!hasMood(score) || typeof window.emotionMoodSelectorHTML !== 'function') return '';
+    return `<section class="rm-note-readonly-mood" aria-label="Humor registrado: ${Number(score)} de 10">${window.emotionMoodSelectorHTML(score)
+      .replace(/<button type="button" class="tiny-clear" id="clearMoodScore">[\s\S]*?<\/button>/, '')
+      .replace(/<button /g, '<button tabindex="-1" aria-disabled="true" ')}</section>`;
+  }
+
+  function compactMoodIndicator(score) {
+    if (!hasMood(score) || typeof window.emotionMoodSelectorHTML !== 'function') return '';
+    const value = Math.max(0, Math.min(10, Math.round(Number(score))));
+    const markup = window.emotionMoodSelectorHTML(value);
+    const color = markup.match(/--rm-mood-v2-color:([^;"\s]+)/)?.[1] || 'var(--accent)';
+    const width = Math.max(26, Math.round(16 + value * 9.4));
+    return `<div class="rm-note-detail-score" role="img" aria-label="Humor ${value} de 10" style="--rm-note-detail-mood:${color};--rm-note-detail-width:${width}px"><span>${value}</span></div>`;
+  }
+
+  const previousNoteViewer = window.openEventViewer;
+  window.openEventViewer = async function(id) {
+    const event = (await allEvents()).find(item => item.id === id);
+    if (!event || event.type !== 'note') return previousNoteViewer.apply(this, arguments);
+
+    const medications = await allMedications();
+    const details = [];
+    if (event.text && typeof rmV28DetailCard === 'function') details.push(rmV28DetailCard('Anotação', event.text, {wide:true}));
+    const mentionIds = Array.isArray(event.medicationMentions) ? [...new Set(event.medicationMentions.filter(Boolean))] : [];
+    if (mentionIds.length && typeof rmV28DetailCard === 'function') {
+      const medicationsById = new Map(medications.map(medication => [medication.id, medication]));
+      const chips = mentionIds.map(id => {
+        const medication = medicationsById.get(id);
+        const label = medication ? medicationDisplay(medication) : 'Medicamento não disponível';
+        return `<span class="rm-detail-mention">${esc(label)}</span>`;
+      }).join('');
+      details.push(rmV28DetailCard('Medicamentos mencionados', `<div class="rm-detail-mentions">${chips}</div>`, {wide:true, html:true}));
+    }
+    for (const [key, value] of Object.entries(event.emotionScores || {})) {
+      const dimension = typeof emotionDimensions === 'function' ? emotionDimensions() : [];
+      const label = event.emotionLabels?.[key] || dimension.find(item => item.id === key)?.label || key;
+      if (typeof rmV28DetailCard === 'function') details.push(rmV28DetailCard(label, `${value} de 4`));
+    }
+    const buttons = typeof rmV28DetailButtons === 'function' ? rmV28DetailButtons() : '<div class="form-actions"><button type="button" class="secondary-button danger-row" id="viewerDeleteBtn">Excluir</button><button type="button" class="primary-button" id="viewerEditBtn">Editar</button></div>';
+    const scoreOnly = !event.text && hasMood(event.moodScore) && !event.tag && !mentionIds.length && !Object.keys(event.emotionScores || {}).length;
+    openBackdrop('Anotação', `<div class="rm-note-detail-view${scoreOnly ? ' rm-note-detail-score-only' : ''}">${scoreOnly ? compactMoodIndicator(event.moodScore) : readOnlyMoodBar(event.moodScore)}<div class="rm-v28-detail-grid">${details.join('')}</div><time class="rm-note-view-date">${esc(registroDetailDate(event.timestamp))}</time></div>${buttons}`, formEvent => formEvent.preventDefault());
+    rmV28ViewerActions?.(id);
   };
-  const scoreEvent = e => e?.type==='sleep' && kindOf(e)!=='nap' && typeof durationHours==='function'
-    ? score(durationHours(e.startTime,e.endTime)) : null;
-  window.rmSleepDurationScore=score;
-  window.rmSleepDurationScoreForEvent=scoreEvent;
-
-  if(!document.getElementById('rm-sleep-score-style')){
-    const st=document.createElement('style'); st.id='rm-sleep-score-style'; st.textContent=`
-      .rm-sleep-title-score{display:flex!important;align-items:center;gap:8px;flex-wrap:wrap}
-      .rm-sleep-score,.rm-sleep-nap{display:inline-flex;align-items:center;min-height:24px;padding:3px 8px;border-radius:999px;font-size:12px;font-weight:700;line-height:1.15;white-space:nowrap;border:1px solid transparent}
-      .rm-sleep-score[data-level="ideal"]{color:#18772f;background:rgba(52,199,89,.13);border-color:rgba(52,199,89,.24)}
-      .rm-sleep-score[data-level="near"]{color:#8a6100;background:rgba(255,204,0,.15);border-color:rgba(255,204,0,.28)}
-      .rm-sleep-score[data-level="caution"]{color:#a94d00;background:rgba(255,159,10,.14);border-color:rgba(255,159,10,.28)}
-      .rm-sleep-score[data-level="alert"]{color:#c5221f;background:rgba(255,69,58,.12);border-color:rgba(255,69,58,.24)}
-      .rm-sleep-nap{color:var(--sleep,var(--accent));background:rgba(120,100,255,.10);border-color:rgba(120,100,255,.20)}
-      .rm-sleep-kind-control{display:grid!important;grid-template-columns:1fr 1fr}
-      .rm-sleep-score-detail{display:flex;flex-direction:column;gap:4px}
-      .rm-sleep-score-note{font-size:11px;line-height:1.3;opacity:.62;font-weight:500}
-    `; document.head.appendChild(st);
-  }
-
-  function setKind(k){
-    k=k==='nap'?'nap':'main';
-    const v=document.getElementById('rmSleepKindValue'); if(v)v.value=k;
-    document.querySelectorAll('#rmSleepKindControl [data-sleep-kind]').forEach(b=>{
-      const on=b.dataset.sleepKind===k; b.classList.toggle('selected',on); b.setAttribute('aria-pressed',String(on));
-    });
-  }
-  function addKind(k='main'){
-    const form=document.getElementById('form'); if(!form||!document.getElementById('sleepStart'))return;
-    if(document.getElementById('rmSleepKindControl'))return setKind(k);
-    const box=document.createElement('div'); box.className='field rm-sleep-kind-field';
-    box.innerHTML='<label>Tipo de sono</label><div class="segmented animated-segmented rm-sleep-kind-control" id="rmSleepKindControl"><button type="button" data-sleep-kind="main">Sono principal</button><button type="button" data-sleep-kind="nap">Soneca</button></div><input type="hidden" id="rmSleepKindValue" value="main"><p class="helper">A nota automática de duração é aplicada apenas ao sono principal.</p>';
-    const q=document.getElementById('sleepQuality')?.closest('.field'); q?q.before(box):form.prepend(box);
-    box.querySelectorAll('[data-sleep-kind]').forEach(b=>b.onclick=()=>setKind(b.dataset.sleepKind)); setKind(k);
-  }
-
-  if(typeof window.openSleepSheet==='function'){
-    const prev=window.openSleepSheet;
-    window.openSleepSheet=function(payload=null){const r=prev.apply(this,arguments);addKind(payload?.sleepKind==='nap'?'nap':'main');return r};
-  }
-  if(typeof window.openEventEditor==='function'&&typeof window.allEvents==='function'){
-    const prev=window.openEventEditor;
-    window.openEventEditor=async function(id){const e=(await window.allEvents()).find(x=>x.id===id);const r=await prev.apply(this,arguments);if(e?.type==='sleep')addKind(kindOf(e));return r};
-  }
-  if(typeof window.putEvent==='function'){
-    const prev=window.putEvent;
-    window.putEvent=async function(e){let n=e;if(e?.type==='sleep'){const v=document.getElementById('rmSleepKindValue')?.value;n={...e,sleepKind:v==='nap'?'nap':v==='main'?'main':kindOf(e)}}return prev.call(this,n)};
-  }
-
-  const badge=e=>{
-    if(kindOf(e)==='nap')return'<span class="rm-sleep-nap">Soneca</span>';
-    const s=scoreEvent(e); if(!s)return'';
-    return'<span class="rm-sleep-score" data-level="'+s.l+'" title="Nota automática baseada apenas no tempo dormido">'+s.n+'/10 · '+s.t+'</span>';
-  };
-  if(typeof window.eventCard==='function'){
-    const prev=window.eventCard;
-    window.eventCard=function(e){let h=prev.apply(this,arguments);if(e?.type!=='sleep'||typeof h!=='string')return h;const b=badge(e);if(!b)return h;return h.replace(/<div class="timeline-title rm-record-name">([\s\S]*?)<\/div>/,'<div class="timeline-title rm-record-name rm-sleep-title-score"><span>$1</span>'+b+'</div>')};
-  }
-  if(typeof window.openEventViewer==='function'&&typeof window.allEvents==='function'){
-    const prev=window.openEventViewer;
-    window.openEventViewer=async function(id){
-      const e=(await window.allEvents()).find(x=>x.id===id);const r=await prev.apply(this,arguments);if(e?.type!=='sleep')return r;
-      const grid=document.querySelector('#form .rm-v28-detail-grid,.rm-v28-detail-grid');if(!grid)return r;
-      const d=[...grid.children].find(x=>x.querySelector('small')?.textContent.trim()==='Duração');
-      let html='';
-      if(kindOf(e)==='nap')html='<div class="rm-v28-detail-card rm-sleep-score-card"><small>Tipo</small><div class="rm-sleep-score-detail"><strong>Soneca</strong><span class="rm-sleep-score-note">Sem nota automática de duração.</span></div></div>';
-      else{const s=scoreEvent(e);if(s)html='<div class="rm-v28-detail-card rm-sleep-score-card"><small>Nota da duração</small><div class="rm-sleep-score-detail"><strong>'+s.n+'/10 · '+s.t+'</strong><span class="rm-sleep-score-note">Baseada apenas no tempo dormido.</span></div></div>'}
-      if(html)d?d.insertAdjacentHTML('afterend',html):grid.insertAdjacentHTML('beforeend',html);return r;
-    };
-  }
-  setTimeout(()=>{try{const r=window.renderAll?.();r?.catch?.(()=>{})}catch(_){}},250);
 })();

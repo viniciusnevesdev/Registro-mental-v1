@@ -1,22 +1,21 @@
-/* Monitor de tempo acordado — Oficial 1.2.5
+/* Monitor de tempo acordado — Beta 1.2.6
    Usa o fim do último sono concluído como despertar. O horário manual é
    reservado para quando o usuário acorda sem registrar um sono completo. */
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.5';
+  const RELEASE = '1.2.6';
   window.REGISTRO_CURRENT_RELEASE = RELEASE;
   document.getElementById('topVersion')?.replaceChildren(document.createTextNode(`v${RELEASE}`));
   document.getElementById('versionLabel')?.replaceChildren(document.createTextNode(RELEASE));
 
   const KEY = 'registro-awake-monitor-v1';
-  const LEGACY_KEY = 'registro-beta-awake-monitor-v1';
   const CRITICAL_HOURS = 16;
   let tick = null;
 
   const readState = () => {
     try {
-      const value = JSON.parse(localStorage.getItem(KEY) || localStorage.getItem(LEGACY_KEY) || '{}');
+      const value = JSON.parse(localStorage.getItem(KEY) || '{}');
       return value && typeof value === 'object' ? value : {};
     } catch (_) { return {}; }
   };
@@ -128,7 +127,7 @@
     ensureStyle();
     hydrateIcons(sleep);
     document.getElementById('rmSetWakeBtn')?.addEventListener('click', () => openWakeEditor(wake));
-    document.getElementById('rmUseLastSleepBtn')?.addEventListener('click', async () => { localStorage.removeItem(KEY); localStorage.removeItem(LEGACY_KEY); await refresh(); toast('Usando o último sono registrado.'); });
+    document.getElementById('rmUseLastSleepBtn')?.addEventListener('click', async () => { localStorage.removeItem(KEY); await refresh(); toast('Usando o último sono registrado.'); });
     if (tick) clearInterval(tick);
     if (wake) { updateMonitor(wake); tick = setInterval(() => updateMonitor(wake), 30000); }
   }
@@ -146,12 +145,12 @@
 })();
 
 
-/* Carrega o estoque manual de medicamentos da Oficial. */
+/* Carrega o estoque manual de medicamentos da Beta. */
 (function(){
   if(window.__RM_MED_STOCK_LOADER__) return;
   window.__RM_MED_STOCK_LOADER__=true;
   var s=document.createElement('script');
-  s.src='./medication-inventory.js?v=1.2.5';
+  s.src='./medication-inventory.js?v=20260913-2';
   s.async=true;
   document.head.appendChild(s);
 })();

@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = '1.2.5';
+  const RELEASE = '1.2.6';
   const STARTED = performance.now();
   const scopeToken = '/Registro-mental-v1/';
   const DIAG_KEY = 'registro-last-diagnostic-v1';
@@ -134,6 +134,13 @@
     return state.display !== 'none' && state.visibility !== 'hidden' && state.visibility !== 'collapse' && !(Number.isFinite(opacity) && opacity <= 0.01) && state.width >= minW && state.height >= minH;
   }
 
+  // A barra principal é ocultada de propósito dentro de subpáginas dos
+  // Ajustes. Isso não significa que a interface falhou; a própria subpágina
+  // permanece visível e possui sua navegação de retorno.
+  function tabbarMayBeIntentionallyHidden() {
+    return Boolean(document.documentElement?.dataset?.settingsSubpage);
+  }
+
   function diagnoseVisual(snapshot = visualSnapshot()) {
     const reasons = [];
     if (!nodeLooksVisible(snapshot.html, 100, 100)) reasons.push(`html invisível (${snapshot.html.display}/${snapshot.html.visibility}/opacidade ${snapshot.html.opacity}, ${snapshot.html.width}x${snapshot.html.height})`);
@@ -145,7 +152,7 @@
     if (!snapshot.activeView.exists) reasons.push('nenhuma view ativa');
     else if (!nodeLooksVisible(snapshot.activeView, 100, 80)) reasons.push(`view ativa invisível (${snapshot.activeView.display}/${snapshot.activeView.visibility}/opacidade ${snapshot.activeView.opacity}, ${snapshot.activeView.width}x${snapshot.activeView.height})`);
     if (!snapshot.tabbar.exists) reasons.push('barra de abas ausente');
-    else if (!nodeLooksVisible(snapshot.tabbar, 100, 30)) reasons.push(`barra de abas invisível (${snapshot.tabbar.display}/${snapshot.tabbar.visibility}/opacidade ${snapshot.tabbar.opacity}, ${snapshot.tabbar.width}x${snapshot.tabbar.height})`);
+    else if (!tabbarMayBeIntentionallyHidden() && !nodeLooksVisible(snapshot.tabbar, 100, 30)) reasons.push(`barra de abas invisível (${snapshot.tabbar.display}/${snapshot.tabbar.visibility}/opacidade ${snapshot.tabbar.opacity}, ${snapshot.tabbar.width}x${snapshot.tabbar.height})`);
     return reasons;
   }
 
@@ -557,6 +564,16 @@
       await loadScript('./sleep-wake.js', 8000);
       currentStage = 'drug-interactions.js';
       await loadScript('./drug-interactions.js', 10000);
+      currentStage = 'medication-administration-selection.js';
+      await loadScript('./medication-administration-selection.js', 8000);
+      currentStage = 'medication-reminders.js';
+      await loadScript('./medication-reminders.js', 8000);
+      currentStage = 'medication-related-notes.js';
+      await loadScript('./medication-related-notes.js', 8000);
+      currentStage = 'medication-emotions.js';
+      await loadScript('./medication-emotions.js', 8000);
+      currentStage = 'semantic-glow.js';
+      await loadScript('./semantic-glow.js', 8000);
       setStep('patches', 'ok', 'aplicadas');
       log('ok', 'Correções finais, refinamentos aprovados e aparência consolidada carregados');
     } catch (error) {

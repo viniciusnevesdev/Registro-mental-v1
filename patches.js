@@ -2,7 +2,7 @@
 (() => {
   'use strict';
 
-  const RELEASE = String(window.REGISTRO_SHELL_RELEASE || '1.2.0');
+  const RELEASE = String(window.REGISTRO_SHELL_RELEASE || '1.2.6');
   const SPARK_ICON = `<svg class="svg-icon rm-spark-custom" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 21.7734 24.9609" width="24" height="24" aria-hidden="true" focusable="false" stroke="none">
     <g stroke="none">
       <rect height="24.9609" opacity="0" width="21.7734" x="0" y="0"/>
@@ -176,7 +176,7 @@
     if (!parsed || typeof parsed !== 'object') throw new Error('O conteúdo do arquivo não é um backup válido.');
     const format = Number(parsed.backupFormat || 1);
     if (!Number.isFinite(format) || format < 1) throw new Error('A versão do formato de backup é inválida.');
-    if (format > MAX_BACKUP_FORMAT) throw new Error(`Este backup usa o formato ${format}. A Oficial 1.2.0 entende até o formato ${MAX_BACKUP_FORMAT}. Use um “Backup para Oficial estável” criado pela Beta.`);
+    if (format > MAX_BACKUP_FORMAT) throw new Error(`Este backup usa o formato ${format}. A Oficial 1.2.6 entende até o formato ${MAX_BACKUP_FORMAT}. Use um “Backup para Oficial estável” criado pela Beta.`);
     if (!Array.isArray(parsed.events)) throw new Error('O arquivo não contém uma lista de registros.');
     return {
       format,
@@ -380,7 +380,7 @@
 (() => {
   'use strict';
 
-  const CFG = {"current":"official","ownDb":"registro-mental-v1","otherDb":"registro-mental-beta-v1","otherLabel":"Beta","undoId":"__rm_official_last_import_undo_v1__","demoSeedKey":"registro-demo-seeded","bridgeLastKey":"registro-official-last-cross-bridge","lastBackupKey":"registro-last-backup","filePrefix":"Registro-Mental-Oficial_para-Beta","otherUrl":"./beta/","outgoingToken":"from-official","incomingToken":"from-beta"};
+  const CFG = {"current":"beta","ownDb":"registro-mental-v1","otherDb":"registro-mental-v1","otherLabel":"Oficial","undoId":"__rm_beta_last_import_undo_v1__","demoSeedKey":"registro-demo-seeded","bridgeLastKey":"registro-beta-last-cross-bridge","lastBackupKey":"registro-beta-last-backup","filePrefix":"Registro-Mental-Beta_para-Oficial","otherUrl":"../","outgoingToken":"from-beta","incomingToken":"from-official"};
   const BACKUP_FORMAT = 2;
   const KNOWN_EVENT_TYPES = new Set(['note', 'medication', 'sleep', 'purchase']);
   let incomingHandled = false;

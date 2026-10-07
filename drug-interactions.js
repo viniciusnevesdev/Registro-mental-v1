@@ -13,6 +13,7 @@
   const CACHE_MS = 7 * 24 * 60 * 60 * 1000;
   const RECENT_MS = 14 * 24 * 60 * 60 * 1000;
   const MAX_LABELS = 5;
+  const NOTICE_DISMISSALS_KEY = 'registro-drug-interaction-notices-v1';
 
   const PT_TO_EN = {
     'acido valproico':'valproic acid','valproato sodico':'valproate sodium','alprazolam':'alprazolam',
@@ -150,50 +151,8 @@
     return key ? event.exposure.substanceKey===key : true;
   }
   function exposureLabel(event) {
-    return event?.exposure?.substance || event?.text || 'Uso registrado';
+    return event?.exposure?.substance || event?.text || 'Substância';
   }
-
-  const AUTO_RECREATIONAL_EXPOSURES = [
-    {key:'alcohol',label:'Álcool',aliases:['alcool','álcool','cerveja','vinho','vodka','whisky','uisque','cachaca','cachaça','gin','tequila']},
-    {key:'cannabis',label:'Cannabis',aliases:['cannabis','maconha','marijuana','haxixe','hash','thc']},
-    {key:'cocaine',label:'Cocaína',aliases:['cocaina','cocaína','crack']},
-    {key:'mdma',label:'MDMA',aliases:['mdma','ecstasy','êxtase','extase']},
-    {key:'lsd',label:'LSD',aliases:['lsd']},
-    {key:'psilocybin',label:'Psilocibina',aliases:['psilocibina','cogumelo magico','cogumelo mágico','magic mushroom','magic mushrooms']},
-    {key:'methamphetamine',label:'Metanfetamina',aliases:['metanfetamina','methamphetamine','crystal meth']}
-  ];
-  function classifyRecreationalSubstance(name){
-    const n=norm(name);
-    if(!n)return null;
-    for(const item of AUTO_RECREATIONAL_EXPOSURES){
-      if(item.aliases.some(alias=>norm(alias)===n))return {key:item.key,label:item.label,original:name};
-    }
-    return null;
-  }
-  function autoExposureFromMedication(event){
-    if(!event||event.type!=='medication'||event.demo||event.medicationId)return null;
-    const hit=classifyRecreationalSubstance(event.medication||'');
-    if(!hit)return null;
-    const amount=event.dose||event.quantity||'';
-    return {
-      id:event.id,
-      type:'note',
-      timestamp:event.timestamp,
-      text:'Uso de '+hit.label+(amount?' · '+amount:''),
-      tag:'uso',
-      demo:false,
-      exposure:{
-        kind:'substance',
-        substanceKey:hit.key,
-        substance:hit.label,
-        amount,
-        note:event.note||'',
-        detectedAutomatically:true,
-        originalInput:event.medication||''
-      }
-    };
-  }
-  window.rmClassifyRecreationalSubstance=classifyRecreationalSubstance;
 
   function cacheKey(name) { return CACHE_PREFIX + norm(translated(name)); }
 
@@ -377,6 +336,17 @@
     ).map(e => eventMedicationName(e,meds)));
   }
 
+  /* Mantém a janela já usada pelo verificador (14 dias), mas conserva os
+     registros concretos para que o aviso não dependa só de texto. */
+  async function recentMedicationRecords(excludeId=null) {
+    const [events,meds] = await Promise.all([allEvents(),allMedications()]);
+    const cutoff = Date.now() - RECENT_MS;
+    return events.filter(e => e.type === 'medication' && e.id !== excludeId && !e.demo &&
+      Number.isFinite(new Date(e.timestamp).getTime()) && new Date(e.timestamp).getTime() >= cutoff)
+      .map(event => ({event,name:eventMedicationName(event,meds)})).filter(item => item.name)
+      .sort((a,b) => new Date(b.event.timestamp) - new Date(a.event.timestamp));
+  }
+
   async function scanNames(names) {
     names = uniq(names);
     const out = [];
@@ -439,7 +409,17 @@
   }
 
   function installExposureAction() {
-    document.getElementById('rmSubstanceAction')?.remove();
+    const grid=document.querySelector('[data-view="home"] .action-grid');
+    if(!grid)return; const existing=document.getElementById('rmSubstanceAction'); if(existing) existing.remove(); return;
+    const button=document.createElement('button');
+    button.type='button';
+    button.id='rmSubstanceAction';
+    button.className='action-card compact-action rm-substance-action';
+    button.innerHTML='<span class="action-icon" data-icon="spark"></span><strong>Substância</strong>';
+    const buy=grid.querySelector('[data-type="purchase"]');
+    if(buy)grid.insertBefore(button,buy);else grid.appendChild(button);
+    button.onclick=openExposureSheet;
+    if(typeof hydrateIcons==='function')hydrateIcons(button);
   }
 
   function exposureFormHtml(now) {
@@ -497,7 +477,49 @@
       a:'Álcool',b:medName,severity:rule.severity,controlled:isBrazilPriorityControlled(medName),
       evidence:{section:'alcohol-local-rule',sectionLabel:rule.source,text:rule.message,matched:'substância'},
       source:rule.source,elapsedMs:delta,windowHours:rule.windowHours,ruleTitle:rule.title
+      ,eventIds:[alcoholEvent.id,medEvent.id].filter(Boolean),relatedEvent: alcoholEvent.id===medEvent.id ? null : (alcoholEvent.id ? medEvent : alcoholEvent)
     };
+  }
+
+  function recordTimeContext(event) {
+    const date = new Date(event?.timestamp);
+    if (!Number.isFinite(date.getTime())) return '';
+    const today = new Date();
+    const sameDay = date.toDateString() === today.toDateString();
+    return sameDay ? `Registrado hoje às ${date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}` :
+      `Registrado em ${date.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})} às ${date.toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})}`;
+  }
+
+  function readNoticeDismissals() {
+    try {
+      const saved=JSON.parse(localStorage.getItem(NOTICE_DISMISSALS_KEY)||'{}');
+      const cutoff=Date.now()-RECENT_MS;
+      return Object.fromEntries(Object.entries(saved||{}).filter(([,at])=>new Date(at).getTime()>=cutoff));
+    } catch (_) { return {}; }
+  }
+  function noticeKey(kind,records,period) {
+    return `${kind}:${period}:${[...new Set(records.filter(Boolean))].sort().join('|')}`;
+  }
+  function noticeWasDismissed(key) { return Boolean(readNoticeDismissals()[key]); }
+  function dismissNotice(key) {
+    const saved=readNoticeDismissals(); saved[key]=new Date().toISOString();
+    try { localStorage.setItem(NOTICE_DISMISSALS_KEY,JSON.stringify(saved)); } catch (_) {}
+  }
+  function showInteractionNotice({title,content,key}) {
+    if (noticeWasDismissed(key) || document.getElementById('rmDdiNotice')) return false;
+    const host=document.createElement('div');
+    host.id='rmDdiNotice'; host.className='rm-ddi-notice-layer';
+    host.innerHTML=`<div class="rm-ddi-notice-backdrop"></div><section class="rm-ddi-notice" role="dialog" aria-modal="false" aria-labelledby="rmDdiNoticeTitle"><button type="button" class="rm-ddi-notice-close" aria-label="Fechar aviso">×</button><div class="rm-ddi-notice-title"><span data-icon="pill"></span><h2 id="rmDdiNoticeTitle">${html(title)}</h2></div>${content}<div class="form-actions rm-ddi-notice-actions"><button type="button" class="secondary-button" id="rmDdiNoticeUnderstood">Entendi</button></div></section>`;
+    const close=()=>{
+      dismissNotice(key); host.classList.add('is-closing');
+      setTimeout(()=>host.remove(),220);
+    };
+    host.querySelector('.rm-ddi-notice-close').onclick=close;
+    host.querySelector('#rmDdiNoticeUnderstood').onclick=close;
+    host.querySelector('.rm-ddi-notice-backdrop').onclick=close;
+    document.body.appendChild(host); hydrateIcons(host);
+    requestAnimationFrame(()=>host.classList.add('is-open'));
+    return true;
   }
 
   function alcoholWarningCard(r) {
@@ -507,7 +529,7 @@
       '<div class="rm-ddi-badges"><span>'+(critical?'ALTO RISCO':'ATENÇÃO IMPORTANTE')+'</span>' +
       (r.controlled?'<span class="rm-ddi-control">controle especial</span>':'')+'</div></div></div>' +
       '<p class="rm-ddi-summary">'+html(r.evidence?.text||'Interação relevante.')+'</p>' +
-      '<p class="rm-ddi-time">Registros separados por '+html(formatElapsed(r.elapsedMs||0))+'. Janela preventiva usada pelo app: '+html(String(r.windowHours))+' h.</p>' +
+      '<p class="rm-ddi-time">Registro relacionado há '+html(formatElapsed(r.elapsedMs||0))+'. '+html(recordTimeContext(r.relatedEvent))+'. Janela preventiva usada pelo app: '+html(String(r.windowHours))+' h.</p>' +
       '<small>'+html(r.source||'Fonte clínica pública')+' · a janela do app não define um horário seguro.</small></article>';
   }
 
@@ -539,16 +561,12 @@
     if(!matches.length)return false;
     const top=matches[0];
     const critical=top.severity==='critical';
-    openBackdrop(critical?'Combinação de alto risco':'Possível interação com álcool',
+    const key=noticeKey(`alcohol:${top.ruleTitle||top.b}`,matches.flatMap(match=>match.eventIds||[]),`${top.windowHours}h`);
+    return showInteractionNotice({title:critical?'Combinação de alto risco':'Possível interação com álcool',key,content:
       '<div class="rm-ddi-warning-intro"><strong>Há sobreposição temporal entre substâncias que podem interagir.</strong><p>Este aviso é preventivo. Não use a janela mostrada como um “tempo seguro” para misturar substâncias.</p></div>' +
       matches.slice(0,4).map(alcoholWarningCard).join('') +
-      (critical?'<div class="rm-ddi-emergency"><strong>Sinais de emergência</strong><p>Se houver dificuldade para acordar, respiração lenta, irregular ou difícil, desmaio ou lábios arroxeados, procure atendimento de emergência imediatamente (SAMU 192 no Brasil).</p></div>':'') +
-      '<div class="form-actions"><button type="button" class="primary-button" id="rmDdiDismiss">Entendi</button><button type="button" class="secondary-button" id="rmDdiOpenCenter">Ver interações</button></div>',
-      ev=>ev.preventDefault()
-    );
-    document.getElementById('rmDdiDismiss')?.addEventListener('click',closeSheet);
-    document.getElementById('rmDdiOpenCenter')?.addEventListener('click',openInteractionCenter);
-    return true;
+      (critical?'<div class="rm-ddi-emergency"><strong>Sinais de emergência</strong><p>Se houver dificuldade para acordar, respiração lenta, irregular ou difícil, desmaio ou lábios arroxeados, procure atendimento de emergência imediatamente (SAMU 192 no Brasil).</p></div>':'')
+    });
   }
 
   async function warnAfterUse(record) {
@@ -557,14 +575,14 @@
     const current = eventMedicationName(record,meds);
     if (!current) return;
 
-    const others = (await recentMedicationNames(record.id)).filter(n => norm(n) !== norm(current));
+    const others = (await recentMedicationRecords(record.id)).filter(item => norm(item.name) !== norm(current));
     if (!others.length) return;
 
     const results = [];
     for (const other of others.slice(0,10)) {
       try {
-        const r = await checkPair(current,other);
-        if (severityRank(r.severity) >= 1) results.push(r);
+        const r = await checkPair(current,other.name);
+        if (severityRank(r.severity) >= 1) results.push({...r,relatedEvent:other.event,eventIds:[record.id,other.event.id].filter(Boolean)});
       } catch (_) {}
     }
     if (!results.length) return;
@@ -574,15 +592,13 @@
     const title = top.severity === 'critical' ? 'Possível interação muito importante' : 'Possível interação medicamentosa';
     const cards = results.slice(0,4).map(resultCard).join('');
 
-    openBackdrop(title,
+    const key=noticeKey(`medication:${norm(top.a)}:${norm(top.b)}`,results.flatMap(result=>result.eventIds||[]),`${RECENT_MS}ms`);
+    return showInteractionNotice({title,key,content:
       '<div class="rm-ddi-warning-intro"><strong>O app encontrou uma combinação descrita em bula.</strong><p>Não altere dose nem interrompa medicamento apenas por este aviso. Confirme a combinação com médico ou farmacêutico.</p></div>' +
       cards +
-      '<p class="group-footnote">' + html(sourceNote()) + '</p>' +
-      '<div class="form-actions"><button type="button" class="secondary-button" id="rmDdiDismiss">Entendi</button><button type="button" class="primary-button" id="rmDdiOpenCenter">Ver todas</button></div>',
-      ev => ev.preventDefault()
-    );
-    document.getElementById('rmDdiDismiss')?.addEventListener('click',closeSheet);
-    document.getElementById('rmDdiOpenCenter')?.addEventListener('click',openInteractionCenter);
+      results.slice(0,4).map(result=>`<p class="rm-ddi-time">${html(recordTimeContext(result.relatedEvent))}</p>`).join('') +
+      '<p class="group-footnote">' + html(sourceNote()) + '</p>'
+    });
   }
 
   function installStyles() {
@@ -600,9 +616,11 @@
       .rm-ddi-card details{margin-top:8px}.rm-ddi-card summary{font-size:11px;color:var(--secondary);cursor:pointer}.rm-ddi-evidence{font-size:11px;line-height:1.45;color:var(--secondary)}
       .rm-ddi-warning-intro{padding:12px;border-radius:16px;background:rgba(255,69,58,.08);border:1px solid rgba(255,69,58,.22);margin-bottom:10px}.rm-ddi-warning-intro p{font-size:12px;line-height:1.4;margin:6px 0 0;color:var(--secondary)}
       .rm-ddi-time{font-size:11px;line-height:1.35;color:var(--secondary);margin:7px 0}.rm-ddi-emergency{padding:12px;border-radius:16px;background:rgba(255,69,58,.10);border:1px solid rgba(255,69,58,.35);margin:10px 0}.rm-ddi-emergency p{font-size:12px;line-height:1.4;margin:5px 0 0}
+      .rm-ddi-notice-layer{position:fixed;z-index:10020;inset:0;display:grid;place-items:center;padding:20px;opacity:0;transition:opacity .22s ease;pointer-events:none}.rm-ddi-notice-layer.is-open{opacity:1;pointer-events:auto}.rm-ddi-notice-layer.is-closing{opacity:0;pointer-events:none}.rm-ddi-notice-backdrop{position:absolute;inset:0;background:color-mix(in srgb,#000 34%,transparent);backdrop-filter:blur(2px)}.rm-ddi-notice{position:relative;width:min(100%,500px);max-height:min(82vh,680px);overflow:auto;padding:18px;border-radius:24px;background:var(--surface);border:1px solid color-mix(in srgb,#ff453a 34%,var(--separator));box-shadow:0 14px 38px rgba(0,0,0,.22);transform:translateY(8px) scale(.985);transition:transform .22s ease;color:var(--text)}.rm-ddi-notice-layer.is-open .rm-ddi-notice{transform:translateY(0) scale(1)}.rm-ddi-notice-close{position:absolute;top:10px;right:10px;width:32px;height:32px;border:0;border-radius:50%;background:color-mix(in srgb,var(--secondary) 12%,transparent);color:var(--text);font-size:24px;line-height:1;cursor:pointer}.rm-ddi-notice-title{display:flex;align-items:center;gap:8px;padding-right:34px;margin:0 0 12px;color:#ff453a}.rm-ddi-notice-title span,.rm-ddi-notice-title svg{width:23px;height:23px}.rm-ddi-notice-title h2{margin:0;font-size:17px;line-height:1.2}.rm-ddi-notice-actions{margin-top:13px;display:flex;justify-content:flex-end}.rm-ddi-notice-actions .secondary-button{min-height:36px;padding:7px 14px}
       .rm-substance-action .action-icon{color:#ff9f0a!important}
       html[data-visual-mode="ultra"] .rm-ddi-card.rm-ddi-critical{box-shadow:0 0 18px rgba(255,69,58,.18),0 8px 22px rgba(255,69,58,.08)}
       html[data-visual-mode="ultra"] .rm-ddi-card.rm-ddi-high{box-shadow:0 0 16px rgba(255,149,0,.15),0 8px 20px rgba(255,149,0,.07)}
+      html[data-visual-mode="ultra"] .rm-ddi-notice{box-shadow:0 0 24px rgba(255,69,58,.16),0 16px 42px rgba(0,0,0,.25)}
     `;
     document.head.appendChild(s);
   }
@@ -683,16 +701,14 @@
     if (typeof window.putEvent !== 'function' || window.putEvent.__rmDdiWrapped) return;
     const previous = window.putEvent;
     const wrapped = async function(event) {
-      const automaticExposure = autoExposureFromMedication(event);
-      const savedEvent = automaticExposure || event;
-      const result = await previous.call(this,savedEvent);
-      const manualMedicationForm = savedEvent?.type === 'medication' && !savedEvent.demo && document.querySelector('#form #medName');
-      const exposureRecord = isExposure(savedEvent) && !savedEvent.demo;
-      if (manualMedicationForm || exposureRecord) {
+      const result = await previous.apply(this,arguments);
+      const manualMedicationForm = event?.type === 'medication' && !event.demo && document.querySelector('#form #medName');
+      const manualExposureForm = isExposure(event) && !event.demo && document.querySelector('#form #rmExposureSubstance');
+      if (manualMedicationForm || manualExposureForm) {
         setTimeout(async()=>{
           try{
-            const shown=await warnExposureCombination(savedEvent);
-            if(!shown && manualMedicationForm) await warnAfterUse(savedEvent);
+            const shown=await warnExposureCombination(event);
+            if(!shown && manualMedicationForm) await warnAfterUse(event);
           }catch(_){}
         },500);
       }
@@ -741,6 +757,12 @@
             const noteRow=rows.find(row=>row.querySelector('.summary-row-label')?.textContent.trim()==='Anotações');
             if(noteRow)noteRow.querySelector('.summary-row-value').textContent=String(notes.length);
             document.getElementById('rmExposureSummaryRow')?.remove();
+            if(exposures.length&&typeof summaryRow==='function'){
+              const holder=document.createElement('div');
+              holder.innerHTML=summaryRow('spark','Substâncias',String(exposures.length));
+              const row=holder.firstElementChild;
+              if(row){row.id='rmExposureSummaryRow';document.getElementById('summaryList')?.appendChild(row)}
+            }
           }catch(_){}
           return result;
         };
@@ -757,7 +779,7 @@
         const wrapped=function(event){
           if(isExposure(event)){
             const amount=event.exposure?.amount;
-            return {kind:'USO',className:'note',title:exposureLabel(event),meta:[amount,event.exposure?.note].filter(Boolean)};
+            return {kind:'SUBSTÂNCIA',className:'note',title:exposureLabel(event),meta:[amount,event.exposure?.note].filter(Boolean)};
           }
           return previous(event);
         };
@@ -884,4 +906,4 @@
   setTimeout(()=>{try{const r=window.renderAll?.();r?.catch?.(()=>{})}catch(_){}},250);
 })();
 
-;(()=>{const V='1.2.5';function stamp(){const a=document.getElementById('topVersion'),b=document.getElementById('versionLabel');if(a&&a.textContent!=='v'+V)a.textContent='v'+V;if(b&&b.textContent!==V)b.textContent=V}function bar(){const f=document.getElementById('form');if(!f||f.querySelector('.rm-restored-mood-bar'))return;const c=[...f.querySelectorAll('.rm-v28-detail-card')].find(x=>x.querySelector('small')?.textContent.trim()==='Humor');const n=Number(c?.querySelector('.rm-mini-mood')?.textContent);if(!c||!Number.isFinite(n))return;const p=Math.max(0,Math.min(10,n))*10;c.classList.add('rm-restored-mood-bar');c.innerHTML='<small>Avaliação do humor</small><div class="rm-restored-track"><span style="width:'+p+'%"></span><b style="left:'+p+'%">'+n+'</b></div><div class="rm-restored-caption"><span>0 · muito mal</span><span>5 · neutro</span><span>10 · muito bem</span></div>'}if(!document.getElementById('rm-restored-mood-style')){const s=document.createElement('style');s.id='rm-restored-mood-style';s.textContent='.rm-v28-detail-grid:has(.rm-restored-mood-bar),.rm-restored-mood-bar,.rm-restored-track{overflow:visible!important}.rm-restored-mood-bar{position:relative;isolation:isolate;grid-column:1/-1!important;padding:14px!important;border-radius:18px!important;background:color-mix(in srgb,var(--rm-detail-tone,#7657ff) 10%,var(--surface))!important;border-color:color-mix(in srgb,var(--rm-detail-tone,#7657ff) 38%,var(--separator))!important}.rm-restored-track{position:relative;height:18px;margin-top:11px;border-radius:999px;background:color-mix(in srgb,var(--secondary) 20%,transparent)}.rm-restored-track span{position:relative;z-index:1;display:block;height:100%;border-radius:inherit;background:var(--rm-detail-tone,#7657ff);box-shadow:0 0 18px 5px color-mix(in srgb,var(--rm-detail-tone,#7657ff) 58%,transparent);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--rm-detail-tone,#7657ff) 82%,transparent))}.rm-restored-track b{position:absolute;top:50%;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;transform:translate(-50%,-50%);font-size:13px;color:#fff;background:var(--rm-detail-tone,#7657ff);box-shadow:0 0 19px color-mix(in srgb,var(--rm-detail-tone,#7657ff) 90%,transparent)}.rm-restored-caption{display:flex;justify-content:space-between;margin-top:10px;color:var(--secondary);font-size:10px;font-weight:650}';document.head.appendChild(s)}new MutationObserver(()=>{bar()}).observe(document.documentElement,{childList:true,subtree:true});[0,400,1200,3000,5000].forEach(x=>setTimeout(stamp,x));bar()})();
+;(()=>{const V='1.2.6';function stamp(){const a=document.getElementById('topVersion'),b=document.getElementById('versionLabel');if(a&&a.textContent!=='v'+V)a.textContent='v'+V;if(b&&b.textContent!==V)b.textContent=V}function bar(){const f=document.getElementById('form');if(!f||f.querySelector('.rm-restored-mood-bar'))return;const c=[...f.querySelectorAll('.rm-v28-detail-card')].find(x=>x.querySelector('small')?.textContent.trim()==='Humor');const n=Number(c?.querySelector('.rm-mini-mood')?.textContent);if(!c||!Number.isFinite(n))return;const p=Math.max(0,Math.min(10,n))*10;c.classList.add('rm-restored-mood-bar');c.innerHTML='<small>Avaliação do humor</small><div class="rm-restored-track"><span style="width:'+p+'%"></span><b style="left:'+p+'%">'+n+'</b></div><div class="rm-restored-caption"><span>0 · muito mal</span><span>5 · neutro</span><span>10 · muito bem</span></div>'}if(!document.getElementById('rm-restored-mood-style')){const s=document.createElement('style');s.id='rm-restored-mood-style';s.textContent=' .rm-v28-detail-grid:has(.rm-restored-mood-bar),.rm-restored-mood-bar,.rm-restored-track{overflow:visible!important}.rm-restored-mood-bar{position:relative;isolation:isolate;grid-column:1/-1!important;padding:14px!important;border-radius:18px!important;background:color-mix(in srgb,var(--rm-detail-tone,#7657ff) 10%,var(--surface))!important;border-color:color-mix(in srgb,var(--rm-detail-tone,#7657ff) 38%,var(--separator))!important}.rm-restored-track{position:relative;height:18px;margin-top:11px;border-radius:999px;background:color-mix(in srgb,var(--secondary) 20%,transparent)} .rm-restored-track span{position:relative;z-index:1;display:block;height:100%;border-radius:inherit;background:var(--rm-detail-tone,#7657ff);box-shadow:0 0 18px 5px color-mix(in srgb,var(--rm-detail-tone,#7657ff) 58%,transparent);filter:drop-shadow(0 0 10px color-mix(in srgb,var(--rm-detail-tone,#7657ff) 82%,transparent))}.rm-restored-track b{position:absolute;top:50%;width:34px;height:34px;display:grid;place-items:center;border-radius:50%;transform:translate(-50%,-50%);font-size:13px;color:#fff;background:var(--rm-detail-tone,#7657ff);box-shadow:0 0 19px color-mix(in srgb,var(--rm-detail-tone,#7657ff) 90%,transparent)}.rm-restored-caption{display:flex;justify-content:space-between;margin-top:10px;color:var(--secondary);font-size:10px;font-weight:650}';document.head.appendChild(s)}new MutationObserver(()=>{bar()}).observe(document.documentElement,{childList:true,subtree:true});[0,400,1200,3000,5000].forEach(x=>setTimeout(stamp,x));bar()})();
