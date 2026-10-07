@@ -179,7 +179,11 @@
         width:100%!important;justify-content:center!important;text-align:center!important
       }
       #form.rm-medication-form input,#form.rm-medication-form textarea{
-        text-align:center!important
+        text-align:left!important
+      }
+      #form input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+      #form textarea,#form select{
+        text-align:left!important
       }
       #form.rm-medication-form #doseMode button[data-dose-mode="perUnit"]{
         white-space:nowrap!important;font-size:11.5px!important
@@ -191,7 +195,7 @@
       #form.rm-medication-form #medNote{min-height:44px!important}
       #form.rm-medication-form .form-actions{gap:12px!important;margin-top:4px!important}
       #form.rm-medication-form .form-actions>button{border-radius:999px!important}
-      #form.rm-medication-form #recordTime{text-align:center!important}
+      #form.rm-medication-form #recordTime{text-align:left!important}
       @media(max-width:370px){
         #doseFields.rm-official-dose-compact{gap:7px!important}
         #doseFields.rm-official-dose-compact input,#doseFields.rm-official-dose-compact select{
