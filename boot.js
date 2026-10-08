@@ -562,8 +562,6 @@
       await loadScript('./official-appearance.js', 8000);
       currentStage = 'sleep-wake.js';
       await loadScript('./sleep-wake.js', 8000);
-      currentStage = 'drug-interactions.js';
-      await loadScript('./drug-interactions.js', 10000);
       currentStage = 'medication-administration-selection.js';
       await loadScript('./medication-administration-selection.js', 8000);
       currentStage = 'medication-reminders.js';
